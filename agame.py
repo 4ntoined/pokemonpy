@@ -43,6 +43,8 @@ def checktime():
 zero_time=t.time()
 
 #intro
+introduction()
+
 '''
 intro_timer=0
 if intro_timer<1000000:
