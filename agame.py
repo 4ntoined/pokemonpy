@@ -23,7 +23,7 @@ class comet:
 	def __init__(self):
 		self.name = input("Name?\n")
 		self.hunger = 0
-		print("You're alive now. Sorry about that.")
+#		print("You're alive now. Sorry about that.")
 
 	def eat(food):
 		print("You ate the", food)
@@ -37,10 +37,12 @@ class ice:
 		if tipe == 'steak':
 			self.calories=40
 		print("There's a", tipe)
+
 #this plays when you start the game
 class introduction():
 	def __init__(self, fanny):
-		print("Hey, what's up?")
+		t.sleep(2)
+		print(tc.OKBLUE + "Hey, what's up?")
 		t.sleep(3)
 		print("Oh yeah, you can't speak to me.")
 		t.sleep(1)
@@ -50,25 +52,26 @@ class introduction():
 		t.sleep(1)
 		print("And once you come back, you can never leave again.")
 		t.sleep(1)
-		print("Have fun")
+		print("Have fun" + tc.ENDC)
 #this plays after the introduction lmao
 class tutorial:
-	print(tc.OKGREEN + "Hi! I'm the GUI." + tc.ENDC)
-	t.sleep(2)
-	print(tc.OKGREEN + "Here's how this works.." + tc.ENDC)
-	t.sleep(2)
-	print(tc.OKGREEN + "I feed you information from the World.." + tc.ENDC)
-	t.sleep(1)
-	print(tc.OKGREEN + "And I'll give you some options for a response." + tc.ENDC)
-	t.sleep(2)
-	print(tc.OKGREEN + "OK?" + tc.ENDC)
-	t.sleep(2)
-	
+	def __init__(self):
+		print(tc.OKGREEN + "Hi! I'm the GUI." + tc.ENDC)
+		t.sleep(2)
+		print(tc.OKGREEN + "Here's how this works.." + tc.ENDC)
+		t.sleep(2)
+		print(tc.OKGREEN + "I feed you information from the World.." + tc.ENDC)
+		t.sleep(1)
+		print(tc.OKGREEN + "And I'll give you some options for a response." + tc.ENDC)
+		t.sleep(2)
+		print(tc.OKGREEN + "OK?" + tc.ENDC)
+		t.sleep(2)	
 
 #checks time since game started
 def checktime():
 	tyme=t.time()-zero_time
 	return tyme
+
 #game clock
 zero_time=t.time()
 
@@ -84,6 +87,8 @@ if innie=='yes' or innie=='y':
 
 if innie=='no' or innie=='n':
 	print(tc.OKGREEN + "Aw damn. Okay bye" + tc.ENDC)
+	game_running=False
+
 		
 
 while game_running:
