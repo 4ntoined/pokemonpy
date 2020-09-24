@@ -167,6 +167,11 @@ weather='sunny'
 #weather='hail'
 #weather='sandstorm'
 
+while 1:
+
+    break
+
+'''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
 chard=mon(50,"steve",tipe=np.array([13]))
 bulba.checkup()
@@ -175,6 +180,7 @@ chard.checkup()
 chard.move(bulba,40,1,moveTipe=1)
 chard.checkup()
 bulba.appraise()
+'''
 #bulba=mon(34,"bulbasaur")
 #char=mon(32, "charmander")
 #bulba.move(char,60,0,moveTipe='fire')
