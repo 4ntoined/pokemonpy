@@ -6,12 +6,12 @@
 #dark 15,steel 16,fairy 17
 
 import numpy as np
-import math
+import astropy.table as tbl
 np.random.seed(24)
 
 class mon:
     def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])):
-        print("its a pokemon!")
+        #print("its a pokemon!")
         self.level=level
         self.hpiv=np.random.randint(0,32)
         self.ativ=np.random.randint(0,32)
@@ -21,6 +21,7 @@ class mon:
         self.spiv=np.random.randint(0,32)
         self.maxhp=HP(self.level,hpbase,self.hpiv,0)
         self.currenthp=self.maxhp
+        self.currenthpp=100
         self.attack=stats(self.level,atbase,self.ativ,0,1)
         self.defense=stats(self.level,debase,self.deiv,0,1)
         self.spatk=stats(self.level,sabase,self.saiv,0,1)
@@ -28,9 +29,10 @@ class mon:
         self.speed=stats(self.level,spbase,self.spiv,0,1)
         self.name=named
         self.tipe=tipe
+        self.fainted=False
         
     def move(self,opponent,power,special,moveTipe=0):
-        print(f"{self.name} used a move!")
+        #print(f"{self.name} used a move!")
         if special==0:
             ans=damage(self.level,self.attack,self.tipe,opponent.defense,opponent.tipe,power,moveTipe)
         if special==1:
@@ -44,6 +46,7 @@ class mon:
         else:
             print(f"{self.name} was hit!")
             self.currenthp-=damagepoints
+            self.currenthpp=100*self.currenthp/self.maxhp
             if effectiveness>2.0:
                 print("It was MEGA-effective!!")
             if effectiveness<=2.0 and effectiveness>1:
@@ -52,8 +55,13 @@ class mon:
                 print("It was barely effective...")
             if effectiveness>=0.5 and effectiveness<1:
                 print("It was not very effective.")
-            print(f"{self.name} lost {damagepoints} HP!")
-            print(f"{self.name} has {self.currenthp} HP left")
+            print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
+            if self.currenthp<0.0:
+                self.currenthp=0.
+                self.fainted=True
+                print(f"{self.name} fainted!")
+            else:
+                print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left")
         
     def checkup(self):
         print(f"Name: {self.name}")
@@ -136,7 +144,7 @@ movedex=np.array
 movedex = np.array([("razor leaf",50,100,0,3,"these shits are sharp"),("flame wheel",50,100,0,1,"HOT HOT HOT")], \
                    dtype=[('move_name', 'S10'),('pwr', 'f4'),('accu', 'f4'), \
                           ('phys/spec', 'i4'),('move_type', 'i4'),('desc', 'S140')])
-print(movedex['desc'][1])
+#print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
@@ -169,15 +177,28 @@ weather='sunny'
 
 while 1:
     userChoice=input("You can: \n[B]attle! \n")
+    
+    ####Battles####
     if userChoice=='b':
+        ####Battle starts####
         print("A battle has started!")
         userMon=mon(100,"irwin",tipe=np.array([14]))
         print(f"{userMon.name}! I choose you!")
         enemy=mon(100,"darwin",tipe=np.array([17]))
         print(f"{enemy.name}! Go!")
+        ####turn begins####
         while userMon.currenthp>0 and enemy.currenthp>0:
-            userMove=input(f"What should {userMon.name} do? \n \n[F]ight \n[R]un \n")
+            #----UI----#
+            print("\n****************")
+            print(f"Opponent:\n{enemy.name} // Level {enemy.level}")
+            print(f"HP: {format(enemy.currenthpp,'.2f')}%")
+            print("\n............Your team:")
+            print(f"............{userMon.name} // Level {userMon.level}")
+            print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
+            ####fight/run/pokemon/bag
+            userMove=input(f"What should {userMon.name} do?\n[F]ight\n[R]un\n")
             if userMove=='f':
+                #fighting options
                 userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
                 if userFight=="1":
                     print(f"{userMon.name} used Piss Attack!")
@@ -186,10 +207,11 @@ while 1:
                 if userFight=="2":
                     print(f"{userMon.name} used Roar of Time!")
                     userMon.move(enemy,100,1,14)
-
+            ####run away to end battle####
             if userMove=='r':
                 print(f"You and {userMon.name} ran away!")
                 break
+            ####opponent moves####
             enMove=np.random.rand(1)
             if enMove>=0.5:
                 print(f"{enemy.name} used Slam!")
@@ -197,7 +219,14 @@ while 1:
             if enMove<0.5:
                 print(f"{enemy.name} used Fairy Dust!")
                 enemy.move(userMon,50,0,17)
+            #loop back to "turn begins"
+            #if a pokemon has fainted, loop ends
         print("The battle ended!")
+        
+    ####check party pokemon?####
+    
+    ####pokemon creation?####
+    
 
 
 
