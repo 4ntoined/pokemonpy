@@ -168,8 +168,39 @@ weather='sunny'
 #weather='sandstorm'
 
 while 1:
+    userChoice=input("You can: \n[B]attle! \n")
+    if userChoice=='b':
+        print("A battle has started!")
+        userMon=mon(100,"irwin",tipe=np.array([14]))
+        print(f"{userMon.name}! I choose you!")
+        enemy=mon(100,"darwin",tipe=np.array([17]))
+        print(f"{enemy.name}! Go!")
+        while userMon.currenthp>0 and enemy.currenthp>0:
+            userMove=input(f"What should {userMon.name} do? \n \n[F]ight \n[R]un \n")
+            if userMove=='f':
+                userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
+                if userFight==1:
+                    print(f"{userMon.name} used Piss Attack!")
+                    userMon.move(enemy,50,1,7)
 
-    break
+                if userFight==2:
+                    print(f"{userMon.name} used Roar of Time!")
+                    userMon.move(enemy,100,1,14)
+
+            if userMove=='r':
+                print(f"You and {userMon.name} ran away!")
+                break
+            enMove=np.random.rand(1)
+            if enMove>=0.5:
+                print(f"{enemy.name} used Slam!")
+                enemy.move(userMon,60,0,0)
+            if enMove<0.5:
+                print(f"{enemy.name} used Fairy Dust!")
+                enemy.move(userMon,50,0,17)
+        print("The battle ended!")
+
+
+
 
 '''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
