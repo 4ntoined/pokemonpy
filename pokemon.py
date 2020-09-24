@@ -179,11 +179,11 @@ while 1:
             userMove=input(f"What should {userMon.name} do? \n \n[F]ight \n[R]un \n")
             if userMove=='f':
                 userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
-                if userFight==1:
+                if userFight=="1":
                     print(f"{userMon.name} used Piss Attack!")
                     userMon.move(enemy,50,1,7)
 
-                if userFight==2:
+                if userFight=="2":
                     print(f"{userMon.name} used Roar of Time!")
                     userMon.move(enemy,100,1,14)
 
