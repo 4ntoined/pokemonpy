@@ -125,6 +125,18 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
         matchup2=1.0
     return matchup1*matchup2
 
+#moves have pwr, phys/spec, type, accu, descipt
+def moveInfo(moveCode):
+    movepower=0
+    moveSpecial=0
+    moveTiipe=0
+    return movepower,moveSpecial,moveTiipe
+
+movedex=np.array
+movedex = np.array([("razor leaf",50,100,0,3,"these shits are sharp"),("flame wheel",50,100,0,1,"HOT HOT HOT")], \
+                   dtype=[('move_name', 'S10'),('pwr', 'f4'),('accu', 'f4'), \
+                          ('phys/spec', 'i4'),('move_type', 'i4'),('desc', 'S140')])
+print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
