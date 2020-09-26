@@ -66,7 +66,11 @@ class mon:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left")
         
     def checkup(self):
-        print(f"Name: {self.name}")
+        print(f"Name: {self.name} // Lv. {self.level}")
+        if len(self.tipe)==1:
+            print(f"{typeStrings[self.tipe[0]]}")
+        if len(self.tipe)>1:
+            print(f"{typeStrings[self.tipe[0]]} / {typeStrings[self.tipe[1]]}")
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
     def appraise(self):
@@ -142,6 +146,9 @@ def moveInfo(moveCode):
     moveTiipe=0
     return movepower,moveSpecial,moveTiipe
 
+def indexToType(x):
+    ["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
+
 #class party():
     #def __init__(self):
         
@@ -174,6 +181,7 @@ codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,
 codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
     
+typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 
 #weather='clear'
 #weather='rain'
@@ -184,7 +192,7 @@ weather='sunny'
 userParty=[]
 
 while 1:
-    userChoice=input("You can: \n[B]attle!\n[N]ursery\n")
+    userChoice=input("You can:\n[B]attle!\n[N]ursery\n[P]okemon\n")
     
     ####Battles####
     if userChoice=='b':
@@ -232,7 +240,17 @@ while 1:
         print("The battle ended!")
         
     ####check party pokemon?####
-    
+    if userChoice=='p':
+        while 1:
+            print("****************\nParty Pokemon:")
+            for i in range(len(userParty)):
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
+            partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
+            if partyChoice=='b':
+                break
+            userParty[int(partyChoice)-1].checkup()
+
+
     ####pokemon creation?####
     if userChoice=='n':
         print("Welcome to the Pokemon Nursery!\n")
@@ -264,14 +282,14 @@ while 1:
                 if len(newTipes)>1:
                     newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DFstat,sabase=SAstat,sdbase=SDstat,spbase=SEstat,tipe=np.array([newTipe1,newTipe2]))
                 print(f"{newName} is born!")
-                t.sleep(2)
+                t.sleep(1)
                 userParty.append(newMon)
                 print("Take good care of them!")
             
             if nurseChoice=='b':
                 break
-            pass
-        pass
+            pass #loops back to start of nursery
+        pass #loops back to start of game
 '''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
 chard=mon(50,"steve",tipe=np.array([13]))
