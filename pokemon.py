@@ -7,6 +7,8 @@
 
 import numpy as np
 import astropy.table as tbl
+import time as t
+
 np.random.seed(24)
 
 class mon:
@@ -140,10 +142,14 @@ def moveInfo(moveCode):
     moveTiipe=0
     return movepower,moveSpecial,moveTiipe
 
-movedex=np.array
-movedex = np.array([("razor leaf",50,100,0,3,"these shits are sharp"),("flame wheel",50,100,0,1,"HOT HOT HOT")], \
-                   dtype=[('move_name', 'S10'),('pwr', 'f4'),('accu', 'f4'), \
-                          ('phys/spec', 'i4'),('move_type', 'i4'),('desc', 'S140')])
+#class party():
+    #def __init__(self):
+        
+
+#movedex=np.array
+#movedex = np.array([("razor leaf",50,100,0,3,"these shits are sharp"),("flame wheel",50,100,0,1,"HOT HOT HOT")], \
+#                   dtype=[('move_name', 'S10'),('pwr', 'f4'),('accu', 'f4'), \
+#                          ('phys/spec', 'i4'),('move_type', 'i4'),('desc', 'S140')])
 #print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
@@ -175,14 +181,16 @@ weather='sunny'
 #weather='hail'
 #weather='sandstorm'
 
+userParty=[]
+
 while 1:
-    userChoice=input("You can: \n[B]attle! \n")
+    userChoice=input("You can: \n[B]attle!\n[N]ursery\n")
     
     ####Battles####
     if userChoice=='b':
         ####Battle starts####
         print("A battle has started!")
-        userMon=mon(100,"irwin",tipe=np.array([14]))
+        userMon=userParty[0]
         print(f"{userMon.name}! I choose you!")
         enemy=mon(100,"darwin",tipe=np.array([17]))
         print(f"{enemy.name}! Go!")
@@ -226,11 +234,44 @@ while 1:
     ####check party pokemon?####
     
     ####pokemon creation?####
-    
-
-
-
-
+    if userChoice=='n':
+        print("Welcome to the Pokemon Nursery!\n")
+        t.sleep(1)
+        print("Here, you can create Pokemon from scratch!")
+        t.sleep(1)
+        ##
+        while 1:
+            nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n")
+            
+            if nurseChoice=='p':
+                newName=input("Would you like to give your Pokemon a name?: ")
+                print(f"Let's get {newName} some STATS")
+                HPstat=int(input("HP stat? 1-255: "))
+                ATstat=int(input("Attack stat? 1-255: "))
+                DFstat=int(input("Defense stat? 1-255: "))
+                SAstat=int(input("Sp. Atk stat? 1-255: "))
+                SDstat=int(input("Sp. Def stat? 1-255: "))
+                SEstat=int(input("Speed stat? 1-255: "))
+                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n")
+                newTipe=input(f"Use the legend above to give {newName} a type or two: ")
+                newTipes=newTipe.split()
+                newTipe1=int(newTipes[0])
+                if len(newTipes)>1:
+                    newTipe2=int(newTipes[1])
+                lvl=int(input(f"What level should {newName} be?: "))
+                if len(newTipes)==1:
+                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DFstat,sabase=SAstat,sdbase=SDstat,spbase=SEstat,tipe=np.array([newTipe1]))
+                if len(newTipes)>1:
+                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DFstat,sabase=SAstat,sdbase=SDstat,spbase=SEstat,tipe=np.array([newTipe1,newTipe2]))
+                print(f"{newName} is born!")
+                t.sleep(2)
+                userParty.append(newMon)
+                print("Take good care of them!")
+            
+            if nurseChoice=='b':
+                break
+            pass
+        pass
 '''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
 chard=mon(50,"steve",tipe=np.array([13]))
