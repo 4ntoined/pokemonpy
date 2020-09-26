@@ -12,7 +12,7 @@ import time as t
 np.random.seed(24)
 
 class mon:
-    def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])):
+    def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
         self.level=level
         self.hpiv=np.random.randint(0,32)
@@ -123,10 +123,12 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe):
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
     return ans
 
+#calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
     ans=((2*base+IV+EV/4)*level/100+5)*nature
     return ans
 
+#calculates HP stat
 def HP(level,base,IV,EV):
     ans=((2*base+IV+EV/4)*level/100)+level+10
     return ans
@@ -287,7 +289,7 @@ while 1:
                 print("Take good care of them!")
             
             if nurseChoice=='b':
-                break
+                break #exits nursery loop
             pass #loops back to start of nursery
         pass #loops back to start of game
 '''
