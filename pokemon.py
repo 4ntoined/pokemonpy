@@ -185,10 +185,11 @@ def indexToType(x):
     #def __init__(self):
         
 
-#movedex=np.array
-#movedex = np.array([("razor leaf",50,100,0,3,"these shits are sharp"),("flame wheel",50,100,0,1,"HOT HOT HOT")], \
-#                   dtype=[('move_name', 'S10'),('pwr', 'f4'),('accu', 'f4'), \
-#                          ('phys/spec', 'i4'),('move_type', 'i4'),('desc', 'S140')])
+
+movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
+movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
+umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'))
+
 #print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
