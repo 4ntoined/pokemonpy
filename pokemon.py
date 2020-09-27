@@ -21,16 +21,32 @@ class mon:
         self.saiv=np.random.randint(0,32)
         self.sdiv=np.random.randint(0,32)
         self.spiv=np.random.randint(0,32)
-        self.maxhp=HP(self.level,hpbase,self.hpiv,0)
+        self.hpev=0
+        self.atev=0
+        self.deev=0
+        self.saev=0
+        self.sdev=0
+        self.spev=0
+        self.hpb=hpbase
+        self.atb=atbase
+        self.deb=debase
+        self.sab=sabase
+        self.sdb=sdbase
+        self.spb=spbase
+        self.maxhp=HP(self.level,hpbase,self.hpiv,self.hpev)
         self.currenthp=self.maxhp
         self.currenthpp=100
-        self.attack=stats(self.level,atbase,self.ativ,0,1)
-        self.defense=stats(self.level,debase,self.deiv,0,1)
-        self.spatk=stats(self.level,sabase,self.saiv,0,1)
-        self.spdef=stats(self.level,sdbase,self.sdiv,0,1)
-        self.speed=stats(self.level,spbase,self.spiv,0,1)
+        self.attack=stats(self.level,atbase,self.ativ,self.atev,1)
+        self.defense=stats(self.level,debase,self.deiv,self.deev,1)
+        self.spatk=stats(self.level,sabase,self.saiv,self.saev,1)
+        self.spdef=stats(self.level,sdbase,self.sdiv,self.sdev,1)
+        self.speed=stats(self.level,spbase,self.spiv,self.spev,1)
         self.name=named
         self.tipe=tipe
+        if len(tipe)>1:
+            self.dualType=True
+        else:
+            self.dualType=False
         self.fainted=False
         
     def move(self,opponent,power,special,moveTipe=0):
@@ -63,8 +79,17 @@ class mon:
                 self.fainted=True
                 print(f"{self.name} fainted!")
             else:
-                print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left")
-        
+                print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
+    
+    #recalculate stats
+    def reStat(self):
+        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")
         if len(self.tipe)==1:
@@ -73,10 +98,13 @@ class mon:
             print(f"{typeStrings[self.tipe[0]]} / {typeStrings[self.tipe[1]]}")
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
-    def appraise(self):
-        print("\n######Appraisal######")
-        print(f"Here are {self.name}'s stats:\n")
-        print(f"HP : \t{format(self.currenthp,'.2f')}/{self.maxhp}")
+    def summary(self):
+        print(f"\n###### {self.name} Summary ######")
+        if self.dualType:
+            print(f"{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+        else:
+            print(f"{typeStrings[self.tipe[0]]}")
+        print(f"HP : \t{format(self.currenthp,'.2f')}/{self.maxhp} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk: \t{self.attack}")
         print(f"Def: \t{self.defense}")
         print(f"Sp.A: \t{self.spatk}")
@@ -250,7 +278,7 @@ while 1:
             partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
             if partyChoice=='b':
                 break
-            userParty[int(partyChoice)-1].checkup()
+            userParty[int(partyChoice)-1].summary()
 
 
     ####pokemon creation?####
@@ -292,6 +320,57 @@ while 1:
                 break #exits nursery loop
             pass #loops back to start of nursery
         pass #loops back to start of game
+   
+    #training
+    if userChoice=='t':
+        print("\n********Training********\nYou can add EVs and IVs to your Pokemon!")
+        while 1:
+            for i in range(len(userParty)):                             print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
+            trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack: ")
+            #option to go back
+            if trainChoice=='b':
+                break #throws us back to main screen
+            while 1:
+                try:
+                    pokeIndex=int(trainChoice)-1
+                    break
+                except:
+                    print("\n*Must enter a number of a Pokemon*")
+                    #ends error catch for pokemon selection
+            pokeTrain=userParty[pokeIndex]
+            superHyper=input("Manage [E]Vs or [I]Vs?: ")
+            
+            if superHyper=='e':
+                while 1:
+                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >510.: \n")
+                    #option to go back
+                    if evs=='b':
+                        break #throws us back to choose a pokemon
+                    evs=evs.split()
+                    try:
+                        eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
+                    except: #catch non-numbers, incomplete sets
+                        print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510**")
+                    #make sure values legal
+                    if np.max(eves)<=252.:
+                        if np.sum(eves)<=510.:
+                            break #user exits input loop, we have everything we need
+                        pass
+
+                    pokeTrain.hpev=int(evs[0])
+                    pokeTrain.atev=int(evs[1])
+                    pokeTrain.deev=int(evs[2])
+                    pokeTrain.saev=int(evs[3])
+                    pokeTrain.sdev=int(evs[4])
+                    pokeTrain.spev=int(evs[5])
+                    pokeTrain.reStat()
+                    #end of super training
+
+            pass #loops back to training screen
+        print("\nLeaving SuperHyper Training...")
+        t.sleep(1) #exiting training
+
+
 '''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
 chard=mon(50,"steve",tipe=np.array([13]))
