@@ -89,6 +89,8 @@ class mon:
         self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
         self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
         self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        self.currenthp=self.maxhp
+        self.currenthpp=100
 
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")
@@ -222,7 +224,7 @@ weather='sunny'
 userParty=[]
 
 while 1:
-    userChoice=input("You can:\n[B]attle!\n[N]ursery\n[P]okemon\n")
+    userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n:")
     
     ####Battles####
     if userChoice=='b':
@@ -272,13 +274,18 @@ while 1:
     ####check party pokemon?####
     if userChoice=='p':
         while 1:
-            print("****************\nParty Pokemon:")
+            print("\n****************\nParty Pokemon:")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
             partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
             if partyChoice=='b':
                 break
-            userParty[int(partyChoice)-1].summary()
+            try:
+                userParty[int(partyChoice)-1].summary()
+            except ValueError:
+                print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+            except IndexError:
+                print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
 
 
     ####pokemon creation?####
@@ -287,30 +294,73 @@ while 1:
         t.sleep(1)
         print("Here, you can create Pokemon from scratch!")
         t.sleep(1)
-        ##
+        ####nursery loop####
         while 1:
             nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n")
             
+            ####new pokemon####
             if nurseChoice=='p':
                 newName=input("Would you like to give your Pokemon a name?: ")
                 print(f"Let's get {newName} some STATS")
-                HPstat=int(input("HP stat? 1-255: "))
-                ATstat=int(input("Attack stat? 1-255: "))
-                DFstat=int(input("Defense stat? 1-255: "))
-                SAstat=int(input("Sp. Atk stat? 1-255: "))
-                SDstat=int(input("Sp. Def stat? 1-255: "))
-                SEstat=int(input("Speed stat? 1-255: "))
-                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n")
-                newTipe=input(f"Use the legend above to give {newName} a type or two: ")
-                newTipes=newTipe.split()
-                newTipe1=int(newTipes[0])
-                if len(newTipes)>1:
-                    newTipe2=int(newTipes[1])
-                lvl=int(input(f"What level should {newName} be?: "))
+                while 1:
+                    HPstatS=input("HP stat? 1-255: ")
+                    ATstatS=input("Attack stat? 1-255: ")
+                    DEstatS=input("Defense stat? 1-255: ")
+                    SAstatS=input("Sp. Atk stat? 1-255: ")
+                    SDstatS=input("Sp. Def stat? 1-255: ")
+                    SPstatS=input("Speed stat? 1-255: ")
+                    try:
+                        HPstat=int(HPstatS)
+                        ATstat=int(ATstatS)
+                        DEstat=int(DEstatS)
+                        SAstat=int(SAstatS)
+                        SDstat=int(SDstatS)
+                        SPstat=int(SPstatS)
+                        if np.min(np.array([HPstat,ATstat,DEstat,SAstat,SDstat,SPstat]))>0:
+                            break #stats acccepted, exits stat input loop
+                        else:
+                            print("\n**Base stats must be at least 1**")
+                    except:
+                        print("\n**Stats must be numbers**")
+                ##type choice##
+                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************\n")
+                while 1: #type input loop
+                    newTipe=input(f"Use the legend above to give {newName} a type or two: ")
+                    try:
+                        newTipes=newTipe.split()
+                        newTipe1=int(newTipes[0])
+                        newTipeInt=np.array([newTipe1])
+                        if len(newTipes)>1: #if second type was inputted
+                            newTipe2=int(newTipes[1])
+                            newTipeInt=np.append(newTipeInt,newTipe2)
+                        if np.max(newTipeInt)<=17: #no types above 17
+                            if np.min(newTipeInt)>=0: #no types below 0
+                                break #input valid, exit type input loop
+                            else:
+                                print("\n**Highest number: 17, lowest number: 0**")
+                        else:
+                            print("\n**Highest number: 17, lowest number: 0**")
+                    except ValueError:
+                        print("\n**Use the legend above and enter a number (or 2 separated with a space)**")
+                
+                ##level input##
+                while 1: #level input loop
+                    lvlS=input(f"What level should {newName} be? 1-100: ")
+                    try:
+                        lvl=int(lvlS)
+                        if lvl>=1:
+                            break
+                        else:
+                            print("\n**Level must be at least 1!**")
+                    except:
+                        print("\n**Enter a number!**")
+                    #end of while block
+                                    
+                ##make the pokemon!##
                 if len(newTipes)==1:
-                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DFstat,sabase=SAstat,sdbase=SDstat,spbase=SEstat,tipe=np.array([newTipe1]))
+                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1]))
                 if len(newTipes)>1:
-                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DFstat,sabase=SAstat,sdbase=SDstat,spbase=SEstat,tipe=np.array([newTipe1,newTipe2]))
+                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1,newTipe2]))
                 print(f"{newName} is born!")
                 t.sleep(1)
                 userParty.append(newMon)
@@ -321,29 +371,32 @@ while 1:
             pass #loops back to start of nursery
         pass #loops back to start of game
    
-    #training
+    ####training####
     if userChoice=='t':
         print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
         while 1:
             #choose a pokemon
-            for i in range(len(userParty)):                             print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
+            print("\n")
+            for i in range(len(userParty)):
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
             trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack: ")
-
+            
             #option to go back, from pokemon selection to main screen
             if trainChoice=='b':
                 break
-
             #user input loop, making sure input is poke#
             while 1:
                 try:
                     pokeIndex=int(trainChoice)-1
                     pokeTrain=userParty[pokeIndex]
-                    break
+                    break #confirmed numbers are good, exit user loop
                 except:
-                    print("\n*Must enter a number of a Pokemon*")
+                    print("\n**Must enter a number of a Pokemon**")
+                    trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack:")
                     #ends error catch for pokemon selection
-            superHyper=input("Manage [E]Vs or [I]Vs?: ")
-
+            print(f"\n**** {pokeTrain.name} ****")
+            superHyper=input("Manage [E]Vs or [I]Vs?: ") #anything other than options below will skip to the next loop of choose a pokemon
+            
             #EVs
             if superHyper=='e':
                 while 1:
@@ -355,33 +408,76 @@ while 1:
                         evs=evs.split()
                         try:
                             eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
-                        except: #catch non-numbers, incomplete sets
-                            print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510.**\nInput 6 numbers separated by spaces.**")
-                        #make sure values legal
-                        if np.max(eves)<=252.:
-                            if np.sum(eves)<=510.:
-                                break #user exits input loop, we have everything we need
+                            #make sure values are legal
+                            if np.max(eves)<=252.:
+                                if np.sum(eves)<=510.:
+                                    pokeTrain.hpev=int(evs[0])
+                                    pokeTrain.atev=int(evs[1])
+                                    pokeTrain.deev=int(evs[2])
+                                    pokeTrain.saev=int(evs[3])
+                                    pokeTrain.sdev=int(evs[4])
+                                    pokeTrain.spev=int(evs[5])
+                                    pokeTrain.reStat()
+                                    t.sleep(1)
+                                    print("\nTraining...")
+                                    t.sleep(1)
+                                    print(f"\n{pokeTrain.name} finished Super Training and has new stats!")
+                                    break #ends ev training, sends back to choose a pokemon
+                                else:
+                                    print("\n**No more than 510 EVs**")
+                                    pass
+                                pass
+                            else:
+                                print("\n**No more than 252 EVs in any stat.**")
+                                pass
                             pass
-
+                        except: #catch non-numbers, incomplete sets
+                            print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510.**\n**Input 6 numbers separated by spaces.**")    
                         #if code is here, EV training while loop continues
-                    #apply new stats and recalculate pokemon
-                    pokeTrain.hpev=int(evs[0])
-                    pokeTrain.atev=int(evs[1])
-                    pokeTrain.deev=int(evs[2])
-                    pokeTrain.saev=int(evs[3])
-                    pokeTrain.sdev=int(evs[4])
-                    pokeTrain.spev=int(evs[5])
-                    pokeTrain.reStat()
-                    break #ends ev training, sends back to choose a pokemon
-                    
+                    pass
+                #end of ev training loop
+            
+            #IVs        
             if superHyper=='i':
-
-                #end of IV training option
+                while 1:
+                    ivs=input("Enter 6 numbers (0-31) all at once.:\n")
+                    #option to go back, from iv input to choose a pokemon
+                    if ivs=='b':
+                        break
+                    else:
+                        ivs=ivs.split() #6 numbers into list of strings
+                        try:
+                            #make sure we have 6 numbers
+                            ives=np.array([int(ivs[0]),int(ivs[1]),int(ivs[2]),int(ivs[3]),int(ivs[4]),int(ivs[5])])
+                            if np.max(ives)<=31:
+                                pokeTrain.hpiv=int(ivs[0])
+                                pokeTrain.ativ=int(ivs[1])
+                                pokeTrain.deiv=int(ivs[2])
+                                pokeTrain.saiv=int(ivs[3])
+                                pokeTrain.sdiv=int(ivs[4])
+                                pokeTrain.spiv=int(ivs[5])
+                                pokeTrain.reStat()
+                                t.sleep(1)
+                                print("\nTraining...")
+                                t.sleep(1)
+                                print(f"{pokeTrain.name} finished Hyper Training and has new stats!")
+                                break #ends IV training, goes back to choose a pokemon
+                            else:
+                                print("\n**Maximum IV is 31**")
+                        except IndexError: #input couldn't fill 6-item array
+                            print("\n**Enter !6! numbers separated by spaces**")
+                        except ValueError: #we tried to make an int() out of something non-number
+                            print("\n**Enter 6 !numbers! separated by spaces**")
+                        #if we get here, an IV was more than 31, loops back to IV input
+                    #end of iv input loop
+                #end of IV training loop
             pass #loops back to training screen
         print("\nLeaving SuperHyper Training...")
         t.sleep(1) #exiting training
 
+    ####what's the next spot?####
 
+    #end of game, loops back to main screen
 '''
 bulba=mon(60,"eve",tipe=np.array([3,11]))
 chard=mon(50,"steve",tipe=np.array([13]))
