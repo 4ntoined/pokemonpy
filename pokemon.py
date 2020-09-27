@@ -8,19 +8,20 @@
 import numpy as np
 import astropy.table as tbl
 import time as t
+from moves import getMoveInfo
 
-np.random.seed(24)
+rng=np.random.default_rng(24)
 
 class mon:
     def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
         self.level=level
-        self.hpiv=np.random.randint(0,32)
-        self.ativ=np.random.randint(0,32)
-        self.deiv=np.random.randint(0,32)
-        self.saiv=np.random.randint(0,32)
-        self.sdiv=np.random.randint(0,32)
-        self.spiv=np.random.randint(0,32)
+        self.hpiv=rng.integers(0,32)
+        self.ativ=rng.integers(0,32)
+        self.deiv=rng.integers(0,32)
+        self.saiv=rng.integers(0,32)
+        self.sdiv=rng.integers(0,32)
+        self.spiv=rng.integers(0,32)
         self.hpev=0
         self.atev=0
         self.deev=0
@@ -48,23 +49,53 @@ class mon:
         else:
             self.dualType=False
         self.fainted=False
-        
-    def move(self,opponent,power,special,moveTipe=0):
+        self.knownMoves=[17]
+        #battle stat stages
+        self.atstage=0
+        self.destage=0
+        self.sastage=0
+        self.sdstage=0
+        self.spstage=0
+        #battle statuses
+        self.sleep=False
+        self.frozen=False
+        self.burned=False
+        self.paralyzed=False
+        self.poisoined=False
+        self.badlypoisoned=False
+        self.confused=False
+    
+    ####things to call when a pokemon is thrown into battle
+    def inBattle():
+        #stat changes
+        self.attack*=statStages[self.atstage+6]
+        self.defense*=statStages[self.destage+6]
+        self.spatk*=statStages[self.sastage+6]
+        self.spdef*=statStages[self.sdstage+6]
+        self.speed*=statStages[self.spstage+6]
+
+    def move(self,opponent,moveIndex):
         #print(f"{self.name} used a move!")
-        if special==0:
-            ans=damage(self.level,self.attack,self.tipe,opponent.defense,opponent.tipe,power,moveTipe)
-        if special==1:
-            ans=damage(self.level,self.spatk,self.tipe,opponent.spdef,opponent.tipe,power,moveTipe)
-        eff=checkTypeEffectiveness(moveTipe,opponent.tipe)
-        opponent.hit(ans,eff)
+        moveInQuestion=getMoveInfo(moveIndex)
+        if rng.random()>moveInQuestion['accu']/100:
+            print(f"{self.name} missed!")
+        else:
+            if moveInQuestion['special?']==0:
+                ans=damage(self.level,self.attack,self.tipe,opponent.defense,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
+            if moveInQuestion['special?']:
+                ans=damage(self.level,self.spatk,self.tipe,opponent.spdef,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
+            eff=checkTypeEffectiveness(moveTipe,opponent.tipe)
+            opponent.hit(ans,eff)
         
-    def hit(self,damagepoints,effectiveness):
+    def hit(self,opponent,damagepoints,effectiveness):
         if effectiveness==0:
             print(f"{self.name} is immune!")
         else:
             print(f"{self.name} was hit!")
+            #lose HP
             self.currenthp-=damagepoints
             self.currenthpp=100*self.currenthp/self.maxhp
+            #show effectiveness
             if effectiveness>2.0:
                 print("It was MEGA-effective!!")
             if effectiveness<=2.0 and effectiveness>1:
@@ -73,6 +104,7 @@ class mon:
                 print("It was barely effective...")
             if effectiveness>=0.5 and effectiveness<1:
                 print("It was not very effective.")
+            #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             if self.currenthp<0.0:
                 self.currenthp=0.
@@ -80,7 +112,13 @@ class mon:
                 print(f"{self.name} fainted!")
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
+            ###call recoil() damage###
     
+    #recoil
+    def recoil(self,damagedone,recoilAmount):
+        print(f"{self.name} takes recoil damage!")
+        self.currenthp-=damagedone*recoilAmount
+
     #recalculate stats
     def reStat(self):
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
@@ -113,9 +151,14 @@ class mon:
         print(f"Sp.D: \t{self.spdef}")
         print(f"Spe: \t{self.speed}")
         print("#####################")
+
+    def showMoves(self):
+        print("\n---- {self.name}'s Moves ----")
+        for i in range(len(self.knownMoves)):
+            print(f"{self.knownMoves[i]['name']} ")
         
         
-def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe):
+def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
     ####weather damage boost####
     weatherBonus=1.0
     if weather=='sunny':
@@ -186,9 +229,11 @@ def indexToType(x):
         
 
 
-movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
-movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
-umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'))
+#movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
+#movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
+#umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'))
+
+print(getMoveInfo(17))
 
 #print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
@@ -215,6 +260,7 @@ codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
     
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
+statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2]
 
 #weather='clear'
 #weather='rain'
@@ -250,7 +296,13 @@ while 1:
                 userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n")
                 if userMove=='f':                    
                     #fighting options
-                    userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
+                    for i in range(len(userMon.knownMoves)):
+                        print(f"[i] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']")
+                    while 1: #move input loop
+                        userFight=input(f"What move should {userMon.name} use? [#]\n")
+                        try:
+                            userMon.move(enemy,userMon.knownMoves[])
+
                     if userFight=="1":
                         print(f"{userMon.name} used Piss Attack!")
                         userMon.move(enemy,50,1,7)
@@ -263,6 +315,7 @@ while 1:
                         if enemy.fainted:
                             battleOver=True
                         break #ends user turn
+                    #if user inputs anything else, we go back to fpbr screen
                 ####run away to end battle####
                 if userMove=='r':
                     print(f"You and {userMon.name} ran away!")

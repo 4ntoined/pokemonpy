@@ -4,6 +4,8 @@
 import numpy as np
 import astropy.table as tbl
 
+def getMoveInfo(moveIndex):
+    return umm[moveIndex]
 
 movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
 movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
@@ -25,9 +27,9 @@ moremoves=[
         ("Ice Beam",90,100,15,1,5,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze10"),
         ("Thunderbolt",90,100,15,1,4,"The user attacks with a bolt of lightning! 10% chance to paralyze.","para10"),
         ("Leaf Blade",90,100,15,0,3,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
-        ("Attack Order",90,100,15,0,12,"The user attacks with a powerful flame! 10% chance to burn.","highCrit")
+        ("Attack Order",90,100,15,0,12,"The user attacks with a powerful flame! 10% chance to burn.","highCrit"),
+        ("Tackle",40,100,35,0,0,"The user charges to attack.",""),
+        ("Swords Dance",0,100,20,2,0,"Boosts Atk. 2 stages.","A2")
         ]
 for i in moremoves:
     umm.add_row(i)
-
-print(umm)
