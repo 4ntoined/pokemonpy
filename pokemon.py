@@ -236,30 +236,58 @@ while 1:
         print(f"{enemy.name}! Go!")
         ####turn begins####
         while userMon.currenthp>0 and enemy.currenthp>0:
-            #----UI----#
-            print("\n****************")
-            print(f"Opponent:\n{enemy.name} // Level {enemy.level}")
-            print(f"HP: {format(enemy.currenthpp,'.2f')}%")
-            print("\n............Your team:")
-            print(f"............{userMon.name} // Level {userMon.level}")
-            print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
-            ####fight/run/pokemon/bag
-            userMove=input(f"What should {userMon.name} do?\n[F]ight\n[R]un\n")
-            if userMove=='f':
-                #fighting options
-                userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
-                if userFight=="1":
-                    print(f"{userMon.name} used Piss Attack!")
-                    userMon.move(enemy,50,1,7)
-
-                if userFight=="2":
-                    print(f"{userMon.name} used Roar of Time!")
-                    userMon.move(enemy,100,1,14)
-            ####run away to end battle####
-            if userMove=='r':
-                print(f"You and {userMon.name} ran away!")
-                break
-            ####opponent moves####
+            ####fight/run/pokemon/bag####
+            while 1: #user turn loop, break when turn ends
+                battleOver=False
+                #----UI----#
+                print("\n****************")
+                print(f"Opponent:\n{enemy.name} // Level {enemy.level}")
+                print(f"HP: {format(enemy.currenthpp,'.2f')}%")
+                print("\n............Your team:")
+                print(f"............{userMon.name} // Level {userMon.level}")
+                print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
+                userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n")
+                if userMove=='f':                    
+                    #fighting options
+                    userFight=input(f"What move should {userMon.name} use?\n[1] Piss Attack\n[2]Roar of Time\n")
+                    if userFight=="1":
+                        print(f"{userMon.name} used Piss Attack!")
+                        userMon.move(enemy,50,1,7)
+                        if enemy.fainted:
+                            battleOver=True
+                        break #ends user turn
+                    if userFight=="2":
+                        print(f"{userMon.name} used Roar of Time!")
+                        userMon.move(enemy,100,1,14)
+                        if enemy.fainted:
+                            battleOver=True
+                        break #ends user turn
+                ####run away to end battle####
+                if userMove=='r':
+                    print(f"You and {userMon.name} ran away!")
+                    battleOver=True
+                    break
+                #display party pokemon
+                if userMove=='p':
+                    print("\n****************\nParty Pokemon:")
+                    for i in range(len(userParty)):
+                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                    while 1:
+                        partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
+                        if partyChoice=='b':
+                            break #goes back to user turn loop from pokemon selection
+                        try:
+                            userParty[int(partyChoice)-1].summary()
+                        except ValueError:
+                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                        except IndexError:
+                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                        #end of pokemon selection loop
+                    #end of party pokemon block
+                ####other user turn options?####
+            ####opponent turn####
+            if battleOver: #if user ran
+                break #breaks battle loop, back to main screen
             enMove=np.random.rand(1)
             if enMove>=0.5:
                 print(f"{enemy.name} used Slam!")
@@ -270,13 +298,14 @@ while 1:
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
+    ###end of battle block###
         
     ####check party pokemon?####
     if userChoice=='p':
         while 1:
             print("\n****************\nParty Pokemon:")
             for i in range(len(userParty)):
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
             partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
             if partyChoice=='b':
                 break
@@ -286,17 +315,20 @@ while 1:
                 print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
             except IndexError:
                 print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+            #end of while block
+        print("Going back to main screen...")
+        t.sleep(1)
+        #end of party pokemon
 
-
-    ####pokemon creation?####
+    ####pokemon nursery####
     if userChoice=='n':
-        print("Welcome to the Pokemon Nursery!\n")
+        print("\n____Welcome to the Pokemon Nursery!____")
         t.sleep(1)
         print("Here, you can create Pokemon from scratch!")
         t.sleep(1)
         ####nursery loop####
         while 1:
-            nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n")
+            nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n:")
             
             ####new pokemon####
             if nurseChoice=='p':
@@ -323,7 +355,7 @@ while 1:
                     except:
                         print("\n**Stats must be numbers**")
                 ##type choice##
-                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************\n")
+                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************")
                 while 1: #type input loop
                     newTipe=input(f"Use the legend above to give {newName} a type or two: ")
                     try:
@@ -361,7 +393,7 @@ while 1:
                     newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1]))
                 if len(newTipes)>1:
                     newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1,newTipe2]))
-                print(f"{newName} is born!")
+                print(f"\n{newName} is born!")
                 t.sleep(1)
                 userParty.append(newMon)
                 print("Take good care of them!")
@@ -370,7 +402,8 @@ while 1:
                 break #exits nursery loop
             pass #loops back to start of nursery
         pass #loops back to start of game
-   
+    ###end of nursery block
+    
     ####training####
     if userChoice=='t':
         print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
@@ -461,6 +494,7 @@ while 1:
                                 print("\nTraining...")
                                 t.sleep(1)
                                 print(f"{pokeTrain.name} finished Hyper Training and has new stats!")
+                                t.sleep(1)
                                 break #ends IV training, goes back to choose a pokemon
                             else:
                                 print("\n**Maximum IV is 31**")
@@ -471,9 +505,32 @@ while 1:
                         #if we get here, an IV was more than 31, loops back to IV input
                     #end of iv input loop
                 #end of IV training loop
+            
+            #level
+            if superHyper=='l':
+                while 1:
+                    try:
+                        levl=int(input(f"What level should {pokeTrain.name} be?: "))
+                        if levl>0.: #if input was a positive number
+                            pokeTrain.level=levl #set pokemon's new level
+                            pokeTrain.reStat() #recalcs stats
+                            print("\nTraining...")
+                            t.sleep(1)
+                            print(f"\n{pokeTrain.name} finished training and has new stats!")
+                            t.sleep(1)
+                            break #exits user input loop
+                        else:
+                            print("\n**Level must be at least 1**")
+                    except:
+                        print("\n**Enter a number greater than 0.**")
+                    #end of level input while block
+                #end of level training block
+                
             pass #loops back to training screen
         print("\nLeaving SuperHyper Training...")
         t.sleep(1) #exiting training
+    ###end of training block###
+
 
     ####what's the next spot?####
 
