@@ -306,6 +306,7 @@ while 1:
             print("\n****************\nParty Pokemon:")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+            print("******************************")
             partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
             if partyChoice=='b':
                 break
@@ -319,6 +320,7 @@ while 1:
         print("Going back to main screen...")
         t.sleep(1)
         #end of party pokemon
+    ###end of party display block###
 
     ####pokemon nursery####
     if userChoice=='n':
