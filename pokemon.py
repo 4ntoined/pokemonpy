@@ -323,40 +323,48 @@ while 1:
    
     #training
     if userChoice=='t':
-        print("\n********Training********\nYou can add EVs and IVs to your Pokemon!")
+        print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
         while 1:
+            #choose a pokemon
             for i in range(len(userParty)):                             print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
             trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack: ")
-            #option to go back
+
+            #option to go back, from pokemon selection to main screen
             if trainChoice=='b':
-                break #throws us back to main screen
+                break
+
+            #user input loop, making sure input is poke#
             while 1:
                 try:
                     pokeIndex=int(trainChoice)-1
+                    pokeTrain=userParty[pokeIndex]
                     break
                 except:
                     print("\n*Must enter a number of a Pokemon*")
                     #ends error catch for pokemon selection
-            pokeTrain=userParty[pokeIndex]
             superHyper=input("Manage [E]Vs or [I]Vs?: ")
-            
+
+            #EVs
             if superHyper=='e':
                 while 1:
-                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >510.: \n")
+                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >510.:\n")
                     #option to go back
                     if evs=='b':
                         break #throws us back to choose a pokemon
-                    evs=evs.split()
-                    try:
-                        eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
-                    except: #catch non-numbers, incomplete sets
-                        print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510**")
-                    #make sure values legal
-                    if np.max(eves)<=252.:
-                        if np.sum(eves)<=510.:
-                            break #user exits input loop, we have everything we need
-                        pass
+                    else:
+                        evs=evs.split()
+                        try:
+                            eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
+                        except: #catch non-numbers, incomplete sets
+                            print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510.**\nInput 6 numbers separated by spaces.**")
+                        #make sure values legal
+                        if np.max(eves)<=252.:
+                            if np.sum(eves)<=510.:
+                                break #user exits input loop, we have everything we need
+                            pass
 
+                        #if code is here, EV training while loop continues
+                    #apply new stats and recalculate pokemon
                     pokeTrain.hpev=int(evs[0])
                     pokeTrain.atev=int(evs[1])
                     pokeTrain.deev=int(evs[2])
@@ -364,8 +372,11 @@ while 1:
                     pokeTrain.sdev=int(evs[4])
                     pokeTrain.spev=int(evs[5])
                     pokeTrain.reStat()
-                    #end of super training
+                    break #ends ev training, sends back to choose a pokemon
+                    
+            if superHyper=='i':
 
+                #end of IV training option
             pass #loops back to training screen
         print("\nLeaving SuperHyper Training...")
         t.sleep(1) #exiting training
