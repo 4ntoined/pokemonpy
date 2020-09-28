@@ -9,7 +9,7 @@ def getMoveInfo(moveIndex):
 
 movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
 movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
-umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'))
+umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','U140','U140'))
 moremoves=[
         ("Frenzy Plant",150,90,5,1,3,"Big roots! Must rest on next turn.","mustRest"),
         ("Hydro Cannon",150,90,5,1,2,"Blast of water! Must rest on next turn.","mustRest"),
@@ -33,3 +33,5 @@ moremoves=[
         ]
 for i in moremoves:
     umm.add_row(i)
+coll=tbl.Column(range(0,len(umm)),dtype='i4')
+umm.add_column(coll,index=0,name='index')

@@ -9,6 +9,7 @@ import numpy as np
 import astropy.table as tbl
 import time as t
 from moves import getMoveInfo
+from moves import umm
 
 rng=np.random.default_rng(24)
 
@@ -49,7 +50,7 @@ class mon:
         else:
             self.dualType=False
         self.fainted=False
-        self.knownMoves=[17]
+        self.knownMoves=[19]
         #battle stat stages
         self.atstage=0
         self.destage=0
@@ -84,10 +85,10 @@ class mon:
                 ans=damage(self.level,self.attack,self.tipe,opponent.defense,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
             if moveInQuestion['special?']:
                 ans=damage(self.level,self.spatk,self.tipe,opponent.spdef,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
-            eff=checkTypeEffectiveness(moveTipe,opponent.tipe)
-            opponent.hit(ans,eff)
+            eff=checkTypeEffectiveness(moveInQuestion['type'],opponent.tipe)
+            opponent.hit(self,ans,eff)
         
-    def hit(self,opponent,damagepoints,effectiveness):
+    def hit(self,attacker,damagepoints,effectiveness):
         if effectiveness==0:
             print(f"{self.name} is immune!")
         else:
@@ -112,7 +113,7 @@ class mon:
                 print(f"{self.name} fainted!")
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
-            ###call recoil() damage###
+            ###call attacker.recoil() damage###
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
@@ -150,7 +151,10 @@ class mon:
         print(f"Sp.A: \t{self.spatk}")
         print(f"Sp.D: \t{self.spdef}")
         print(f"Spe: \t{self.speed}")
-        print("#####################")
+        print("############ {self.name}'s Moves #############")
+        for i in self.knownMoves:
+            print(f"\n{getMoveInfo(i)['name']} \t{getMoveInfo(i)['pp']}PP")
+        print("####################")
 
     def showMoves(self):
         print("\n---- {self.name}'s Moves ----")
@@ -177,11 +181,11 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
             print("Rain boost!")
     ####critical hit chance####
     critical=1.0
-    if np.random.randint(1,25)==24:
+    if rng.integers(1,25)==24:
         critical=1.5
         print("It's a critical hit!")
     ####random fluctuation 85%-100%
-    rando=np.random.randint(85,101)*0.01
+    rando=rng.integers(85,101)*0.01
     ####STAB####
     STAB=1.0
     if moveTipe in plaintiffTipe:
@@ -227,15 +231,6 @@ def indexToType(x):
 #class party():
     #def __init__(self):
         
-
-
-#movedex1=("Hyper Beam",150,90,5,1,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest")
-#movedex2=("Blast Burn",150,90,5,1,1,"The user attacks with a fiery explosion! Must rest on next turn","mustRest")
-#umm = tbl.Table(rows=(movedex1,movedex2),names=('name','pwr','accu','pp','special?','type','desc','notes'))
-
-print(getMoveInfo(17))
-
-#print(movedex['desc'][1])
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
@@ -271,7 +266,7 @@ weather='sunny'
 userParty=[]
 
 while 1:
-    userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n:")
+    userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n[M]ove Learner\n:")
     
     ####Battles####
     if userChoice=='b':
@@ -297,25 +292,63 @@ while 1:
                 if userMove=='f':                    
                     #fighting options
                     for i in range(len(userMon.knownMoves)):
-                        print(f"[i] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']")
+                        print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']} PP")
                     while 1: #move input loop
                         userFight=input(f"What move should {userMon.name} use? [#]\n")
                         try:
-                            userMon.move(enemy,userMon.knownMoves[])
+                            fightChoice=int(userFight)-1 #make sure given input refers to a move
+                            moveDex=userMon.knownMoves[fightChoice]
+                            break #exit move input loop
+                        except:
+                            print("\n**Enter one of the numbers above.**")
+                        #end of move input while block
 
-                    if userFight=="1":
-                        print(f"{userMon.name} used Piss Attack!")
-                        userMon.move(enemy,50,1,7)
+                    #user faster, both pokemon go, move input while loop 
+                    if userMon.speed>=enemy.speed:
+                        print(f"{userMon.name} used {getMoveInfo(moveDex)['name']}!")
+                        userMon.move(enemy,moveDex)
                         if enemy.fainted:
                             battleOver=True
-                        break #ends user turn
-                    if userFight=="2":
-                        print(f"{userMon.name} used Roar of Time!")
-                        userMon.move(enemy,100,1,14)
+                            break #ends user turn loop
+                        if userMon.fainted:
+                            battleOver=True
+                            break
+                        ####OPPONENT TURN####
+                        opChoice=rng.integers(0,len(enemy.knownMoves))
+                        print(f"{enemy.name} used {getMoveInfo(enemy.knownMoves[opChoice])['name']}!")
+                        enemy.move(userMon,enemy.knownMoves[opChoice])
+                        if userMon.fainted:
+                            battleOver=True
+                            break
                         if enemy.fainted:
                             battleOver=True
-                        break #ends user turn
+                            break
+                        #user moved, and enemy moved
+                    
+                    if enemy.speed>userMon.speed:
+                        ####opponent goes####
+                        opChoice=rng.integers(0,len(enemy.knownMoves))
+                        print(f"{enemy.name} used {getMoveInfo(enemy.knownMoves[opChoice])['name']}!")
+                        enemy.move(userMon,enemy.knownMoves[opChoice])
+                        if userMon.fainted:
+                            battleOver=True
+                            break
+                        if enemyMon.fainted:
+                            battleOver=True
+                            break
+                        ####User goes####
+                        print(f"{userMon.name} used {getMoveInfo(moveDex)['name']}!")
+                        userMon.move(enemy,moveDex)
+                        if enemy.fainted:
+                            battleOver=True
+                            break
+                        if userMon.fainted:
+                            battleOver=True
+                            break
+                        #enemy moved and user moved
+                    #ends if user chose to fight
                     #if user inputs anything else, we go back to fpbr screen
+                    
                 ####run away to end battle####
                 if userMove=='r':
                     print(f"You and {userMon.name} ran away!")
@@ -481,10 +514,10 @@ while 1:
                     break #confirmed numbers are good, exit user loop
                 except:
                     print("\n**Must enter a number of a Pokemon**")
-                    trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack:")
+                    trainChoice=input("\nWhich Pokemon will we train?:\n[#]")
                     #ends error catch for pokemon selection
             print(f"\n**** {pokeTrain.name} ****")
-            superHyper=input("Manage [E]Vs or [I]Vs?: ") #anything other than options below will skip to the next loop of choose a pokemon
+            superHyper=input("Manage [E]Vs or [I]Vs or [L]evels\n:") #anything other than options below will skip to the next loop of choose a pokemon
             
             #EVs
             if superHyper=='e':
@@ -587,6 +620,47 @@ while 1:
         t.sleep(1) #exiting training
     ###end of training block###
 
+    ####move learner####
+    if userChoice=='m':
+        print("\n____Move Learner____\nYou can teach your pokemon moves!\n")
+        while 1: #choose a pokemon
+            for i in range(len(userParty)):
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
+            learnChoice=input("Enter the number of a Pokemon\n[#] or [B]ack: ")
+            if learnChoice=='b':
+                print("Leaving Move Learner...")
+                t.sleep(1) #kills choose a pokemon loop having done nothing
+                break
+            while 1:
+                try:
+                    learnChoice=int(learnChoice)
+                    studentMon=userParty[learnChoice-1]
+                    break
+                except:
+                    learnChoice=input("**Enter a number corresponding to a Pokemon**\n:")
+            print(umm)
+            while 1: #input loop
+                chooseMove=input(f"Which moves should {studentMon.name} learn?\nEnter move indices [#] separated by spaces\n:")
+                try:
+                    chooseMoves=chooseMove.split() #separate move indices into own strings
+                    moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
+                    if max(moveInts)<=len(umm):
+                        if min(moveInts)>=0:
+                            for i in moveInts:
+                                studentMon.knownMoves.append(i)
+                                print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
+                            break #after all moves added, breaks loop and goes back to choose a pokemon
+                    else:
+                        print("**Try again.**")
+                except ValueError:
+                    print("**Enter numbers corresponding to desired moves**")
+                except IndexError:
+                    print("**Use move legend to add moves**")
+                #end of move selection while block, moves have been picked
+            break #choose a new pokemon
+            #end of choose a pokemon block
+        #goes back to choose a pokemon
+    ###end of move learner block####
 
     ####what's the next spot?####
 
