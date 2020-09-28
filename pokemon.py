@@ -7,6 +7,7 @@
 
 import numpy as np
 import astropy.table as tbl
+import astropy.io.ascii as asc
 import time as t
 from moves import getMoveInfo
 from moves import umm
@@ -151,7 +152,7 @@ class mon:
         print(f"Sp.A: \t{self.spatk}")
         print(f"Sp.D: \t{self.spdef}")
         print(f"Spe: \t{self.speed}")
-        print("############ {self.name}'s Moves #############")
+        print(f"############ {self.name}'s Moves #############")
         for i in self.knownMoves:
             print(f"\n{getMoveInfo(i)['name']} \t{getMoveInfo(i)['pp']}PP")
         print("####################")
@@ -263,7 +264,8 @@ weather='sunny'
 #weather='hail'
 #weather='sandstorm'
 
-userParty=[]
+starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
+userParty=[starter]
 
 while 1:
     userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n[M]ove Learner\n:")
@@ -627,18 +629,25 @@ while 1:
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
             learnChoice=input("Enter the number of a Pokemon\n[#] or [B]ack: ")
-            if learnChoice=='b':
-                print("Leaving Move Learner...")
-                t.sleep(1) #kills choose a pokemon loop having done nothing
-                break
+            backML1=False
             while 1:
+                if learnChoice=='b':
+                    print("Leaving Move Learner...")
+                    t.sleep(1) #kills
+                    backML1=True
+                    break
                 try:
                     learnChoice=int(learnChoice)
                     studentMon=userParty[learnChoice-1]
                     break
                 except:
                     learnChoice=input("**Enter a number corresponding to a Pokemon**\n:")
+            if backML1:
+                break  #if they choose to go back, reiterate choose a pokemon loop
+            #otherwise, print the moves
             print(umm)
+            #np.savetxt("movecodex.txt",umm)
+            asc.write(umm,'movecodex.txt',overwrite=True)
             while 1: #input loop
                 chooseMove=input(f"Which moves should {studentMon.name} learn?\nEnter move indices [#] separated by spaces\n:")
                 try:
@@ -656,8 +665,10 @@ while 1:
                     print("**Enter numbers corresponding to desired moves**")
                 except IndexError:
                     print("**Use move legend to add moves**")
+                except:
+                    print("**Try Again**")
                 #end of move selection while block, moves have been picked
-            break #choose a new pokemon
+            pass #choose a new pokemon
             #end of choose a pokemon block
         #goes back to choose a pokemon
     ###end of move learner block####

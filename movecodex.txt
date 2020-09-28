@@ -1,0 +1,22 @@
+index name pwr accu pp special? type desc notes
+0 "Hyper Beam" 150 90 5 1 0 "The user attacks with a powerful beam! Must rest on next turn." mustRest
+1 "Blast Burn" 150 90 5 1 1 "The user attacks with a fiery explosion! Must rest on next turn" mustRest
+2 "Frenzy Plant" 150 90 5 1 3 "Big roots! Must rest on next turn." mustRest
+3 "Hydro Cannon" 150 90 5 1 2 "Blast of water! Must rest on next turn." mustRest
+4 "Giga Impact" 150 90 5 0 0 "Must rest on next turn." mustRest
+5 "Roar of Time" 150 90 5 1 14 "The user roars to distort time and inflict damage. Must rest on next turn." mustRest
+6 "Rock Wrecker" 150 90 5 0 13 "Must rest on next turn." mustRest
+7 Double-Edge 120 100 15 0 0 "User takes 1/3 recoil damage." recoilThird
+8 "Volt Tackle" 120 100 15 0 4 "User takes 1/3 recoil damage." "recoilThird para10"
+9 "Brave Bird" 120 100 15 0 9 "Takes 1/3 recoil damage." recoilThird
+10 "Flare Blitz" 120 100 15 0 1 "User takes 1/3 recoil damage." "recoilThird burn10"
+11 "Wood Hammer" 120 100 15 0 3 "Takes 1/3 recoil damage." recoilThird
+12 Earthquake 100 100 10 0 8 "The user causes a powerful earthquake." ""
+13 Judgement 100 100 10 1 0 "The user pelts the battlefield with bolts of light from the sky." ""
+14 Flamethrower 90 100 15 1 1 "The user attacks with a powerful flame! 10% chance to burn." burn10
+15 "Ice Beam" 90 100 15 1 5 "The user focuses a stream of ice at the target! 10% chance to freeze." frze10
+16 Thunderbolt 90 100 15 1 4 "The user attacks with a bolt of lightning! 10% chance to paralyze." para10
+17 "Leaf Blade" 90 100 15 0 3 "The user attacks with a sharpened leaf! High crit' ratio." highCrit
+18 "Attack Order" 90 100 15 0 12 "The user attacks with a powerful flame! 10% chance to burn." highCrit
+19 Tackle 40 100 35 0 0 "The user charges to attack." ""
+20 "Swords Dance" 0 100 20 2 0 "Boosts Atk. 2 stages." A2
