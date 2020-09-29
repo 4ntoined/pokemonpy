@@ -4,7 +4,7 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: natures, terrain, 
+#*********to do list: natures, terrains, stat stages, ABILITIES *cough*, 
 #
 #
 
@@ -111,8 +111,10 @@ class mon:
                 print("It was not very effective.")
             #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
+            #check for faint
             if self.currenthp<0.0:
                 self.currenthp=0.
+                self.currenthpp=0
                 self.fainted=True
                 print(f"{self.name} fainted!")
             else:
@@ -158,7 +160,7 @@ class mon:
         print(f"############ {self.name}'s Moves #############")
         for i in self.knownMoves:
             print(f"\n{getMoveInfo(i)['name']} \t{getMoveInfo(i)['pp']}PP")
-        print("####################")
+        print("##############################################")
 
     def showMoves(self):
         print("\n---- {self.name}'s Moves ----")
@@ -284,7 +286,7 @@ while 1:
         ####turn begins####
         while userMon.currenthp>0 and enemy.currenthp>0:
             ####fight/run/pokemon/bag####
-            while 1: #user turn loop, break when turn ends
+            while 1: #user turn loop, break when users turn ends
                 battleOver=False
                 #----UI----#
                 print("\n****************")
@@ -299,7 +301,7 @@ while 1:
                     for i in range(len(userMon.knownMoves)):
                         print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']} PP")
                     while 1: #move input loop
-                        userFight=input(f"What move should {userMon.name} use? [#]\n")
+                        userFight=input(f"What move should {userMon.name} use? [#]\n:")
                         try:
                             fightChoice=int(userFight)-1 #make sure given input refers to a move
                             moveDex=userMon.knownMoves[fightChoice]
@@ -377,7 +379,6 @@ while 1:
                         #end of pokemon selection loop
                     #end of party pokemon block
                 ####other user turn options?####
-            ####opponent turn####
             if battleOver: #if user ran
                 break #breaks battle loop, back to main screen
             enMove=np.random.rand(1)
@@ -390,6 +391,7 @@ while 1:
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
+        t.sleep(1)
     ###end of battle block###
         
     ####check party pokemon?####
