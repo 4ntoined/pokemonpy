@@ -1,0 +1,8 @@
+30 september 2020
+decided to start a dedicated log
+started work on a "pokedex" to store information for pokemon like stat details so they can be called upon in the code
+ran into some trouble with getting astropy tables to let me store a numpy array in the table
+found a work around but i don't like it
+debating whether or not a like representing the pokemon types as numbers, especially directly to the player
+but the numbers are very convenient for coding like...
+bruh idk
