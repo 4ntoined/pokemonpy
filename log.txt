@@ -6,3 +6,8 @@ found a work around but i don't like it
 debating whether or not a like representing the pokemon types as numbers, especially directly to the player
 but the numbers are very convenient for coding like...
 bruh idk
+
+4 october 2020
+hello. added contact details for all the moves and updated the movedex
+about to add more pokemon to the pokedex and set the main code so that it prints the pokedex on start up
+lit we love a log hello future people.

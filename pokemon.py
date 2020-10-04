@@ -4,7 +4,7 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: natures, terrains, stat stages, ABILITIES *cough*, 
+#*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact
 #
 #
 
@@ -271,6 +271,8 @@ weather='sunny'
 
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
 userParty=[starter]
+print(umm)
+#asc.write(umm,'movedex.dat',overwrite=True)
 
 while 1:
     userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n[M]ove Learner\n:")
