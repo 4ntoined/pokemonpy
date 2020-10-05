@@ -14,6 +14,7 @@ import astropy.io.ascii as asc
 import time as t
 from moves import getMoveInfo
 from moves import umm
+from pokedex import dex
 
 rng=np.random.default_rng(24)
 
@@ -223,6 +224,22 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     else:
         matchup2=1.0
     return matchup1*matchup2
+
+#create a pokemon from the pokedex
+def makeMon(pokedexNumber):
+    Hp=dex[pokedexNumber]['hp']
+    At=dex[pokedexNumber]['at']
+    De=dex[pokedexNumber]['de']
+    Sa=dex[pokedexNumber]['sa']
+    Sd=dex[pokedexNumber]['sd']
+    Sp=dex[pokedexNumber]['sp']
+    nayme=dex[pokedexNumber]['name']
+    tipe1=dex[pokedexNumber]['type1']
+    tipe2=dex[pokedexNumber]['type2']
+    if dex[pokedexNumber]['type2']==20: #single-typed mon
+        return mon(1,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
+    else: #dual-typed
+        return mon(1,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
 
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
@@ -679,6 +696,30 @@ while 1:
             #end of choose a pokemon block
         #goes back to choose a pokemon
     ###end of move learner block####
+
+    ####make pokemon from pokedex (use preset stats)####
+    if userChoice=='d':
+        print("________The Pokedex________")
+        t.sleep(1)
+        while 1:
+            print(dex)
+            pokeChoice=input("Which pokemon would you like to add to your team?\n[#] or [b] to go back:")
+
+            if pokeChoice=='b':
+                print("Leaving Pokedex...")
+                t.sleep(1)
+                break
+
+            try:
+                newbie=makeMon(int(pokeChoice))
+                print(f"{newbie.name} is born!")
+                userParty.append(newbie)
+                print(f"{newbie.name} has been added to your party!")
+                t.sleep(1)
+                print("Take good care of them!")
+            except:
+                print("**Try again**")
+    ###end of making preset pokemon
 
     ####what's the next spot?####
 
