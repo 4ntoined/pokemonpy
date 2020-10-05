@@ -11,3 +11,8 @@ bruh idk
 hello. added contact details for all the moves and updated the movedex
 about to add more pokemon to the pokedex and set the main code so that it prints the pokedex on start up
 lit we love a log hello future people.
+
+5 october 2020
+forgot to update the log.
+threw some pokemon in the pokedex (the kanto starters and johto box mascots)
+added pokedex functionality to the main code so players can use preset stats and typings
