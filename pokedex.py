@@ -28,3 +28,28 @@ for i in moremon:
     dex.add_row(i)
 indie=tbl.Column(range(0,len(dex)),dtype='i4')
 dex.add_column(indie,index=0,name='index')
+
+tipe1=('Normal',0)
+tipe2=('Fire',1)
+types=tbl.Table(rows=(tipe1,tipe2),names=('type','index'),dtype=('U12','i4'))
+moretype=[
+        ('Water',2),
+        ('Grass',3),
+        ('Electric',4),
+        ('Ice',5),
+        ('Fighting',6),
+        ('Poison',7),
+        ('Ground',8),
+        ('Flying',9),
+        ('Psychic',10),
+        ('Bug',11),
+        ('Rock',12),
+        ('Ghost',13),
+        ('Dragon',14),
+        ('Dark',15),
+        ('Steel',16),
+        ('Fairy',17)
+        ]
+for i in moretype:
+    types.add_row(i)
+
