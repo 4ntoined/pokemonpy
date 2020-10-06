@@ -15,6 +15,7 @@ import time as t
 from moves import getMoveInfo
 from moves import umm
 from pokedex import dex
+from pokedex import types
 
 rng=np.random.default_rng(24)
 
@@ -57,11 +58,17 @@ class mon:
         self.fainted=False
         self.knownMoves=[19]
         #battle stat stages
-        self.atstage=0
-        self.destage=0
-        self.sastage=0
-        self.sdstage=0
-        self.spstage=0
+        self.atstage=6
+        self.destage=6
+        self.sastage=6
+        self.sdstage=6
+        self.spstage=6
+        #in battle stats ugh
+        self.bat=self.attack*statStages[self.atstage]
+        self.bde=self.defense*statStages[self.destage]
+        self.bsa=self.spatk*statStages[self.sastage]
+        self.bsd=self.spdef*statStages[self.sdstage]
+        self.bsp=self.speed*statStages[self.spstage]
         #battle statuses
         self.sleep=False
         self.frozen=False
@@ -74,26 +81,31 @@ class mon:
     ####things to call when a pokemon is thrown into battle
     def inBattle():
         #stat changes
-        self.attack*=statStages[self.atstage+6]
-        self.defense*=statStages[self.destage+6]
-        self.spatk*=statStages[self.sastage+6]
-        self.spdef*=statStages[self.sdstage+6]
-        self.speed*=statStages[self.spstage+6]
+        self.battack=statStages[self.atstage+6]
+        self.bdefense*=statStages[self.destage+6]
+        self.bspatk*=statStages[self.sastage+6]
+        self.bspdef*=statStages[self.sdstage+6]
+        self.bspeed*=statStages[self.spstage+6]
 
     def move(self,opponent,moveIndex):
         #print(f"{self.name} used a move!")
-        moveInQuestion=getMoveInfo(moveIndex)
-        if rng.random()>moveInQuestion['accu']/100:
+        recoilOn=False
+        moveI=getMoveInfo(moveIndex)
+        notas=moveI['notes'].split()
+        ###accuracy check###
+        if rng.random()>moveI['accu']/100:
             print(f"{self.name} missed!")
         else:
-            if moveInQuestion['special?']==0:
-                ans=damage(self.level,self.attack,self.tipe,opponent.defense,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
-            if moveInQuestion['special?']:
-                ans=damage(self.level,self.spatk,self.tipe,opponent.spdef,opponent.tipe,moveInQuestion['pwr'],moveInQuestion['type'],moveInQuestion['notes'])
-            eff=checkTypeEffectiveness(moveInQuestion['type'],opponent.tipe)
-            opponent.hit(self,ans,eff)
+            #check if status?#
+            #check if physical or special
+            if moveI['special?']==0:
+                ans=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],moveI['notes'])
+            if moveI['special?']:
+                ans=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],moveI['notes'])
+            eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
+            opponent.hit(self,ans,eff,notas)
         
-    def hit(self,attacker,damagepoints,effectiveness):
+    def hit(self,attacker,damagepoints,effectiveness,notes):
         if effectiveness==0:
             print(f"{self.name} is immune!")
         else:
@@ -120,12 +132,15 @@ class mon:
                 print(f"{self.name} fainted!")
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
-            ###call attacker.recoil() damage###
+            #check for recoil, apply recoil if present
+            if "recoilThird" in notes:
+                attacker.recoil(damagepoints,1/3)
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
         print(f"{self.name} takes recoil damage!")
         self.currenthp-=damagedone*recoilAmount
+        self.currenthpp=100*self.currenthp/self.maxhp
 
     #recalculate stats
     def reStat(self):
@@ -276,9 +291,9 @@ codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
 codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
 codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
-    
+
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
-statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2]
+statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 
 #weather='clear'
 #weather='rain'
@@ -288,11 +303,15 @@ weather='sunny'
 
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
 userParty=[starter]
+print(dex)
+t.sleep(0.5)
 print(umm)
+t.sleep(0.5)
 #asc.write(umm,'movedex.dat',overwrite=True)
-
+print("** Welcome to the Wonderful World of Pokemon Simulation! **")
+t.sleep(1)
 while 1:
-    userChoice=input("\nYou can:\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining\n[M]ove Learner\n:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\n:")
     
     ####Battles####
     if userChoice=='b':
@@ -359,7 +378,7 @@ while 1:
                         if userMon.fainted:
                             battleOver=True
                             break
-                        if enemyMon.fainted:
+                        if enemy.fainted:
                             battleOver=True
                             break
                         ####User goes####

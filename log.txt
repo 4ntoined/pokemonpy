@@ -16,3 +16,9 @@ lit we love a log hello future people.
 forgot to update the log.
 threw some pokemon in the pokedex (the kanto starters and johto box mascots)
 added pokedex functionality to the main code so players can use preset stats and typings
+9:10PM- uhh guess we're doing times now
+added a type table along with the pokedex, easy to print, kinda pretty to look at, and probably convenient for coding idk i already had the strings in a list so the type index <-> type string relation was already there but i made the table ANYWAY so here we are
+10:08PM- added recoil damage :P
+
+6 october 2020
+12:26AM- started working on revamping the battling, especially stat stages...but obstensibly...everything else as well
