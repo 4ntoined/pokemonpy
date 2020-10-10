@@ -81,17 +81,32 @@ class mon:
     ####things to call when a pokemon is thrown into battle
     def inBattle():
         #stat changes
-        self.battack=statStages[self.atstage+6]
-        self.bdefense*=statStages[self.destage+6]
-        self.bspatk*=statStages[self.sastage+6]
-        self.bspdef*=statStages[self.sdstage+6]
-        self.bspeed*=statStages[self.spstage+6]
+        self.bat=self.attack*statStages[self.atstage]
+        self.bde=self.defense*statStages[self.destage]
+        self.bsa=self.spatk*statStages[self.sastage]
+        self.bsd=self.spdef*statStages[self.sdstage]
+        self.bsp=self.speed*statStages[self.spstage]
+        if self.paralyzed:
+            self.bsp*=0.5
+            print(f"{self.name} is slowed by paralysis..")
+        if 13 in self.tipe:
+            if weather=='sandstorm':
+                #rock type sp.def boost in a sandstorm!
+                self.bsd*=1.5
+                print(f"{self.name}'s boosted by the sandstorm!")
+
 
     def move(self,opponent,moveIndex):
         #print(f"{self.name} used a move!")
         recoilOn=False
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
+        #fully paralyzed
+        if self.paralyzed:
+            fullyParalyzed=rng.random()
+            if fullyParalyzed>0.75:
+                print(f"{self.name} is fully paralyzed!")
+                return
         ###accuracy check###
         if rng.random()>moveI['accu']/100:
             print(f"{self.name} missed!")
@@ -99,9 +114,12 @@ class mon:
             #check if status?#
             #check if physical or special
             if moveI['special?']==0:
-                ans=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],moveI['notes'])
+                #check for burns on physical attacks
+                if self.burned:
+                    notas+=" burned"
+                ans=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             if moveI['special?']:
-                ans=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],moveI['notes'])
+                ans=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
             opponent.hit(self,ans,eff,notas)
         
@@ -216,6 +234,8 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####Burn###
     burn=1
+    if "burned" in note:
+        burn=0.5
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
     
     ####damage calculation####
@@ -241,7 +261,7 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     return matchup1*matchup2
 
 #create a pokemon from the pokedex
-def makeMon(pokedexNumber):
+def makeMon(pokedexNumber,level=1):
     Hp=dex[pokedexNumber]['hp']
     At=dex[pokedexNumber]['at']
     De=dex[pokedexNumber]['de']
@@ -252,9 +272,9 @@ def makeMon(pokedexNumber):
     tipe1=dex[pokedexNumber]['type1']
     tipe2=dex[pokedexNumber]['type2']
     if dex[pokedexNumber]['type2']==20: #single-typed mon
-        return mon(1,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
+        return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
     else: #dual-typed
-        return mon(1,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
+        return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
 
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
@@ -302,7 +322,9 @@ weather='sunny'
 #weather='sandstorm'
 
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
+rival=makeMon(3)
 userParty=[starter]
+trainerParty=[rival]
 print(dex)
 t.sleep(0.5)
 print(umm)
@@ -311,29 +333,42 @@ t.sleep(0.5)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(1)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\n:")
-    
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent:")
+
+    ####Reseting the Opponent in Battle function####
+    if userChoice=='o':
+        print("________Opponent Reset________")
+        aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
+        if aceChoice==('y' or 'Y'):
+            trainerParty=userParty
+            print("The Battle Opponent has a new Party! Good Luck!")
+            t.sleep(0.5)
+        #end of opponent set
+
     ####Battles####
     if userChoice=='b':
         ####Battle starts####
         print("A battle has started!")
         userMon=userParty[0]
         print(f"{userMon.name}! I choose you!")
-        enemy=mon(100,"darwin",tipe=np.array([17]))
-        print(f"{enemy.name}! Go!")
+        trainerMon=trainerParty[0]
+        print(f"{trainerMon}! Go!")
+        turn=1
         ####turn begins####
-        while userMon.currenthp>0 and enemy.currenthp>0:
+        while userMon.currenthp>0 and userMon.currenthp>0:
             ####fight/run/pokemon/bag####
             while 1: #user turn loop, break when users turn ends
                 battleOver=False
                 #----UI----#
-                print("\n****************")
+                print(f"\n________ Turn {turn} ________\n")
                 print(f"Opponent:\n{enemy.name} // Level {enemy.level}")
                 print(f"HP: {format(enemy.currenthpp,'.2f')}%")
                 print("\n............Your team:")
                 print(f"............{userMon.name} // Level {userMon.level}")
                 print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
                 userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n")
+                
+                #fight
                 if userMove=='f':                    
                     #fighting options
                     for i in range(len(userMon.knownMoves)):
@@ -419,13 +454,6 @@ while 1:
                 ####other user turn options?####
             if battleOver: #if user ran
                 break #breaks battle loop, back to main screen
-            enMove=np.random.rand(1)
-            if enMove>=0.5:
-                print(f"{enemy.name} used Slam!")
-                enemy.move(userMon,60,0,0)
-            if enMove<0.5:
-                print(f"{enemy.name} used Fairy Dust!")
-                enemy.move(userMon,50,0,17)
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
