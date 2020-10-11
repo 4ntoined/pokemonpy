@@ -39,3 +39,7 @@ oh you can set the opponent's pokemon team now i think
 so that's cool can't wait to have to fix that
 10:32A- battling mostly works now, still some bugs around pokemon faint/switch in that need to be resolved
 mostly committing rn so i can work on this on not my cell phone
+2:32P- ended up not fixing the battle problems at all and instead worked on the move tutor, pokedex selection, pokemon screen, etc.
+cleaning up the UI, usage of b AND B to go back, getting generally handier with try except else blocks
+lets get it
+fixed sandstorm giving boost to ghost type instead of rock type lmao

@@ -110,7 +110,7 @@ class mon:
         if self.paralyzed:
             self.bsp*=0.5
             print(f"{self.name} is slowed by paralysis..")
-        if 13 in self.tipe:
+        if 12 in self.tipe:
             if weather=='sandstorm':
                 #rock type sp.def boost in a sandstorm!
                 self.bsd*=1.5
@@ -897,12 +897,21 @@ while 1:
     ####check party pokemon?####
     if userChoice=='p':
         while 1:
-            print("\n****************\nParty Pokemon:")
+            print("\n******** Party Pokemon ********\n*******************************\n")
             for i in range(len(userParty)):
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
-            print("******************************")
-            partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
+                if userParty[i].dualType:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                    thipe+=" // "
+                    thipe+=typeStrings[userParty[i].tipe[1]]
+                else:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
+            print("*******************************\n")
+            partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
+            #go back to main screen
             if partyChoice=='b':
+                break
+            if partyChoice=='B':
                 break
             try:
                 userParty[int(partyChoice)-1].summary()
@@ -1129,77 +1138,108 @@ while 1:
 
     ####move learner####
     if userChoice=='m':
-        print("\n____Move Learner____\nYou can teach your pokemon moves!\n")
+        print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
         while 1: #choose a pokemon
+            print("\n******** Party Pokemon ********\n*******************************\n")
             for i in range(len(userParty)):
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
-            learnChoice=input("Enter the number of a Pokemon\n[#] or [B]ack: ")
-            backML1=False
-            while 1:
-                if learnChoice=='b':
-                    print("Leaving Move Learner...")
-                    t.sleep(1) #kills
-                    backML1=True
-                    break
-                try:
-                    learnChoice=int(learnChoice)
-                    studentMon=userParty[learnChoice-1]
-                    break
-                except:
-                    learnChoice=input("**Enter a number corresponding to a Pokemon**\n:")
-            if backML1:
-                break  #if they choose to go back, reiterate choose a pokemon loop
-            #otherwise, print the moves
-            print(umm)
-            #np.savetxt("movecodex.txt",umm)
-            asc.write(umm,'movecodex.txt',overwrite=True)
-            while 1: #input loop
-                chooseMove=input(f"Which moves should {studentMon.name} learn?\nEnter move indices [#] separated by spaces\n:")
-                try:
-                    chooseMoves=chooseMove.split() #separate move indices into own strings
-                    moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
-                    if max(moveInts)<=len(umm):
-                        if min(moveInts)>=0:
-                            for i in moveInts:
-                                studentMon.knownMoves.append(i)
-                                print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
-                            break #after all moves added, breaks loop and goes back to choose a pokemon
-                    else:
-                        print("**Try again.**")
-                except ValueError:
-                    print("**Enter numbers corresponding to desired moves**")
-                except IndexError:
-                    print("**Use move legend to add moves**")
-                except:
-                    print("**Try Again**")
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \t{np.where(len(userParty[i].tipe)>1,typeStrings[userParty[i].tipe[0]] + ' // ' + typeStrings[userParty[i].tipe[1]],typeStrings[userParty[i].tipe[0]])}")
+            learnChoice=input("Enter the number of a Pokemon\n[#] or [b]ack: ")
+            #backML1=False
+            #go back
+            if learnChoice=='b':
+                print("Leaving Move Tutor...")
+                t.sleep(0.7) #kills
+                break #go back to main screen
+            if learnChoice=='B':
+                print("Leaving Move Tutor...")
+                t.sleep(0.7) #kills
+                break #go back to main screen
+            try:
+                learnChoice=int(learnChoice)
+                studentMon=userParty[learnChoice-1]
+                print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
+            except ValueError:
+                print("** Enter a [#] corresponding to a Pokemon !!**\n")
+            except IndexError:
+                print("** Enter a [#] corresponding to a Pokemon !!**\n")
+            else:
+                #otherwise, print the moves, godspeed
+                print(umm)
+                #np.savetxt("movecodex.txt",umm)
+                asc.write(umm,'movecodex.dat',overwrite=True)
+                while 1: #input loop
+                    chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
+                    #go back to choose a pokemon
+                    if chooseMove=='b':
+                        break
+                    if chooseMove=='B':
+                        break
+                    #extract and apply moves
+                    try:
+                        chooseMoves=chooseMove.split() #separate move indices into own strings
+                        moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
+                        incomplete=False
+                        if max(moveInts)<len(umm): #make sure all indices have an entry in the movedex
+                            if min(moveInts)>=0: #ward off negative numbers
+                                for i in moveInts:
+                                    if i in studentMon.knownMoves:
+                                        print(f"! {studentMon.name} already knows {getMoveInfo(i)['name']} !\n")
+                                        incomplete=True
+                                    else:
+                                        studentMon.knownMoves.append(i)
+                                        print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
+                                if incomplete==False: #if there are no conflicts
+                                    break #all moves added, breaks loop and goes back to choose a pokemon
+                                #otherwise, choose moves loop is restated
+                            else: #failing brings you back to move selection
+                                print("** That's out of bounds.. **\n")
+                        else: #failing brings you back to move selection
+                            print("** That's out of bounds.. **\n")
+                    except ValueError:
+                        print("** Enter [#] corresponding to desired moves **\n")
+                    except IndexError:
+                        print("** Use move legend to add moves **\n")
                 #end of move selection while block, moves have been picked
             pass #choose a new pokemon
-            #end of choose a pokemon block
         #goes back to choose a pokemon
     ###end of move learner block####
 
     ####make pokemon from pokedex (use preset stats)####
     if userChoice=='d':
-        print("________The Pokedex________")
+        print("\n*****************************\n******** The Pokedex ********\n*****************************\n\n")
         t.sleep(1)
-        while 1:
+        while 1: #choose new pokemon loop
             print(dex)
-            pokeChoice=input("Which pokemon would you like to add to your team?\n[#] or [b] to go back:")
-
+            pokeChoice=input("Which pokemon would you like to add to your team?\n[#] or [b]ack: ")
             if pokeChoice=='b':
                 print("Leaving Pokedex...")
-                t.sleep(1)
+                t.sleep(0.7) #kills
                 break
-
+            if pokeChoice=='B':
+                print("Leaving Pokedex...")
+                t.sleep(0.7) #kills
+                break
             try:
-                newbie=makeMon(int(pokeChoice))
-                print(f"{newbie.name} is born!")
-                userParty.append(newbie)
-                print(f"{newbie.name} has been added to your party!")
-                t.sleep(1)
-                print("Take good care of them!")
-            except:
-                print("**Try again**")
+                pokeChoices=pokeChoice.split()
+                pokInts=[int(i) for i in pokeChoices]
+                if max(pokInts)<len(dex):
+                    if min(pokInts)>=0:
+                        for i in pokInts:
+                            newbie=makeMon(i)
+                            print(f"{newbie.name} is born!")
+                            t.sleep(1)
+                            userParty.append(newbie)
+                            print(f"{newbie.name} has been added to your party!")
+                            t.sleep(1)
+                            print("Take good care of them!")
+                    else: #failing brings you back to new pokemon loop
+                        print("** That's out of bounds... **\n")
+                else: #new pokemon loop
+                    print("** That's out of bounds... **\n")
+            except ValueError:
+                print("** Try again **\n")
+            except IndexError:
+                print("** That's out of bounds... **\n")
     ###end of making preset pokemon
 
     ####what's the next spot?####
