@@ -36,4 +36,6 @@ oh you can set the opponent's pokemon team now i think
 
 11 october 2020
 1:57AM- okay finished up a solid amount of work and now it's definitely broken
-so that's cool cant't wait to have to fix that
+so that's cool can't wait to have to fix that
+10:32A- battling mostly works now, still some bugs around pokemon faint/switch in that need to be resolved
+mostly committing rn so i can work on this on not my cell phone

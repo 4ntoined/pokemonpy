@@ -132,7 +132,7 @@ class mon:
     
     #pokemon move
     def move(self,opponent,moveIndex):
-        print(f"{self.name} used {getMoveInfo[moveIndex]['name']}!")
+        print(f"{self.name} used {getMoveInfo(moveIndex)['name']}!")
         #paralysis prevents move execution
         if self.paralyzed:
             if rng.random()>0.75:
@@ -147,7 +147,7 @@ class mon:
             if self.confusionCounter==0:
                 self.confused=False
                 print(f"{self.name} snapped out of confusion!")
-            #if still confused, chance to do damage, end move()
+            #if still confused, chance to hurt self, end move()
             if self.confused:
                 if rng.random()>0.5:
                     self.confusionDamage()
@@ -155,7 +155,7 @@ class mon:
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
         ###accuracy check###
-        if rng.random()>moveI['accu']/100:
+        if rng.random()>moveI['accu']/100.:
             print(f"{self.name}'s attack missed!")
             return
         else:
@@ -164,7 +164,7 @@ class mon:
             if moveI['special?']==0:
                 #check for burns on physical attacks
                 if self.burned:
-                    notas+=" burned"
+                    notas.append("burned")
                 ans,comment=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             if moveI['special?']:
                 ans,comment=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
@@ -476,7 +476,7 @@ while 1:
         t.sleep(1)
         trainerMon=trainerParty[0]
         trainerInd=0
-        print(f"{trainerMon}! Go!")
+        print(f"{trainerMon.name}! Go!")
         t.sleep(1)
         turn=1
         ####turn begins####
@@ -509,12 +509,12 @@ while 1:
                         print("\n****************\nParty Pokemon:")
                         for i in range(len(userParty)):
                             print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
-                        partyChoice=input("Select a Pokemon...\n[#] or [b] to go back:n")
+                        partyChoice=input("Select a Pokemon...\n[#] or [b] to go back: ")
                         if partyChoice=='b':
                             break #goes back to user turn loop from pokemon selection
                         try:
                             select=userParty[int(partyChoice)-1]
-                            nuserInd=int(partyChoice-1)
+                            nuserInd=int(partyChoice)-1
                             select.summary()
                         except ValueError:
                             print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
@@ -522,7 +522,7 @@ while 1:
                             print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
                         else:
                             while 1:
-                                pChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                pChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back: ")
                                 #go back
                                 if pChoice=='b':
                                     break
@@ -567,6 +567,7 @@ while 1:
                             fightChoice=int(userFight)-1 #make sure given input refers to a move
                             moveDex=userMon.knownMoves[fightChoice]
                             fightShift=True
+                            break
                         except:
                             print("\n**Enter one of the numbers above.**")
                 
@@ -610,7 +611,7 @@ while 1:
                                     t.sleep(1)
                                     break
                                 else:
-                                    trainerMon=trainerParty(rng.choice(blkList))
+                                    trainerMon=trainerParty[rng.choice(blkList)]
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -628,7 +629,7 @@ while 1:
                                     while 1:
                                         newPoke=input("Select a Pokemon to battle...\n[#]")
                                         try:
-                                            nuserInd=int(partyChoice-1)
+                                            nuserInd=int(newPoke)-1
                                             select=userParty[nuserInd]
                                             select.summary()
                                         except ValueError:
@@ -684,7 +685,7 @@ while 1:
                                     while 1:
                                         newPoke=input("Select a Pokemon to battle...\n[#]")
                                         try:
-                                            nuserInd=int(partyChoice-1)
+                                            nuserInd=int(newPoke)-1
                                             select=userParty[nuserInd]
                                             select.summary()
                                         except ValueError:
@@ -728,7 +729,7 @@ while 1:
                                     print("The opponent is out of usable pokemon!\nYou win!")
                                     break
                                 else:
-                                    trainerMon=trainerParty(rng.choice(blkList))
+                                    trainerMon=trainerParty[rng.choice(blkList)]
                     ##USER SLOWER##
                     else:
                         ##OPPO ATTACK##
@@ -751,7 +752,7 @@ while 1:
                                     while 1:
                                         newPoke=input("Select a Pokemon to battle...\n[#]")
                                         try:
-                                            nuserInd=int(partyChoice-1)
+                                            nuserInd=int(newPoke)-1
                                             select=userParty[nuserInd]
                                             select.summary()
                                         except ValueError:
@@ -795,11 +796,11 @@ while 1:
                                     print("The opponent is out of usable pokemon!\nYou win!")
                                     break
                                 else:
-                                    trainerMon=trainerParty(rng.choice(blkList))
+                                    trainerMon=trainerParty[rng.choice(blkList)]
                         ##USER ATTACK##
                         if shifted==False:
                             userMon.move(trainerMon,moveDex)
-                            if trainerMon.fainted():
+                            if trainerMon.fainted:
                                 #check for TRAINER BLACKOUT
                                 blk,blkList=checkBlackout(trainerParty)
                                 if blk==0:
@@ -807,8 +808,8 @@ while 1:
                                     print("The opponent is out of usable pokemon!\nYou win!")
                                     break
                                 else:
-                                    trainerMon=trainerParty(rng.choice(blkList))
-                            if userMon.fainted():
+                                    trainerMon=trainerParty[rng.choice(blkList)]
+                            if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
                                     battleOver=True
@@ -825,7 +826,7 @@ while 1:
                                     while 1:
                                         newPoke=input("Select a Pokemon to battle...\n[#]")
                                         try:
-                                            nuserInd=int(partyChoice-1)
+                                            nuserInd=int(newPoke)-1
                                             select=userParty[nuserInd]
                                             select.summary()
                                         except ValueError:
@@ -865,7 +866,7 @@ while 1:
                     #poison and burn damage
                     if userMon.poisoned:
                         userMon.poisonDamage()
-                    if userMom.burned:
+                    if userMon.burned:
                         userMon.burnDamage()
                     if userMon.badlypoisoned:
                         userMon.badPoison()
