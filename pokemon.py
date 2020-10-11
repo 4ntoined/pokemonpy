@@ -456,14 +456,21 @@ while 1:
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
-        print("________Opponent Reset________")
+        print("\n________ Opponent Reset ________\n")
         t.sleep(1)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
-        if aceChoice==('y' or 'Y'):
+        if aceChoice=='y':
             trainerParty=userParty.copy()
             print("The Battle Opponent has a new Party! Good Luck!")
-            t.sleep(0.5)
-        #end of opponent set
+            t.sleep(0.7) #kills
+        if aceChoice=='Y':
+            trainerParty=userParty.copy()
+            print("The Battle Opponent has a new Party! Good Luck!")
+            t.sleep(0.7) #kills
+        else:
+            print("Leaving Opponent Reset...")
+            t.sleep(0.7) #kills
+        #end of opponent set, back to main screen
 
     ####Battles####
     if userChoice=='b':
@@ -1144,7 +1151,6 @@ while 1:
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \t{np.where(len(userParty[i].tipe)>1,typeStrings[userParty[i].tipe[0]] + ' // ' + typeStrings[userParty[i].tipe[1]],typeStrings[userParty[i].tipe[0]])}")
             learnChoice=input("Enter the number of a Pokemon\n[#] or [b]ack: ")
-            #backML1=False
             #go back
             if learnChoice=='b':
                 print("Leaving Move Tutor...")
