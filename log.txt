@@ -33,3 +33,7 @@ i think most of it should work it's only a matter of cleaning up the end of turn
 implementation of these things is still not yet there
 it's getting there
 oh you can set the opponent's pokemon team now i think
+
+11 october 2020
+1:57AM- okay finished up a solid amount of work and now it's definitely broken
+so that's cool cant't wait to have to fix that

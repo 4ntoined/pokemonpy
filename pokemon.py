@@ -83,6 +83,22 @@ class mon:
         self.confusionCounter=0
     
     ####things to call when a pokemon is thrown into battle
+    def faint(self):
+        self.currenthp=0.
+        self.currenthpp=0.
+        self.fainted=True
+        self.withdraw()
+        self.poisonCounter=0
+        self.sleep=False
+        self.frozen=False
+        self.paralyzed=False
+        self.burned=False
+        self.poisoned=False
+        self.badlypoisoned=False
+        self.confused=False 
+        print(f"{self.name} fainted!")
+        t.sleep(1)
+
     def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
@@ -112,9 +128,9 @@ class mon:
         self.confusionCounter=0
         if self.poisonCounter>0:
             self.poisonCounter=1
-        
-        
-        
+        #other withdraw things
+    
+    #pokemon move
     def move(self,opponent,moveIndex):
         print(f"{self.name} used {getMoveInfo[moveIndex]['name']}!")
         #paralysis prevents move execution
@@ -135,7 +151,6 @@ class mon:
             if self.confused:
                 if rng.random()>0.5:
                     self.confusionDamage()
-                    print(f"{self.name} hurt itself in its confusion!")
                     return
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
@@ -161,23 +176,34 @@ class mon:
         dmg=((((2*self.level)/5 + 2)*40*self.bat/self.bde)/50 + 2)
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} hurt itself in its confusion!")
         if self.currenthp<=0.0:
-            self.currenthp=0.
-            self.currenthpp=0.
-            self.fainted=True
+            self.faint()
     
     #poison and burn
     def poisonDamage(self):
-        dmg=self.maxphp/8
+        dmg=self.maxphp/8.
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
         if self.currenthp<=0.0:
             self.currenthp=0.
             self.currenthpp=0.
             self.fainted=True
+            print(f"{self.name} fainted!")
+            t.sleep(1)
     
     def burnDamage(self):
         #would be the same as poisondamage tbh
+        dmg=self.maxhp/8.
+        self.currenthp-=dmg
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} took burn damage!")
+        if self.currenthp<=0.:
+            self.currenthp=0.
+            self.currenthpp=0.
+            self.fainted=True
+            print(f"{self.name} fainted!")
+            t.sleep(1)
         return
     
     #badly poisoned
@@ -185,13 +211,17 @@ class mon:
         dmg=self.poisonCounter/16*self.maxhp
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} took bad poison damage!")
+        t.sleep(1)
         if self.currenthp<=0.0:
             self.currenthp=0.
             self.currenthpp=0.
             self.fainted=True
+            print(f"{self.name} fainted!")
+            t.sleep(1)
         
     def hit(self,attacker,damagepoints,effectiveness,notes,comments):
-        if effectiveness==0:
+        if effectiveness==0.:
             print(f"{self.name} is immune!")
         else:
             print(f"{self.name} was hit!")
@@ -300,20 +330,20 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
             weatherBonus=4/3
             damages.append("Rain boost!")
     ####critical hit chance####
-    critical=1.0
+    critical=1.
     if rng.integers(1,25)==24:
         critical=1.5
         damages.append("It's a critical hit!")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
     ####STAB####
-    STAB=1.0
+    STAB=1.
     if moveTipe in plaintiffTipe:
         STAB=1.5
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####Burn###
-    burn=1
+    burn=1.
     if "burned" in note:
         burn=0.5
         damages.append("The burn reduces damage...")
@@ -422,11 +452,12 @@ t.sleep(0.5)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(1)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent\n:")
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
         print("________Opponent Reset________")
+        t.sleep(1)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
         if aceChoice==('y' or 'Y'):
             trainerParty=userParty.copy()
@@ -832,14 +863,28 @@ while 1:
                                                 break
                     #end of turn, pokemon have attacked
                     #poison and burn damage
-                    if (userMon.poisoned or userMon.burned):
+                    if userMon.poisoned:
                         userMon.poisonDamage()
-                    if (trainerMon.poisoned or trainerMon.burned):
-                        trainerMon.poisonDamage()
+                    if userMom.burned:
+                        userMon.burnDamage()
                     if userMon.badlypoisoned:
-                        userMon
-                    turn+=1
-                
+                        userMon.badPoison()
+                        userMon.poisonCounter+=1
+                    if trainerMon.poisoned:
+                        trainerMon.poisonDamage()
+                    if trainerMon.burned:
+                        trainerMon.burnDamage()
+                    if trainerMon.badlypoisoned:
+                        trainerMon.badPoison()
+                        trainerMon.poisonCounter+=1
+                    #check for faints after end of turn damage
+                    if trainerMon.fainted:
+                        #pokemon sub
+                        pass
+                    if userMon.fainted:
+                        #pokemon sub
+                        pass
+                    turn+=1         
             if battleOver: #if user ran
                 break #breaks battle loop, back to main screen
             #loop back to "turn begins"
