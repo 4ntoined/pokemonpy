@@ -23,7 +23,13 @@ added a type table along with the pokedex, easy to print, kinda pretty to look a
 6 october 2020
 12:26AM- started working on revamping the battling, especially stat stages...but obstensibly...everything else as well
 
-9 october 2020
+10 october 2020
 6:54PM- paralyzed pokemon have speed cuts, burned pokemon take attack cuts, pokemon may be fully paralyzed 25% of time, need to fo posion, current no moves in the game cause poison so theres that
 i may have also worked out stat stages in battle, the move side of that is less developed
 ugh
+11:36PM- big changes
+rearranged the battle code so it works better, i think idk i didnt get to test it, its not finished yet
+i think most of it should work it's only a matter of cleaning up the end of turn things like poison damage, burn damage, etc.
+implementation of these things is still not yet there
+it's getting there
+oh you can set the opponent's pokemon team now i think

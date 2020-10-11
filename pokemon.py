@@ -71,21 +71,26 @@ class mon:
         self.bsp=self.speed*statStages[self.spstage]
         #battle statuses
         self.sleep=False
+        self.sleepCounter=0
         self.frozen=False
+        self.freezeCounter=0
         self.burned=False
         self.paralyzed=False
-        self.poisoined=False
+        self.poisoned=False
         self.badlypoisoned=False
+        self.poisonCounter=0
         self.confused=False
+        self.confusionCounter=0
     
     ####things to call when a pokemon is thrown into battle
-    def inBattle():
+    def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
         self.bde=self.defense*statStages[self.destage]
         self.bsa=self.spatk*statStages[self.sastage]
         self.bsd=self.spdef*statStages[self.sdstage]
         self.bsp=self.speed*statStages[self.spstage]
+        #other things that may affect stats
         if self.paralyzed:
             self.bsp*=0.5
             print(f"{self.name} is slowed by paralysis..")
@@ -94,22 +99,50 @@ class mon:
                 #rock type sp.def boost in a sandstorm!
                 self.bsd*=1.5
                 print(f"{self.name}'s boosted by the sandstorm!")
-
-
+        #further in the list
+        
+    ####things to reset upon being withdrawn
+    def withdraw(self):
+        self.atstage=6
+        self.destage=6
+        self.sastage=6
+        self.sdstage=6
+        self.spstage=6
+        self.confused=False
+        self.confusionCounter=0
+        if self.poisonCounter>0:
+            self.poisonCounter=1
+        
+        
+        
     def move(self,opponent,moveIndex):
-        #print(f"{self.name} used a move!")
-        recoilOn=False
-        moveI=getMoveInfo(moveIndex)
-        notas=moveI['notes'].split()
-        #fully paralyzed
+        print(f"{self.name} used {getMoveInfo[moveIndex]['name']}!")
+        #paralysis prevents move execution
         if self.paralyzed:
-            fullyParalyzed=rng.random()
-            if fullyParalyzed>0.75:
+            if rng.random()>0.75:
                 print(f"{self.name} is fully paralyzed!")
                 return
+        #confusion prevents rest of move execution
+        if self.confused:
+            print(f"{self.name} is confused!")
+            #lower confusion counter for chance to snap out of confusion
+            self.confusionCounter-=1
+            #if counter is at 0, undo confusion
+            if self.confusionCounter==0:
+                self.confused=False
+                print(f"{self.name} snapped out of confusion!")
+            #if still confused, chance to do damage, end move()
+            if self.confused:
+                if rng.random()>0.5:
+                    self.confusionDamage()
+                    print(f"{self.name} hurt itself in its confusion!")
+                    return
+        moveI=getMoveInfo(moveIndex)
+        notas=moveI['notes'].split()
         ###accuracy check###
         if rng.random()>moveI['accu']/100:
-            print(f"{self.name} missed!")
+            print(f"{self.name}'s attack missed!")
+            return
         else:
             #check if status?#
             #check if physical or special
@@ -117,20 +150,59 @@ class mon:
                 #check for burns on physical attacks
                 if self.burned:
                     notas+=" burned"
-                ans=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],notas)
+                ans,comment=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             if moveI['special?']:
-                ans=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
+                ans,comment=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
-            opponent.hit(self,ans,eff,notas)
+            opponent.hit(self,ans,eff,notas,comment)
+    
+    #confusion
+    def confusionDamage(self):
+        dmg=((((2*self.level)/5 + 2)*40*self.bat/self.bde)/50 + 2)
+        self.currenthp-=dmg
+        self.currenthpp=100*self.currenthp/self.maxhp
+        if self.currenthp<=0.0:
+            self.currenthp=0.
+            self.currenthpp=0.
+            self.fainted=True
+    
+    #poison and burn
+    def poisonDamage(self):
+        dmg=self.maxphp/8
+        self.currenthp-=dmg
+        self.currenthpp=100*self.currenthp/self.maxhp
+        if self.currenthp<=0.0:
+            self.currenthp=0.
+            self.currenthpp=0.
+            self.fainted=True
+    
+    def burnDamage(self):
+        #would be the same as poisondamage tbh
+        return
+    
+    #badly poisoned
+    def badPoison(self):
+        dmg=self.poisonCounter/16*self.maxhp
+        self.currenthp-=dmg
+        self.currenthpp=100*self.currenthp/self.maxhp
+        if self.currenthp<=0.0:
+            self.currenthp=0.
+            self.currenthpp=0.
+            self.fainted=True
         
-    def hit(self,attacker,damagepoints,effectiveness,notes):
+    def hit(self,attacker,damagepoints,effectiveness,notes,comments):
         if effectiveness==0:
             print(f"{self.name} is immune!")
         else:
             print(f"{self.name} was hit!")
+            t.sleep(0.7)
             #lose HP
             self.currenthp-=damagepoints
             self.currenthpp=100*self.currenthp/self.maxhp
+            #show all the damage boosts
+            for i in comments:
+                print(f"\n{i}")
+            t.sleep(0.7)
             #show effectiveness
             if effectiveness>2.0:
                 print("It was MEGA-effective!!")
@@ -140,12 +212,13 @@ class mon:
                 print("It was barely effective...")
             if effectiveness>=0.5 and effectiveness<1:
                 print("It was not very effective.")
+            t.sleep(0.7)
             #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             #check for faint
-            if self.currenthp<0.0:
+            if self.currenthp<=0.0:
                 self.currenthp=0.
-                self.currenthpp=0
+                self.currenthpp=0.
                 self.fainted=True
                 print(f"{self.name} fainted!")
             else:
@@ -159,6 +232,11 @@ class mon:
         print(f"{self.name} takes recoil damage!")
         self.currenthp-=damagedone*recoilAmount
         self.currenthpp=100*self.currenthp/self.maxhp
+        if self.currenthp<=0.0:
+            self.currenthp=0.
+            self.currenthpp=0.
+            self.fainted=True
+            print(f"{self.name} fainted!")
 
     #recalculate stats
     def reStat(self):
@@ -203,27 +281,29 @@ class mon:
         
         
 def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
+    ####damage boost strings####
+    damages=[]
     ####weather damage boost####
     weatherBonus=1.0
     if weather=='sunny':
         if moveTipe==1:
             weatherBonus=4/3
-            print("Sun boost!")
+            damages.append("Sun boost!")
         if moveTipe==2:
             weatherBonus=2/3
-            print("Weakened by the sunlight...")
+            damages.append("Weakened by the sunlight...")
     if weather=='rain':
         if moveTipe==1:
             weatherBonus=2/3
-            print("Weakened by the rain...")
+            damages.append("Weakened by the rain...")
         if moveTipe==2:
             weatherBonus=4/3
-            print("Rain boost!")
+            damages.append("Rain boost!")
     ####critical hit chance####
     critical=1.0
     if rng.integers(1,25)==24:
         critical=1.5
-        print("It's a critical hit!")
+        damages.append("It's a critical hit!")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
     ####STAB####
@@ -236,11 +316,11 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
     burn=1
     if "burned" in note:
         burn=0.5
+        damages.append("The burn reduces damage...")
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
-    
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
-    return ans
+    return ans,damages
 
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
@@ -276,6 +356,16 @@ def makeMon(pokedexNumber,level=1):
     else: #dual-typed
         return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
 
+#check party for non fainted pokemon
+def checkBlackout(party):
+    p=0
+    alive=[]
+    for i in range(len(party)):
+        if party[i].fainted==False:
+            p+=1
+            alive.append(i)
+    return p,alive
+
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
     movepower=0
@@ -292,7 +382,7 @@ def indexToType(x):
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((18,18))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
-#rock 12,ghost 13,dragon 14,dark 15,steel 16,fairy 17
+#rock 12,ghost 13,dragon 14,dark 15,steel 16,fairy 17, typeless 18
 codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
 codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
 codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
@@ -311,7 +401,6 @@ codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
 codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
 codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
-
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 
@@ -340,7 +429,7 @@ while 1:
         print("________Opponent Reset________")
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
         if aceChoice==('y' or 'Y'):
-            trainerParty=userParty
+            trainerParty=userParty.copy()
             print("The Battle Opponent has a new Party! Good Luck!")
             t.sleep(0.5)
         #end of opponent set
@@ -349,109 +438,408 @@ while 1:
     if userChoice=='b':
         ####Battle starts####
         print("A battle has started!")
+        t.sleep(1)
         userMon=userParty[0]
+        userInd=0
         print(f"{userMon.name}! I choose you!")
+        t.sleep(1)
         trainerMon=trainerParty[0]
+        trainerInd=0
         print(f"{trainerMon}! Go!")
+        t.sleep(1)
         turn=1
         ####turn begins####
-        while userMon.currenthp>0 and userMon.currenthp>0:
+        while 1: #only breaks when BattleOver is True
             ####fight/run/pokemon/bag####
-            while 1: #user turn loop, break when users turn ends
+            while 1: #turn loop, advances to pokemon move usage if user uses a move or shifts, otherwise the loop accomplishes nothing
                 battleOver=False
+                userMon.inBattle()
+                trainerMon.inBattle()
+                fightShift=False
+                shifted=False
                 #----UI----#
                 print(f"\n________ Turn {turn} ________\n")
-                print(f"Opponent:\n{enemy.name} // Level {enemy.level}")
-                print(f"HP: {format(enemy.currenthpp,'.2f')}%")
+                print(f"Opponent:\n{trainerMon.name} // Level {trainerMon.level}")
+                print(f"HP: {format(trainerMon.currenthpp,'.2f')}%")
                 print("\n............Your team:")
                 print(f"............{userMon.name} // Level {userMon.level}")
                 print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
                 userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n")
                 
-                #fight
-                if userMove=='f':                    
-                    #fighting options
-                    for i in range(len(userMon.knownMoves)):
-                        print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']} PP")
-                    while 1: #move input loop
-                        userFight=input(f"What move should {userMon.name} use? [#]\n:")
-                        try:
-                            fightChoice=int(userFight)-1 #make sure given input refers to a move
-                            moveDex=userMon.knownMoves[fightChoice]
-                            break #exit move input loop
-                        except:
-                            print("\n**Enter one of the numbers above.**")
-                        #end of move input while block
-
-                    #user faster, both pokemon go, move input while loop 
-                    if userMon.speed>=enemy.speed:
-                        print(f"{userMon.name} used {getMoveInfo(moveDex)['name']}!")
-                        userMon.move(enemy,moveDex)
-                        if enemy.fainted:
-                            battleOver=True
-                            break #ends user turn loop
-                        if userMon.fainted:
-                            battleOver=True
-                            break
-                        ####OPPONENT TURN####
-                        opChoice=rng.integers(0,len(enemy.knownMoves))
-                        print(f"{enemy.name} used {getMoveInfo(enemy.knownMoves[opChoice])['name']}!")
-                        enemy.move(userMon,enemy.knownMoves[opChoice])
-                        if userMon.fainted:
-                            battleOver=True
-                            break
-                        if enemy.fainted:
-                            battleOver=True
-                            break
-                        #user moved, and enemy moved
-                    
-                    if enemy.speed>userMon.speed:
-                        ####opponent goes####
-                        opChoice=rng.integers(0,len(enemy.knownMoves))
-                        print(f"{enemy.name} used {getMoveInfo(enemy.knownMoves[opChoice])['name']}!")
-                        enemy.move(userMon,enemy.knownMoves[opChoice])
-                        if userMon.fainted:
-                            battleOver=True
-                            break
-                        if enemy.fainted:
-                            battleOver=True
-                            break
-                        ####User goes####
-                        print(f"{userMon.name} used {getMoveInfo(moveDex)['name']}!")
-                        userMon.move(enemy,moveDex)
-                        if enemy.fainted:
-                            battleOver=True
-                            break
-                        if userMon.fainted:
-                            battleOver=True
-                            break
-                        #enemy moved and user moved
-                    #ends if user chose to fight
-                    #if user inputs anything else, we go back to fpbr screen
-                    
                 ####run away to end battle####
                 if userMove=='r':
                     print(f"You and {userMon.name} ran away!")
                     battleOver=True
                     break
-                #display party pokemon
+
+                #go party pokemon
                 if userMove=='p':
-                    print("\n****************\nParty Pokemon:")
-                    for i in range(len(userParty)):
-                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
                     while 1:
-                        partyChoice=input("Enter a number to see a Pokemon's summary...\nOr Enter [b] to go back:\n")
+                        print("\n****************\nParty Pokemon:")
+                        for i in range(len(userParty)):
+                            print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                        partyChoice=input("Select a Pokemon...\n[#] or [b] to go back:n")
                         if partyChoice=='b':
                             break #goes back to user turn loop from pokemon selection
                         try:
-                            userParty[int(partyChoice)-1].summary()
+                            select=userParty[int(partyChoice)-1]
+                            nuserInd=int(partyChoice-1)
+                            select.summary()
                         except ValueError:
                             print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
                         except IndexError:
                             print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                        else:
+                            while 1:
+                                pChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                #go back
+                                if pChoice=='b':
+                                    break
+                                #switch pokemon
+                                if pChoice=='y':
+                                    #keep fainted pokemon off the field
+                                    if select.fainted:
+                                        print("**Cannot switch in fainted Pokemon!**")
+                                        break
+                                    #put current pokemon back?
+                                    userMon.withdraw()
+                                    userParty[userInd]=userMon
+                                    print(f"{userMon.name} come back!")
+                                    t.sleep(1)
+                                    #set new selection as user pokemon
+                                    userMon=select
+                                    userInd=nuserInd
+                                    print(f"{userMon.name}, it's your turn!")
+                                    t.sleep(1)
+                                    userMon.inBattle()
+                                    shifted=True
+                                    fightShift=True
+                                    break
+                                #anything other than y repeats the loop
+                            if shifted:
+                                break
                         #end of pokemon selection loop
                     #end of party pokemon block
-                ####other user turn options?####
+
+                #fight
+                if userMove=='f':                    
+                    #fighting options
+                    while 1: #move input loop
+                        for i in range(len(userMon.knownMoves)):
+                            print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']} PP")
+                        userFight=input(f"What move should {userMon.name} use?\n[#] or [b]:")
+                        #go back
+                        if userFight=='b':
+                            break
+                        #try to use user input to call a move
+                        try:
+                            fightChoice=int(userFight)-1 #make sure given input refers to a move
+                            moveDex=userMon.knownMoves[fightChoice]
+                            fightShift=True
+                        except:
+                            print("\n**Enter one of the numbers above.**")
+                
+                ####after either swithing or attacking
+                if fightShift:
+                    trainerDice=rng.random()
+                    trainerShift=False
+                    #10% chance for opponent to randomly switch pokemon
+                    #check how many nonfainted pokemon trainer has
+                    nfp,nfpList=checkBlackout(trainerParty)
+                    #if trainer has more than 1 non fainted pokemon
+                    if nfp>1:
+                        if trainerDice>0.9:
+                            trainerMon.withdraw()
+                            #put pokemon away
+                            trainerParty[trainerInd]=trainerMon
+                            print(f"{trainerMon.name} is withdrawn!")
+                            t.sleep(1)
+                            #take new pokemon out
+                            trainerInd=rng.choice(nfpList)
+                            trainerMon=trainerParty[trainerInd]
+                            trainerMon.inBattle()
+                            print(f"{trainerMon.name}! is sent out!")
+                            t.sleep(1)
+                            trainerShift=True
+                    #set boolean to true if user has higher effective speed stat
+                    userFast=userMon.bsp>=trainerMon.bsp
+                    ##USER FASTER##
+                    if userFast:
+                        #USER ATTACK
+                        #make sure user/trainer didn't switch in this turn
+                        if shifted==False:
+                            userMon.move(trainerMon,moveDex)
+                            #check for faint, attacked pokemon first, and then attacker
+                            if trainerMon.fainted:
+                                #check for OPPO BLACKOUT
+                                blk,blkList=checkBlackout(trainerParty)
+                                if blk==0:
+                                    battleOver=True
+                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    t.sleep(1)
+                                    break
+                                else:
+                                    trainerMon=trainerParty(rng.choice(blkList))
+                            if userMon.fainted:
+                                #check for USER BLACKOUT
+                                if checkBlackout(userParty)[0]==0:
+                                    battleOver=True
+                                    print("You're out of usable Pokemon!")
+                                    t.sleep(1)
+                                    print("You blacked out!")
+                                    t.sleep(1)
+                                    break
+                                else:
+                                    bShifted=False #forcing the user to shift to a non-fainted pokemon
+                                    print("\n****************\nParty Pokemon:")
+                                    for i in range(len(userParty)):
+                                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                    while 1:
+                                        newPoke=input("Select a Pokemon to battle...\n[#]")
+                                        try:
+                                            nuserInd=int(partyChoice-1)
+                                            select=userParty[nuserInd]
+                                            select.summary()
+                                        except ValueError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        except IndexError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        else:
+                                            while 1:
+                                                sChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                                #go back
+                                                if sChoice=='b':
+                                                    break
+                                                #switch pokemon
+                                                if sChoice=='y':
+                                                    #keep fainted pokemon off the field
+                                                    if select.fainted:
+                                                        print("**Cannot switch in fainted Pokemon!**")
+                                                        break
+                                                    #put current pokemon back?
+                                                    userMon.withdraw()
+                                                    userParty[userInd]=userMon
+                                                    print(f"{userMon.name} come back!")
+                                                    t.sleep(1)
+                                                    #set new selection as user pokemon
+                                                    userMon=select
+                                                    userInd=nuserInd
+                                                    print(f"{userMon.name}, it's your turn!")
+                                                    t.sleep(1)
+                                                    userMon.inBattle()
+                                                    bShifted=True
+                                                    fightShift=True
+                                                    break
+                                                #anything other than y repeats the loop
+                                            if bShifted:
+                                                break
+                        ##OPPO ATTACK
+                        if trainerShift==False:
+                            trainerMon.move(userMon,rng.choice(trainerMon.knownMoves))
+                            if userMon.fainted:
+                                #check for USER BLACKOUT
+                                if checkBlackout(userParty)[0]==0:
+                                    battleOver=True
+                                    print("You're out of usable Pokemon!")
+                                    t.sleep(1)
+                                    print("You blacked out!")
+                                    t.sleep(1)
+                                    break
+                                else:
+                                    bShifted=False #forcing the user to shift to a non-fainted pokemon
+                                    print("\n****************\nParty Pokemon:")
+                                    for i in range(len(userParty)):
+                                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                    while 1:
+                                        newPoke=input("Select a Pokemon to battle...\n[#]")
+                                        try:
+                                            nuserInd=int(partyChoice-1)
+                                            select=userParty[nuserInd]
+                                            select.summary()
+                                        except ValueError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        except IndexError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        else:
+                                            while 1:
+                                                sChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                                #go back
+                                                if sChoice=='b':
+                                                    break
+                                                #switch pokemon
+                                                if sChoice=='y':
+                                                    #keep fainted pokemon off the field
+                                                    if select.fainted:
+                                                        print("**Cannot switch in fainted Pokemon!**")
+                                                        break
+                                                    #put current pokemon back?
+                                                    userMon.withdraw()
+                                                    userParty[userInd]=userMon
+                                                    print(f"{userMon.name} come back!")
+                                                    t.sleep(1)
+                                                    #set new selection as user pokemon
+                                                    userMon=select
+                                                    userInd=nuserInd
+                                                    print(f"{userMon.name}, it's your turn!")
+                                                    t.sleep(1)
+                                                    userMon.inBattle()
+                                                    bShifted=True
+                                                    fightShift=True
+                                                    break
+                                                #anything other than y repeats the loop
+                                            if bShifted:
+                                                break
+                            if trainerMon.fainted:
+                                #check for TRAINER BLACKOUT
+                                blk,blkList=checkBlackout(trainerParty)
+                                if blk==0:
+                                    battleOver=True
+                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    break
+                                else:
+                                    trainerMon=trainerParty(rng.choice(blkList))
+                    ##USER SLOWER##
+                    else:
+                        ##OPPO ATTACK##
+                        if trainerShift==False:
+                            trainerMon.move(userMon,rng.choice(trainerMon.knownMoves))
+                            if userMon.fainted:
+                                #check for USER BLACKOUT
+                                if checkBlackout(userParty)[0]==0:
+                                    battleOver=True
+                                    print("You're out of usable Pokemon!")
+                                    t.sleep(1)
+                                    print("You blacked out!")
+                                    t.sleep(1)
+                                    break
+                                else:
+                                    bShifted=False #forcing the user to shift to a non-fainted pokemon
+                                    print("\n****************\nParty Pokemon:")
+                                    for i in range(len(userParty)):
+                                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                    while 1:
+                                        newPoke=input("Select a Pokemon to battle...\n[#]")
+                                        try:
+                                            nuserInd=int(partyChoice-1)
+                                            select=userParty[nuserInd]
+                                            select.summary()
+                                        except ValueError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        except IndexError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        else:
+                                            while 1:
+                                                sChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                                #go back
+                                                if sChoice=='b':
+                                                    break
+                                                #switch pokemon
+                                                if sChoice=='y':
+                                                    #keep fainted pokemon off the field
+                                                    if select.fainted:
+                                                        print("**Cannot switch in fainted Pokemon!**")
+                                                        break
+                                                    #put current pokemon back?
+                                                    userMon.withdraw()
+                                                    userParty[userInd]=userMon
+                                                    print(f"{userMon.name} come back!")
+                                                    t.sleep(1)
+                                                    #set new selection as user pokemon
+                                                    userMon=select
+                                                    userInd=nuserInd
+                                                    print(f"{userMon.name}, it's your turn!")
+                                                    t.sleep(1)
+                                                    userMon.inBattle()
+                                                    bShifted=True
+                                                    fightShift=True
+                                                    break
+                                                #anything other than y repeats the loop
+                                            if bShifted:
+                                                break
+                            if trainerMon.fainted:
+                                #check for TRAINER BLACKOUT
+                                blk,blkList=checkBlackout(trainerParty)
+                                if blk==0:
+                                    battleOver=True
+                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    break
+                                else:
+                                    trainerMon=trainerParty(rng.choice(blkList))
+                        ##USER ATTACK##
+                        if shifted==False:
+                            userMon.move(trainerMon,moveDex)
+                            if trainerMon.fainted():
+                                #check for TRAINER BLACKOUT
+                                blk,blkList=checkBlackout(trainerParty)
+                                if blk==0:
+                                    battleOver=True
+                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    break
+                                else:
+                                    trainerMon=trainerParty(rng.choice(blkList))
+                            if userMon.fainted():
+                                #check for USER BLACKOUT
+                                if checkBlackout(userParty)[0]==0:
+                                    battleOver=True
+                                    print("You're out of usable Pokemon!")
+                                    t.sleep(1)
+                                    print("You blacked out!")
+                                    t.sleep(1)
+                                    break
+                                else:
+                                    bShifted=False #forcing the user to shift to a non-fainted pokemon
+                                    print("\n****************\nParty Pokemon:")
+                                    for i in range(len(userParty)):
+                                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                    while 1:
+                                        newPoke=input("Select a Pokemon to battle...\n[#]")
+                                        try:
+                                            nuserInd=int(partyChoice-1)
+                                            select=userParty[nuserInd]
+                                            select.summary()
+                                        except ValueError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        except IndexError:
+                                            print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                                        else:
+                                            while 1:
+                                                sChoice=input(f"Shift {select.name} into battle?\n[y] or [b] to go back")
+                                                #go back
+                                                if sChoice=='b':
+                                                    break
+                                                #switch pokemon
+                                                if sChoice=='y':
+                                                    #keep fainted pokemon off the field
+                                                    if select.fainted:
+                                                        print("**Cannot switch in fainted Pokemon!**")
+                                                        break
+                                                    #put current pokemon back?
+                                                    userMon.withdraw()
+                                                    userParty[userInd]=userMon
+                                                    print(f"{userMon.name} come back!")
+                                                    t.sleep(1)
+                                                    #set new selection as user pokemon
+                                                    userMon=select
+                                                    userInd=nuserInd
+                                                    print(f"{userMon.name}, it's your turn!")
+                                                    t.sleep(1)
+                                                    userMon.inBattle()
+                                                    bShifted=True
+                                                    fightShift=True
+                                                    break
+                                                #anything other than y repeats the loop
+                                            if bShifted:
+                                                break
+                    #end of turn, pokemon have attacked
+                    #poison and burn damage
+                    if (userMon.poisoned or userMon.burned):
+                        userMon.poisonDamage()
+                    if (trainerMon.poisoned or trainerMon.burned):
+                        trainerMon.poisonDamage()
+                    if userMon.badlypoisoned:
+                        userMon
+                    turn+=1
+                
             if battleOver: #if user ran
                 break #breaks battle loop, back to main screen
             #loop back to "turn begins"
