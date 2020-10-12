@@ -442,22 +442,41 @@ def makeMon(pokedexNumber,level=1):
 
 #load pokemon
 def loadMon(savefile):
-    dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
-    loadPokes=[]
-    multi=type(dat[0])==np.ndarray
-    if multi:
-        for i in dat:
-            loadMe=i
-            name=loadMe[0]
-            lvl=int(loadMe[1])
-            bases=loadMe[2].split() #should give list of 6 base stats, technically strings
+    try:
+        dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+        loadPokes=[]
+        multi=type(dat[0])==np.ndarray
+        if multi:
+            for i in dat:
+                loadMe=i
+                name=loadMe[0]
+                lvl=int(loadMe[1])
+                bases=loadMe[2].split() #should give list of 6 base stats, technically strings
+                baseI=[int(ii) for ii in bases]
+                ivys=loadMe[3].split()
+                ivz=[int(ii) for ii in ivys]
+                evys=loadMe[4].split()
+                evz=[int(iii) for iii in evys]
+                typ=np.array([int(iiii) for iiii in loadMe[5].split()])
+                mves=[int(iiiii) for iiiii in loadMe[6].split()]
+                newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+                newP.knownMoves=mves
+                newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
+                newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+                newP.reStat()
+                loadPokes.append(newP)
+                print(f"Loaded {newP.name}!")
+        else:
+            name=dat[0]
+            lvl=int(dat[1])
+            bases=dat[2].split()
             baseI=[int(ii) for ii in bases]
-            ivys=loadMe[3].split()
+            ivys=dat[3].split()
             ivz=[int(ii) for ii in ivys]
-            evys=loadMe[4].split()
+            evys=dat[4].split()
             evz=[int(iii) for iii in evys]
-            typ=np.array([int(iiii) for iiii in loadMe[5].split()])
-            mves=[int(iiiii) for iiiii in loadMe[6].split()]
+            typ=np.array([int(iiii) for iiii in dat[5].split()])
+            mves=[int(iiiii) for iiiii in dat[6].split()]
             newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
             newP.knownMoves=mves
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
@@ -465,25 +484,16 @@ def loadMon(savefile):
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")
-    else:
-        name=dat[0]
-        lvl=int(dat[1])
-        bases=dat[2].split()
-        baseI=[int(ii) for ii in bases]
-        ivys=dat[3].split()
-        ivz=[int(ii) for ii in ivys]
-        evys=dat[4].split()
-        evz=[int(iii) for iii in evys]
-        typ=np.array([int(iiii) for iiii in dat[5].split()])
-        mves=[int(iiiii) for iiiii in dat[6].split()]
-        newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-        newP.knownMoves=mves
-        newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
-        newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-        newP.reStat()
-        loadPokes.append(newP)
-        print(f"Loaded {newP.name}!")
-    return loadPokes
+        return loadPokes
+    except FileNotFoundError:
+        print("! The file name wasn't found... !\n")
+        return [0]
+    except OSError:
+        print("! The file name wasn't found... !\n")
+        return [0]
+    except:
+        print("!! The save file is corrupted !!")
+        return [0]
         
 #check party for non fainted pokemon
 def checkBlackout(party):
@@ -1407,9 +1417,12 @@ while 1:
                 break
             if saveChoice=="":
                 newMons=loadMon("pypokemon.sav")
+                if newMons[0]==0:
+                    continue
                 #add all the pokemon to the party
                 for i in newMons:
                     userParty.append(i)
+                    print(i)
                     print(f"{i.name} has joined your party!")
                     t.sleep(1)
                 print("Finished loading Pokemon!\n")
@@ -1417,9 +1430,11 @@ while 1:
             else:
                 try:
                     newMons=loadMon(saveChoice)
-                except FileNotFoundError:
-                    print("! That filename wasn't found !**")
+                except:
+                    print("! That filename wasn't found !**\nno reason why this should run")
                 else:
+                    if newMons[0]==0:
+                        continue
                     for i in newMons:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")

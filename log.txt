@@ -44,4 +44,4 @@ cleaning up the UI, usage of b AND B to go back, getting generally handier with 
 lets get it
 fixed sandstorm giving boost to ghost type instead of rock type lmao
 9:06P- you can save and load pokemon now cause yeah i'm that serious about this
-
+11:08P- uhh refined loading save files to catch bad file paths and incorrectly structered save files
