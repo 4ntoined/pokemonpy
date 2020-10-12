@@ -83,7 +83,7 @@ class mon:
         self.confusionCounter=0
 
     #save pokemon
-    def save(self,filename='pokemonsave.dat'):
+    def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
         name=self.name
         lvl=self.level
@@ -1406,7 +1406,7 @@ while 1:
                 t.sleep(0.7)
                 break
             if saveChoice=="":
-                newMons=loadMon("pokemonsave.dat")
+                newMons=loadMon("pypokemon.sav")
                 #add all the pokemon to the party
                 for i in newMons:
                     userParty.append(i)
