@@ -4,7 +4,7 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact
+#*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact, genders ugh
 #
 #
 
@@ -148,7 +148,6 @@ class mon:
         self.burned=False
         self.poisoned=False
         self.badlypoisoned=False
-        self.confused=False 
         print(f"{self.name} fainted!")
         t.sleep(1)
 
@@ -231,20 +230,17 @@ class mon:
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} hurt itself in its confusion!")
-        if self.currenthp<=0.0:
+        if self.currenthp<=0.:
             self.faint()
     
-    #poison and burn
+    #poison
     def poisonDamage(self):
         dmg=self.maxphp/8.
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
-        if self.currenthp<=0.0:
-            self.currenthp=0.
-            self.currenthpp=0.
-            self.fainted=True
-            print(f"{self.name} fainted!")
-            t.sleep(1)
+        print(f"{self.name} took poison damage!")
+        if self.currenthp<=0.:
+            self.faint()
     
     def burnDamage(self):
         #would be the same as poisondamage tbh
@@ -253,12 +249,7 @@ class mon:
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took burn damage!")
         if self.currenthp<=0.:
-            self.currenthp=0.
-            self.currenthpp=0.
-            self.fainted=True
-            print(f"{self.name} fainted!")
-            t.sleep(1)
-        return
+            self.faint()
     
     #badly poisoned
     def badPoison(self):
@@ -268,11 +259,7 @@ class mon:
         print(f"{self.name} took bad poison damage!")
         t.sleep(1)
         if self.currenthp<=0.0:
-            self.currenthp=0.
-            self.currenthpp=0.
-            self.fainted=True
-            print(f"{self.name} fainted!")
-            t.sleep(1)
+            self.faint()
         
     def hit(self,attacker,damagepoints,effectiveness,notes,comments):
         if effectiveness==0.:
@@ -300,11 +287,8 @@ class mon:
             #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             #check for faint
-            if self.currenthp<=0.0:
-                self.currenthp=0.
-                self.currenthpp=0.
-                self.fainted=True
-                print(f"{self.name} fainted!")
+            if self.currenthp<=0.:
+                self.faint()
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
             #check for recoil, apply recoil if present
@@ -316,11 +300,8 @@ class mon:
         print(f"{self.name} takes recoil damage!")
         self.currenthp-=damagedone*recoilAmount
         self.currenthpp=100*self.currenthp/self.maxhp
-        if self.currenthp<=0.0:
-            self.currenthp=0.
-            self.currenthpp=0.
-            self.fainted=True
-            print(f"{self.name} fainted!")
+        if self.currenthp<=0.:
+            self.faint()
 
     #recalculate stats
     def reStat(self):
@@ -347,12 +328,12 @@ class mon:
             print(f"{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
             print(f"{typeStrings[self.tipe[0]]}")
-        print(f"HP : \t{format(self.currenthp,'.2f')}/{self.maxhp} \t{format(self.currenthpp,'.2f')}%")
-        print(f"Atk: \t{self.attack}")
-        print(f"Def: \t{self.defense}")
+        print(f"HP  : \t{format(self.currenthp,'.2f')}/{self.maxhp} \t{format(self.currenthpp,'.2f')}%")
+        print(f"Atk : \t{self.attack}")
+        print(f"Def : \t{self.defense}")
         print(f"Sp.A: \t{self.spatk}")
         print(f"Sp.D: \t{self.spdef}")
-        print(f"Spe: \t{self.speed}")
+        print(f"Spe : \t{self.speed}")
         print(f"############ {self.name}'s Moves #############")
         for i in self.knownMoves:
             print(f"\n{getMoveInfo(i)['name']} \t{getMoveInfo(i)['pp']}PP")
@@ -1022,7 +1003,7 @@ while 1:
                 else:
                     thipe=typeStrings[userParty[i].tipe[0]]
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-            print("*******************************\n")
+            print("\n*******************************\n")
             partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
             #go back to main screen
             if partyChoice=='b':
@@ -1405,7 +1386,7 @@ while 1:
     if userChoice=='l':
         print("******** Load Pokemon ********\n\nYou can load previously saved pokemon!\n")
         while 1: #savefile input loop
-            saveChoice=input("What save file to load?\n[blanck] entry to use default or [b]ack\n: ")
+            saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
             #go back
             if saveChoice=='b':
                 print("Leaving Load Pokemon..")
@@ -1417,12 +1398,11 @@ while 1:
                 break
             if saveChoice=="":
                 newMons=loadMon("pypokemon.sav")
-                if newMons[0]==0:
+                if newMons[0]==0: #if error in loading data, ask for savefile again
                     continue
                 #add all the pokemon to the party
                 for i in newMons:
                     userParty.append(i)
-                    print(i)
                     print(f"{i.name} has joined your party!")
                     t.sleep(1)
                 print("Finished loading Pokemon!\n")
@@ -1433,7 +1413,7 @@ while 1:
                 except:
                     print("! That filename wasn't found !**\nno reason why this should run")
                 else:
-                    if newMons[0]==0:
+                    if newMons[0]==0: #error in loading data
                         continue
                     for i in newMons:
                         userParty.append(i)
@@ -1450,16 +1430,4 @@ while 1:
     ####what's the next spot?####
 
     #end of game, loops back to main screen
-'''
-bulba=mon(60,"eve",tipe=np.array([3,11]))
-chard=mon(50,"steve",tipe=np.array([13]))
-bulba.checkup()
-bulba.move(chard,100,1,0)
-chard.checkup()
-chard.move(bulba,40,1,moveTipe=1)
-chard.checkup()
-bulba.appraise()
-'''
-#bulba=mon(34,"bulbasaur")
-#char=mon(32, "charmander")
-#bulba.move(char,60,0,moveTipe='fire')
+#runs after intial while loop
