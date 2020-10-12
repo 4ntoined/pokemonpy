@@ -41,14 +41,14 @@ class mon:
         self.sab=sabase
         self.sdb=sdbase
         self.spb=spbase
-        self.maxhp=HP(self.level,hpbase,self.hpiv,self.hpev)
+        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
         self.currenthp=self.maxhp
         self.currenthpp=100
-        self.attack=stats(self.level,atbase,self.ativ,self.atev,1)
-        self.defense=stats(self.level,debase,self.deiv,self.deev,1)
-        self.spatk=stats(self.level,sabase,self.saiv,self.saev,1)
-        self.spdef=stats(self.level,sdbase,self.sdiv,self.sdev,1)
-        self.speed=stats(self.level,spbase,self.spiv,self.spev,1)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
         self.name=named
         self.tipe=tipe
         if len(tipe)>1:
@@ -81,8 +81,61 @@ class mon:
         self.poisonCounter=0
         self.confused=False
         self.confusionCounter=0
-    
-    ####things to call when a pokemon is thrown into battle
+
+    #save pokemon
+    def save(self,filename='pokemonsave.dat'):
+        f=open(filename,'a')
+        name=self.name
+        lvl=self.level
+        #pokemon base stats
+        hp=self.hpb
+        at=self.atb
+        de=self.deb
+        sa=self.sab
+        sd=self.sdb
+        sp=self.spb
+        base=[hp,at,de,sa,sd,sp]
+        #pokemon ivs
+        hpi=self.hpiv
+        ati=self.ativ
+        dei=self.deiv
+        sai=self.saiv
+        sdi=self.sdiv
+        spi=self.spiv
+        iv=[hpi,ati,dei,sai,sdi,spi]
+        #pokemon evs
+        hpe=self.hpev
+        ate=self.atev
+        dee=self.deev
+        sae=self.saev
+        sde=self.sdev
+        spe=self.spev
+        ev=[hpe,ate,dee,sae,sde,spe]
+        #pokemon types
+        tip=self.tipe
+        #known moves
+        mvs=self.knownMoves
+        #construct line to save all pokemon data
+        line=name
+        line+=f",{lvl},"
+        for i in base: #add all the base stats
+            line+=f" {i}"
+        line+=","
+        for i in iv: #add all the ivs
+            line+=f" {i}"
+        line+=","
+        for i in ev: #add all the evs
+            line+=f" {i}"
+        line+=","
+        for i in tip:
+            line+=f" {i}"
+        line+=","
+        for i in mvs:
+            line+=f" {i}"
+        f.write(line+"\n")
+        f.close()
+
+    #fainting
     def faint(self):
         self.currenthp=0.
         self.currenthpp=0.
@@ -99,6 +152,7 @@ class mon:
         print(f"{self.name} fainted!")
         t.sleep(1)
 
+    ####things to call when a pokemon is thrown into battle
     def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
@@ -386,6 +440,51 @@ def makeMon(pokedexNumber,level=1):
     else: #dual-typed
         return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
 
+#load pokemon
+def loadMon(savefile):
+    dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+    loadPokes=[]
+    multi=type(dat[0])==np.ndarray
+    if multi:
+        for i in dat:
+            loadMe=i
+            name=loadMe[0]
+            lvl=int(loadMe[1])
+            bases=loadMe[2].split() #should give list of 6 base stats, technically strings
+            baseI=[int(ii) for ii in bases]
+            ivys=loadMe[3].split()
+            ivz=[int(ii) for ii in ivys]
+            evys=loadMe[4].split()
+            evz=[int(iii) for iii in evys]
+            typ=np.array([int(iiii) for iiii in loadMe[5].split()])
+            mves=[int(iiiii) for iiiii in loadMe[6].split()]
+            newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+            newP.knownMoves=mves
+            newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
+            newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+            newP.reStat()
+            loadPokes.append(newP)
+            print(f"Loaded {newP.name}!")
+    else:
+        name=dat[0]
+        lvl=int(dat[1])
+        bases=dat[2].split()
+        baseI=[int(ii) for ii in bases]
+        ivys=dat[3].split()
+        ivz=[int(ii) for ii in ivys]
+        evys=dat[4].split()
+        evz=[int(iii) for iii in evys]
+        typ=np.array([int(iiii) for iiii in dat[5].split()])
+        mves=[int(iiiii) for iiiii in dat[6].split()]
+        newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+        newP.knownMoves=mves
+        newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
+        newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+        newP.reStat()
+        loadPokes.append(newP)
+        print(f"Loaded {newP.name}!")
+    return loadPokes
+        
 #check party for non fainted pokemon
 def checkBlackout(party):
     p=0
@@ -452,7 +551,7 @@ t.sleep(0.5)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(1)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent\n:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent\n[L]oad\n:")
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
@@ -917,15 +1016,52 @@ while 1:
             partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
             #go back to main screen
             if partyChoice=='b':
+                print("Leaving Party screen...")
+                t.sleep(0.7) #kills
                 break
             if partyChoice=='B':
+                print("Leaving Party screen...")
+                t.sleep(0.7) #kills
                 break
             try:
-                userParty[int(partyChoice)-1].summary()
+                pokeInd=int(partyChoice)-1
+                selMon=userParty[pokeInd]
             except ValueError:
                 print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
             except IndexError:
                 print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+            else:
+                while 1:
+                    selMon.summary()
+                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave or [b]ack: ")
+                    #go back to pokemon selection
+                    if sumChoice=='b':
+                        t.sleep(0.7)
+                        break
+                    if sumChoice=='B':
+                        t.sleep(0.7)
+                        break
+                    if sumChoice=='s':
+                        while 1:
+                            savename=input("Enter name of savefile...\n[blanck] to use default savefile name\nor [b]ack\n: ")
+                            if savename=='b':
+                                t.sleep(0.7)
+                                break
+                            if savename=='B':
+                                t.sleep(0.7)
+                                break
+                            if savename=='':
+                                selMon.save()
+                                print(f"{selMon.name} was saved to the file!\n")
+                                t.sleep(0.7) #kills
+                                break
+                            else:
+                                selMon.save(savename)
+                                print(f"{selMon.name} was saved to the file!\n")
+                                t.sleep(0.7) #kills
+                                break
+                            #
+                        #
             #end of while block
         print("Going back to main screen...")
         t.sleep(1)
@@ -1149,7 +1285,14 @@ while 1:
         while 1: #choose a pokemon
             print("\n******** Party Pokemon ********\n*******************************\n")
             for i in range(len(userParty)):
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \t{np.where(len(userParty[i].tipe)>1,typeStrings[userParty[i].tipe[0]] + ' // ' + typeStrings[userParty[i].tipe[1]],typeStrings[userParty[i].tipe[0]])}")
+                if userParty[i].dualType:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                    thipe+=" // "
+                    thipe+=typeStrings[userParty[i].tipe[1]]
+                else:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
+            print("*******************************\n")
             learnChoice=input("Enter the number of a Pokemon\n[#] or [b]ack: ")
             #go back
             if learnChoice=='b':
@@ -1247,7 +1390,48 @@ while 1:
             except IndexError:
                 print("** That's out of bounds... **\n")
     ###end of making preset pokemon
-
+    
+    ####Loading pokemon
+    if userChoice=='l':
+        print("******** Load Pokemon ********\n\nYou can load previously saved pokemon!\n")
+        while 1: #savefile input loop
+            saveChoice=input("What save file to load?\n[blanck] entry to use default or [b]ack\n: ")
+            #go back
+            if saveChoice=='b':
+                print("Leaving Load Pokemon..")
+                t.sleep(0.7)
+                break
+            if saveChoice=='B':
+                print("Leaving Load Pokemon..")
+                t.sleep(0.7)
+                break
+            if saveChoice=="":
+                newMons=loadMon("pokemonsave.dat")
+                #add all the pokemon to the party
+                for i in newMons:
+                    userParty.append(i)
+                    print(f"{i.name} has joined your party!")
+                    t.sleep(1)
+                print("Finished loading Pokemon!\n")
+                t.sleep(1)
+            else:
+                try:
+                    newMons=loadMon(saveChoice)
+                except FileNotFoundError:
+                    print("! That filename wasn't found !**")
+                else:
+                    for i in newMons:
+                        userParty.append(i)
+                        print(f"{i.name} has joined your party!")
+                        t.sleep(1)
+                    print("Finished loading Pokemon!\n")
+                    t.sleep(1)
+                    #loop back to load a save
+                #
+            #loop back to load a save
+        #done loading save
+    ###end of load save block###
+    
     ####what's the next spot?####
 
     #end of game, loops back to main screen
