@@ -45,3 +45,10 @@ lets get it
 fixed sandstorm giving boost to ghost type instead of rock type lmao
 9:06P- you can save and load pokemon now cause yeah i'm that serious about this
 11:08P- uhh refined loading save files to catch bad file paths and incorrectly structered save files
+
+14 october 2020
+8:45P- maybe fixed the battling system? Idk i instituted some checks so that pokemon fainting and switch and the like goes smoothly.
+i only tested it a little but it seemed like i fixed some bugs
+really the only way to really test this is to REALLY play it...it's getting pretty complex at this point, especially with the save files...like you can get invested in this
+too many
+
