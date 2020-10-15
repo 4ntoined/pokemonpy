@@ -51,4 +51,5 @@ fixed sandstorm giving boost to ghost type instead of rock type lmao
 i only tested it a little but it seemed like i fixed some bugs
 really the only way to really test this is to REALLY play it...it's getting pretty complex at this point, especially with the save files...like you can get invested in this
 too many
+10:16P- programmed in paralysis burn and poison, though currently no moves cause poison
 

@@ -150,7 +150,13 @@ class mon:
         self.badlypoisoned=False
         print(f"{self.name} fainted!")
         t.sleep(1)
-
+    
+    #back to full health!
+    def restore(self):
+        self.currenthp=self.maxhp
+        self.currenthpp=100.
+        self.fainted=False
+        
     ####things to call when a pokemon is thrown into battle
     def inBattle(self):
         #stat changes
@@ -267,6 +273,11 @@ class mon:
         else:
             print(f"{self.name} was hit!")
             t.sleep(0.7)
+            #calculate potential recoil damage before currenthp is changed
+            if damagepoints>self.currenthp:
+                recoilDmg=self.currenthp
+            else:
+                recoilDmg=damagepoints
             #lose HP
             self.currenthp-=damagepoints
             self.currenthpp=100*self.currenthp/self.maxhp
@@ -291,9 +302,31 @@ class mon:
                 self.faint()
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
+                #status conditions
+                notAfflicted=(self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned)
+                notAfflicted=not notAfflicted
+                #paralyze
+                if "para10" in notes:
+                    if (rng.random()<=0.1) and notAfflicted:
+                        self.paralyzed=True
+                        print(f"{self.name} is paralyzed by the hit!")
+                        t.sleep(0.4)
+                #burn
+                if "burn10" in notes:
+                    if (rng.random()<=0.1) and notAfflicted:
+                        self.burned=True
+                        print(f"{self.name} is burned by the hit!")
+                        t.sleep(0.4)
+                #poison
+                if "pois10" in notes:
+                    if (rng.random()<=0.1) and notAfflicted:
+                        self.poisoned=True
+                        print(f"{self.name} is poisoned by the hit!")
+                        t.sleep(0.4)
+            
             #check for recoil, apply recoil if present
             if "recoilThird" in notes:
-                attacker.recoil(damagepoints,1/3)
+                attacker.recoil(recoilDmg,1/3)
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
@@ -544,7 +577,7 @@ t.sleep(0.5)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(1)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nSet [O]pponent\n[L]oad\n:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\nSet [O]pponent\n[L]oad\n:")
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
@@ -582,13 +615,13 @@ while 1:
         while 1: #only breaks when BattleOver is True
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move usage if user uses a move or shifts, otherwise the loop accomplishes nothing
+                print(f"\n________ Turn {turn} ________\n")
                 battleOver=False
                 userMon.inBattle()
                 trainerMon.inBattle()
                 fightShift=False
                 shifted=False
                 #----UI----#
-                print(f"\n________ Turn {turn} ________\n")
                 print(f"Opponent:\n{trainerMon.name} // Level {trainerMon.level}")
                 print(f"HP: {format(trainerMon.currenthpp,'.2f')}%")
                 print("\n............Your team:")
@@ -1506,6 +1539,30 @@ while 1:
         #done loading save
     ###end of load save block###
     
+    ####pokemon center#### let's heal em up
+    if userChoice=="c":
+        print("\n******** Welcome to the Pokemon Center ********\n")
+        t.sleep(0.7)
+        print("\nWe can heal your Pokemon to full health!")
+        t.sleep(1)
+        while 1:
+            cenChoice=input("[y] to restore your party or [b]")
+            
+            if cenChoice=='b':
+                print("See you soon!\n")
+                t.sleep(0.7)
+                break
+            
+            if cenChoice=='y':
+                for i in userParty:
+                    i.restore()
+                    print(f"{i.name} is ready for more battles!")
+                    t.sleep(0.4)
+                print("\nYour party is looking better than ever!!")
+                t.sleep(0.7)
+                print("\nHave a nice day! and have fun!")
+                t.sleep(0.7)
+                break #back to main screen
     ####what's the next spot?####
 
     #end of game, loops back to main screen
