@@ -156,6 +156,7 @@ class mon:
     def restore(self):
         self.currenthp=self.maxhp
         self.currenthpp=100.
+        self.PP=[getMoveInfo(i)['pp'] for i in self.knownMoves]
         self.fainted=False
         
     ####things to call when a pokemon is thrown into battle
@@ -369,8 +370,8 @@ class mon:
         print(f"Sp.D: \t{self.spdef}")
         print(f"Spe : \t{self.speed}")
         print(f"############ {self.name}'s Moves #############")
-        for i in self.knownMoves:
-            print(f"\n{getMoveInfo(i)['name']} \t{getMoveInfo(i)['pp']}PP")
+        for i in range(len(self.knownMoves)):
+            print(f"\n{getMoveInfo(self.knownMoves[i])['name']} \t{self.PP[i]}/{getMoveInfo(self.knownMoves[i])['pp']} PP")
         print("##############################################")
 
     def showMoves(self):
@@ -1554,17 +1555,18 @@ while 1:
     if userChoice=="c":
         print("\n******** Welcome to the Pokemon Center ********\n")
         t.sleep(0.7)
-        print("\nWe can heal your Pokemon to full health!")
+        print("We can heal your Pokemon to full health!")
         t.sleep(1)
         while 1:
-            cenChoice=input("[y] to restore your party or [b]")
-            
+            cenChoice=input("[y] to restore your party or [b]ack\n: ")
+
             if cenChoice=='b':
                 print("See you soon!\n")
                 t.sleep(0.7)
                 break
             
             if cenChoice=='y':
+                print("\n")
                 for i in userParty:
                     i.restore()
                     print(f"{i.name} is ready for more battles!")
