@@ -57,6 +57,7 @@ class mon:
             self.dualType=False
         self.fainted=False
         self.knownMoves=[19]
+        self.PP=[35]
         #battle stat stages
         self.atstage=6
         self.destage=6
@@ -689,7 +690,7 @@ while 1:
                     #fighting options
                     while 1: #move input loop
                         for i in range(len(userMon.knownMoves)):
-                            print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{getMoveInfo(userMon.knownMoves[i])['pp']} PP")
+                            print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{userMon.PP[i]} PP")
                         userFight=input(f"What move should {userMon.name} use?\n[#] or [b]:")
                         #go back
                         if userFight=='b':
@@ -697,6 +698,9 @@ while 1:
                         #try to use user input to call a move
                         try:
                             fightChoice=int(userFight)-1 #make sure given input refers to a move
+                            if userMon.PP[fightChoice]==0:
+                                print(f"{userMon.name} does not have enough energy to use this move!")
+                                continue
                             moveDex=userMon.knownMoves[fightChoice]
                             fightShift=True
                             break
@@ -735,6 +739,7 @@ while 1:
                         #make sure user/trainer didn't switch in this turn
                         if shifted==False:
                             userMon.move(trainerMon,moveDex)
+                            userMon.PP[fightChoice]-=1
                             #check for faint, attacked pokemon first, and then attacker
                             if trainerMon.fainted:
                                 #check for OPPO BLACKOUT
@@ -807,7 +812,9 @@ while 1:
                                                 break
                         ##OPPO ATTACK
                         if trainerShift==False:
-                            trainerMon.move(userMon,rng.choice(trainerMon.knownMoves))
+                            trainMove=rng.choice(range(len(trainerMon.knownMoves)))
+                            trainerMon.move(userMon,trainerMon.knownMoves[trainMove])
+                            trainerMon.PP[trainMove]-=1
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -879,7 +886,9 @@ while 1:
                     else:
                         ##OPPO ATTACK##
                         if trainerShift==False:
-                            trainerMon.move(userMon,rng.choice(trainerMon.knownMoves))
+                            trainMove=rng.choice(range(len(trainerMon.knownMoves)))
+                            trainerMon.move(userMon,trainerMon.knownMoves[trainMove])
+                            trainerMon.PP[trainMove]-=1
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -948,6 +957,7 @@ while 1:
                         ##USER ATTACK##
                         if shifted==False:
                             userMon.move(trainerMon,moveDex)
+                            userMon.PP[fightChoice]-=1
                             if trainerMon.fainted:
                                 #check for TRAINER BLACKOUT
                                 blk,blkList=checkBlackout(trainerParty)
@@ -1439,6 +1449,7 @@ while 1:
                                         incomplete=True
                                     else:
                                         studentMon.knownMoves.append(i)
+                                        studentMon.PP.append(getMoveInfo(i)['pp'])
                                         print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
                                 if incomplete==False: #if there are no conflicts
                                     break #all moves added, breaks loop and goes back to choose a pokemon
