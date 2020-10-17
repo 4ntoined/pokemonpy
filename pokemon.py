@@ -288,7 +288,34 @@ class mon:
         if self.poisonCounter>0:
             self.poisonCounter=1
         #other withdraw things
-    
+    '''
+    def struggle(self,opponent):
+        #paralysis prevents move execution
+        if self.paralyzed:
+            if rng.random()>0.75:
+                print(f"{self.name} is fully paralyzed!")
+                return
+        #confusion prevents rest of move execution
+        if self.confused:
+            print(f"{self.name} is confused!")
+            #lower confusion counter for chance to snap out of confusion
+            self.confusionCounter-=1
+            #if counter is at 0, undo confusion
+            if self.confusionCounter==0:
+                self.confused=False
+                print(f"{self.name} snapped out of confusion!")
+            #if still confused, chance to hurt self, end move()
+            if self.confused:
+                if rng.random()>0.5:
+                    self.confusionDamage()
+                    return
+        hitCheck=True
+        if hitCheck:
+            if self.burned:
+                notas.append("burned")
+            ans,comment=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,50,18,"null")
+            opponent.hit(self,ans,1,recoil,comment)
+    '''        
     #pokemon move
     def move(self,opponent,moveIndex):
         #paralysis prevents move execution
@@ -857,10 +884,14 @@ while 1:
                             print(f"{trainerMon.name} is withdrawn!")
                             t.sleep(1)
                             #take new pokemon out
-                            trainerInd=rng.choice(nfpList)
+                            while 1: #keep choosing new pokemon
+                                nTrainerInd=rng.choice(nfpList)
+                                if nTrainerInd!=trainerInd: #until new pokemon is different from current pokemon
+                                    break
+                            trainerInd=nTrainerInd
                             trainerMon=trainerParty[trainerInd]
-                            trainerMon.inBattle()
                             print(f"{trainerMon.name}! is sent out!")
+                            trainerMon.inBattle()
                             t.sleep(1)
                             trainerShift=True
                     #set boolean to true if user has higher effective speed stat
@@ -873,7 +904,8 @@ while 1:
                         #make sure user/trainer didn't switch in this turn
                         if shifted==False:
                             userMon.move(trainerMon,moveDex)
-                            userMon.PP[fightChoice]-=1
+                            if moveDex!=struggleInd:
+                                userMon.PP[fightChoice]-=1
                             #check for faint, attacked pokemon first, and then attacker
                             if trainerMon.fainted:
                                 #check for OPPO BLACKOUT
