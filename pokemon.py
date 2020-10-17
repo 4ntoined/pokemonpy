@@ -59,17 +59,17 @@ class mon:
         self.knownMoves=[19]
         self.PP=[35]
         #battle stat stages
-        self.atstage=6
+        self.atstage=6 #0 (at -6) to 6 (at 0) to 12 (at +6?)
         self.destage=6
         self.sastage=6
         self.sdstage=6
         self.spstage=6
         #in battle stats ugh
-        self.bat=self.attack*statStages[self.atstage]
-        self.bde=self.defense*statStages[self.destage]
-        self.bsa=self.spatk*statStages[self.sastage]
-        self.bsd=self.spdef*statStages[self.sdstage]
-        self.bsp=self.speed*statStages[self.spstage]
+        self.bat=self.attack#*statStages[self.atstage]
+        self.bde=self.defense#*statStages[self.destage]
+        self.bsa=self.spatk#*statStages[self.sastage]
+        self.bsd=self.spdef#*statStages[self.sdstage]
+        self.bsp=self.speed#*statStages[self.spstage]
         #battle statuses
         self.sleep=False
         self.sleepCounter=0
@@ -158,7 +158,20 @@ class mon:
         self.currenthpp=100.
         self.PP=[getMoveInfo(i)['pp'] for i in self.knownMoves]
         self.fainted=False
-        
+
+    #recalculate stats
+    def reStat(self):
+        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        self.currenthp=self.maxhp
+        self.currenthpp=100.
+
+    #use stat stages to calculate battle stats
+    #def battleStats(self):
     ####things to call when a pokemon is thrown into battle
     def inBattle(self):
         #stat changes
@@ -177,7 +190,92 @@ class mon:
                 self.bsd*=1.5
                 print(f"{self.name}'s boosted by the sandstorm!")
         #further in the list
-        
+
+    def stageChange(self,stat,level):
+        #stat='at','de','sa','sd','sp'
+        #level= 1,2,3 or -1,-2,-3
+        if stat=='at':
+            maxd=(self.atstage==12 and level>0)
+            mind=(self.atstage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Atk. stat can't go any higher!")
+            if mind:
+                print(f"{self.name}'s Atk. stat can't go any lower!")
+            else:
+                self.atstage+=level
+                if self.atstage>12: #catch overruns
+                    level=12+level-self.atstage #reset "level" to account for hitting ceiling
+                    self.atstage=12
+                if self.atstage<0:
+                    level=level-self.atstage
+                    self.atstage=0
+                print(f"{self.name}'s Atk. stat {stageStrings[level+3]}!")
+        if stat=='de':
+            maxd=(self.destage==12 and level>0)
+            mind=(self.destage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Def. stat can't go any higher!")
+            if mind:
+                print(f"{self.name}'s Def. stat can't go any lower!")
+            else:
+                self.destage+=level
+                if self.destage>12: #catch overruns
+                    level=12+level-self.destage #reset "level" to account for hitting ceiling
+                    self.destage=12
+                if self.destage<0:
+                    level=level-self.destage
+                    self.destage=0
+                print(f"{self.name}'s Def. stat {stageStrings[level+3]}!")
+        if stat=='sa':
+            maxd=(self.sastage==12 and level>0)
+            mind=(self.sastage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Sp.A stat can't go any higher!")
+            if mind:
+                print(f"{self.name}'s Sp.A stat can't go any lower!")
+            else:
+                self.sastage+=level
+                if self.sastage>12: #catch overruns
+                    level=12+level-self.sastage #reset "level" to account for hitting ceiling
+                    self.sastage=12
+                if self.sastage<0:
+                    level=level-self.sastage
+                    self.sastage=0
+                print(f"{self.name}'s Sp.A stat {stageStrings[level+3]}!")
+        if stat=='sd':
+            maxd=(self.sdstage==12 and level>0)
+            mind=(self.sdstage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Sp.D stat can't go any higher!")
+            if mind:
+                print(f"{self.name}'s Sp.D stat can't go any lower!")
+            else:
+                self.sdstage+=level
+                if self.sdstage>12: #catch overruns
+                    level=12+level-self.sdstage #reset "level" to account for hitting ceiling
+                    self.sdstage=12
+                if self.sdstage<0:
+                    level=level-self.sdstage
+                    self.sdstage=0
+                print(f"{self.name}'s Sp.D stat {stageStrings[level+3]}!")
+        if stat=='sp':
+            maxd=(self.spstage==12 and level>0)
+            mind=(self.spstage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Spe. stat can't go any higher!")
+            if mind:
+                print(f"{self.name}'s Spe. stat can't go any lower!")
+            else:
+                self.spstage+=level
+                if self.spstage>12: #catch overruns
+                    level=12+level-self.spstage #reset "level" to account for hitting ceiling
+                    self.spstage=12
+                if self.spstage<0:
+                    level=level-self.spstage
+                    self.spstage=0
+                print(f"{self.name}'s Spe. stat {stageStrings[level+3]}!")
+        #
+
     ####things to reset upon being withdrawn
     def withdraw(self):
         self.atstage=6
@@ -193,7 +291,6 @@ class mon:
     
     #pokemon move
     def move(self,opponent,moveIndex):
-        print(f"{self.name} used {getMoveInfo(moveIndex)['name']}!")
         #paralysis prevents move execution
         if self.paralyzed:
             if rng.random()>0.75:
@@ -213,14 +310,36 @@ class mon:
                 if rng.random()>0.5:
                     self.confusionDamage()
                     return
+        print(f"{self.name} used {getMoveInfo(moveIndex)['name']}!")
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
+        notas=np.array(notas)
         ###accuracy check###
-        if rng.random()>moveI['accu']/100.:
+        if "noMiss" in notas:
+            hitCheck=True
+        else:
+            hitCheck=rng.random()<=(moveI['accu']/100.)
+        if hitCheck==False:
             print(f"{self.name}'s attack missed!")
             return
         else:
             #check if status?#
+            if moveI['special?']==2:
+                #stat changes
+                if "stat" in notas:
+                    statInfo=notas[1+int(np.argwhere(notas=='stat'))]
+                    targ,stat,phase=statInfo.split(",")
+                    stat=stat.split(":")
+                    phase=phase.split(":")
+                    if targ=='self':
+                        for i in range(len(stat)):
+                            self.stageChange(stat[i],int(phase[i]))
+                    if targ=='targ':
+                        for i in range(len(stat)):
+                            opponent.stageChange(stat[i],int(phase[i]))
+                    #end of stat changes
+                #more status move effects
+                return
             #check if physical or special
             if moveI['special?']==0:
                 #check for burns on physical attacks
@@ -231,7 +350,20 @@ class mon:
                 ans,comment=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
             eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
             opponent.hit(self,ans,eff,notas,comment)
-    
+            #stat changes
+            if "stat" in notas:
+                statInfo=1+int(np.argwhere(notas=='stat'))
+                targ,stat,phase=statInfo.split(",")
+                if targ=='self':
+                    for i in range(len(stat)):
+                        self.stageChange(stat[i],int(phase[i]))
+                    self.inBattle() #recalc battle stats
+                if targ=='targ':
+                    for i in range(len(stat)):
+                        opponent.stageChange(stat[i],int(phase[i]))
+                    opponent.inBattle() #recalc battle stats
+                #end of stat changes
+                
     #confusion
     def confusionDamage(self):
         dmg=((((2*self.level)/5 + 2)*40*self.bat/self.bde)/50 + 2)
@@ -329,6 +461,8 @@ class mon:
             #check for recoil, apply recoil if present
             if "recoilThird" in notes:
                 attacker.recoil(recoilDmg,1/3)
+            if "recoil4Max" in notes: #special struggle recoil, quarter of maxhp
+                attacker.recoil(attacker.maxhp,1/4)
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
@@ -337,17 +471,6 @@ class mon:
         self.currenthpp=100*self.currenthp/self.maxhp
         if self.currenthp<=0.:
             self.faint()
-
-    #recalculate stats
-    def reStat(self):
-        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
-        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
-        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
-        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
-        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
-        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
-        self.currenthp=self.maxhp
-        self.currenthpp=100
 
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")
@@ -535,9 +658,9 @@ def indexToType(x):
     #def __init__(self):
         
 #codex encodes all type matchups, first index is attacking the second index
-codex=np.ones((18,18))
+codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
-#rock 12,ghost 13,dragon 14,dark 15,steel 16,fairy 17, typeless 18
+#rock 12,ghost 13,dragon 14,dark 15,steel 16,fairy 17,typeless (no relationships) 18
 codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
 codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
 codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
@@ -558,12 +681,14 @@ codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
+stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0 to 3(+1) to 5
+struggleInd=21
 
 #weather='clear'
 #weather='rain'
-weather='sunny'
+#weather='sunny'
 #weather='hail'
-#weather='sandstorm'
+weather='sandstorm'
 
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
 rival=makeMon(3)
@@ -666,6 +791,9 @@ while 1:
                                     if select.fainted:
                                         print("**Cannot switch in fainted Pokemon!**")
                                         break
+                                    if nuserInd==userInd:
+                                        print("**{select.name} is already in battle!**")
+                                        break
                                     #put current pokemon back?
                                     userMon.withdraw()
                                     userParty[userInd]=userMon
@@ -692,6 +820,11 @@ while 1:
                     while 1: #move input loop
                         for i in range(len(userMon.knownMoves)):
                             print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{userMon.PP[i]} PP")
+                        if np.count_nonzero(userMon.PP)==0:
+                            print(f"{userMon.name} can only Struggle!")
+                            fightShift=True
+                            moveDex=struggleInd
+                            break
                         userFight=input(f"What move should {userMon.name} use?\n[#] or [b]:")
                         #go back
                         if userFight=='b':
@@ -793,6 +926,9 @@ while 1:
                                                     if select.fainted:
                                                         print("**Cannot switch in fainted Pokemon!**")
                                                         break
+                                                    if nuserInd==userInd:
+                                                        print("**{select.name} is already in battle!**")
+                                                        break
                                                     #put current pokemon back?
                                                     userMon.withdraw()
                                                     userParty[userInd]=userMon
@@ -813,9 +949,13 @@ while 1:
                                                 break
                         ##OPPO ATTACK
                         if trainerShift==False:
-                            trainMove=rng.choice(range(len(trainerMon.knownMoves)))
-                            trainerMon.move(userMon,trainerMon.knownMoves[trainMove])
-                            trainerMon.PP[trainMove]-=1
+                            trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
+                            if np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
+                                trainMoveDex=struggleInd
+                            else: #otherwise, q up one of the known moves
+                                trainerMoveDex=trainerMon.knownMoves[trainMoveInd]
+                            trainerMon.move(userMon,trainerMoveDex)
+                            trainerMon.PP[trainMoveInd]-=1
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -854,6 +994,9 @@ while 1:
                                                     if select.fainted:
                                                         print("**Cannot switch in fainted Pokemon!**")
                                                         break
+                                                    if nuserInd==userInd:
+                                                        print("**{select.name} is already in battle!**")
+                                                        break
                                                     #put current pokemon back?
                                                     userMon.withdraw()
                                                     userParty[userInd]=userMon
@@ -887,9 +1030,13 @@ while 1:
                     else:
                         ##OPPO ATTACK##
                         if trainerShift==False:
-                            trainMove=rng.choice(range(len(trainerMon.knownMoves)))
-                            trainerMon.move(userMon,trainerMon.knownMoves[trainMove])
-                            trainerMon.PP[trainMove]-=1
+                            trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
+                            if np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
+                                trainMoveDex=struggleInd
+                            else: #otherwise, q up one of the known moves
+                                trainerMoveDex=trainerMon.knownMoves[trainMoveInd]
+                            trainerMon.move(userMon,trainerMoveDex)
+                            trainerMon.PP[trainMoveInd]-=1
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -925,6 +1072,9 @@ while 1:
                                                     #keep fainted pokemon off the field
                                                     if select.fainted:
                                                         print("**Cannot switch in fainted Pokemon!**")
+                                                        break
+                                                    if nuserInd==userInd:
+                                                        print("**{select.name} is already in battle!**")
                                                         break
                                                     #put current pokemon back?
                                                     userMon.withdraw()
@@ -1006,6 +1156,9 @@ while 1:
                                                     if select.fainted:
                                                         print("**Cannot switch in fainted Pokemon!**")
                                                         break
+                                                    if nuserInd==userInd:
+                                                        print("**{select.name} is already in battle!**")
+                                                        break
                                                     #put current pokemon back?
                                                     userMon.withdraw()
                                                     userParty[userInd]=userMon
@@ -1086,6 +1239,9 @@ while 1:
                                                 #keep fainted pokemon off the field
                                                 if select.fainted:
                                                     print("**Cannot switch in fainted Pokemon!**")
+                                                    break
+                                                if nuserInd==userInd:
+                                                    print("**{select.name} is already in battle!**")
                                                     break
                                                 #put current pokemon back?
                                                 userMon.withdraw() #should be redundant? since faint() already calls withdraw() idk we'll leave it for now
