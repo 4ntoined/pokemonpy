@@ -63,3 +63,5 @@ stat stages
 can't switch to a pokemon that's already battling
 that might be it, it doesn't look like a lot written down but i promise you it was a lot
 gonna do a couple commits because im worried i maybe broke it somewhere
+10:21A- wanted to document somewhere that there is distinctly an issue where the game checks for poison/burn/etc. damage even if the pokemon was just switched in...
+gotta fix that
