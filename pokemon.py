@@ -1384,14 +1384,15 @@ while 1:
             else:
                 while 1:
                     selMon.summary()
-                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave or [b]ack: ")
+                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave, set [f]irst or [b]ack: ")
                     #go back to pokemon selection
-                    if sumChoice=='b':
+                    if sumChoice=='b'
                         t.sleep(0.7)
                         break
                     if sumChoice=='B':
                         t.sleep(0.7)
                         break
+                    #save
                     if sumChoice=='s':
                         while 1:
                             savename=input("Enter name of savefile...\n[blanck] to use default savefile name\nor [b]ack\n: ")
@@ -1405,14 +1406,26 @@ while 1:
                                 selMon.save()
                                 print(f"{selMon.name} was saved to the file!\n")
                                 t.sleep(0.7) #kills
-                                break
+                                continue
                             else:
                                 selMon.save(savename)
                                 print(f"{selMon.name} was saved to the file!\n")
                                 t.sleep(0.7) #kills
-                                break
+                                continue
                             #
                         #
+                    #set first
+                    if sumChoice=='f':
+                        if pokeInd==0:
+                            print(f"{selMon.name} is already first!")
+                            continue
+                        moving=userParty.pop(pokeInd)
+                        userParty.insert(0,moving)
+                        print(f"{moving.name} was moved to the front!")
+                        t.sleep(0.7) #kills
+                        continue
+                    #
+                #
             #end of while block
         print("Going back to main screen...")
         t.sleep(1)

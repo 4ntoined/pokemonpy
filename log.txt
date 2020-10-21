@@ -86,4 +86,6 @@ idk we'll see
 5:15P- okay removed old/obsolete files from depository
 also i forgot to note in that last note that i added tools to reset your team and remove unwanted pokemon
 need to also add functionality to change leading pokemon
+5:43P- okay added changing lead pokemmon
+still working and b and B for back :(
 
