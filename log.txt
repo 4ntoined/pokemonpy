@@ -74,3 +74,13 @@ but changes are definitely due
 building a little team for cynthia including new moves so that's fun
 we'll probably set up some sort of trainer variable to hold the opponent's name
 lit
+4:47P- don't even remember what I did tbh
+finished cynthia's team
+battled a couple of times, everything seems to flow
+it's nice
+uhh i think the next addition to the battling should be a "status" option
+since stat stages should in theory work now it'd be nice to actually see them in action
+i'm thinking we can show the user their pokemon's augmented, effective stats and everything
+#EXPOSED
+idk we'll see
+

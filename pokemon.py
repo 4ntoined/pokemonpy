@@ -5,7 +5,7 @@
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
 #*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact, genders ugh
-#*******************: evasion/accuracy
+#*******************: evasion/accuracy,weather moves, terrain moves, increased chance for crit
 #
 
 import numpy as np
@@ -13,7 +13,7 @@ import numpy as np
 import astropy.io.ascii as asc
 import time as t
 from moves import getMoveInfo
-from moves import umm
+from moves import mov
 from pokedex import dex
 
 rng=np.random.default_rng(24)
@@ -341,22 +341,22 @@ class mon:
         print(f"{self.name} used {getMoveInfo(moveIndex)['name']}!")
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
-        notas=np.array(notas)
+        #notas=np.array(notas)
         ###accuracy check###
         if "noMiss" in notas:
             hitCheck=True
         else:
             hitCheck=rng.random()<=(moveI['accu']/100.)
-        if hitCheck==False:
+        if hitCheck==False: #move misses
             print(f"{self.name}'s attack missed!")
             return
-        else:
+        else: #move will connect
             #check if status?#
             if moveI['special?']==2:
                 #stat changes
                 if "stat" in notas:
-                    statInfo=notas[1+int(np.argwhere(notas=='stat'))]
-                    targ,stat,phase=statInfo.split(",")
+                    statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
+                    targ,stat,phase=statInfo.split(",")[0:3]
                     stat=stat.split(":")
                     phase=phase.split(":")
                     if targ=='self':
@@ -382,16 +382,20 @@ class mon:
             opponent.hit(self,ans,eff,notas,comment)
             #stat changes
             if "stat" in notas:
-                statInfo=1+int(np.argwhere(notas=='stat'))
-                targ,stat,phase=statInfo.split(",")
-                if targ=='self':
-                    for i in range(len(stat)):
-                        self.stageChange(stat[i],int(phase[i]))
-                    self.inBattle() #recalc battle stats
-                if targ=='targ':
-                    for i in range(len(stat)):
-                        opponent.stageChange(stat[i],int(phase[i]))
-                    opponent.inBattle() #recalc battle stats
+                statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
+                prob=int(statInfo.split(",")[3])/100.
+                if rng.random()<=prob:
+                    targ,stat,phase=statInfo.split(",")[0:3]
+                    stat=stat.split(":")
+                    phase=phase.split(":")
+                    if targ=='self':
+                        for i in range(len(stat)):
+                            self.stageChange(stat[i],int(phase[i]))
+                        self.inBattle() #recalc battle stats
+                    if targ=='targ':
+                        for i in range(len(stat)):
+                            opponent.stageChange(stat[i],int(phase[i]))
+                        opponent.inBattle() #recalc battle stats
                 #end of stat changes
             #flinching
             if 'flinch20' in notas:
@@ -527,7 +531,7 @@ class mon:
             print(f"{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
             print(f"{typeStrings[self.tipe[0]]}")
-        print(f"HP  : \t{format(self.currenthp,'.2f')}/{self.maxhp} \t{format(self.currenthpp,'.2f')}%")
+        print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{self.attack}")
         print(f"Def : \t{self.defense}")
         print(f"Sp.A: \t{self.spatk}")
@@ -542,6 +546,7 @@ class mon:
         print("\n---- {self.name}'s Moves ----")
         for i in range(len(self.knownMoves)):
             print(f"{self.knownMoves[i]['name']} ")
+    #anymore pokemon attributes?
         
         
 def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
@@ -643,6 +648,7 @@ def loadMon(savefile):
                 newP.knownMoves=mves
                 newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
                 newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+                newP.PP=[getMoveInfo(i)['pp'] for i in mves]
                 newP.reStat()
                 loadPokes.append(newP)
                 print(f"Loaded {newP.name}!")
@@ -661,6 +667,7 @@ def loadMon(savefile):
             newP.knownMoves=mves
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+            newP.PP=[getMoveInfo(i)['pp'] for i in mves]
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")
@@ -722,8 +729,8 @@ codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
-stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0 to 3(+1) to 5
-struggleInd=21
+stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 3(+1) to 5(+3)
+struggleInd=22 #move index of struggle
 
 #weather='clear'
 #weather='rain'
@@ -739,19 +746,25 @@ userParty=[starter]
 trainerParty=[rival,rival2]
 print(dex)
 t.sleep(0.5)
-print(umm)
+print(mov)
 t.sleep(0.5)
-#asc.write(umm,'movedex.dat',overwrite=True)
-print("... A Python game by Antoine D. ...")
+
+#####testing####
+trainerParty=loadMon("cynthia.sav").copy()
+userParty=loadMon("bulba.sav")
+userParty.append(loadMon("pypokemon.sav")[0])
+opponentName="Cynthia"
+
+print("\n... A Python game by Antoine D. ...")
 t.sleep(1)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(0.7)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\nSet [O]pponent\n[L]oad\n:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\n[R]eset Party\n[L]oad\n:")
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
-        print("\n________ Opponent Reset ________\n")
+        print("\n________ Opponent Reset ________")
         t.sleep(1)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
         if aceChoice=='y':
@@ -778,7 +791,7 @@ while 1:
         t.sleep(1)
         trainerMon=trainerParty[0]
         trainerInd=0
-        print(f"{trainerMon.name}! Go!")
+        print(f"{opponentName}: {trainerMon.name}! Go!")
         t.sleep(1)
         turn=1
         ####turn begins####
@@ -792,7 +805,7 @@ while 1:
                 fightShift=False
                 shifted=False
                 #----UI----#
-                print(f"Opponent:\n{trainerMon.name} // Level {trainerMon.level}")
+                print(f"{opponentName}:\n{trainerMon.name} // Level {trainerMon.level}")
                 print(f"HP: {format(trainerMon.currenthpp,'.2f')}%")
                 print("\n............Your team:")
                 print(f"............{userMon.name} // Level {userMon.level}")
@@ -897,7 +910,7 @@ while 1:
                             trainerMon.withdraw()
                             #put pokemon away
                             trainerParty[trainerInd]=trainerMon
-                            print(f"{trainerMon.name} is withdrawn!")
+                            print(f"{opponentName}'s {trainerMon.name} is withdrawn!")
                             t.sleep(1)
                             #take new pokemon out
                             while 1: #keep choosing new pokemon
@@ -906,7 +919,7 @@ while 1:
                                     break
                             trainerInd=nTrainerInd
                             trainerMon=trainerParty[trainerInd]
-                            print(f"{trainerMon.name}! is sent out!")
+                            print(f"{opponentName}: {trainerMon.name}! Finish them off!")
                             trainerMon.inBattle()
                             t.sleep(1)
                             trainerShift=True
@@ -929,14 +942,14 @@ while 1:
                                 blk,blkList=checkBlackout(trainerParty)
                                 if blk==0:
                                     battleOver=True
-                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    print(f"{opponentName} is out of usable pokemon!\nYou win!")
                                     t.sleep(1)
                                     break
                                 else:
                                     #reassign opponent's active pokemon
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
-                                    print(f"{trainerMon.name} was switched in!")
+                                    print(f"{opponentName}: {trainerMon.name} It's your turn!")
                                     trainerShift=True
                                     tFaint=True
                             if userMon.fainted:
@@ -998,7 +1011,7 @@ while 1:
                                                 break
                             if trainerMon.flinched and (not tFaint) and (not uFaint): #make sure  neither pokemon just fainted after this attack
                                 flinching=True
-                                print(f"{trainerMon.name} flinches and can't attack!")
+                                print(f"{opponentName}'s {trainerMon.name} flinches and can't attack!")
                         ##OPPO ATTACK
                         retaliateClearance=(not trainerShift) and (not flinching)
                         if retaliateClearance:
@@ -1072,14 +1085,14 @@ while 1:
                                 blk,blkList=checkBlackout(trainerParty)
                                 if blk==0:
                                     battleOver=True
-                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    print(f"{opponentName} is out of usable pokemon!\nYou win!")
                                     t.sleep(0.7)
                                     break
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
                                     tFaint=True
-                                    print(f"{trainerMon.name} was switched in!")
+                                    print(f"{opponentName}: {trainerMon.name} you can do it!")
                                     t.sleep(0.7)
                     ##USER SLOWER##
                     else:
@@ -1156,13 +1169,13 @@ while 1:
                                 blk,blkList=checkBlackout(trainerParty)
                                 if blk==0:
                                     battleOver=True
-                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    print(f"{opponentName} is out of usable pokemon!\nYou win!")
                                     break
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
                                     tFaint=True
-                                    print(f"{trainerMon.name} was switched in!")
+                                    print(f"{opponentName}: {trainerMon.name} I'm counting on you!")
                                     t.sleep(0.7)
                             #check for flinch
                             if trainerMon.flinched and (not tFaint) and (not uFaint): #make sure  neither pokemon just fainted after this attack
@@ -1178,13 +1191,13 @@ while 1:
                                 blk,blkList=checkBlackout(trainerParty)
                                 if blk==0:
                                     battleOver=True
-                                    print("The opponent is out of usable pokemon!\nYou win!")
+                                    print(f"{opponentName} is out of usable pokemon!\nYou win!")
                                     break
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
                                     tFaint=True
-                                    print(f"{trainerMon.name} was switched in!")
+                                    print(f"{opponentName}: {trainerMon.name}! Now!")
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -1264,12 +1277,12 @@ while 1:
                         blk,blkList=checkBlackout(trainerParty)
                         if blk==0:
                             battleOver=True
-                            print("The opponent is out of usable pokemon!\nYou win!")
+                            print(f"{opponentName} is out of usable pokemon!\nYou win!")
                             break
                         else:
                             trainerInd=rng.choice(blkList)
                             trainerMon=trainerParty[trainerInd]
-                            print(f"{trainerMon.name} was switched in!")
+                            print(f"{opponentName}: {trainerMon.name}! Go!")
                     if userMon.fainted:
                         #check for USER BLACKOUT
                         if checkBlackout(userParty)[0]==0:
@@ -1496,7 +1509,7 @@ while 1:
             print("\n")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
-            trainChoice=input("\nWhich Pokemon will we train?:\n[#] or [B]ack: ")
+            trainChoice=input("Which Pokemon will we train?:\n[#] or [b]ack: ")
             
             #option to go back, from pokemon selection to main screen
             if trainChoice=='b':
@@ -1649,9 +1662,7 @@ while 1:
                 print("** Enter a [#] corresponding to a Pokemon !!**\n")
             else:
                 #otherwise, print the moves, godspeed
-                print(umm)
-                #np.savetxt("movecodex.txt",umm)
-                asc.write(umm,'movecodex.dat',overwrite=True)
+                print(mov)
                 while 1: #input loop
                     chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
                     #go back to choose a pokemon
@@ -1664,7 +1675,7 @@ while 1:
                         chooseMoves=chooseMove.split() #separate move indices into own strings
                         moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
                         incomplete=False
-                        if max(moveInts)<len(umm): #make sure all indices have an entry in the movedex
+                        if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
                             if min(moveInts)>=0: #ward off negative numbers
                                 for i in moveInts:
                                     if i in studentMon.knownMoves:
@@ -1798,6 +1809,75 @@ while 1:
                 print("\nHave a nice day! and have fun!")
                 t.sleep(0.7)
                 break #back to main screen
+    
+    ####resetting user Party to Bulbasaur
+    if userChoice=='r':
+        print("\n******** Party Reset ********")
+        t.sleep(0.7)
+        print("\nYou can remove individual Pokemon from your party...")
+        t.sleep(0.4)
+        print("Or you can reset your team to just the starter (Bulbasaur for now)")
+        t.sleep(0.7)
+        while 1: #input loop only to catch players leaving individual pokemon removal
+            resChoice=input("What would you like to do?\n[C]hoose Pokemon, [R]eset team, or [b]ack: ")
+            
+            if resChoice==("b" or "B"):
+                print("Leaving Party Reset...")
+                t.sleep(0.7) #kills
+                break
+                
+            if resChoice==("r" or "R"):
+                userParty.clear()
+                starter=makeMon(0)
+                userParty.append(starter)
+                print("Your party has been reset!")
+                t.sleep(0.7)
+                print("Leaving Party Reset...")
+                t.sleep(0.7) #kills
+                break
+            
+            if resChoice==("c" or "C"):
+                #user input loop
+                while 1:
+                    #display current party
+                    print("\n******** Party Pokemon ********\n*******************************\n")
+                    for i in range(len(userParty)):
+                        if userParty[i].dualType:
+                            thipe=typeStrings[userParty[i].tipe[0]]
+                            thipe+=" // "
+                            thipe+=typeStrings[userParty[i].tipe[1]]
+                        else:
+                            thipe=typeStrings[userParty[i].tipe[0]]
+                        print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
+                    print("\n*******************************\n")
+                    remChoice=input("Which Pokemon to remove?\n[#] or [b]ack: ")
+                    
+                    if remChoice==("b" or "B"):
+                        print("Going back...")
+                        #t.sleep(0.7)
+                        break
+                    try:
+                        choices=np.array([int(i)-1 for i in remChoice.split()])
+                        for i in range(len(choices)):
+                            if len(userParty)==1: #catch players trying to dump whole party
+                                print("!! Cannot remove last Pokemon from Party !!")
+                                break
+                            if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
+                                byeMon=userParty.pop(choices[i])
+                                print(f"{byeMon.name} has been released to the wild...")
+                            else:
+                                removedIndices=np.count_nonzero(choices[0:i]<choices[i]) #how many selected indices that are *lower* than current one have already been removed
+                                choices[i]-=removedIndices
+                                byeMon=userParty.pop(choices[i])
+                                print(f"{byeMon.name} has been released to the wild...")
+                        print("Selected Pokemon have been released!")
+                        t.sleep(0.7) #kills
+                        break
+                    except ValueError:
+                        print("\n!! Entry must be number or list of numbers separated by spaces !!")
+                    except IndexError:
+                        print("\n!! Entry must correspond to Party Pokemon !!")
+            #
     ####what's the next spot?####
 
     #end of game, loops back to main screen

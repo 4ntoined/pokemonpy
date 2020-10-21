@@ -5,11 +5,10 @@
 #dark 15,steel 16,fairy 17
 
 #import numpy as np
-import astropy.io.ascii as asc
 import astropy.table as tbl
 
 def getMoveInfo(moveIndex):
-    return umm[moveIndex]
+    return mov[moveIndex]
 
 moremoves=[
         ("Hyper Beam",150,90,5,1,0,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest"),
@@ -32,15 +31,18 @@ moremoves=[
         ("Leaf Blade",90,100,15,0,1,3,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
         ("Attack Order",90,100,15,0,0,12,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Tackle",40,100,35,0,1,0,"The user charges to attack.","null"),
-        ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2"),
+        ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
+        ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil4Max"),
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1"),
-        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Def. and SpD. 1 stage.","stat self,de:sd,-1,-1"),
-        ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch20")
-        
+        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Def. and SpD. 1 stage each.","stat self,de:sd,-1:-1,100"),
+        ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch20"),
+        ("Ominous Wind",60,100,5,1,0,13,"The user attacks with a mysterious wind.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"),
+        ("Meteor Mash",90,90,10,0,1,16,"The user punches with the power of a meteor. 20% chance to raise user's Atk. 1 stage.","stat self,at,1,20")
+        #terrain moves, weather moves
         ]
-umm = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
-coll=tbl.Column(range(0,len(umm)),dtype='i4')
-umm.add_column(coll,index=0,name='index')
-
-asc.write(umm,'movedex.dat',overwrite=True)
+mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
+coll=tbl.Column(range(0,len(mov)),dtype='i4')
+mov.add_column(coll,index=0,name='index')
+import astropy.io.ascii as asc
+asc.write(mov,'movedex.dat',overwrite=True)
