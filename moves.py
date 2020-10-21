@@ -35,7 +35,7 @@ moremoves=[
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2"),
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil4Max"),
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1"),
-        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Atk. 2 stages.","stat self,de:sd,-1,-1"),
+        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Def. and SpD. 1 stage.","stat self,de:sd,-1,-1"),
         ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch20")
         
         ]
@@ -43,4 +43,4 @@ umm = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','conta
 coll=tbl.Column(range(0,len(umm)),dtype='i4')
 umm.add_column(coll,index=0,name='index')
 
-#asc.write(umm,'movedex.dat',overwrite=True)
+asc.write(umm,'movedex.dat',overwrite=True)
