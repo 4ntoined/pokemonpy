@@ -63,3 +63,12 @@ stat stages
 can't switch to a pokemon that's already battling
 that might be it, it doesn't look like a lot written down but i promise you it was a lot
 gonna do a couple commits because im worried i maybe broke it somewhere
+
+21 october 2020
+bruh
+added flinching
+started refining pokemon battle architecture, really no idea where it's headed
+but changes are definitely due
+building a little team for cynthia including new moves so that's fun
+we'll probably set up some sort of trainer variable to hold the opponent's name
+lit

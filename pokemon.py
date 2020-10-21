@@ -5,17 +5,16 @@
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
 #*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact, genders ugh
-#
+#*******************: evasion/accuracy
 #
 
 import numpy as np
-import astropy.table as tbl
+#import astropy.table as tbl
 import astropy.io.ascii as asc
 import time as t
 from moves import getMoveInfo
 from moves import umm
 from pokedex import dex
-from pokedex import types
 
 rng=np.random.default_rng(24)
 
@@ -82,6 +81,7 @@ class mon:
         self.poisonCounter=0
         self.confused=False
         self.confusionCounter=0
+        self.flinched=False
 
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -149,6 +149,7 @@ class mon:
         self.burned=False
         self.poisoned=False
         self.badlypoisoned=False
+        self.flinched=False
         print(f"{self.name} fainted!")
         t.sleep(1)
     
@@ -361,9 +362,11 @@ class mon:
                     if targ=='self':
                         for i in range(len(stat)):
                             self.stageChange(stat[i],int(phase[i]))
+                        self.inBattle()
                     if targ=='targ':
                         for i in range(len(stat)):
                             opponent.stageChange(stat[i],int(phase[i]))
+                        opponent.inBatle()
                     #end of stat changes
                 #more status move effects
                 return
@@ -390,7 +393,18 @@ class mon:
                         opponent.stageChange(stat[i],int(phase[i]))
                     opponent.inBattle() #recalc battle stats
                 #end of stat changes
-                
+            #flinching
+            if 'flinch20' in notas:
+                flinCheck=(rng.random()>=0.8) and (self.bsp>opponent.bsp) #make sure flinch only occurs when the opponent has yet to attack
+                if flinCheck:
+                    opponent.flinch()
+                #end of flinching
+            #anything else to do after a successful hit?
+    
+    #flinching
+    def flinch(self):
+        self.flinched=True
+    
     #confusion
     def confusionDamage(self):
         dmg=((((2*self.level)/5 + 2)*40*self.bat/self.bde)/50 + 2)
@@ -728,8 +742,10 @@ t.sleep(0.5)
 print(umm)
 t.sleep(0.5)
 #asc.write(umm,'movedex.dat',overwrite=True)
-print("** Welcome to the Wonderful World of Pokemon Simulation! **")
+print("... A Python game by Antoine D. ...")
 t.sleep(1)
+print("** Welcome to the Wonderful World of Pokemon Simulation! **")
+t.sleep(0.7)
 while 1:
     userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\nSet [O]pponent\n[L]oad\n:")
 
@@ -898,6 +914,7 @@ while 1:
                     userFast=userMon.bsp>=trainerMon.bsp
                     uFaint=False
                     tFaint=False
+                    flinching=False
                     ##USER FASTER##
                     if userFast:
                         #USER ATTACK
@@ -979,15 +996,19 @@ while 1:
                                                 #anything other than y repeats the loop
                                             if bShifted:
                                                 break
+                            if trainerMon.flinched and (not tFaint) and (not uFaint): #make sure  neither pokemon just fainted after this attack
+                                flinching=True
+                                print(f"{trainerMon.name} flinches and can't attack!")
                         ##OPPO ATTACK
-                        if trainerShift==False:
-                            trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
+                        retaliateClearance=(not trainerShift) and (not flinching)
+                        if retaliateClearance:
+                            trainerMoveInd=rng.integers(len(trainerMon.knownMoves))
                             if np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
-                                trainMoveDex=struggleInd
+                                trainerMoveDex=struggleInd
                             else: #otherwise, q up one of the known moves
-                                trainerMoveDex=trainerMon.knownMoves[trainMoveInd]
+                                trainerMoveDex=trainerMon.knownMoves[trainerMoveInd]
                             trainerMon.move(userMon,trainerMoveDex)
-                            trainerMon.PP[trainMoveInd]-=1
+                            trainerMon.PP[trainerMoveInd]-=1
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -1040,6 +1061,7 @@ while 1:
                                                     print(f"{userMon.name}, it's your turn!")
                                                     t.sleep(1)
                                                     userMon.inBattle()
+                                                    uFaint=True
                                                     bShifted=True
                                                     break
                                                 #anything other than y repeats the loop
@@ -1056,6 +1078,7 @@ while 1:
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
+                                    tFaint=True
                                     print(f"{trainerMon.name} was switched in!")
                                     t.sleep(0.7)
                     ##USER SLOWER##
@@ -1069,6 +1092,7 @@ while 1:
                                 trainerMoveDex=trainerMon.knownMoves[trainMoveInd]
                             trainerMon.move(userMon,trainerMoveDex)
                             trainerMon.PP[trainMoveInd]-=1
+                            #check for faints
                             if userMon.fainted:
                                 #check for USER BLACKOUT
                                 if checkBlackout(userParty)[0]==0:
@@ -1120,6 +1144,7 @@ while 1:
                                                     t.sleep(1)
                                                     userMon.inBattle()
                                                     bShifted=True
+                                                    uFaint=True
                                                     shifted=True #just to kill the user's chance to attack, as it was just switched in
                                                     fightShift=True
                                                     break
@@ -1136,9 +1161,16 @@ while 1:
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
+                                    tFaint=True
                                     print(f"{trainerMon.name} was switched in!")
+                                    t.sleep(0.7)
+                            #check for flinch
+                            if trainerMon.flinched and (not tFaint) and (not uFaint): #make sure  neither pokemon just fainted after this attack
+                                flinching=True
+                                print(f"{userMon.name} flinches and can't attack!")
                         ##USER ATTACK##
-                        if shifted==False:
+                        retaliateClearance=(not shifted) and (not flinching)
+                        if retaliateClearance:
                             userMon.move(trainerMon,moveDex)
                             userMon.PP[fightChoice]-=1
                             if trainerMon.fainted:
@@ -1151,6 +1183,7 @@ while 1:
                                 else:
                                     trainerInd=rng.choice(blkList)
                                     trainerMon=trainerParty[trainerInd]
+                                    tFaint=True
                                     print(f"{trainerMon.name} was switched in!")
                             if userMon.fainted:
                                 #check for USER BLACKOUT
@@ -1203,6 +1236,7 @@ while 1:
                                                     t.sleep(1)
                                                     userMon.inBattle()
                                                     bShifted=True
+                                                    uFaint=True
                                                     fightShift=True
                                                     break
                                                 #anything other than y repeats the loop

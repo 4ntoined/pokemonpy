@@ -1,7 +1,11 @@
 #companion to pokemon.py
 #Antoine Washington
+#normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
+#ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
+#dark 15,steel 16,fairy 17
 
 #import numpy as np
+import astropy.io.ascii as asc
 import astropy.table as tbl
 
 def getMoveInfo(moveIndex):
@@ -30,8 +34,13 @@ moremoves=[
         ("Tackle",40,100,35,0,1,0,"The user charges to attack.","null"),
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2"),
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil4Max"),
-        ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1")
+        ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1"),
+        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Atk. 2 stages.","stat self,de:sd,-1,-1"),
+        ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch20")
+        
         ]
 umm = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
 coll=tbl.Column(range(0,len(umm)),dtype='i4')
 umm.add_column(coll,index=0,name='index')
+
+#asc.write(umm,'movedex.dat',overwrite=True)
