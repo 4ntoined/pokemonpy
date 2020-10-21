@@ -83,4 +83,7 @@ since stat stages should in theory work now it'd be nice to actually see them in
 i'm thinking we can show the user their pokemon's augmented, effective stats and everything
 #EXPOSED
 idk we'll see
+5:15P- okay removed old/obsolete files from depository
+also i forgot to note in that last note that i added tools to reset your team and remove unwanted pokemon
+need to also add functionality to change leading pokemon
 

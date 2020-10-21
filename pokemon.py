@@ -750,10 +750,12 @@ print(mov)
 t.sleep(0.5)
 
 #####testing####
-trainerParty=loadMon("cynthia.sav").copy()
-userParty=loadMon("bulba.sav")
-userParty.append(loadMon("pypokemon.sav")[0])
-opponentName="Cynthia"
+#trainerParty=loadMon("cynthia.sav").copy()
+#userParty=loadMon("bulba.sav")
+#userParty.append(loadMon("pypokemon.sav")[0])
+#opponentName="Cynthia"
+opponentName="OPPONENT"
+################
 
 print("\n... A Python game by Antoine D. ...")
 t.sleep(1)
