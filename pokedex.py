@@ -20,10 +20,10 @@ moremon=[
         ('Blastoise',79,83,100,85,105,78,2,20),
         ('Starmie',60,75,85,100,85,115,2,10),
         ('Lugia',106,90,130,90,154,110,10,9),
-        ('Ho-oh',106,130,90,110,154,90,1,9)
-
+        ('Ho-oh',106,130,90,110,154,90,1,9),
+        ('Luxray',80,120,79,95,79,70,4,20)
+        #
         ]
-
 dex=tbl.Table(rows=moremon,names=('name','hp','at','de','sa','sd','sp','type1','type2'),dtype=('U16','i4','i4','i4','i4','i4','i4','i4','i4'))
 indie=tbl.Column(range(0,len(dex)),dtype='i4')
 dex.add_column(indie,index=0,name='index')
@@ -49,5 +49,4 @@ moretype=[
         ('Fairy',17),
         ('Typeless',18) #mostly just for struggle, which does neutral damage to everyone
         ]
-
 types=tbl.Table(rows=moretype,names=('type','index'),dtype=('U12','i4'))
