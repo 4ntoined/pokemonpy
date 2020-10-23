@@ -95,4 +95,10 @@ still working and b and B for back :(
 
 23 october 2020
 3:07P- didnt do any of the things I listed just yesterday, but accuracy and evasion stats have been implemented
+4:01P- i keep just adding things, not testing the code, forgetting what i changed, and then assuming everything works
+that preface was so i could say i added sandstorm and hail damage
+i think also some fixed some bugs in the battle code that went covertly unnoticed
+bro why did gamefreak do all this and why does it slap
+like they got everybody hooked on this to where i'm hooked on emulating it
+well hope this works
 
