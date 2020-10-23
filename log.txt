@@ -86,6 +86,9 @@ idk we'll see
 5:15P- okay removed old/obsolete files from depository
 also i forgot to note in that last note that i added tools to reset your team and remove unwanted pokemon
 need to also add functionality to change leading pokemon
-5:43P- okay added changing lead pokemmon
+5:43P- okay added changing lead pokemon
 still working and b and B for back :(
 
+22 october 2020
+11:04A- gotta add renaming pokemon
+4:04P- gotta add ability to set battle stage: weather, terrain, etc.
