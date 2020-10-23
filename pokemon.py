@@ -5,6 +5,7 @@
 #dark 15,steel 16,fairy 17
 #*********to do list: natures, terrains, stat stages, ABILITIES *cough*, moves make contact, genders ugh
 #*******************: evasion/accuracy,weather moves, terrain moves, increased chance for crit
+#*******************: sandstorm and hail damage
 #
 
 import numpy as np
@@ -62,6 +63,8 @@ class mon:
         self.sastage=6
         self.sdstage=6
         self.spstage=6
+        self.evstage=6
+        self.acstage=6
         #in battle stats ugh
         self.bat=self.attack#*statStages[self.atstage]
         self.bde=self.defense#*statStages[self.destage]
@@ -199,7 +202,7 @@ class mon:
             mind=(self.atstage==0 and level<0)
             if maxd:
                 print(f"{self.name}'s Atk. stat can't go any higher!")
-            if mind:
+            elif mind:
                 print(f"{self.name}'s Atk. stat can't go any lower!")
             else:
                 self.atstage+=level
@@ -215,7 +218,7 @@ class mon:
             mind=(self.destage==0 and level<0)
             if maxd:
                 print(f"{self.name}'s Def. stat can't go any higher!")
-            if mind:
+            elif mind:
                 print(f"{self.name}'s Def. stat can't go any lower!")
             else:
                 self.destage+=level
@@ -231,7 +234,7 @@ class mon:
             mind=(self.sastage==0 and level<0)
             if maxd:
                 print(f"{self.name}'s Sp.A stat can't go any higher!")
-            if mind:
+            elif mind:
                 print(f"{self.name}'s Sp.A stat can't go any lower!")
             else:
                 self.sastage+=level
@@ -247,7 +250,7 @@ class mon:
             mind=(self.sdstage==0 and level<0)
             if maxd:
                 print(f"{self.name}'s Sp.D stat can't go any higher!")
-            if mind:
+            elif mind:
                 print(f"{self.name}'s Sp.D stat can't go any lower!")
             else:
                 self.sdstage+=level
@@ -263,7 +266,7 @@ class mon:
             mind=(self.spstage==0 and level<0)
             if maxd:
                 print(f"{self.name}'s Spe. stat can't go any higher!")
-            if mind:
+            elif mind:
                 print(f"{self.name}'s Spe. stat can't go any lower!")
             else:
                 self.spstage+=level
@@ -274,7 +277,41 @@ class mon:
                     level=level-self.spstage
                     self.spstage=0
                 print(f"{self.name}'s Spe. stat {stageStrings[level+3]}!")
-        #
+        #accuracy
+        if stat=='ac':
+            maxd=(self.acstage==12 and level>0)
+            mind=(self.spstage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Accuracy can't go any higher!")
+            elif mind:
+                print(f"{self.name}'s Accuracy can't go any lower!")
+            else:
+                self.acstage+=level
+                if self.acstage>12: #catch overruns
+                    level=12+level-self.acstage #reset "level" to account for hitting ceiling
+                    self.acstage=12
+                if self.acstage<0:
+                    level=level-self.acstage
+                    self.spstage=0
+                print(f"{self.name}'s Accuracy {stageStrings[level+3]}!")
+        #evasion
+        if stat=='ev':
+            maxd=(self.evstage==12 and level>0)
+            mind=(self.evstage==0 and level<0)
+            if maxd:
+                print(f"{self.name}'s Evasion can't go any higher!")
+            elif mind:
+                print(f"{self.name}'s Evasion can't go any lower!")
+            else:
+                self.evstage+=level
+                if self.evstage>12: #catch overruns
+                    level=12+level-self.evstage #reset "level" to account for hitting ceiling
+                    self.evstage=12
+                if self.evstage<0:
+                    level=level-self.evstage
+                    self.evstage=0
+                print(f"{self.name}'s Evasion {stageStrings[level+3]}!")
+        #end of stat changes
 
     ####things to reset upon being withdrawn
     def withdraw(self):
@@ -288,34 +325,7 @@ class mon:
         if self.poisonCounter>0:
             self.poisonCounter=1
         #other withdraw things
-    '''
-    def struggle(self,opponent):
-        #paralysis prevents move execution
-        if self.paralyzed:
-            if rng.random()>0.75:
-                print(f"{self.name} is fully paralyzed!")
-                return
-        #confusion prevents rest of move execution
-        if self.confused:
-            print(f"{self.name} is confused!")
-            #lower confusion counter for chance to snap out of confusion
-            self.confusionCounter-=1
-            #if counter is at 0, undo confusion
-            if self.confusionCounter==0:
-                self.confused=False
-                print(f"{self.name} snapped out of confusion!")
-            #if still confused, chance to hurt self, end move()
-            if self.confused:
-                if rng.random()>0.5:
-                    self.confusionDamage()
-                    return
-        hitCheck=True
-        if hitCheck:
-            if self.burned:
-                notas.append("burned")
-            ans,comment=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,50,18,"null")
-            opponent.hit(self,ans,1,recoil,comment)
-    '''        
+
     #pokemon move
     def move(self,opponent,moveIndex):
         #paralysis prevents move execution
@@ -345,7 +355,14 @@ class mon:
         if "noMiss" in notas:
             hitCheck=True
         else:
-            hitCheck=rng.random()<=(moveI['accu']/100.)
+            #check evasion and accuracy stats
+            effAccu=self.acstage-opponent.evstage+6 #get difference in evasion/accuracy stats, offset by proper center, index 6
+            if effAccu>12:
+                effAccu=12
+            if effAccu<0:
+                effAccu=0
+            effAccu=acevStages[effAccu]
+            hitCheck=rng.random()<=effAccu*(moveI['accu']/100.)
         if hitCheck==False: #move misses
             print(f"{self.name}'s attack missed!")
             return
@@ -403,6 +420,7 @@ class mon:
                     opponent.flinch()
                 #end of flinching
             #anything else to do after a successful hit?
+        #anything else to do after either moving or missing?
     
     #flinching
     def flinch(self):
@@ -728,6 +746,7 @@ codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
+acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 3(+1) to 5(+3)
 struggleInd=22 #move index of struggle
 

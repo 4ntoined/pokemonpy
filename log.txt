@@ -92,3 +92,7 @@ still working and b and B for back :(
 22 october 2020
 11:04A- gotta add renaming pokemon
 4:04P- gotta add ability to set battle stage: weather, terrain, etc.
+
+23 october 2020
+3:07P- didnt do any of the things I listed just yesterday, but accuracy and evasion stats have been implemented
+
