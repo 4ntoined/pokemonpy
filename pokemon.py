@@ -1461,7 +1461,7 @@ while 1:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        weather=np.choice(['sun','rain','sandstorm','hail'])
+        weather=np.choice(['clear','sun','rain','sandstorm','hail'])
         weatherCounter=np.inf
         for i in trainerParty:
             i.restore()
