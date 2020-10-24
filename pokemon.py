@@ -447,7 +447,7 @@ class mon:
                 #end of stat changes
             #flinching
             if 'flinch20' in notas:
-                flinCheck=(rng.random()>=0.8) and (self.bsp>opponent.bsp) #make sure flinch only occurs when the opponent has yet to attack
+                flinCheck=(rng.random()<=0.2) #make sure flinch only occurs when the opponent has yet to attack
                 if flinCheck:
                     opponent.flinch()
                 #end of flinching
@@ -1431,6 +1431,7 @@ while 1:
                     if weather=='sunny':
                         if weatherCounter==0:
                             weather='clear'
+                            #reset weatherCounter? maybe not necessary if we avoid counting when weather is clear and it's always reset when new weather is set
                             print("The harsh sunlight is fading...")
                         else:
                             print("The sunlight is harsh!")
@@ -1459,7 +1460,12 @@ while 1:
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
-        t.sleep(1)
+        #clean up
+        weather=np.choice(['sun','rain','sandstorm','hail'])
+        weatherCounter=np.inf
+        for i in trainerParty:
+            i.restore()
+        t.sleep(0.7) #kills
     ###end of battle block###
         
     ####check party pokemon?####
