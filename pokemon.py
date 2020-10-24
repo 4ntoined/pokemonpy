@@ -10,10 +10,9 @@
 
 import numpy as np
 #import astropy.table as tbl
-import astropy.io.ascii as asc
+#import astropy.io.ascii as asc
 import time as t
-from moves import getMoveInfo
-from moves import mov
+from moves import getMoveInfo,mov,struggle
 from pokedex import dex
 
 rng=np.random.default_rng(24)
@@ -384,6 +383,39 @@ class mon:
                             opponent.stageChange(stat[i],int(phase[i]))
                         opponent.inBatle()
                     #end of stat changes
+                #weathers
+                global weather
+                global weatherCounter
+                if "sun" in notas:
+                    if weather=='sunny':
+                        print("The move fails! It's already sunny!")
+                    else:
+                        weather='sunny'
+                        weatherCounter=5
+                        print("The sunlight turns harsh!")
+                if "rain" in notas:
+                    if weather=='rain':
+                        print("The move fails! It's already raining!")
+                    else:
+                        weather='rain'
+                        weatherCounter=5
+                        print("It starts raining!")
+                if 'sand' in notas:
+                    if weather=='sandstorm':
+                        print("The move fails! There's already a sandstorm!")
+                    else:
+                        weather='sandstorm'
+                        weatherCounter=5
+                        print("A sandstorm kicks up!")                
+                if 'hail' in notas:
+                    if weather=='hail':
+                        print("The move fails! It's already hailing")
+                    else:
+                        weather='hail'
+                        weatherCounter=5
+                        print("It starts hailing!")
+                #end of the weathers
+                
                 #more status move effects
                 return
             #check if physical or special
@@ -737,16 +769,14 @@ def moveInfo(moveCode):
     moveTiipe=0
     return movepower,moveSpecial,moveTiipe
 
-def indexToType(x):
-    ["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
-
 #class party():
     #def __init__(self):
         
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((19,19))
-#order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,ground 8,flying 9,psychic 10,bug 11,
-#rock 12,ghost 13,dragon 14,dark 15,steel 16,fairy 17,typeless (no relationships) 18
+#order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
+#ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
+#steel 16,fairy 17,typeless (no relationships) 18
 codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
 codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
 codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
@@ -769,18 +799,21 @@ typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 3(+1) to 5(+3)
-struggleInd=22 #move index of struggle
+struggleInd=struggle #move index of struggle
 
 #weather='clear'
 #weather='rain'
 #weather='sunny'
 #weather='hail'
 weather='sandstorm'
+weatherCounter=np.inf
 
-starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
+starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
+#starter.knownMoves=[25,14]
 rival=makeMon(3)
-rival2=makeMon(9,150)
+rival2=makeMon(9,12)
 rival2.name="Misty's Starmie"
+#rival2.knownMove=[]
 userParty=[starter]
 trainerParty=[rival,rival2]
 print(dex)
@@ -837,14 +870,15 @@ while 1:
         turn=1
         ####turn begins####
         while 1: #only breaks when BattleOver is True
+            #battle conditions?
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move usage if user uses a move or shifts, otherwise the loop accomplishes nothing
-                print(f"\n________ Turn {turn} ________\n")
                 battleOver=False
                 userMon.inBattle()
                 trainerMon.inBattle()
                 fightShift=False
                 shifted=False
+                print(f"\n________ Turn {turn} ________\n")
                 #----UI----#
                 print(f"{opponentName}:\n{trainerMon.name} // Level {trainerMon.level}")
                 print(f"HP: {format(trainerMon.currenthpp,'.2f')}%")
@@ -1391,6 +1425,33 @@ while 1:
                                         if bShifted:
                                             break
                     #checked for faints
+                    #is weather still happening
+                    if weather!='clear':
+                        weatherCounter-=1
+                    if weather=='sunny':
+                        if weatherCounter==0:
+                            weather='clear'
+                            print("The harsh sunlight is fading...")
+                        else:
+                            print("The sunlight is harsh!")
+                    if weather=='rain':
+                        if weatherCounter==0:
+                            weather='clear'
+                            print("The rain stops...")
+                        else:
+                            print("It's raining!")
+                    if weather=='sandstorm':
+                        if weatherCounter==0:
+                            weather='clear'
+                            print("The sandstorm is subsiding...")
+                        else:
+                            print("The sandstorm is raging!")
+                    if weather=='hail':
+                        if weatherCounter==0:
+                            weather='clear'
+                            print("The hail stops")
+                        else:
+                            print("It's hailing ")
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
