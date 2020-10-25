@@ -45,6 +45,7 @@ moremoves=[
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1"),
+        ("Stun Spore",0,75,30,2,0,3,"The user releasrd spores that paralyze the target!","para 100"),
         #to do: terrain moves
         ("The Final Move",90,100,15,1,0,0,"Last indexed move for coding convenience.","null")
         ]
