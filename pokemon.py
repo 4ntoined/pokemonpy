@@ -532,7 +532,7 @@ class mon:
             self.currenthpp=100*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
-                print(f"\n{i}")
+                print(f"{i}")
             t.sleep(0.7)
             #show effectiveness
             if effectiveness>2.0:
@@ -640,7 +640,11 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
             damages.append("Rain boost!")
     ####critical hit chance####
     critical=1.
-    if rng.integers(1,25)==24:
+    if "highCrit" in note:
+        crit=9
+    else:
+        crit=25
+    if rng.integers(1,crit)==1:
         critical=1.5
         damages.append("It's a critical hit!")
     ####random fluctuation 85%-100%
@@ -649,6 +653,7 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
     STAB=1.
     if moveTipe in plaintiffTipe:
         STAB=1.5
+        damages.append("Same Type Attack Bonus!")
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####Burn###
@@ -885,7 +890,7 @@ while 1:
                 print("\n............Your team:")
                 print(f"............{userMon.name} // Level {userMon.level}")
                 print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
-                userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n")
+                userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n: ")
                 
                 ####run away to end battle####
                 if userMove=='r':
@@ -956,7 +961,7 @@ while 1:
                             fightShift=True
                             moveDex=struggleInd
                             break
-                        userFight=input(f"What move should {userMon.name} use?\n[#] or [b]:")
+                        userFight=input(f"What move should {userMon.name} use?\n[#] or [b]: ")
                         #go back
                         if userFight=='b':
                             break
@@ -1461,7 +1466,7 @@ while 1:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        weather=np.choice(['clear','sunny','rain','sandstorm','hail'])
+        weather=rng.choice(['clear','sunny','rain','sandstorm','hail'])
         weatherCounter=np.inf
         for i in trainerParty:
             i.restore()

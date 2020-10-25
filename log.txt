@@ -104,4 +104,5 @@ well hope this works
 
 24 october 2020
 11:57A- added weather moves and changing weather
+8:58P- high critical hit ratio moves are implemented
 
