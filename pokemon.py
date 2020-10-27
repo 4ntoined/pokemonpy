@@ -555,24 +555,35 @@ class mon:
                 notAfflicted=(self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned)
                 notAfflicted=not notAfflicted
                 #paralyze
-                if "para10" in notes:
-                    if (rng.random()<=0.1) and notAfflicted:
+                if "para" in notes:
+                    dice=rng.random() #random number between 0 and 1
+                    odds=int(notes[1+int(np.argwhere(notes=="para"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
                         self.paralyzed=True
                         print(f"{self.name} is paralyzed by the hit!")
                         t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{self.name} already has a status condition...")
                 #burn
-                if "burn10" in notes:
-                    if (rng.random()<=0.1) and notAfflicted:
+                if "burn" in notes:
+                    dice=rng.random() #random number between 0 and 1
+                    odds=int(notes[1+int(np.argwhere(notes=="burn"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
                         self.burned=True
                         print(f"{self.name} is burned by the hit!")
                         t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{self.name} already has a status condition...")
                 #poison
-                if "pois10" in notes:
-                    if (rng.random()<=0.1) and notAfflicted:
+                if "pois" in notes:
+                    dice=rng.random() #random number between 0 and 1
+                    odds=int(notes[1+int(np.argwhere(notes=="pois"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
                         self.poisoned=True
                         print(f"{self.name} is poisoned by the hit!")
                         t.sleep(0.4)
-            
+                    elif notAfflicted==False:
+                        print("f{self.name} already has a status condition...")
             #check for recoil, apply recoil if present
             if "recoilThird" in notes:
                 attacker.recoil(recoilDmg,1/3)

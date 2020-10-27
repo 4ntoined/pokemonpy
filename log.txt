@@ -106,3 +106,11 @@ well hope this works
 11:57A- added weather moves and changing weather
 8:58P- high critical hit ratio moves are implemented
 
+26 october 2020
+9:15P- yo revamped status conditions so that i dont need a separate block of code for moves with different chances of causing the various things they caused
+i kinda just stole the method i had already devised for the stat changes, and like it works so let's put it to work idk
+still havent tested any of this of course, also kinda not done, need to fix how reocil and flinch are implemented
+it's mostly busy work honestly i still need to reorder the battling mechanics
+and implement all the different moves.....leech seed has been in the back of my mind for so long...
+anyway here's a commit, a proof of concept if you will
+
