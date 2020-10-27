@@ -557,7 +557,7 @@ class mon:
                 #paralyze
                 if "para" in notes:
                     dice=rng.random() #random number between 0 and 1
-                    odds=int(notes[1+int(np.argwhere(notes=="para"))]) #the odds in percent of causing paralysis
+                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="para"))]) #the odds in percent of causing paralysis
                     if dice<=odds/100. and notAfflicted:
                         self.paralyzed=True
                         print(f"{self.name} is paralyzed by the hit!")
@@ -566,8 +566,8 @@ class mon:
                         print("f{self.name} already has a status condition...")
                 #burn
                 if "burn" in notes:
-                    dice=rng.random() #random number between 0 and 1
-                    odds=int(notes[1+int(np.argwhere(notes=="burn"))]) #the odds in percent of causing paralysis
+                    dice=rng.random() #random number between [0 and 1)
+                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="burn"))]) #the odds in percent of causing paralysis
                     if dice<=odds/100. and notAfflicted:
                         self.burned=True
                         print(f"{self.name} is burned by the hit!")
@@ -577,18 +577,24 @@ class mon:
                 #poison
                 if "pois" in notes:
                     dice=rng.random() #random number between 0 and 1
-                    odds=int(notes[1+int(np.argwhere(notes=="pois"))]) #the odds in percent of causing paralysis
+                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="pois"))]) #the odds in percent of causing paralysis
                     if dice<=odds/100. and notAfflicted:
                         self.poisoned=True
                         print(f"{self.name} is poisoned by the hit!")
                         t.sleep(0.4)
                     elif notAfflicted==False:
                         print("f{self.name} already has a status condition...")
+                #more status conditions?
+                #end of status conditions
             #check for recoil, apply recoil if present
-            if "recoilThird" in notes:
-                attacker.recoil(recoilDmg,1/3)
-            if "recoil4Max" in notes: #special struggle recoil, quarter of maxhp
-                attacker.recoil(attacker.maxhp,1/4)
+            if "recoil" in notes:
+                amnt=notes[1+int(np.argwhere(np.array(notes)=="recoil"))]
+                if amnt=="1/3":
+                    attacker.recoil(recoilDmg,1/3)
+                elif amnt=="1/4maxhp":
+                    attacker.recoil(attacker.maxhp,1/4)
+                #more possible recoil amounts?
+                #end of checking fir recoil
     
     #recoil
     def recoil(self,damagedone,recoilAmount):

@@ -109,8 +109,14 @@ well hope this works
 26 october 2020
 9:15P- yo revamped status conditions so that i dont need a separate block of code for moves with different chances of causing the various things they caused
 i kinda just stole the method i had already devised for the stat changes, and like it works so let's put it to work idk
-still havent tested any of this of course, also kinda not done, need to fix how reocil and flinch are implemented
+still havent tested any of this of course, also kinda not done, need to fix how recoil and flinch are implemented
 it's mostly busy work honestly i still need to reorder the battling mechanics
 and implement all the different moves.....leech seed has been in the back of my mind for so long...
 anyway here's a commit, a proof of concept if you will
+
+27 october 2020
+8:50A- fixed recoil and bug new statuses, np.argwhere works better when its checking a numpy array, rather than just a list
+but otherwise checking a numpy array (with its determined data type) for particular strings elicits python feedback that id rather avoid in the middle of battle
+the solution is to make the notes list a np array when we need to run it through argwhere, elsewise leave it a lowly list
+no i did not test the code
 
