@@ -137,4 +137,8 @@ is the choice arbitrary? is one better than the other? i really don't know team
 anyway it still works i did actually test it this time
 well tackle works so damage() is functional but who knows about umm...everything else in pokemon
 5:07P- finished editing the log...lol
+6:42P- priority moves..
+7:02P- battling was in fact broken, physical moves worked, specials didn't because the burn variable was never defined
+anyway terrains are in
+not all the things that terrains affect i.e. causing sleep/confusion, priority..........
  

@@ -56,7 +56,7 @@ class mon:
         self.fainted=False
         self.knownMoves=[19]
         self.PP=[35]
-        if 9 in self.tipe: #flying types aren'y grounded
+        if 9 in self.tipe: #flying types aren't grounded
             self.grounded=False
         else:
             self.grounded=True
@@ -190,11 +190,14 @@ class mon:
         if self.paralyzed:
             self.bsp*=0.5
             print(f"{self.name} is slowed by paralysis..")
+        #weather
         if 12 in self.tipe:
             if weather=='sandstorm':
                 #rock type sp.def boost in a sandstorm!
                 self.bsd*=1.5
                 print(f"{self.name}'s boosted by the sandstorm!")
+        #ground or unground pokemon?
+        
         #further in the list
 
     def stageChange(self,stat,level):
@@ -443,14 +446,6 @@ class mon:
                             opponent.stageChange(stat[i],int(phase[i]))
                         opponent.inBattle() #recalc battle stats
                 #end of stat changes
-            #flinching
-            if 'flinch20' in notas:
-                flinCheck=(rng.random()<=0.2) #make sure flinch only occurs when the opponent has yet to attack
-                if flinCheck:
-                    opponent.flinch()
-                #end of flinching
-            #doesn't recoil make more sense here rather than at the end of hit()?
-            #and flinch makes more sense at the end of hit() than it does here why did i do this
             #anything else to do after a successful hit?
         #anything else to do after either moving or missing?
     
@@ -460,7 +455,7 @@ class mon:
     
     #confusion
     def confusionDamage(self):
-        dmg=((((2*self.level)/5 + 2)*40*self.bat/self.bde)/50 + 2)
+        dmg=((((2.*self.level)/5. + 2.)*40.*self.bat/self.bde)/50. + 2.)
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} hurt itself in its confusion!")
@@ -469,8 +464,7 @@ class mon:
     
     #poison
     def poisonDamage(self):
-        dmg=self.maxphp/8.
-        self.currenthp-=dmg
+        self.currenthp-=self.maxphp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took poison damage!")
         if self.currenthp<=0.:
@@ -478,8 +472,7 @@ class mon:
     
     def burnDamage(self):
         #would be the same as poisondamage tbh
-        dmg=self.maxhp/8.
-        self.currenthp-=dmg
+        self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took burn damage!")
         if self.currenthp<=0.:
@@ -532,6 +525,7 @@ class mon:
             self.currenthpp=100*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
+                t.sleep(0.2) #for drama
                 print(f"{i}")
             t.sleep(0.7)
             #show effectiveness
@@ -586,6 +580,13 @@ class mon:
                         print("f{self.name} already has a status condition...")
                 #more status conditions?
                 #end of status conditions
+                #flinching, should only happen if pokemon didnt faint
+                if "flinch" in notes:
+                    flinChance=int(notes[1+int(np.argwhere(np.array(notes)=="flinch"))])
+                    if rng.random()<=flinChance/100.:
+                        self.flinch()
+                    #end of flinching
+                #anything else to do after not fainting?
             #check for recoil, apply recoil if present
             if "recoil" in notes:
                 amnt=notes[1+int(np.argwhere(np.array(notes)=="recoil"))]
@@ -594,7 +595,8 @@ class mon:
                 elif amnt=="1/4maxhp":
                     attacker.recoil(attacker.maxhp,1/4)
                 #more possible recoil amounts?
-                #end of checking for recoil
+            #recoil belongs in hit, because it doesn't happen if the target is immune to the hit()
+            
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
@@ -647,6 +649,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         defense=defender.bsd
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
+        burn=1.
     else:
         attack=attacker.bat
         defense=defender.bde
@@ -657,11 +660,11 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=0.5
             damages.append("The burn reduces damage...")
         else:
-            burn=1.0
+            burn=1.
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
     ####weather damage boost####
-    weatherBonus=1.0
+    weatherBonus=1.
     if weather=='sunny':
         if moveTipe==1:
             weatherBonus=4/3
@@ -676,6 +679,26 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         if moveTipe==2:
             weatherBonus=4/3
             damages.append("Rain boost!")
+    ####terrain moves####
+    if terrain=='none':
+        terrainBonus=1.
+    else:
+        #when terrains come into play
+        grass=(terrain=="grassy") and (moveTipe==3) and (attacker.grounded)
+        psychic=(terrain=="psychic") and (moveTipe==10) and (attacker.grounded)
+        electric=(terrain=="electric") and (moveTipe==4) and (attacker.grounded)
+        fairy=(terrain=="fairy") and (moveTipe==14) and (defender.grounded)
+        #realized the three of them would have the exact same effect
+        if grass or psychic or electric:
+            terrainBonus=1.3
+            damages.append("Boosted by the terrain!")
+        #grounded mon take half damage on fairy terrain
+        elif fairy:
+            terrainBonus=0.5
+            damages.append("Weakened by the terrain...")
+        #there is some terrain, but the other requirements werent met, no effect
+        else:
+            terrainBonus=1.
     ####critical hit chance####
     critical=1.
     if "highCrit" in note:
@@ -699,7 +722,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####modifiers united####
-    damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
+    damageModifier=weatherBonus*terrainBonus*critical*rando*STAB*tyype*burn
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
     return ans,damages
@@ -852,7 +875,7 @@ weather=rng.choice(Weathers)
 terrain=rng.choice(Terrains)
 #but i still make the rules
 weather='sandstorm'
-terrain='clear'
+terrain='grassy'
 weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
 terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
 
