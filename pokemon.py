@@ -56,6 +56,10 @@ class mon:
         self.fainted=False
         self.knownMoves=[19]
         self.PP=[35]
+        if 9 in self.tipe: #flying types aren'y grounded
+            self.grounded=False
+        else:
+            self.grounded=True
         #battle stat stages
         self.atstage=6 #0 (at -6) to 6 (at 0) to 12 (at +6?)
         self.destage=6
@@ -418,14 +422,8 @@ class mon:
                 
                 #more status move effects
                 return
-            #check if physical or special
-            if moveI['special?']==0:
-                #check for burns on physical attacks
-                if self.burned:
-                    notas.append("burned")
-                ans,comment=damage(self.level,self.bat,self.tipe,opponent.bde,opponent.tipe,moveI['pwr'],moveI['type'],notas)
-            if moveI['special?']:
-                ans,comment=damage(self.level,self.bsa,self.tipe,opponent.bsd,opponent.tipe,moveI['pwr'],moveI['type'],notas)
+            #we check physical/special in damage() now
+            ans,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
             eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
             opponent.hit(self,ans,eff,notas,comment)
             #stat changes
@@ -451,6 +449,8 @@ class mon:
                 if flinCheck:
                     opponent.flinch()
                 #end of flinching
+            #doesn't recoil make more sense here rather than at the end of hit()?
+            #and flinch makes more sense at the end of hit() than it does here why did i do this
             #anything else to do after a successful hit?
         #anything else to do after either moving or missing?
     
@@ -594,7 +594,7 @@ class mon:
                 elif amnt=="1/4maxhp":
                     attacker.recoil(attacker.maxhp,1/4)
                 #more possible recoil amounts?
-                #end of checking fir recoil
+                #end of checking for recoil
     
     #recoil
     def recoil(self,damagedone,recoilAmount):
@@ -636,9 +636,30 @@ class mon:
     #anymore pokemon attributes?
         
         
-def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
-    ####damage boost strings####
+#def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
+def damage(attacker,defender,power,moveTipe,isSpecial,note):
+    ####damage read-out strings####
     damages=[]
+    ####set some variable straight
+    level=attacker.level
+    if isSpecial:
+        attack=attacker.bsa
+        defense=defender.bsd
+        statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
+        statBoost=statStages[defender.sdstage] #ignored if positive and crit
+    else:
+        attack=attacker.bat
+        defense=defender.bde
+        statNerf=statStages[attacker.atstage]
+        statBoost=statStages[defender.destage]
+        ####burn####
+        if attacker.burned:
+            burn=0.5
+            damages.append("The burn reduces damage...")
+        else:
+            burn=1.0
+    plaintiffTipe=attacker.tipe
+    defendantTipe=defender.tipe
     ####weather damage boost####
     weatherBonus=1.0
     if weather=='sunny':
@@ -663,6 +684,10 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
         crit=25
     if rng.integers(1,crit)==1:
         critical=1.5
+        if statNerf<1: #if change is not productive to attacker
+            attack/=statNerf #undo it
+        if statBoost>1: #if change is productive to defender
+            defense/=statBoost #undo it
         damages.append("It's a critical hit!")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
@@ -673,11 +698,7 @@ def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note)
         damages.append("Same Type Attack Bonus!")
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
-    ####Burn###
-    burn=1.
-    if "burned" in note:
-        burn=0.5
-        damages.append("The burn reduces damage...")
+    ####modifiers united####
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
@@ -820,24 +841,28 @@ codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
-stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 3(+1) to 5(+3)
+stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 struggleInd=struggle #move index of struggle
 
-#weather='clear'
-#weather='rain'
-#weather='sunny'
-#weather='hail'
+#battle setting
+Weathers=['clear','sunny','rain','sandstorm','hail']
+Terrains=['none','electric','grassy','misty','psychic']
+#set weather and terrain, random
+weather=rng.choice(Weathers)
+terrain=rng.choice(Terrains)
+#but i still make the rules
 weather='sandstorm'
-weatherCounter=np.inf
+terrain='clear'
+weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
+terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
 
+#team settings
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
-#starter.knownMoves=[25,14]
-rival=makeMon(3)
+rival=makeMon(3,5)
 rival2=makeMon(9,12)
-rival2.name="Misty's Starmie"
-#rival2.knownMove=[]
 userParty=[starter]
 trainerParty=[rival,rival2]
+
 print(dex)
 t.sleep(0.5)
 print(mov)

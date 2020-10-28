@@ -125,4 +125,16 @@ no i did not test the code
 edited the todo list to reflect recent additions
 small edits to moves.py
 dk where we're headed rn tbh but we're def gonna get there
-
+3:44P- noting for the record that crits are supposed to ignore stat nerfs of attacker and stat boosts of target
+someone'll get around to fixing that I'm sure
+4:00P- reworking damage function rn to fix the critical hits:
+crits occur within damage() which only takes a few pokemon attributes, and NOT their stat changes, so those aren't available for use to calculate critical hit damage
+so we're redoing damage() to take the two pokemon entirely, not just some attributes, hope it doesn't kill this code
+4:30P- done redoing damage() i hope
+realized there's some ambiguity as to when things should go in hit() and when they should go in move()
+hit() is only ever called in the end of move(), so anything that happens after hit() in move might as well have been appended to hit(), right?
+is the choice arbitrary? is one better than the other? i really don't know team
+anyway it still works i did actually test it this time
+well tackle works so damage() is functional but who knows about umm...everything else in pokemon
+5:07P- finished editing the log...lol
+ 
