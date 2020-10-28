@@ -31,30 +31,30 @@ moremoves=[
         ("Leaf Blade",90,100,15,0,1,3,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
         ("Attack Order",90,100,15,0,0,12,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Tackle",40,100,35,0,1,0,"The user charges to attack.","null"),
-        ("Close Combat",120,100,5,0,1,6,"The user drops theid guard to achieve an all out attack. Lowers Def. and SpD. 1 stage each.","stat self,de:sd,-1:-1,100"),
+        ("Close Combat",120,100,5,0,1,6,"The user drops their guard to achieve an all out attack. Lowers Def. and SpD. 1 stage each.","stat self,de:sd,-1:-1,100"),
         ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch 20"),
         ("Ominous Wind",60,100,5,1,0,13,"The user attacks with a mysterious wind.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"),
         ("Meteor Mash",90,90,10,0,1,16,"The user punches with the power of a meteor. 20% chance to raise user's Atk. 1 stage.","stat self,at,1,20"),
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp"),
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
-        ("Rain Dance",0,100,5,2,0,2,"The user disrupts the local air pressure and causes rain!","rain noMiss"),
+        ("Rain Dance",0,100,5,2,0,2,"The user disrupts the air pressure and causes rain!","rain noMiss"),
         ("Sandstorm",0,100,5,2,0,12,"The user calls on the local sands to whip up a sandstorm!","sand noMiss"),
         ("Hail",0,100,5,2,0,5,"The user summons a cloudy cold front and creates a hailstorm!","hail noMiss"),
         #status moves
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
-        ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1"),
+        ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss"),
         ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100"),
         #to do: terrain moves
-        ("The Final Move",90,100,15,1,0,0,"Last indexed move for coding convenience.","null")
+        ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]
 mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
 coll=tbl.Column(range(0,len(mov)),dtype='i4')
 mov.add_column(coll,index=0,name='index')
 #find struggle
 i=np.argwhere(mov["name"]=="Struggle")
-struggle=mov[i]["index"]
+struggle=int(mov[i]["index"])
 #save the table, especially for readability
 import astropy.io.ascii as asc
 asc.write(mov,'movedex.dat',overwrite=True)
