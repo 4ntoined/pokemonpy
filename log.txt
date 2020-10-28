@@ -120,3 +120,9 @@ but otherwise checking a numpy array (with its determined data type) for particu
 the solution is to make the notes list a np array when we need to run it through argwhere, elsewise leave it a lowly list
 no i did not test the code
 
+28 october 2020
+3:14P- pi time, nice
+edited the todo list to reflect recent additions
+small edits to moves.py
+dk where we're headed rn tbh but we're def gonna get there
+
