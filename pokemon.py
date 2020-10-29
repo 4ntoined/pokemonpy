@@ -554,14 +554,14 @@ class mon:
                 print("It was not very effective.")
             t.sleep(0.4)
             #result of hit
-            print(f"\n{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
-            t.sleep(0.4)
+            print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
+            t.sleep(0.7)
             #check for faint
             if self.currenthp<=0.:
                 self.faint()
             else:
-                print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!\n")
-                t.sleep(0.4)
+                print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
+                t.sleep(0.7)
                 #status conditions
                 notAfflicted=(self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned)
                 notAfflicted=not notAfflicted
@@ -1116,7 +1116,6 @@ while 1:
                             userMon.move(trainerMon,moveDex)
                             if moveDex!=struggleInd:
                                 userMon.PP[fightChoice]-=1
-                            #check for faint, attacked pokemon first, and then attacker
                             if trainerMon.fainted:
                                 tFaint=True
                             if userMon.fainted:
@@ -1125,7 +1124,6 @@ while 1:
                                 flinching=True
                                 print(f"\n{opponentName}'s {trainerMon.name} flinches and can't attack!")
                                 t.sleep(0.7)
-                        #check for faints?
                         ##OPPO ATTACK
                         retaliateClearance=(not trainerShift) and (not flinching) and (not tFaint)
                         if retaliateClearance:
@@ -1183,7 +1181,10 @@ while 1:
                                 uFaint=True
                     #end of turn, pokemon have attacked
                     #end of battle damages should happen before switch ins...right?
-                    print("\n")
+                    
+                    #check if battle is over before damages and before switch ins
+                    #if battle is over, end it, otherwise, do damages before going to switch in 
+                    
                     #damages for pokemon that made it through the turn
                     #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
                     #burns
@@ -1195,7 +1196,7 @@ while 1:
                     if userMon.poisoned and (not uFaint):
                         userMon.poisonDamage()
                     if trainerMon.poisoned and (not tFaint):
-                            trainerMon.poisonDamage()
+                        trainerMon.poisonDamage()
                     #badPoisons
                     if userMon.badlypoisoned and (not uFaint):
                         userMon.badPoison()
@@ -1204,12 +1205,12 @@ while 1:
                         trainerMon.badPoison()
                         trainerMon.poisonCounter+=1
                     #weather
-                    if weather=='sandstorm':
+                    if weather=="sandstorm":
                         if (not uFaint):
                             userMon.sandDamage()
                         if (not tFaint):
                             trainerMon.sandDamage()
-                    if weather=='hail':
+                    if weather=="hail":
                         if (not uFaint):
                             userMon.hailDamage()
                         if (not tFaint):
@@ -1298,58 +1299,62 @@ while 1:
                             t.sleep(0.4)
                     #pokemon have been switch in
                     #is weather still happening
-                    print("\n")
                     weatherCounter-=1
                     if weather=='sunny':
                         if weatherCounter==0:
                             weather='clear'
                             weatherCounter=np.inf
                             print("The harsh sunlight is fading...")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                         else:
                             print("The sunlight is harsh!")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                     if weather=='rain':
                         if weatherCounter==0:
                             weather='clear'
                             weatherCounter=np.inf
                             print("The rain stops...")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                         else:
                             print("It's raining!")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                     if weather=='sandstorm':
                         if weatherCounter==0:
                             weather='clear'
                             weatherCounter=np.inf
                             print("The sandstorm is subsiding...")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                         else:
                             print("The sandstorm is raging!")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                     if weather=='hail':
                         if weatherCounter==0:
                             weather='clear'
                             weatherCounter=np.inf
                             print("The hail stops")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                         else:
                             print("It's hailing ")
-                            t.sleep(0.3)
+                            t.sleep(0.7)
                     #is the terrain still on?
                     terrainCounter-=1
                     if terrainCounter==0:
                         terrain="none"
                         terrainCounter=np.inf
                         print("The terrain faded away...")
+                        t.sleep(0.7)
                     elif terrain=="grassy":
                         print("The battlefield is grassy!")
+                        t.sleep(0.7)
                     elif terrain=="electric":
                         print("The battlefield is electrified!")
+                        t.sleep(0.7)
                     elif terrain=="psychic":
                         print("The battlefield is weird!")
+                        t.sleep(0.7)
                     elif terrain=="misty":
                         print("The battlefield is misty!")
+                        t.sleep(0.7)
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran

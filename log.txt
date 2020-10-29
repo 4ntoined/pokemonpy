@@ -151,3 +151,11 @@ tired
 11:55P- reworked battling all the way, might be broken idk it looks like charmanders hp isnt recalculating after taking sandstorm damage for some reason
 we'll fix it later
 
+29 october 2020
+8:43A- another day, another log entry for me to go overboard for
+I have work to do today, otherwise battling system is coming along well
+need to check for either trainer blackout immediately after moves are used and not after end of turn damages and weather are prompted
+so we'll check for that after moves, if it is the case that neither trainer has blackout out, we can run switch in, after end turn damages, and even without checking for blackout then
+alright..
+
+
