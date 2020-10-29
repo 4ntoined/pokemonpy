@@ -483,7 +483,7 @@ class mon:
         if immune:
             print(f"{self.name} is unaffected by the sandstorm!")
         else:
-            self.currenthp-=self.maxhp/16
+            self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
             print(f"{self.name} took some damage from the sandstorm!")
             if self.currenthp<=0.:
@@ -493,7 +493,7 @@ class mon:
         if 5 in self.tipe:
             print(f"{self.name} is unaffected by the hail!")
         else:
-            self.currenthp-=self.maxhp/16
+            self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
             print(f"{self.name} took some damage from the hail!")
             if self.currenthp<=0.:
@@ -501,13 +501,20 @@ class mon:
     
     #badly poisoned
     def badPoison(self):
-        dmg=self.poisonCounter/16*self.maxhp
+        dmg=self.poisonCounter/16.*self.maxhp
         self.currenthp-=dmg
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took bad poison damage!")
         t.sleep(1)
         if self.currenthp<=0.0:
             self.faint()
+    
+    #healing from grassy terrain
+    def grassyHeal(self):
+        self.currenthp+=self.maxhp/16.
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} is healed by the grassy terrain!")
+        t.sleep(0.2)
         
     def hit(self,attacker,damagepoints,effectiveness,notes,comments):
         if effectiveness==0.:
@@ -548,6 +555,8 @@ class mon:
                 #status conditions
                 notAfflicted=(self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned)
                 notAfflicted=not notAfflicted
+                mistyCheck=(terrain=="misty") and self.grounded #is the pokemon grounded on misty terrain?
+                notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
                 #paralyze
                 if "para" in notes:
                     dice=rng.random() #random number between 0 and 1
@@ -578,6 +587,19 @@ class mon:
                         t.sleep(0.4)
                     elif notAfflicted==False:
                         print("f{self.name} already has a status condition...")
+                #sleep
+                if "sleep" in notes:
+                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="sleep"))])
+                    electricCheck=(terrain=="electric") and self.grounded #electric terrain prevents sleep
+                    notAfflicted=(electricCheck==False) and notAfflicted
+                    if (rng.random()<=odds/100.) and notAfflicted:
+                        self.sleep=True
+                        print(f"{self.name} fell asleep!")
+                        t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{self.name} already has a status condition...")
+                    elif electricCheck:
+                        print(f"The electricity keeps {self.name} awake!")
                 #more status conditions?
                 #end of status conditions
                 #flinching, should only happen if pokemon didnt faint
@@ -687,7 +709,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         grass=(terrain=="grassy") and (moveTipe==3) and (attacker.grounded)
         psychic=(terrain=="psychic") and (moveTipe==10) and (attacker.grounded)
         electric=(terrain=="electric") and (moveTipe==4) and (attacker.grounded)
-        fairy=(terrain=="fairy") and (moveTipe==14) and (defender.grounded)
+        fairy=(terrain=="misty") and (moveTipe==14) and (defender.grounded)
         #realized the three of them would have the exact same effect
         if grass or psychic or electric:
             terrainBonus=1.3
@@ -877,7 +899,10 @@ terrain=rng.choice(Terrains)
 weather='sandstorm'
 terrain='grassy'
 weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
-terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
+if terrain=='none':
+    terrainCounter=np.inf
+else:
+    terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
 
 #team settings
 starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
@@ -1495,34 +1520,56 @@ while 1:
                                         if bShifted:
                                             break
                     #checked for faints
+                    #grassy terrain heal
+                    if terrain=="grassy":
+                        if userMon.grounded:
+                            userMon.grassyHeal()
+                        if trainerMon.grounded:
+                            trainerMon.grassyHeal()
                     #is weather still happening
-                    if weather!='clear':
-                        weatherCounter-=1
+                    weatherCounter-=1
                     if weather=='sunny':
                         if weatherCounter==0:
                             weather='clear'
-                            #reset weatherCounter? maybe not necessary if we avoid counting when weather is clear and it's always reset when new weather is set
+                            weatherCounter=np.inf
                             print("The harsh sunlight is fading...")
                         else:
                             print("The sunlight is harsh!")
                     if weather=='rain':
                         if weatherCounter==0:
                             weather='clear'
+                            weatherCounter=np.inf
                             print("The rain stops...")
                         else:
                             print("It's raining!")
                     if weather=='sandstorm':
                         if weatherCounter==0:
                             weather='clear'
+                            weatherCounter=np.inf
                             print("The sandstorm is subsiding...")
                         else:
                             print("The sandstorm is raging!")
                     if weather=='hail':
                         if weatherCounter==0:
                             weather='clear'
+                            weatherCounter=np.inf
                             print("The hail stops")
                         else:
                             print("It's hailing ")
+                    #is the terrain still on?
+                    terrainCounter-=1
+                    if terrainCounter==0:
+                        terrain="none"
+                        terrainCounter=np.inf
+                        print("The terrain faded away...")
+                    elif terrain=="grassy":
+                        print("The battlefield is grassy!")
+                    elif terrain=="electric":
+                        print("The battlefield is electrified!")
+                    elif terrain=="psychic":
+                        print("The battlefield is weird!")
+                    elif terrain=="misty":
+                        print("The battlefield is misty!")
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
@@ -1531,8 +1578,13 @@ while 1:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        weather=rng.choice(['clear','sunny','rain','sandstorm','hail'])
+        weather=rng.choice(Weathers)
         weatherCounter=np.inf
+        terrain=rng.choice(Terrains)
+        if terrain=="none":
+            terrainCounter=np.inf
+        else:
+            terrainCounter=5
         for i in trainerParty:
             i.restore()
         t.sleep(0.7) #kills

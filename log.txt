@@ -141,4 +141,11 @@ well tackle works so damage() is functional but who knows about umm...everything
 7:02P- battling was in fact broken, physical moves worked, specials didn't because the burn variable was never defined
 anyway terrains are in
 not all the things that terrains affect i.e. causing sleep/confusion, priority..........
- 
+8:10P- okay terrains are mostly implemented wherever i could find to implement them
+no priority moves yet for psychic terrain to prevent,
+ugh earthquake is already in the game i can add that
+okay i'll do that soon i guess
+still no moves that cause confusion, so nothing to cause confusion, so nowhere to set misty terrain to prevent confusion
+but we'll get to that soon i guess as well
+tired
+
