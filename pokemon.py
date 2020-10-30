@@ -350,10 +350,10 @@ class mon:
                 print(f"{self.name} snapped out of confusion!")
             #if still confused, chance to hurt self, end move()
             if self.confused:
-                if rng.random()>0.5:
+                if rng.random()<1/3:
                     self.confusionDamage()
                     return
-        print(f"\n{self.name} used {getMoveInfo(moveIndex)['name']}!")
+        print(f"\n{self.name} uses {getMoveInfo(moveIndex)['name']}!")
         t.sleep(0.4)
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
@@ -371,7 +371,7 @@ class mon:
             effAccu=acevStages[effAccu]
             hitCheck=rng.random()<=effAccu*(moveI['accu']/100.)
         if hitCheck==False: #move misses
-            print(f"\n{self.name}'s attack missed!")
+            print(f"\n{self.name}'s attack misses!")
             t.sleep(0.4)
             return
         else: #move will connect
@@ -424,7 +424,37 @@ class mon:
                         weatherCounter=5
                         print("It starts hailing!")
                 #end of the weathers
-                
+                #terrains
+                global terrain
+                global terrainCounter
+                if "electric" in notas:
+                    if terrain=="electric":
+                        print("The move fails! The battlefield already electrified!")
+                    else:
+                        terrain="electric"
+                        terrainCounter=5
+                        print("Electricity surges throughout the battlefield!")
+                if "grassy" in notas:
+                    if terrain=="grassy":
+                        print("The move fails! The battlefield already grassy!")
+                    else:
+                        terrain="grassy"
+                        terrainCounter=5
+                        print("Grass grows all over the place!")
+                if "misty" in notas:
+                    if terrain=="misty":
+                        print("The move fails! The battlefield already covered in mist!")
+                    else:
+                        terrain="misty"
+                        terrainCounter=5
+                        print("A mist descends on the battlefield!")
+                if "psychic" in notas:
+                    if terrain=="psychic":
+                        print("The move fails! The battlefield already weird!")
+                    else:
+                        terrain="psychic"
+                        terrainCounter=5
+                        print("The battlefield gets weird!")
                 #more status move effects
                 return
             #we check physical/special in damage() now
@@ -713,8 +743,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             damages.append("Rain boost!")
     ####terrain moves####
     if terrain=='none':
-        terrainBonus=1.
-    else:
+        pass
+    else: #only check for terrain boosts when there is a non-none terrain
         #when terrains come into play
         grass=(terrain=="grassy") and (moveTipe==3) and (attacker.grounded)
         psychic=(terrain=="psychic") and (moveTipe==10) and (attacker.grounded)
@@ -722,15 +752,15 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         fairy=(terrain=="misty") and (moveTipe==14) and (defender.grounded)
         #realized the three of them would have the exact same effect
         if grass or psychic or electric:
-            terrainBonus=1.3
+            power*=1.3
             damages.append("Boosted by the terrain!")
         #grounded mon take half damage on fairy terrain
         elif fairy:
-            terrainBonus=0.5
+            power*=0.5
             damages.append("Weakened by the terrain...")
         #there is some terrain, but the other requirements werent met, no effect
         else:
-            terrainBonus=1.
+            pass
     ####critical hit chance####
     critical=1.
     if "highCrit" in note:
@@ -754,7 +784,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####modifiers united####
-    damageModifier=weatherBonus*terrainBonus*critical*rando*STAB*tyype*burn
+    damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
     return ans,damages

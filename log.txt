@@ -158,4 +158,9 @@ need to check for either trainer blackout immediately after moves are used and n
 so we'll check for that after moves, if it is the case that neither trainer has blackout out, we can run switch in, after end turn damages, and even without checking for blackout then
 alright..
 
+30 october 2020
+7:16P- didn't do that other things about checking for blackouts right after the moves are used
+instead implemented terrain moves
+feel like I keep saying terrains are mostly done and then documenting how terrains were even further integrated
+idk they really are mostly done now, disregarding the things that just aren't in the code yet
 
