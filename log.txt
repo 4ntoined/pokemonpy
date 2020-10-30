@@ -163,4 +163,8 @@ alright..
 instead implemented terrain moves
 feel like I keep saying terrains are mostly done and then documenting how terrains were even further integrated
 idk they really are mostly done now, disregarding the things that just aren't in the code yet
+7:52P- did the thing i wrote about yesterday, works p well
+also properly implemented status moves causing status conditions
+guess we'll move on to confusion/freeze/sleep? still need to program those
+ugh they all need counters, i really lost
 

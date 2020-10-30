@@ -455,6 +455,55 @@ class mon:
                         terrain="psychic"
                         terrainCounter=5
                         print("The battlefield gets weird!")
+                #statuses bro
+                notAfflicted=(opponent.sleep or opponent.frozen or opponent.paralyzed or opponent.burned or opponent.poisoned or opponent.badlypoisoned)
+                notAfflicted=not notAfflicted
+                mistyCheck=(terrain=="misty") and opponent.grounded #is the pokemon grounded on misty terrain?
+                notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
+                #paralyze
+                if "para" in notas:
+                    dice=rng.random() #random number between 0 and 1
+                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="para"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
+                        opponent.paralyzed=True
+                        print(f"{opponent.name} is paralyzed by the hit!")
+                        t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{opponent.name} already has a status condition...")
+                #burn
+                if "burn" in notas:
+                    dice=rng.random() #random number between [0 and 1)
+                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
+                        self.burned=True
+                        print(f"{opponent.name} is burned by the hit!")
+                        t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{opponent.name} already has a status condition...")
+                #poison
+                if "pois" in notas:
+                    dice=rng.random() #random number between 0 and 1
+                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]) #the odds in percent of causing paralysis
+                    if dice<=odds/100. and notAfflicted:
+                        self.poisoned=True
+                        print(f"{opponent.name} is poisoned by the hit!")
+                        t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{opponent.name} already has a status condition...")
+                #sleep
+                if "sleep" in notas:
+                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
+                    electricCheck=(terrain=="electric") and opponent.grounded #electric terrain prevents sleep
+                    notAfflicted=(electricCheck==False) and notAfflicted
+                    if (rng.random()<=odds/100.) and notAfflicted:
+                        self.sleep=True
+                        print(f"{opponent.name} fell asleep!")
+                        t.sleep(0.4)
+                    elif notAfflicted==False:
+                        print("f{opponent.name} already has a status condition...")
+                    elif electricCheck:
+                        print(f"The electricity keeps {self.name} awake!")
+                
                 #more status move effects
                 return
             #we check physical/special in damage() now
@@ -558,7 +607,7 @@ class mon:
         if effectiveness==0.:
             print(f"{self.name} is immune!")
         else:
-            print(f"\n{self.name} was hit!")
+            print(f"\n{self.name} is hit!")
             t.sleep(0.4)
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
@@ -570,18 +619,18 @@ class mon:
             self.currenthpp=100*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
-                t.sleep(0.2) #for drama
+                t.sleep(0.4) #for drama
                 print(f"{i}")
             t.sleep(0.4)
             #show effectiveness
-            if effectiveness>2.0:
-                print("It was MEGA-effective!!")
-            if effectiveness<=2.0 and effectiveness>1:
-                print("It was super-effective!")
-            if effectiveness<0.5 and effectiveness>0:
-                print("It was barely effective...")
-            if effectiveness>=0.5 and effectiveness<1:
-                print("It was not very effective.")
+            if effectiveness>2.:
+                print("It's MEGA-effective!!")
+            if effectiveness<=2. and effectiveness>1.:
+                print("It's super-effective!")
+            if effectiveness<0.5 and effectiveness>0.:
+                print("It's barely effective...")
+            if effectiveness>=0.5 and effectiveness<1.:
+                print("It's not very effective.")
             t.sleep(0.4)
             #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
@@ -945,7 +994,9 @@ else:
     terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
 
 #team settings
-starter=mon(1,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
+starter=mon(11,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
+starter.knownMoves=[38]
+starter.PP=[20]
 rival=makeMon(3,5)
 rival2=makeMon(9,12)
 userParty=[starter]
@@ -974,7 +1025,7 @@ while 1:
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
         print("\n________ Opponent Reset ________")
-        t.sleep(1)
+        t.sleep(0.7)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
         if aceChoice=='y':
             trainerParty=userParty.copy()
@@ -1214,7 +1265,24 @@ while 1:
                     
                     #check if battle is over before damages and before switch ins
                     #if battle is over, end it, otherwise, do damages before going to switch in 
-                    
+                    #check for USER BLACKOUT
+                    if uFaint:
+                        if checkBlackout(userParty)[0]==0:
+                            battleOver=True
+                            print("\nYou're out of usable Pokemon!")
+                            t.sleep(0.7)
+                            print("You blacked out!")
+                            t.sleep(0.7)
+                            break
+                    #check for TRAINER BLACKOUT
+                    if tFaint:
+                        blk,blkList=checkBlackout(trainerParty)
+                        if blk==0:
+                            battleOver=True
+                            print(f"\n{opponentName} is out of usable pokemon!\nYou win!")
+                            t.sleep(0.4)
+                            break
+                    print("")
                     #damages for pokemon that made it through the turn
                     #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
                     #burns
@@ -1327,7 +1395,7 @@ while 1:
                             trainerMon=trainerParty[trainerInd]
                             print(f"\n{opponentName}: {trainerMon.name} I'm counting on you!")
                             t.sleep(0.4)
-                    #pokemon have been switch in
+                    #pokemon have been switched in
                     #is weather still happening
                     weatherCounter-=1
                     if weather=='sunny':
