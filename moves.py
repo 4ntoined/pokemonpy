@@ -52,7 +52,9 @@ moremoves=[
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss"),
-        ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100"),
+        ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
+        ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
+        ("Poison Powder",0,75,35,2,2,0,7,"The user creates a poweder to poison the target!","pois 100 typeImmune grass"),
         #to do:
         ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]

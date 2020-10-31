@@ -456,54 +456,66 @@ class mon:
                         terrainCounter=5
                         print("The battlefield gets weird!")
                 #statuses bro
-                notAfflicted=(opponent.sleep or opponent.frozen or opponent.paralyzed or opponent.burned or opponent.poisoned or opponent.badlypoisoned)
-                notAfflicted=not notAfflicted
+                notAfflicted=not (opponent.sleep or opponent.frozen or opponent.paralyzed or opponent.burned or opponent.poisoned or opponent.badlypoisoned)
                 mistyCheck=(terrain=="misty") and opponent.grounded #is the pokemon grounded on misty terrain?
-                notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
+                #notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
                 #paralyze
                 if "para" in notas:
-                    dice=rng.random() #random number between 0 and 1
-                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="para"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        opponent.paralyzed=True
-                        print(f"{opponent.name} is paralyzed by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{opponent.name} already has a status condition...")
+                    if 4 in opponent.tipe: #electric types immune to paralysis
+                        print(f"{opponent.name} is immune to paralysis!")
+                    elif mistyCheck:
+                        print("The mist prevents status conditions!")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="para"))]) #the odds in percent of causing paralysis
+                        if rng.random()<=odds/100. and notAfflicted:
+                            opponent.paralyzed=True
+                            print(f"{opponent.name} is paralyzed by the hit!")
+                            t.sleep(0.4)                            
+                        elif notAfflicted==False:
+                            print(f"{opponent.name} already has a status condition...")
                 #burn
                 if "burn" in notas:
-                    dice=rng.random() #random number between [0 and 1)
-                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        self.burned=True
-                        print(f"{opponent.name} is burned by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{opponent.name} already has a status condition...")
+                    if 1 in opponent.tipe: #fire types immune to burns
+                        print(f"{opponent.name} is immune to burns!")
+                    elif mistyCheck:
+                        print("The mist prevents status conditions!")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]) #the odds in percent of causing paralysis
+                        if rng.random()<=odds/100. and notAfflicted:
+                            opponent.burned=True
+                            print(f"{opponent.name} is burned by the hit!")
+                            t.sleep(0.4)
+                        elif notAfflicted==False:
+                            print(f"{opponent.name} already has a status condition...")
                 #poison
                 if "pois" in notas:
-                    dice=rng.random() #random number between 0 and 1
-                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        self.poisoned=True
-                        print(f"{opponent.name} is poisoned by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{opponent.name} already has a status condition...")
+                    if 7 in opponent.tipe: #poison types immune
+                        print(f"{opponent.name} is immune to being poisoned!")
+                    elif mistyCheck:
+                        print("The mist prevents status conditions!")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]) #the odds in percent of causing paralysis
+                        if rng.random()<=odds/100. and notAfflicted:
+                            opponent.poisoned=True
+                            print(f"{opponent.name} is poisoned by the hit!")
+                            t.sleep(0.4)
+                        elif notAfflicted==False:
+                            print(f"{opponent.name} already has a status condition...")
                 #sleep
                 if "sleep" in notas:
-                    odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
                     electricCheck=(terrain=="electric") and opponent.grounded #electric terrain prevents sleep
-                    notAfflicted=(electricCheck==False) and notAfflicted
-                    if (rng.random()<=odds/100.) and notAfflicted:
-                        self.sleep=True
-                        print(f"{opponent.name} fell asleep!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{opponent.name} already has a status condition...")
-                    elif electricCheck:
+                    if electricCheck:
                         print(f"The electricity keeps {self.name} awake!")
-                
+                    elif mistyCheck:
+                        print("The mist prevents status conditions!")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
+                        if rng.random()<=odds/100. and notAfflicted:
+                            opponent.sleep=True
+                            print(f"{opponent.name} fell asleep!")
+                            t.sleep(0.4)
+                        elif notAfflicted==False:
+                            print(f"{opponent.name} already has a status condition...")                
                 #more status move effects
                 return
             #we check physical/special in damage() now
@@ -995,9 +1007,9 @@ else:
 
 #team settings
 starter=mon(11,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
-starter.knownMoves=[38]
-starter.PP=[20]
-rival=makeMon(3,5)
+starter.knownMoves=[38,39,40]
+starter.PP=[20,10,15]
+rival=makeMon(-1,5)
 rival2=makeMon(9,12)
 userParty=[starter]
 trainerParty=[rival,rival2]
