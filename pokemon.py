@@ -487,9 +487,7 @@ class mon:
                         elif notAfflicted==False:
                             print(f"{opponent.name} already has a status condition...")
                 #poison
-                print("TRASH")
                 if "pois" in notas:
-                    print("PISS!")
                     if 7 in opponent.tipe: #poison types immune
                         print(f"{opponent.name} is immune to being poisoned!")
                     elif mistyCheck:
