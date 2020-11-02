@@ -457,64 +457,69 @@ class mon:
                 #statuses bro
                 notAfflicted=not (opponent.sleep or opponent.frozen or opponent.paralyzed or opponent.burned or opponent.poisoned or opponent.badlypoisoned)
                 mistyCheck=(terrain=="misty") and opponent.grounded #is the pokemon grounded on misty terrain?
-                #notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
                 #paralyze
                 if "para" in notas:
                     if 4 in opponent.tipe: #electric types immune to paralysis
-                        print(f"{opponent.name} is immune to paralysis!")
+                        print(f"\n{opponent.name} is immune to paralysis!")
                     elif mistyCheck:
-                        print("The mist prevents status conditions!")
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
                     else:
                         odds=int(notas[1+int(np.argwhere(np.array(notas)=="para"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100. and notAfflicted:
+                        if rng.random()<=odds/100.:
                             opponent.paralyzed=True
-                            print(f"{opponent.name} is paralyzed by the hit!")
-                            t.sleep(0.4)                            
-                        elif notAfflicted==False:
-                            print(f"{opponent.name} already has a status condition...")
+                            print(f"\n{opponent.name} is paralyzed by the hit!")
+                            t.sleep(0.4)
                 #burn
                 if "burn" in notas:
                     if 1 in opponent.tipe: #fire types immune to burns
-                        print(f"{opponent.name} is immune to burns!")
+                        print(f"\n{opponent.name} is immune to burns!")
                     elif mistyCheck:
-                        print("The mist prevents status conditions!")
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
                     else:
                         odds=int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100. and notAfflicted:
+                        if rng.random()<=odds/100.:
                             opponent.burned=True
-                            print(f"{opponent.name} is burned by the hit!")
+                            print(f"\n{opponent.name} is burned by the hit!")
                             t.sleep(0.4)
-                        elif notAfflicted==False:
-                            print(f"{opponent.name} already has a status condition...")
                 #poison
                 if "pois" in notas:
-                    if 7 in opponent.tipe: #poison types immune
-                        print(f"{opponent.name} is immune to being poisoned!")
+                    if (7 in opponent.tipe) or (16 in opponent.tipe): #poison and steel types immune
+                        print(f"\n{opponent.name} is immune to being poisoned!")
                     elif mistyCheck:
-                        print("The mist prevents status conditions!")
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
                     else:
                         odds=int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100. and notAfflicted:
+                        if rng.random()<=odds/100.:
                             opponent.poisoned=True
-                            print(f"{opponent.name} is poisoned by the hit!")
+                            print(f"\n{opponent.name} is poisoned by the hit!")
                             t.sleep(0.4)
-                        elif notAfflicted==False:
-                            print(f"{opponent.name} already has a status condition...")
+                #who's gonna do badly poisoned lol
                 #sleep
                 if "sleep" in notas:
                     electricCheck=(terrain=="electric") and opponent.grounded #electric terrain prevents sleep
                     if electricCheck:
-                        print(f"The electricity keeps {self.name} awake!")
+                        print(f"\nThe electricity keeps {opponent.name} awake!")
                     elif mistyCheck:
-                        print("The mist prevents status conditions!")
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
                     else:
                         odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
-                        if rng.random()<=odds/100. and notAfflicted:
+                        if rng.random()<=odds/100.:
                             opponent.sleep=True
-                            print(f"{opponent.name} fell asleep!")
+                            print(f"\n{opponent.name} fell asleep!")
                             t.sleep(0.4)
-                        elif notAfflicted==False:
-                            print(f"{opponent.name} already has a status condition...")                
+                #freeze
+                if "frze" in notas:
+                    #we're definitely gonna get into it
+                    pass
+                
                 #more status move effects
                 return
             #we check physical/special in damage() now

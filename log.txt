@@ -179,4 +179,9 @@ gonna idk fix statuses i guess
 4:27P- fixed that thing from the last log, moves.py not working and luxray not being poisoned were related,
 accidentally included an extra 2 in the poison powder info
 BOI
+5:23P- moved around some things in the status moves status conditions
+hopefully it works better but rn it seems like an evenly lateral move to me
+idk this flow makes more sense to me lets hope thats because its more sensible
+uhh i think the very next goal is to implement sleep, freeze, and badPoison
+then i *think* i will be truly done with the main status conditions yas
 
