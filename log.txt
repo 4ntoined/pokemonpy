@@ -169,6 +169,11 @@ guess we'll move on to confusion/freeze/sleep? still need to program those
 ugh they all need counters, i really lost
 9:10P- tried to add some new moves, went and started tweaking inflicting status conditions (via status moves, not damaging moves)
 thinking it'll prob be easier to make these callable functions
-anyway i didn't quite finish, tried testing it, after inflicted luxray with sleep (which has no functionality yet) it tried inflicting poison, and bulbasaur used the move and that was it nothing more happened, especially not a "luxray already has a status condition, which I was expecting
+anyway i didn't quite finish, tried testing it, after inflicting luxray with sleep (which has no functionality yet) i tried inflicting poison, and bulbasaur used the move and that was it nothing more happened, especially not a "luxray already has a status condition, which I was expecting
 anyway I'm tired I'll be back later bye future people
+9:20P- moves.py wont work in terminal, (even though) the main code works it just fine, whatever goodbye again
+
+2 november 2020
+3:32P- we love a hiatus
+gonna idk fix statuses i guess
 
