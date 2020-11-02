@@ -347,7 +347,7 @@ class mon:
             #if counter is at 0, undo confusion
             if self.confusionCounter==0:
                 self.confused=False
-                print(f"{self.name} snapped out of confusion!")
+                print(f"{self.name} snaps out of confusion!")
             #if still confused, chance to hurt self, end move()
             if self.confused:
                 if rng.random()<1/3:
@@ -357,7 +357,6 @@ class mon:
         t.sleep(0.4)
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
-        #notas=np.array(notas)
         ###accuracy check###
         if "noMiss" in notas:
             hitCheck=True
@@ -429,28 +428,28 @@ class mon:
                 global terrainCounter
                 if "electric" in notas:
                     if terrain=="electric":
-                        print("The move fails! The battlefield already electrified!")
+                        print("The move fails! The battlefield is already electrified!")
                     else:
                         terrain="electric"
                         terrainCounter=5
                         print("Electricity surges throughout the battlefield!")
                 if "grassy" in notas:
                     if terrain=="grassy":
-                        print("The move fails! The battlefield already grassy!")
+                        print("The move fails! The battlefield is already grassy!")
                     else:
                         terrain="grassy"
                         terrainCounter=5
                         print("Grass grows all over the place!")
                 if "misty" in notas:
                     if terrain=="misty":
-                        print("The move fails! The battlefield already covered in mist!")
+                        print("The move fails! The battlefield is already covered in mist!")
                     else:
                         terrain="misty"
                         terrainCounter=5
                         print("A mist descends on the battlefield!")
                 if "psychic" in notas:
                     if terrain=="psychic":
-                        print("The move fails! The battlefield already weird!")
+                        print("The move fails! The battlefield is already weird!")
                     else:
                         terrain="psychic"
                         terrainCounter=5
@@ -488,7 +487,9 @@ class mon:
                         elif notAfflicted==False:
                             print(f"{opponent.name} already has a status condition...")
                 #poison
+                print("TRASH")
                 if "pois" in notas:
+                    print("PISS!")
                     if 7 in opponent.tipe: #poison types immune
                         print(f"{opponent.name} is immune to being poisoned!")
                     elif mistyCheck:
@@ -558,7 +559,7 @@ class mon:
     
     #poison
     def poisonDamage(self):
-        self.currenthp-=self.maxphp/8.
+        self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took poison damage!")
         t.sleep(0.3)

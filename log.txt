@@ -176,4 +176,7 @@ anyway I'm tired I'll be back later bye future people
 2 november 2020
 3:32P- we love a hiatus
 gonna idk fix statuses i guess
+4:27P- fixed that thing from the last log, moves.py not working and luxray not being poisoned were related,
+accidentally included an extra 2 in the poison powder info
+BOI
 
