@@ -189,4 +189,6 @@ need to do freeze and sleep preventing move usage, and fixing all this implement
 7:42P- status conditions may be done it depends on how much i forgot i still had to do
 added toxic and maybe confuse ray is next we'll see if i can remember
 idk gonna commit ttyl
+8:11P- very fun and sexy of me to have forgotten to add confuse ray that quickly
+anyway confuse ray is here now, she confuses, we livin
 

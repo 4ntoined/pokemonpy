@@ -56,6 +56,7 @@ moremoves=[
         ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
         ("Poison Powder",0,75,35,2,0,7,"The user creates a poweder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
+        ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
         #to do:
         ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]

@@ -358,7 +358,7 @@ class mon:
                 return
         #confusion prevents rest of move execution
         if self.confused:
-            print(f"{self.name} is confused!")
+            print(f"\n{self.name} is confused!")
             #lower confusion counter for chance to snap out of confusion
             self.confusionCounter-=1
             #if counter is at 0, undo confusion
@@ -563,6 +563,17 @@ class mon:
                         if rng.random()<=odds/100.:
                             opponent.frozen=True
                             print(f"\n{opponent.name} is frozen in place!")
+                            t.sleep(0.4)
+                #confusion
+                if "conf" in notas:
+                    if mistyCheck:
+                        print("\nThe mist prevents status conditions!")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="conf"))])
+                        if rng.random()<=odds/100.:
+                            opponent.confused=True
+                            opponent.confusionCounter=rng.integers(2,6)
+                            print(f"\n{opponent.name} is confused now!")
                             t.sleep(0.4)
                 #more status move effects
                 return
