@@ -334,11 +334,16 @@ class mon:
 
     #pokemon move
     def move(self,opponent,moveIndex):
+        moveI=getMoveInfo(moveIndex)
+        notas=moveI['notes'].split()
         #frozen, can't move
         if self.frozen:
-            if rng.random()<0.2: #user thaws and can move
+            if "thaws" in notas:
                 self.frozen=False
-                print(f"{self.name} thaws out!")
+                print(f"\n{self.name} thaws itself out!")
+            elif rng.random()<0.2: #user thaws and can move
+                self.frozen=False
+                print(f"\n{self.name} thaws out!")
             else:
                 print(f"\n{self.name} is frozen and can't move!")
                 return #end move() user still frozen
@@ -347,7 +352,7 @@ class mon:
             self.sleepCounter-=1
             if self.sleepCounter==0:
                 self.sleep=False
-                print(f"{self.name} wakes up!")
+                print(f"\n{self.name} wakes up!")
             else:
                 print(f"\n{self.name} is fast asleep!")
                 return
@@ -370,10 +375,8 @@ class mon:
                 if rng.random()<1/3:
                     self.confusionDamage()
                     return
-        print(f"\n{self.name} uses {getMoveInfo(moveIndex)['name']}!")
+        print(f"\n{self.name} uses {moveI['name']}!")
         t.sleep(0.4)
-        moveI=getMoveInfo(moveIndex)
-        notas=moveI['notes'].split()
         ###accuracy check###
         if "noMiss" in notas:
             hitCheck=True
@@ -579,8 +582,8 @@ class mon:
                 return
             #we check physical/special in damage() now
             ans,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
-            eff=checkTypeEffectiveness(moveI['type'],opponent.tipe)
-            opponent.hit(self,ans,eff,notas,comment)
+            eff=checkTypeEffectiveness(moveI['type'],opponent.tipe) #put this in hit()
+            opponent.hit(self,ans,eff,notas,moveI['type'],comment)
             #stat changes
             if "stat" in notas:
                 statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
@@ -681,7 +684,7 @@ class mon:
             else:
                 self.currenthpp=100*self.currenthp/self.maxhp
         
-    def hit(self,attacker,damagepoints,effectiveness,notes,comments):
+    def hit(self,attacker,damagepoints,effectiveness,notes,moveTipe,comments):
         if effectiveness==0.:
             print(f"{self.name} is immune!")
         else:
@@ -775,7 +778,11 @@ class mon:
                     if rng.random()<=flinChance/100.:
                         self.flinch()
                     #end of flinching
-                #anything else to do after not fainting?
+                #thaw for fire moves
+                if self.frozen and moveTipe==1:
+                    self.frozen=False
+                    print(f"The Fire-type move thaws {self.name} out!")
+                #anything else to do after not fainting?    
             #check for recoil, apply recoil if present
             if "recoil" in notes:
                 amnt=notes[1+int(np.argwhere(np.array(notes)=="recoil"))]
@@ -785,6 +792,7 @@ class mon:
                     attacker.recoil(attacker.maxhp,1/4)
                 #more possible recoil amounts?
             #recoil belongs in hit, because it doesn't happen if the target is immune to the hit()
+            
             
     
     #recoil
