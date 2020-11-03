@@ -69,16 +69,16 @@ class mon:
         self.evstage=6
         self.acstage=6
         #in battle stats ugh
-        self.bat=self.attack#*statStages[self.atstage]
-        self.bde=self.defense#*statStages[self.destage]
-        self.bsa=self.spatk#*statStages[self.sastage]
-        self.bsd=self.spdef#*statStages[self.sdstage]
-        self.bsp=self.speed#*statStages[self.spstage]
+        self.bat=self.attack
+        self.bde=self.defense
+        self.bsa=self.spatk
+        self.bsd=self.spdef
+        self.bsp=self.speed
         #battle statuses
         self.sleep=False
         self.sleepCounter=0
         self.frozen=False
-        self.freezeCounter=0
+        #self.freezeCounter=0
         self.burned=False
         self.paralyzed=False
         self.poisoned=False
@@ -86,7 +86,7 @@ class mon:
         self.poisonCounter=0
         self.confused=False
         self.confusionCounter=0
-        self.flinched=False
+        self.flinched=False #might not necessarily need this? idk
 
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -334,10 +334,27 @@ class mon:
 
     #pokemon move
     def move(self,opponent,moveIndex):
+        #frozen, can't move
+        if self.frozen:
+            if rng.random()<0.2: #user thaws and can move
+                self.frozen=False
+                print(f"{self.name} thaws out!")
+            else:
+                print(f"\n{self.name} is frozen and can't move!")
+                return #end move() user still frozen
+        #asleep, can't move
+        if self.sleep:
+            self.sleepCounter-=1
+            if self.sleepCounter==0:
+                self.sleep=False
+                print(f"{self.name} wakes up!")
+            else:
+                print(f"\n{self.name} is fast asleep!")
+                return
         #paralysis prevents move execution
         if self.paralyzed:
-            if rng.random()>0.75:
-                print(f"{self.name} is fully paralyzed!")
+            if rng.random()<0.25:
+                print(f"\n{self.name} is fully paralyzed!")
                 return
         #confusion prevents rest of move execution
         if self.confused:
@@ -500,6 +517,21 @@ class mon:
                             print(f"\n{opponent.name} is poisoned by the hit!")
                             t.sleep(0.4)
                 #who's gonna do badly poisoned lol
+                #me ugh
+                if "badPois" in notas:
+                    if (7 in opponent.tipe) or (16 in opponent.tipe): #poison and steel types immune
+                        print(f"\n{opponent.name} is immune to being poisoned!")
+                    elif mistyCheck:
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="badPois"))]) #the odds in percent of causing paralysis
+                        if rng.random()<=odds/100.:
+                            opponent.badlypoisoned=True
+                            opponent.poisonCounter=1
+                            print(f"\n{opponent.name} is badly poisoned by the hit!")
+                            t.sleep(0.4)
                 #sleep
                 if "sleep" in notas:
                     electricCheck=(terrain=="electric") and opponent.grounded #electric terrain prevents sleep
@@ -513,13 +545,25 @@ class mon:
                         odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
                         if rng.random()<=odds/100.:
                             opponent.sleep=True
-                            print(f"\n{opponent.name} fell asleep!")
+                            opponent.sleepCounter=rng.integers(1,4)
+                            print(f"\n{opponent.name} falls asleep!")
                             t.sleep(0.4)
                 #freeze
                 if "frze" in notas:
-                    #we're definitely gonna get into it
-                    pass
-                
+                    if weather=='sunny': #harsh sunlight prevents freezing
+                        print("\nThe harsh sunlight prevents freezing!")
+                    elif 5 in opponent.tipe: #ice types immune to freeze
+                        print(f"\n{opponent.name} is immune to being frozen!")
+                    elif mistyCheck:
+                        print("\nThe mist prevents status conditions!")
+                    elif notAfflicted==False:
+                        print(f"\n{opponent.name} already has a status condition...")
+                    else:
+                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="frze"))])
+                        if rng.random()<=odds/100.:
+                            opponent.frozen=True
+                            print(f"\n{opponent.name} is frozen in place!")
+                            t.sleep(0.4)
                 #more status move effects
                 return
             #we check physical/special in damage() now
@@ -614,10 +658,17 @@ class mon:
     
     #healing from grassy terrain
     def grassyHeal(self):
-        self.currenthp+=self.maxhp/16.
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} is healed by the grassy terrain!")
-        t.sleep(0.3)
+        if self.currenthp==self.maxhp:
+            return #do nothing, say nothing
+        else:
+            self.currenthp+=self.maxhp/16.
+            print(f"{self.name} is healed by the grassy terrain!")
+            t.sleep(0.3)
+            if self.currenthp>self.maxhp: #lets not heal above the max lol
+                self.currenthp=self.maxhp
+                self.currenthpp=100
+            else:
+                self.currenthpp=100*self.currenthp/self.maxhp
         
     def hit(self,attacker,damagepoints,effectiveness,notes,comments):
         if effectiveness==0.:
@@ -1091,7 +1142,7 @@ while 1:
                 
                 ####run away to end battle####
                 if userMove=='r':
-                    print(f"You and {userMon.name} ran away!")
+                    print(f"You and {userMon.name} get away safely!")
                     battleOver=True
                     break
 
@@ -1146,6 +1197,7 @@ while 1:
                                 break
                         #end of pokemon selection loop
                     #end of party pokemon block
+                    #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
 
                 #fight
                 if userMove=='f':                    

@@ -36,7 +36,7 @@ moremoves=[
         ("Ominous Wind",60,100,5,1,0,13,"The user attacks with a mysterious wind. 10% chance to raise all stats 1 stage.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"),
         ("Meteor Mash",90,90,10,0,1,16,"The user punches with the power of a meteor. 20% chance to raise user's Atk. 1 stage.","stat self,at,1,20"),
         ("Flame Wheel",60,100,15,0,1,1,"The user covers itself in fire and rolls into the target! 10% chance to burn","burn 10 thaws"),
-        ("Stomp",65,100,20,0,1,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"),
+        ("Stomp",65,100,20,0,1,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"), #doesn't miss if target used minimize
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp"),
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
@@ -55,6 +55,7 @@ moremoves=[
         ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
         ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
         ("Poison Powder",0,75,35,2,0,7,"The user creates a poweder to poison the target!","pois 100 typeImmune grass"),
+        ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         #to do:
         ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]
