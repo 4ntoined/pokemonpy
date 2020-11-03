@@ -1077,6 +1077,12 @@ starter.knownMoves=[38,39,40]
 starter.PP=[20,10,15]
 rival=makeMon(-1,5)
 rival2=makeMon(9,12)
+bugs=rng.integers(0,len(mov),6)
+rival.knownMoves=list(bugs)
+rival.PP=[getMoveInfo(i)['pp'] for i in bugs]
+boos=rng.integers(0,len(mov),6)
+rival2.knownMoves=list(bugs)
+rival2.PP=[getMoveInfo(i)['pp'] for i in boos]
 userParty=[starter]
 trainerParty=[rival,rival2]
 
