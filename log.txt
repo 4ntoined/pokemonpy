@@ -198,6 +198,8 @@ okay thats enough work for today bye yall
 7:34A- election day :(
 last night i randomized the opponent movesets so thats fun!
 its fun being hit w something other than tackle even though i died immediately
-9:59P- fire moves thaw the target and flare blitz and flame wheel thaw a frozen user
+9:59A- fire moves thaw the target and flare blitz and flame wheel thaw a frozen user
 it's lit
+11:07A- made afflicting status a function of mon() now, so now move() and hit() call afflictStatuses() instead of doing all that work right there
+i also rearranged the functions in mon() for my own sanity
 

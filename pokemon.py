@@ -15,7 +15,7 @@ import time as t
 from moves import getMoveInfo,mov,struggle
 from pokedex import dex
 
-rng=np.random.default_rng(24)
+rng=np.random.default_rng()
 
 class mon:
     def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
@@ -140,7 +140,31 @@ class mon:
             line+=f" {i}"
         f.write(line+"\n")
         f.close()
-
+    
+    #recalculate stats
+    def reStat(self):
+        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        self.currenthp=self.maxhp
+        self.currenthpp=100.
+    
+    ####things to reset upon being withdrawn
+    def withdraw(self):
+        self.atstage=6
+        self.destage=6
+        self.sastage=6
+        self.sdstage=6
+        self.spstage=6
+        self.confused=False
+        self.confusionCounter=0
+        if self.poisonCounter>0:
+            self.poisonCounter=1
+        #other withdraw things
+    
     #fainting
     def faint(self):
         self.currenthp=0.
@@ -164,20 +188,15 @@ class mon:
         self.currenthpp=100.
         self.PP=[getMoveInfo(i)['pp'] for i in self.knownMoves]
         self.fainted=False
-
-    #recalculate stats
-    def reStat(self):
-        self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
-        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
-        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
-        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
-        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
-        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
-        self.currenthp=self.maxhp
-        self.currenthpp=100.
-
-    #use stat stages to calculate battle stats
-    #def battleStats(self):
+        self.poisoned=False
+        self.paralyzed=False
+        self.burned=False
+        self.badlypoisoned=False
+        self.poisonCounter=0
+        self.sleep=False
+        self.sleepCounter=0
+        self.frozen=False
+        
     ####things to call when a pokemon is thrown into battle
     def inBattle(self):
         #stat changes
@@ -197,9 +216,8 @@ class mon:
                 self.bsd*=1.5
                 print(f"{self.name}'s boosted by the sandstorm!")
         #ground or unground pokemon?
-        
         #further in the list
-
+    
     def stageChange(self,stat,level):
         #stat='at','de','sa','sd','sp'
         #level= 1,2,3 or -1,-2,-3
@@ -318,20 +336,116 @@ class mon:
                     self.evstage=0
                 print(f"{self.name}'s Evasion {stageStrings[level+3]}!")
         #end of stat changes
-
-    ####things to reset upon being withdrawn
-    def withdraw(self):
-        self.atstage=6
-        self.destage=6
-        self.sastage=6
-        self.sdstage=6
-        self.spstage=6
-        self.confused=False
-        self.confusionCounter=0
-        if self.poisonCounter>0:
-            self.poisonCounter=1
-        #other withdraw things
-
+    
+    def afflictStatuses(self,notes):
+        global weather
+        global terrain
+        afflicted=self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned
+        mistyCheck=(terrain=="misty") and self.grounded #is the pokemon grounded on misty terrain?
+        #paralyze
+        if "para" in notes:
+            if 4 in self.tipe: #electric types immune to paralysis
+                print(f"\n{self.name} is immune to paralysis!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="para"))]) #the odds in percent of causing paralysis
+                if rng.random()<=odds/100.:
+                    self.paralyzed=True
+                    print(f"\n{self.name} is paralyzed by the hit!")
+                    t.sleep(0.4)
+        #burn
+        if "burn" in notes:
+            if 1 in self.tipe: #fire types immune to burns
+                print(f"\n{self.name} is immune to burns!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="burn"))]) #the odds in percent of causing paralysis
+                if rng.random()<=odds/100.:
+                    self.burned=True
+                    print(f"\n{self.name} is burned by the hit!")
+                    t.sleep(0.4)
+        #poison
+        if "pois" in notes:
+            if (7 in self.tipe) or (16 in self.tipe): #poison and steel types immune
+                print(f"\n{self.name} is immune to being poisoned!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="pois"))]) #the odds in percent of causing paralysis
+                if rng.random()<=odds/100.:
+                    self.poisoned=True
+                    print(f"\n{self.name} is poisoned by the hit!")
+                    t.sleep(0.4)
+        #who's gonna do badly poisoned lol
+        #me ugh
+        if "badPois" in notes:
+            if (7 in self.tipe) or (16 in self.tipe): #poison and steel types immune
+                print(f"\n{self.name} is immune to being poisoned!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="badPois"))]) #the odds in percent of causing paralysis
+                if rng.random()<=odds/100.:
+                    self.badlypoisoned=True
+                    self.poisonCounter=1
+                    print(f"\n{self.name} is badly poisoned by the hit!")
+                    t.sleep(0.4)
+        #sleep
+        if "sleep" in notes:
+            electricCheck=(terrain=="electric") and self.grounded #electric terrain prevents sleep
+            if electricCheck:
+                print(f"\nThe electricity keeps {self.name} awake!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="sleep"))])
+                if rng.random()<=odds/100.:
+                    self.sleep=True
+                    self.sleepCounter=rng.integers(1,4)
+                    print(f"\n{self.name} falls asleep!")
+                    t.sleep(0.4)
+        #freeze
+        if "frze" in notes:
+            if weather=='sunny': #harsh sunlight prevents freezing
+                print("\nThe harsh sunlight prevents freezing!")
+            elif 5 in self.tipe: #ice types immune to freeze
+                print(f"\n{self.name} is immune to being frozen!")
+            elif mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            elif afflicted:
+                print(f"\n{self.name} already has a status condition...")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="frze"))])
+                if rng.random()<=odds/100.:
+                    self.frozen=True
+                    print(f"\n{self.name} is frozen in place!")
+                    t.sleep(0.4)
+        #confusion
+        if "conf" in notes:
+            if mistyCheck:
+                print("\nThe mist prevents status conditions!")
+            else:
+                odds=int(notes[1+int(np.argwhere(np.array(notes)=="conf"))])
+                if rng.random()<=odds/100.:
+                    self.confused=True
+                    self.confusionCounter=rng.integers(2,6)
+                    print(f"\n{self.name} is confused now!")
+                    t.sleep(0.4)
+                #more status move effects
+        return
+    
     #pokemon move
     def move(self,opponent,moveIndex):
         moveI=getMoveInfo(moveIndex)
@@ -475,109 +589,30 @@ class mon:
                         terrainCounter=5
                         print("The battlefield gets weird!")
                 #statuses bro
-                notAfflicted=not (opponent.sleep or opponent.frozen or opponent.paralyzed or opponent.burned or opponent.poisoned or opponent.badlypoisoned)
-                mistyCheck=(terrain=="misty") and opponent.grounded #is the pokemon grounded on misty terrain?
-                #paralyze
+                statuses=[]
                 if "para" in notas:
-                    if 4 in opponent.tipe: #electric types immune to paralysis
-                        print(f"\n{opponent.name} is immune to paralysis!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="para"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100.:
-                            opponent.paralyzed=True
-                            print(f"\n{opponent.name} is paralyzed by the hit!")
-                            t.sleep(0.4)
-                #burn
+                    statuses.append("para")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="para"))]))
                 if "burn" in notas:
-                    if 1 in opponent.tipe: #fire types immune to burns
-                        print(f"\n{opponent.name} is immune to burns!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100.:
-                            opponent.burned=True
-                            print(f"\n{opponent.name} is burned by the hit!")
-                            t.sleep(0.4)
-                #poison
+                    statuses.append("burn")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="burn"))]))
                 if "pois" in notas:
-                    if (7 in opponent.tipe) or (16 in opponent.tipe): #poison and steel types immune
-                        print(f"\n{opponent.name} is immune to being poisoned!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100.:
-                            opponent.poisoned=True
-                            print(f"\n{opponent.name} is poisoned by the hit!")
-                            t.sleep(0.4)
-                #who's gonna do badly poisoned lol
-                #me ugh
+                    statuses.append("pois")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="pois"))]))
                 if "badPois" in notas:
-                    if (7 in opponent.tipe) or (16 in opponent.tipe): #poison and steel types immune
-                        print(f"\n{opponent.name} is immune to being poisoned!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="badPois"))]) #the odds in percent of causing paralysis
-                        if rng.random()<=odds/100.:
-                            opponent.badlypoisoned=True
-                            opponent.poisonCounter=1
-                            print(f"\n{opponent.name} is badly poisoned by the hit!")
-                            t.sleep(0.4)
-                #sleep
-                if "sleep" in notas:
-                    electricCheck=(terrain=="electric") and opponent.grounded #electric terrain prevents sleep
-                    if electricCheck:
-                        print(f"\nThe electricity keeps {opponent.name} awake!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))])
-                        if rng.random()<=odds/100.:
-                            opponent.sleep=True
-                            opponent.sleepCounter=rng.integers(1,4)
-                            print(f"\n{opponent.name} falls asleep!")
-                            t.sleep(0.4)
-                #freeze
+                    statuses.append("badPois")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="badPois"))]))
                 if "frze" in notas:
-                    if weather=='sunny': #harsh sunlight prevents freezing
-                        print("\nThe harsh sunlight prevents freezing!")
-                    elif 5 in opponent.tipe: #ice types immune to freeze
-                        print(f"\n{opponent.name} is immune to being frozen!")
-                    elif mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    elif notAfflicted==False:
-                        print(f"\n{opponent.name} already has a status condition...")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="frze"))])
-                        if rng.random()<=odds/100.:
-                            opponent.frozen=True
-                            print(f"\n{opponent.name} is frozen in place!")
-                            t.sleep(0.4)
-                #confusion
+                    statuses.append("frze")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="frze"))]))
+                if "sleep" in notas:
+                    statuses.append("sleep")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="sleep"))]))
                 if "conf" in notas:
-                    if mistyCheck:
-                        print("\nThe mist prevents status conditions!")
-                    else:
-                        odds=int(notas[1+int(np.argwhere(np.array(notas)=="conf"))])
-                        if rng.random()<=odds/100.:
-                            opponent.confused=True
-                            opponent.confusionCounter=rng.integers(2,6)
-                            print(f"\n{opponent.name} is confused now!")
-                            t.sleep(0.4)
+                    statuses.append("conf")
+                    statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="conf"))]))
+                if len(statuses)>0:
+                    opponent.afflictStatuses(statuses)
                 #more status move effects
                 return
             #we check physical/special in damage() now
@@ -603,87 +638,8 @@ class mon:
                 #end of stat changes
             #anything else to do after a successful hit?
         #anything else to do after either moving or missing?
+        #end of move
     
-    #flinching
-    def flinch(self):
-        self.flinched=True
-    
-    #confusion
-    def confusionDamage(self):
-        dmg=((((2.*self.level)/5. + 2.)*40.*self.bat/self.bde)/50. + 2.)
-        self.currenthp-=dmg
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} hurt itself in its confusion!")
-        t.sleep(0.3)
-        if self.currenthp<=0.:
-            self.faint()
-    
-    #poison
-    def poisonDamage(self):
-        self.currenthp-=self.maxhp/8.
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took poison damage!")
-        t.sleep(0.3)
-        if self.currenthp<=0.:
-            self.faint()
-    
-    def burnDamage(self):
-        #would be the same as poisonDamage tbh
-        self.currenthp-=self.maxhp/8.
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took burn damage!")
-        t.sleep(0.3)
-        if self.currenthp<=0.:
-            self.faint()
-    
-    def sandDamage(self):
-        immune=(12 in self.tipe) or (8 in self.tipe) or (16 in self.tipe) #check for rock, ground, and steel types
-        if immune:
-            print(f"{self.name} is unaffected by the sandstorm!")
-            t.sleep(0.3)
-        else:
-            self.currenthp-=self.maxhp/16.
-            self.currenthpp=100*self.currenthp/self.maxhp
-            print(f"{self.name} took some damage from the sandstorm!")
-            t.sleep(0.3)
-            if self.currenthp<=0.:
-                self.faint()
-
-    def hailDamage(self):
-        if 5 in self.tipe:
-            print(f"{self.name} is unaffected by the hail!")
-            t.sleep(0.3)
-        else:
-            self.currenthp-=self.maxhp/16.
-            self.currenthpp=100*self.currenthp/self.maxhp
-            print(f"{self.name} took some damage from the hail!")
-            t.sleep(0.3)
-            if self.currenthp<=0.:
-                self.faint()
-    
-    #badly poisoned
-    def badPoison(self):
-        self.currenthp-=self.poisonCounter*self.maxhp/16.
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took bad poison damage!")
-        t.sleep(0.3)
-        if self.currenthp<=0.0:
-            self.faint()
-    
-    #healing from grassy terrain
-    def grassyHeal(self):
-        if self.currenthp==self.maxhp:
-            return #do nothing, say nothing
-        else:
-            self.currenthp+=self.maxhp/16.
-            print(f"{self.name} is healed by the grassy terrain!")
-            t.sleep(0.3)
-            if self.currenthp>self.maxhp: #lets not heal above the max lol
-                self.currenthp=self.maxhp
-                self.currenthpp=100
-            else:
-                self.currenthpp=100*self.currenthp/self.maxhp
-        
     def hit(self,attacker,damagepoints,effectiveness,notes,moveTipe,comments):
         if effectiveness==0.:
             print(f"{self.name} is immune!")
@@ -723,54 +679,31 @@ class mon:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
                 t.sleep(0.7)
                 #status conditions
-                notAfflicted=(self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned)
-                notAfflicted=not notAfflicted
-                mistyCheck=(terrain=="misty") and self.grounded #is the pokemon grounded on misty terrain?
-                notAfflicted=(mistyCheck==False) and notAfflicted #consider it already status conditioned
-                #paralyze
+                #statuses bro
+                statuses=[]
                 if "para" in notes:
-                    dice=rng.random() #random number between 0 and 1
-                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="para"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        self.paralyzed=True
-                        print(f"{self.name} is paralyzed by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{self.name} already has a status condition...")
-                #burn
+                    statuses.append("para")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="para"))]))
                 if "burn" in notes:
-                    dice=rng.random() #random number between [0 and 1)
-                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="burn"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        self.burned=True
-                        print(f"{self.name} is burned by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{self.name} already has a status condition...")
-                #poison
+                    statuses.append("burn")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="burn"))]))
                 if "pois" in notes:
-                    dice=rng.random() #random number between 0 and 1
-                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="pois"))]) #the odds in percent of causing paralysis
-                    if dice<=odds/100. and notAfflicted:
-                        self.poisoned=True
-                        print(f"{self.name} is poisoned by the hit!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{self.name} already has a status condition...")
-                #sleep
+                    statuses.append("pois")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="pois"))]))
+                if "badPois" in notes:
+                    statuses.append("badPois")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="badPois"))]))
+                if "frze" in notes:
+                    statuses.append("frze")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="frze"))]))
                 if "sleep" in notes:
-                    odds=int(notes[1+int(np.argwhere(np.array(notes)=="sleep"))])
-                    electricCheck=(terrain=="electric") and self.grounded #electric terrain prevents sleep
-                    notAfflicted=(electricCheck==False) and notAfflicted
-                    if (rng.random()<=odds/100.) and notAfflicted:
-                        self.sleep=True
-                        print(f"{self.name} fell asleep!")
-                        t.sleep(0.4)
-                    elif notAfflicted==False:
-                        print("f{self.name} already has a status condition...")
-                    elif electricCheck:
-                        print(f"The electricity keeps {self.name} awake!")
-                #more status conditions?
+                    statuses.append("sleep")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="sleep"))]))
+                if "conf" in notes:
+                    statuses.append("conf")
+                    statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="conf"))]))
+                if len(statuses)>0:
+                    self.afflictStatuses(statuses)
                 #end of status conditions
                 #flinching, should only happen if pokemon didnt faint
                 if "flinch" in notes:
@@ -782,7 +715,7 @@ class mon:
                 if self.frozen and moveTipe==1:
                     self.frozen=False
                     print(f"The Fire-type move thaws {self.name} out!")
-                #anything else to do after not fainting?    
+                #anything else to do after not fainting?
             #check for recoil, apply recoil if present
             if "recoil" in notes:
                 amnt=notes[1+int(np.argwhere(np.array(notes)=="recoil"))]
@@ -792,17 +725,92 @@ class mon:
                     attacker.recoil(attacker.maxhp,1/4)
                 #more possible recoil amounts?
             #recoil belongs in hit, because it doesn't happen if the target is immune to the hit()
-            
-            
+        #end of hit()
     
+    #flinching
+    def flinch(self):
+        self.flinched=True
     #recoil
     def recoil(self,damagedone,recoilAmount):
-        print(f"{self.name} takes recoil damage!")
         self.currenthp-=damagedone*recoilAmount
         self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} takes recoil damage!")
+        t.sleep(0.3)
         if self.currenthp<=0.:
             self.faint()
-
+    #confusion
+    def confusionDamage(self):
+        dmg=((((2.*self.level)/5. + 2.)*40.*self.bat/self.bde)/50. + 2.)
+        self.currenthp-=dmg
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} hurt itself in its confusion!")
+        t.sleep(0.3)
+        if self.currenthp<=0.:
+            self.faint()
+    #poison
+    def poisonDamage(self):
+        self.currenthp-=self.maxhp/8.
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} took poison damage!")
+        t.sleep(0.3)
+        if self.currenthp<=0.:
+            self.faint()
+    #badly poisoned
+    def badPoison(self):
+        self.currenthp-=self.poisonCounter*self.maxhp/16.
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} took bad poison damage!")
+        t.sleep(0.3)
+        if self.currenthp<=0.0:
+            self.faint()
+    #burn
+    def burnDamage(self):
+        #would be the same as poisonDamage tbh
+        self.currenthp-=self.maxhp/8.
+        self.currenthpp=100*self.currenthp/self.maxhp
+        print(f"{self.name} took burn damage!")
+        t.sleep(0.3)
+        if self.currenthp<=0.:
+            self.faint()
+    #sandstorm
+    def sandDamage(self):
+        immune=(12 in self.tipe) or (8 in self.tipe) or (16 in self.tipe) #check for rock, ground, and steel types
+        if immune:
+            print(f"{self.name} is unaffected by the sandstorm!")
+            t.sleep(0.3)
+        else:
+            self.currenthp-=self.maxhp/16.
+            self.currenthpp=100*self.currenthp/self.maxhp
+            print(f"{self.name} took some damage from the sandstorm!")
+            t.sleep(0.3)
+            if self.currenthp<=0.:
+                self.faint()
+    #hail
+    def hailDamage(self):
+        if 5 in self.tipe:
+            print(f"{self.name} is unaffected by the hail!")
+            t.sleep(0.3)
+        else:
+            self.currenthp-=self.maxhp/16.
+            self.currenthpp=100*self.currenthp/self.maxhp
+            print(f"{self.name} took some damage from the hail!")
+            t.sleep(0.3)
+            if self.currenthp<=0.:
+                self.faint()
+    #healing from grassy terrain
+    def grassyHeal(self):
+        if self.currenthp==self.maxhp:
+            return #do nothing, say nothing
+        else:
+            self.currenthp+=self.maxhp/16.
+            print(f"{self.name} is healed by the grassy terrain!")
+            t.sleep(0.3)
+            if self.currenthp>self.maxhp: #lets not heal above the max lol
+                self.currenthp=self.maxhp
+                self.currenthpp=100
+            else:
+                self.currenthpp=100*self.currenthp/self.maxhp
+    
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")
         if len(self.tipe)==1:
