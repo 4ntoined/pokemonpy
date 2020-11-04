@@ -1319,7 +1319,7 @@ while 1:
                     #does the trainer mon need to rest?
                     if trainerMon.resting:
                         trainerRest=True
-                        print(f"{trainerMon.name} must recharge and cannot attack!")
+                        print(f"\n{trainerMon.name} must recharge and cannot attack!")
                     else:
                         trainerRest=False
                     trainerShift=False
