@@ -9,7 +9,7 @@ index name pwr accu pp special? contact? type desc notes
 7 Double-Edge 120 100 15 0 1 0 "User takes 1/3 recoil damage." "recoil 1/3"
 8 "Volt Tackle" 120 100 15 0 1 4 "User takes 1/3 recoil damage." "recoil 1/3 para 10"
 9 "Brave Bird" 120 100 15 0 1 9 "Takes 1/3 recoil damage." "recoil 1/3"
-10 "Flare Blitz" 120 100 15 0 1 1 "User takes 1/3 recoil damage." "recoil 1/3 burn 10"
+10 "Flare Blitz" 120 100 15 0 1 1 "User takes 1/3 recoil damage." "recoil 1/3 burn 10 thaws"
 11 "Wood Hammer" 120 100 15 0 1 3 "Takes 1/3 recoil damage." "recoil 1/3"
 12 Earthquake 100 100 10 0 0 8 "The user causes a powerful earthquake." nerfGrassy
 13 Judgement 100 100 10 1 0 0 "The user pelts the battlefield with bolts of light from the sky." ""
@@ -39,5 +39,7 @@ index name pwr accu pp special? contact? type desc notes
 37 "Dragon Dance" 0 100 20 2 0 14 "Boosts Atk. and Sp. 1 stage each." "stat self,at:sp,1:1 noMiss"
 38 "Stun Spore" 0 75 30 2 0 3 "The user releases spores that paralyze the target!" "para 100 typeImmune grass"
 39 "Sleep Powder" 0 75 15 2 0 3 "The user uses a powder to lull the target to sleep!" "sleep 100 typeImmune grass"
-40 "Poison Powder" 0 75 35 2 0 7 "The user creates a poweder to poison the target!" "pois 100 typeImmune grass"
-41 "The Final Move" 90 100 15 1 0 0 "Last indexed move, for coding convenience." null
+40 "Poison Powder" 0 75 35 2 0 7 "The user creates a powder to poison the target!" "pois 100 typeImmune grass"
+41 Toxic 0 90 10 2 0 7 "The user badly poisons the target!" "badPois 100 noMissPoisons"
+42 "Confuse Ray" 0 100 10 2 0 13 "The user let loose a sinister beam that causes confusion!" "conf 100"
+43 "The Final Move" 90 100 15 1 0 0 "Last indexed move, for coding convenience." null

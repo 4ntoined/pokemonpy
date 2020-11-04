@@ -21,7 +21,7 @@ moremoves=[
         ("Double-Edge",120,100,15,0,1,0,"User takes 1/3 recoil damage.","recoil 1/3"),
         ("Volt Tackle",120,100,15,0,1,4,"User takes 1/3 recoil damage.","recoil 1/3 para 10"),
         ("Brave Bird",120,100,15,0,1,9,"Takes 1/3 recoil damage.","recoil 1/3"),
-        ("Flare Blitz",120,100,15,0,1,1,"User takes 1/3 recoil damage.","recoil 1/3 burn 10"),
+        ("Flare Blitz",120,100,15,0,1,1,"User takes 1/3 recoil damage.","recoil 1/3 burn 10 thaws"),
         ("Wood Hammer",120,100,15,0,1,3,"Takes 1/3 recoil damage.","recoil 1/3"),
         ("Earthquake",100,100,10,0,0,8,"The user causes a powerful earthquake.","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
         ("Judgement",100,100,10,1,0,0,"The user pelts the battlefield with bolts of light from the sky.",""),
@@ -54,7 +54,7 @@ moremoves=[
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss"),
         ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
         ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
-        ("Poison Powder",0,75,35,2,0,7,"The user creates a poweder to poison the target!","pois 100 typeImmune grass"),
+        ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
         #to do:

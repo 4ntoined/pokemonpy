@@ -208,4 +208,11 @@ it's umm...how they say, lit..
 11:07P- hey gossip girl, added moveInfo() function to show a neat description of a move
 think this needs to be added to pokemon battles as well and maybe move tutor? we'll definitely see about it
 anyway commiting this
+11:50P- TIRED, cleaned up move info display implemented it in [P]okemon and in pokemon in battle and in being forced to switch out in battle because of a faint
+so most places
+move deleter should come next i think
+
+4 november 2020
+12:29A- move deleter is up and running now
+very tired
 

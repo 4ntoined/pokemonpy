@@ -824,26 +824,24 @@ class mon:
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
     def summary(self):
-        print(f"\n###### {self.name} Summary ######")
+        print(f"\n############ {self.name} Summary ############")
         if self.dualType:
-            print(f"{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+            print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
-            print(f"{typeStrings[self.tipe[0]]}")
+            print(f"\n{typeStrings[self.tipe[0]]}")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{self.attack}")
         print(f"Def : \t{self.defense}")
         print(f"Sp.A: \t{self.spatk}")
         print(f"Sp.D: \t{self.spdef}")
         print(f"Spe : \t{self.speed}")
-        print(f"############ {self.name}'s Moves #############")
-        for i in range(len(self.knownMoves)):
-            print(f"\n{getMoveInfo(self.knownMoves[i])['name']} \t{self.PP[i]}/{getMoveInfo(self.knownMoves[i])['pp']} PP")
-        print("##############################################")
+        self.showMoves()
+        print("\n##############################################")
 
     def showMoves(self):
-        print("\n---- {self.name}'s Moves ----")
+        print(f"\n############ {self.name}'s Moves #############")
         for i in range(len(self.knownMoves)):
-            print(f"{self.knownMoves[i]['name']} ")
+            print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
     #anymore pokemon attributes?
         
         
@@ -1041,7 +1039,7 @@ def checkBlackout(party):
 def moveInfo(moveCode):
     move=mov[moveCode]
     print(f"------------ {move['name']} ------------")
-    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}")
+    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
     if move['special?']==2:
         print(f"[{typeStrings[move['type']]}] | [Status] | PP: {move['pp']}")
     elif move['special?']==1:
@@ -1134,7 +1132,7 @@ t.sleep(1)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(0.7)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\n[R]eset Party\n[L]oad\n:")
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\n[R]eset Party\n[L]oad\nMove D[E]leter\n:")
 
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
@@ -1217,12 +1215,37 @@ while 1:
                                 print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
                             else:
                                 while 1:
-                                    pChoice=input(f"Shift {select.name} into battle?\n[y] or [b]ack: ")
+                                    pChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
                                     #go back
-                                    if pChoice=='b':
+                                    if pChoice=="b" or pChoice=="B":
                                         break
+                                    #show move details
+                                    if pChoice=="m" or pChoice=="M":
+                                        while 1: #move input loop for displaying move info
+                                            select.showMoves()
+                                            movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
+                                            if movChoice=="b" or movChoice=="B":
+                                                #leave move info selection, back to what to do w pokemon
+                                                break
+                                            #try to get numbers from user input
+                                            try:
+                                                movez=movChoice.split() #pokemon movelist index (string)
+                                                movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                                movez=[select.knownMoves[i] for i in movez] #pokemon move movedex index
+                                            except ValueError:
+                                                print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                            except IndexError:
+                                                print("\n** Use the indices to select moves to take a closer look at. **")
+                                            else:
+                                                for i in range(len(movez)):
+                                                    print("")
+                                                    moveInfo(movez[i])
+                                                    t.sleep(0.4) #drama
+                                                #we got all the move info out?, go back to pokemon?
+                                                pause=input("\nEnter anything to continue back to Pokemon summary...")
+                                                break 
                                     #switch pokemon
-                                    if pChoice=='y':
+                                    if pChoice=="s" or pChoice=="S":
                                         #keep fainted pokemon off the field
                                         if select.fainted:
                                             print("** Cannot switch in fainted Pokemon! **")
@@ -1232,7 +1255,7 @@ while 1:
                                             break
                                         switching=True
                                         break
-                                    #anything other than y repeats the loop
+                                    #anything other than approved things repeat the loop
                                 if switching:
                                     break
                             #end of pokemon selection loop
@@ -1460,17 +1483,40 @@ while 1:
                                     select=userParty[nuserInd]
                                     select.summary()
                                 except ValueError:
-                                    print("\n! Enter a [#] corresponding to a Pokemon!\nor [b]ack !")
+                                    print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
                                 except IndexError:
-                                    print("\n! Enter a [#] corresponding to a Pokemon!\nor [b]ack !")
+                                    print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
                                 else:
                                     while 1: #another user input loop to loop at a pokemon
-                                        sChoice=input(f"Shift {select.name} into battle?\n[y]es or [b]ack: ")
+                                        sChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
                                         #go back
-                                        if sChoice=='b':
+                                        if sChoice=='b' or sChoice=="B":
                                             break
+                                        if sChoice=="m" or sChoice=="M":
+                                            while 1: #move input loop for displaying move info
+                                                select.showMoves()    
+                                                movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
+                                                if movChoice=="b" or movChoice=="B":
+                                                    #leave move info selection, back to what to do w pokemon
+                                                    break
+                                                #try to get numbers from user input
+                                                try:
+                                                    movez=movChoice.split() #pokemon movelist index (string)
+                                                    movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                                    movez=[select.knownMoves[i] for i in movez] #pokemon move movedex index
+                                                except ValueError:
+                                                    print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                                except IndexError:
+                                                    print("\n** Use the indices to select moves to take a closer look at. **")
+                                                else:
+                                                    for i in range(len(movez)):
+                                                        print("")
+                                                        moveInfo(movez[i])
+                                                        t.sleep(0.4) #drama
+                                                    #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
+                                                    break 
                                         #switch pokemon
-                                        if sChoice=='y':
+                                        if sChoice=='s' or sChoice=="S":
                                             #keep fainted pokemon off the field
                                             if select.fainted:
                                                 print("** Cannot switch in fainted Pokemon! **")
@@ -1626,10 +1672,7 @@ while 1:
                     selMon.summary()
                     sumChoice=input(f"What to do with {selMon.name}?\n[s]ave, set [f]irst, see [m]oves or [b]ack: ")
                     #go back to pokemon selection
-                    if sumChoice=='b':
-                        t.sleep(0.7)
-                        break
-                    if sumChoice=='B':
+                    if sumChoice=='b' or sumChoice=="B":
                         t.sleep(0.7)
                         break
                     #save
@@ -1665,11 +1708,9 @@ while 1:
                         t.sleep(0.7) #kills
                         continue
                     #
-                    if sumChoice=='m':
+                    if sumChoice=="m" or sumChoice=="M":
                         while 1: #user input loop
-                            print(f"############ {selMon.name}'s Moves #############")
-                            for i in range(len(selMon.knownMoves)):
-                                print(f"[{i+1}] {getMoveInfo(selMon.knownMoves[i])['name']}\t{selMon.PP[i]}/{getMoveInfo(selMon.knownMoves[i])['pp']} PP")
+                            selMon.showMoves()
                             movChoice=input("Which move to look at?\n[#] or [b]ack: ")
                             if movChoice=="b" or movChoice=="B":
                                 #leave move info selection, back to what to do w pokemon
@@ -2158,6 +2199,63 @@ while 1:
                         print("\n!! Entry must be number or list of numbers separated by spaces !!")
                     except IndexError:
                         print("\n!! Entry must correspond to Party Pokemon !!")
+            #
+    if userChoice=="e" or userChoice=="E":
+        print("\n******** Move Deleter ********")
+        t.sleep(0.7)
+        print("\nHere you can get rid of unwanted moves.")
+        t.sleep(0.7)
+        while 1: #user input loop
+            print("\n******** Party Pokemon ********\n*******************************\n")
+            for i in range(len(userParty)):
+                if userParty[i].dualType:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                    thipe+=" // "
+                    thipe+=typeStrings[userParty[i].tipe[1]]
+                else:
+                    thipe=typeStrings[userParty[i].tipe[0]]
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
+            print("\n*******************************\n")
+            leteChoice=input("Select a Pokemon [#] to look at\nor [b]ack: ")
+            #go back
+            if leteChoice=="b" or leteChoice=="B":
+                print("Leaving Move Deleter...")
+                t.sleep(0.7)
+                break
+            try:
+                select=userParty[int(leteChoice)-1]
+            except ValueError:
+                print("\n** Enter [#] of a pokemon above! **")
+            except IndexError:
+                print("\n** Use the legend to enter [#] of a Pokemon! **")
+            else:
+                while 1: #user input loop
+                    select.summary()
+                    mvChoice=input("Which moves should be deleted?\n[#] or [b]ack: ")
+                    if mvChoice=="b" or mvChoice=="B":
+                        t.sleep(0.7)
+                        break
+                    try:
+                        chooz=np.array([int(i)-1 for i in mvChoice.split()])
+                        for i in range(len(chooz)):
+                            if len(select.knownMoves)==1: #catch players trying to dump whole moveset
+                                print("** Pokemon cannot forget its last move **")
+                                break
+                            if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
+                                byeMove=select.knownMoves.pop(chooz[i])
+                                print(f"{select.name} forgets {mov[byeMove]['name']}...")
+                            else:
+                                removedIndices=np.count_nonzero(chooz[0:i]<chooz[i]) #how many selected indices that are *lower* than current one have already been removed
+                                chooz[i]-=removedIndices
+                                byeMove=select.knownMoves.pop(chooz[i])
+                                print(f"{select.name} forgets {mov[byeMove]['name']}...")
+                        print("Selected moves have been forgetten!")
+                        t.sleep(0.7) #kills
+                        break
+                    except ValueError:
+                        print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
+                    except IndexError:
+                        print("\n** Entry must correspond to Pokemon move! **")
             #
     ####what's the next spot?####
 
