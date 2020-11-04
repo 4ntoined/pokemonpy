@@ -1091,8 +1091,8 @@ Terrains=['none','electric','grassy','misty','psychic']
 weather=rng.choice(Weathers)
 terrain=rng.choice(Terrains)
 #but i still make the rules
-weather='sandstorm'
-terrain='grassy'
+#weather='sandstorm'
+#terrain='grassy'
 weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
 if terrain=='none':
     terrainCounter=np.inf
@@ -1100,17 +1100,21 @@ else:
     terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
 
 #team settings
-starter=mon(11,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([12,7]))
-starter.knownMoves=[38,39,40]
-starter.PP=[20,10,15]
+#user
+starter=mon(11,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
+ranMoves=rng.choice(len(mov),size=4,replace=False)
+starter.knownMoves=list(ranMoves)
+starter.PP=[mov[i]["pp"] for i in ranMoves]
+#oppo
 rival=makeMon(-1,5)
 rival2=makeMon(9,12)
 bugs=rng.integers(0,len(mov),6)
 rival.knownMoves=list(bugs)
-rival.PP=[getMoveInfo(i)['pp'] for i in bugs]
+rival.PP=[mov[i]["pp"] for i in bugs]
 boos=rng.integers(0,len(mov),6)
-rival2.knownMoves=list(bugs)
-rival2.PP=[getMoveInfo(i)['pp'] for i in boos]
+rival2.knownMoves=list(boos)
+rival2.PP=[mov[i]["pp"] for i in boos]
+#stuff them into their parties
 userParty=[starter]
 trainerParty=[rival,rival2]
 
