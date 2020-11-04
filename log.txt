@@ -205,4 +205,7 @@ i also rearranged the functions in mon() for my own sanity
 5:37P- reorganized battling again in an effort to add having to rest after big moves like hyper beam blast burn etc.
 actually tested the code, it seems to work
 it's umm...how they say, lit..
+11:07P- hey gossip girl, added moveInfo() function to show a neat description of a move
+think this needs to be added to pokemon battles as well and maybe move tutor? we'll definitely see about it
+anyway commiting this
 

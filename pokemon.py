@@ -1039,10 +1039,20 @@ def checkBlackout(party):
 
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
-    movepower=0
-    moveSpecial=0
-    moveTiipe=0
-    return movepower,moveSpecial,moveTiipe
+    move=mov[moveCode]
+    print(f"------------ {move['name']} ------------")
+    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}")
+    if move['special?']==2:
+        print(f"[{typeStrings[move['type']]}] | [Status] | PP: {move['pp']}")
+    elif move['special?']==1:
+        print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
+    elif move['special?']==0:
+        print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
+    print("-\n"+move['desc'])
+    if move['contact?']:
+        print("-The user makes contact with the target.")
+    else:
+        print("-The user does not make contact with the target.")
 
 #class party():
     #def __init__(self):
@@ -1614,7 +1624,7 @@ while 1:
             else:
                 while 1:
                     selMon.summary()
-                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave, set [f]irst or [b]ack: ")
+                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave, set [f]irst, see [m]oves or [b]ack: ")
                     #go back to pokemon selection
                     if sumChoice=='b':
                         t.sleep(0.7)
@@ -1655,6 +1665,32 @@ while 1:
                         t.sleep(0.7) #kills
                         continue
                     #
+                    if sumChoice=='m':
+                        while 1: #user input loop
+                            print(f"############ {selMon.name}'s Moves #############")
+                            for i in range(len(selMon.knownMoves)):
+                                print(f"[{i+1}] {getMoveInfo(selMon.knownMoves[i])['name']}\t{selMon.PP[i]}/{getMoveInfo(selMon.knownMoves[i])['pp']} PP")
+                            movChoice=input("Which move to look at?\n[#] or [b]ack: ")
+                            if movChoice=="b" or movChoice=="B":
+                                #leave move info selection, back to what to do w pokemon
+                                break
+                            #try to get numbers from user input
+                            try:
+                                movez=movChoice.split() #pokemon movelist index (string)
+                                movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                movez=[selMon.knownMoves[i] for i in movez] #pokemon move movedex index
+                            except ValueError:
+                                print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                            except IndexError:
+                                print("\n** Use the indices to select moves to take a closer look at. **")
+                            else:
+                                for i in range(len(movez)):
+                                    print("")
+                                    moveInfo(movez[i])
+                                    t.sleep(0.4) #drama
+                                #we got all the move info out?, go back to pokemon?
+                                pause=input("\nEnter anything to continue back to Pokemon summary...")
+                                break
                 #
             #end of while block
         print("Going back to main screen...")
