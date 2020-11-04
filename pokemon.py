@@ -3,8 +3,8 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: natures, terrains, ABILITIES *cough*, genders ugh
-#*******************: terrain moves
+#*********to do list: natures, ABILITIES *cough*, genders ugh
+#*******************: user set battle setting,
 #*******************: 
 #
 
@@ -160,11 +160,17 @@ class mon:
         self.sastage=6
         self.sdstage=6
         self.spstage=6
+        self.bat=self.attack
+        self.bde=self.defense
+        self.bsa=self.spatk
+        self.bsd=self.spdef
+        self.bsp=self.speed
         self.confused=False
         self.confusionCounter=0
         if self.poisonCounter>0:
             self.poisonCounter=1
-        #other withdraw things
+        self.resting=False
+        self.flinched=False
     
     #fainting
     def faint(self):
@@ -437,6 +443,8 @@ class mon:
         if "conf" in notes:
             if mistyCheck:
                 print("\nThe mist prevents status conditions!")
+            elif self.confused:
+                print(f"\n{self.name} is already confused!")
             else:
                 odds=int(notes[1+int(np.argwhere(np.array(notes)=="conf"))])
                 if rng.random()<=odds/100.:
@@ -1108,10 +1116,10 @@ starter.PP=[mov[i]["pp"] for i in ranMoves]
 #oppo
 rival=makeMon(-1,5)
 rival2=makeMon(9,12)
-bugs=rng.integers(0,len(mov),6)
+bugs=rng.choice(len(mov),size=6,replace=False)
 rival.knownMoves=list(bugs)
 rival.PP=[mov[i]["pp"] for i in bugs]
-boos=rng.integers(0,len(mov),6)
+boos=rng.choice(len(mov),size=6,replace=False)
 rival2.knownMoves=list(boos)
 rival2.PP=[mov[i]["pp"] for i in boos]
 #stuff them into their parties
@@ -1186,7 +1194,7 @@ while 1:
                 print(f"HP: {format(trainerMon.currenthpp,'.2f')}%")
                 print("\n............Your team:")
                 print(f"............{userMon.name} // Level {userMon.level}")
-                print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')}")
+                print(f"............HP: {format(userMon.currenthp,'.2f')}/{format(userMon.maxhp,'.2f')} ({format(userMon.currenthpp,'.2f')}%)")
                 if userMon.resting:
                     resting=True
                     print(f"\n{userMon.name} is recharging and can't move...")
@@ -1452,7 +1460,7 @@ while 1:
                         if (not uFaint):
                             userMon.hailDamage()
                         if (not tFaint):
-                            trainerMon.hailDamge()
+                            trainerMon.hailDamage()
                     #grassy terrain heal
                     #make sure we're not bringing anyone back to life after possible damages
                     if userMon.fainted:
@@ -1600,7 +1608,7 @@ while 1:
                             print("The hail stops")
                             t.sleep(0.7)
                         else:
-                            print("It's hailing ")
+                            print("It's hailing!")
                             t.sleep(0.7)
                     #is the terrain still on?
                     terrainCounter-=1
@@ -1637,7 +1645,10 @@ while 1:
         else:
             terrainCounter=5
         for i in trainerParty:
+            i.withdraw()
             i.restore()
+        for i in userParty:
+            i.withdraw()
         t.sleep(0.7) #kills
     ###end of battle block###
         

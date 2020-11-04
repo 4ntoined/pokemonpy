@@ -1,7 +1,7 @@
 #companion to pokemon.py
 #Antoine Washington
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
-#ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
+#ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
 
 import numpy as np
@@ -17,7 +17,7 @@ moremoves=[
         ("Hydro Cannon",150,90,5,1,0,2,"Blast of water! Must rest on next turn.","mustRest"),
         ("Giga Impact",150,90,5,0,1,0,"Must rest on next turn.","mustRest"),
         ("Roar of Time",150,90,5,1,0,14,"The user roars to distort time and inflict damage. Must rest on next turn.","mustRest"),
-        ("Rock Wrecker",150,90,5,0,0,13,"Must rest on next turn.","mustRest"),
+        ("Rock Wrecker",150,90,5,0,0,12,"Must rest on next turn.","mustRest"),
         ("Double-Edge",120,100,15,0,1,0,"User takes 1/3 recoil damage.","recoil 1/3"),
         ("Volt Tackle",120,100,15,0,1,4,"User takes 1/3 recoil damage.","recoil 1/3 para 10"),
         ("Brave Bird",120,100,15,0,1,9,"Takes 1/3 recoil damage.","recoil 1/3"),
@@ -29,7 +29,7 @@ moremoves=[
         ("Ice Beam",90,100,15,1,0,5,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze 10"),
         ("Thunderbolt",90,100,15,1,0,4,"The user attacks with a bolt of lightning! 10% chance to paralyze.","para 10"),
         ("Leaf Blade",90,100,15,0,1,3,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
-        ("Attack Order",90,100,15,0,0,12,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
+        ("Attack Order",90,100,15,0,0,11,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Tackle",40,100,35,0,1,0,"The user charges to attack.","null"),
         ("Close Combat",120,100,5,0,1,6,"The user drops their guard to achieve an all out attack. Lowers Def. and SpD. 1 stage each.","stat self,de:sd,-1:-1,100"),
         ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch 20"),
@@ -57,7 +57,7 @@ moremoves=[
         ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
-        #to do:
+        #to do: max moves! weather ball?, terrain pulse
         ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]
 mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
