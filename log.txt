@@ -215,4 +215,7 @@ move deleter should come next i think
 4 november 2020
 12:29A- move deleter is up and running now
 very tired
+1:11A- cleaned up a lot of the stuff and expanded move info to move tutor screen
+so that's all very good
+wanted to jot down a note here but i forgot it
 
