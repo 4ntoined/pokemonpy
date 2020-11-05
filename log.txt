@@ -221,4 +221,5 @@ wanted to jot down a note here but i forgot it
 9:30A- minor edits in places, tying up loose ends, bug fixes, etc
 next big thing should be uhh either natures or weather ball or user set battle setting
 idk i'll figure it out
+10:15A- need to stop user from starting a battle if they have no non-fainted pokemon
 
