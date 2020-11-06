@@ -981,47 +981,55 @@ def loadMon(savefile):
     try:
         dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
         loadPokes=[]
-        multi=type(dat[0])==np.ndarray
-        if multi:
+        if type(dat[0])==np.ndarray:
             for i in dat:
-                loadMe=i
-                name=loadMe[0]
-                lvl=int(loadMe[1])
-                bases=loadMe[2].split() #should give list of 6 base stats, technically strings
-                baseI=[int(ii) for ii in bases]
-                ivys=loadMe[3].split()
-                ivz=[int(ii) for ii in ivys]
-                evys=loadMe[4].split()
-                evz=[int(iii) for iii in evys]
-                typ=np.array([int(iiii) for iiii in loadMe[5].split()])
-                mves=[int(iiiii) for iiiii in loadMe[6].split()]
-                newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-                newP.knownMoves=mves
+                if int(i[1])<=0: #invalid levels
+                    return [0]
+                baseI=[int(ii) for ii in i[2].split()]
+                if min(baseI)<=0:
+                    return [0]
+                ivz=[int(ii) for ii in i[3].split()]
+                if min(ivz)<0: #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
+                    return [0]
+                evz=[int(iii) for iii in i[4].split()]
+                if min(evz)<0: #same with evs, no positive limits
+                    return [0]
+                typ=np.array([int(iiii) for iiii in i[5].split()])
+                if max(typ)>18 or min(typ)<0: #invalid types
+                    return [0]
+                newP=mon(int(i[1]),i[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+                newP.knownMoves=[int(iiiii) for iiiii in i[6].split()]
                 newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
                 newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-                newP.PP=[getMoveInfo(i)['pp'] for i in mves]
+                newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
                 newP.reStat()
                 loadPokes.append(newP)
                 print(f"Loaded {newP.name}!")
+                t.sleep(0.4)
         else:
-            name=dat[0]
-            lvl=int(dat[1])
-            bases=dat[2].split()
-            baseI=[int(ii) for ii in bases]
-            ivys=dat[3].split()
-            ivz=[int(ii) for ii in ivys]
-            evys=dat[4].split()
-            evz=[int(iii) for iii in evys]
+            if int(dat[1])<=0: #invalid levels
+                return [0]
+            baseI=[int(ii) for ii in dat[2].split()]
+            if min(baseI)<=0:
+                return [0]
+            ivz=[int(ii) for ii in dat[3].split()]
+            if min(ivz)<0: #i guess im going to allow ivs beyond 31, via save files, go nuts, negatives are a big no though
+                return [0]
+            evz=[int(iii) for iii in dat[4].split()]
+            if min(evz)<0: #same with evs, no positive limits
+                return [0]
             typ=np.array([int(iiii) for iiii in dat[5].split()])
-            mves=[int(iiiii) for iiiii in dat[6].split()]
-            newP=mon(lvl,name,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-            newP.knownMoves=mves
+            if max(typ)>18 or min(typ)<0: #invalid types, I am going to allow typeless? why not
+                return [0]
+            newP=mon(int(dat[1]),dat[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+            newP.knownMoves=[int(iiiii) for iiiii in dat[6].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-            newP.PP=[getMoveInfo(i)['pp'] for i in mves]
+            newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")
+            t.sleep(0.4)
         return loadPokes
     except FileNotFoundError:
         print("! The file name wasn't found... !\n")
@@ -1029,9 +1037,11 @@ def loadMon(savefile):
     except OSError:
         print("! The file name wasn't found... !\n")
         return [0]
-    except:
+    except IndexError:
         print("!! The save file is corrupted !!")
         return [0]
+    
+    
         
 #check party for non fainted pokemon
 def checkBlackout(party):
@@ -1693,7 +1703,7 @@ while 1:
                     #save
                     if sumChoice=='s':
                         while 1:
-                            savename=input("Enter name of savefile...\n[blanck] to use default savefile name\nor [b]ack\n: ")
+                            savename=input("Enter name of savefile...\n[blank] to use default savefile name\nor [b]ack\n: ")
                             if savename=='b':
                                 t.sleep(0.7)
                                 break
@@ -2104,17 +2114,14 @@ while 1:
         while 1: #savefile input loop
             saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
             #go back
-            if saveChoice=='b':
-                print("Leaving Load Pokemon..")
-                t.sleep(0.7)
-                break
-            if saveChoice=='B':
+            if saveChoice=='b' or saveChoice=='b':
                 print("Leaving Load Pokemon..")
                 t.sleep(0.7)
                 break
             if saveChoice=="":
                 newMons=loadMon("pypokemon.sav")
                 if newMons[0]==0: #if error in loading data, ask for savefile again
+                    print("\n!! Something is wrong with this savefile !!")
                     continue
                 #add all the pokemon to the party
                 for i in newMons:
@@ -2126,7 +2133,7 @@ while 1:
             else:
                 try:
                     newMons=loadMon(saveChoice)
-                except:
+                except IndexError:
                     print("! That filename wasn't found !**\nno reason why this should run")
                 else:
                     if newMons[0]==0: #error in loading data

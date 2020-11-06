@@ -223,3 +223,17 @@ next big thing should be uhh either natures or weather ball or user set battle s
 idk i'll figure it out
 10:15A- need to stop user from starting a battle if they have no non-fainted pokemon
 
+6 nov 2020
+5:25P- tags
+gotta pop tags
+cleaned up load pokemon to catch illegal levels and types
+just realized I should be checking for negative numbers in ivs and evs as well
+okay I'll be back i guess
+6:02P- okay i'm back
+controlled for negative levels, negative evs and ivs, and non-positive base stats
+also got rid of a lot of the variables in loadMon() in general
+actually i just thought about it and i could probably deal with files with 1 line and files with multiples lines in one go
+the data is already inputted as a numpy array, i could easily reshape the 1D arrays into 2D,
+to mirror how the multi-poke savefiles are already structured...a bunch of lines...
+UGH okay i'll be back
+
