@@ -236,4 +236,11 @@ actually i just thought about it and i could probably deal with files with 1 lin
 the data is already inputted as a numpy array, i could easily reshape the 1D arrays into 2D,
 to mirror how the multi-poke savefiles are already structured...a bunch of lines...
 UGH okay i'll be back
+6:14P- back again....
+yeah loadMon() is looking _sleek_ now
+don't know where I'm headed now?
+uhh i wanted to show status conditions in the battle UI
+so maybe that
+I also wanted to implement more weather dependant moves
+okay too many
 

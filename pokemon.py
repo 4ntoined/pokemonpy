@@ -981,48 +981,25 @@ def loadMon(savefile):
     try:
         dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
         loadPokes=[]
-        if type(dat[0])==np.ndarray:
-            for i in dat:
-                if int(i[1])<=0: #invalid levels
-                    return [0]
-                baseI=[int(ii) for ii in i[2].split()]
-                if min(baseI)<=0:
-                    return [0]
-                ivz=[int(ii) for ii in i[3].split()]
-                if min(ivz)<0: #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
-                    return [0]
-                evz=[int(iii) for iii in i[4].split()]
-                if min(evz)<0: #same with evs, no positive limits
-                    return [0]
-                typ=np.array([int(iiii) for iiii in i[5].split()])
-                if max(typ)>18 or min(typ)<0: #invalid types
-                    return [0]
-                newP=mon(int(i[1]),i[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-                newP.knownMoves=[int(iiiii) for iiiii in i[6].split()]
-                newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
-                newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-                newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
-                newP.reStat()
-                loadPokes.append(newP)
-                print(f"Loaded {newP.name}!")
-                t.sleep(0.4)
-        else:
-            if int(dat[1])<=0: #invalid levels
+        if type(dat[0])==np.str_: #only the case if there's only 1 pokemon
+            dat=dat.reshape((1,-1)) #to treat this pokemon like any other line in a list of saved pokemon
+        for i in dat:
+            if int(i[1])<=0: #invalid levels
                 return [0]
-            baseI=[int(ii) for ii in dat[2].split()]
+            baseI=[int(ii) for ii in i[2].split()]
             if min(baseI)<=0:
                 return [0]
-            ivz=[int(ii) for ii in dat[3].split()]
-            if min(ivz)<0: #i guess im going to allow ivs beyond 31, via save files, go nuts, negatives are a big no though
+            ivz=[int(ii) for ii in i[3].split()]
+            if min(ivz)<0: #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
                 return [0]
-            evz=[int(iii) for iii in dat[4].split()]
+            evz=[int(iii) for iii in i[4].split()]
             if min(evz)<0: #same with evs, no positive limits
                 return [0]
-            typ=np.array([int(iiii) for iiii in dat[5].split()])
-            if max(typ)>18 or min(typ)<0: #invalid types, I am going to allow typeless? why not
+            typ=np.array([int(iiii) for iiii in i[5].split()])
+            if max(typ)>18 or min(typ)<0: #invalid types
                 return [0]
-            newP=mon(int(dat[1]),dat[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-            newP.knownMoves=[int(iiiii) for iiiii in dat[6].split()]
+            newP=mon(int(i[1]),i[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+            newP.knownMoves=[int(iiiii) for iiiii in i[6].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
             newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
@@ -1041,8 +1018,6 @@ def loadMon(savefile):
         print("!! The save file is corrupted !!")
         return [0]
     
-    
-        
 #check party for non fainted pokemon
 def checkBlackout(party):
     p=0
