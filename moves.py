@@ -37,6 +37,9 @@ moremoves=[
         ("Meteor Mash",90,90,10,0,1,16,"The user punches with the power of a meteor. 20% chance to raise user's Atk. 1 stage.","stat self,at,1,20"),
         ("Flame Wheel",60,100,15,0,1,1,"The user covers itself in fire and rolls into the target! 10% chance to burn","burn 10 thaws"),
         ("Stomp",65,100,20,0,1,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"), #doesn't miss if target used minimize
+        ("Solar Beam",120,100,10,1,0,3,"The user focuses sunlight into a beam to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
+        ("Solar Blade",125,100,10,0,1,3,"The user focuses sunlight into a blade to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
+        ("Weather Ball",50,100,10,1,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp"),
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),

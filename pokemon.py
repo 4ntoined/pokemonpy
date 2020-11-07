@@ -624,9 +624,7 @@ class mon:
                     opponent.afflictStatuses(statuses)
                 #more status move effects
                 return
-            #we check physical/special in damage() now
-            ans,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
-            eff=checkTypeEffectiveness(moveI['type'],opponent.tipe) #put this in hit()
+            ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
             opponent.hit(self,ans,eff,notas,moveI['type'],comment)
             #stat changes
             if "stat" in notas:
@@ -878,6 +876,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=1.
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
+    ####weather ball#### doubles power and changes type
+    if ("weatherball" in note) and (weather!="clear"):
+        power*=2.
+        if weather=="sunny":
+            moveTipe=1
+        if weather=="rain":
+            moveTipe=2
+        if weather=="sandstorm":
+            moveTipe=12
+        if weather=="hail":
+            moveTipe=5
+        damages.append("Weather Ball changes type!")
     ####weather damage boost####
     weatherBonus=1.
     if weather=='sunny':
@@ -940,7 +950,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
-    return ans,damages
+    return ans,tyype,damages
 
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
@@ -1253,8 +1263,8 @@ rival2.PP=[mov[i]["pp"] for i in boos]
 userParty=[starter]
 trainerParty=[rival,rival2]
 
-print(dex)
-t.sleep(0.5)
+#print(dex)
+#t.sleep(0.5)
 print(mov)
 t.sleep(0.5)
 
@@ -2153,7 +2163,10 @@ while 1:
                     print("** Enter a [#] corresponding to a Pokemon !!**\n")
                 else:
                     #otherwise, print the moves, godspeed
-                    print(mov)
+                    print("\n------------ Pokemon Moves ------------")
+                    for i in range(len(mov)):
+                        print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
+                    print("------------------------")
                     while 1: #input loop
                         chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
                         #go back to choose a pokemon

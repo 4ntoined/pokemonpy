@@ -247,3 +247,7 @@ okay too many
 we love innovation
 need more moves...
 
+7 november 2020
+5:21P- added weather ball
+started working on the solar moves, and so as well the infrastructure for 2-turn moves
+
