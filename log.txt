@@ -243,4 +243,7 @@ uhh i wanted to show status conditions in the battle UI
 so maybe that
 I also wanted to implement more weather dependant moves
 okay too many
+7:44P- umm you can check on stat stages, status conditions, etc. in battle now with [s]
+we love innovation
+need more moves...
 

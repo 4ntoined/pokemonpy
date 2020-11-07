@@ -1028,6 +1028,148 @@ def checkBlackout(party):
             alive.append(i)
     return p,alive
 
+#check status of battle
+def checkBattle(red,blue):
+    print(f"\n******{blue.name}******")
+    if blue.dualType:
+            print(f"{typeStrings[blue.tipe[0]]} // {typeStrings[blue.tipe[1]]}")
+    else:
+        print(f"{typeStrings[blue.tipe[0]]}")
+    #should be all status conditions
+    if blue.poisoned:
+        print("__POISONED__")
+    if blue.badlypoisoned:
+        print("__BADLY_POISONED__")
+    if blue.burned:
+        print("__BURNED__")
+    if blue.paralyzed:
+        print("__PARALYZED__")
+    if blue.frozen:
+        print("__FROZEN__")
+    if blue.sleep:
+        print("__ASLEEP__")
+    if blue.confused:
+        print("**confused**")
+    #show hp
+    if blue.currenthpp>=91:
+        print(f"HP |############| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<91 and blue.currenthpp>=82:
+        print(f"HP |###########.| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=82 and blue.currenthpp>75:
+        print(f"HP |##########..| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=75 and blue.currenthpp>66:
+        print(f"HP |#########...| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=66 and blue.currenthpp>58:
+        print(f"HP |########....| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=58 and blue.currenthpp>50:
+        print(f"HP |#######.....| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=50 and blue.currenthpp>41:
+        print(f"HP |######......| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=41 and blue.currenthpp>33:
+        print(f"HP |#####.......| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=33 and blue.currenthpp>25:
+        print(f"HP |####........| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=25 and blue.currenthpp>16:
+        print(f"HP |###.........| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=16 and blue.currenthpp>8:
+        print(f"HP |##..........| {format(blue.currenthpp,'.2f')}%")
+    if blue.currenthpp<=8 and blue.currenthpp>0:
+        print(f"HP |#...........| {format(blue.currenthpp,'.2f')}%")
+    #stat boosts
+    blueStats=[blue.atstage-6,blue.destage-6,blue.sastage-6,blue.sdstage-6,blue.spstage-6,blue.acstage-6,blue.evstage-6]
+    statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
+    print("\nStat Boosts and Nerfs\n****************************")
+    for i in range(len(blueStats)):
+        if blueStats[i]==0:
+            print(statstrs[i]+" none")
+        elif blueStats[i]>0:
+            print(statstrs[i]+f" +{blueStats[i]}")
+        elif blueStats[i]<0:
+            print(statstrs[i]+f" {blueStats[i]}")
+    print("------------------------------------")
+    print(f"************{red.name}************")
+    if red.dualType:
+            print(f"{typeStrings[red.tipe[0]]} // {typeStrings[red.tipe[1]]}")
+    else:
+        print(f"{typeStrings[red.tipe[0]]}")
+    #should be all status conditions
+    if red.poisoned:
+        print("__POISONED__")
+    if red.badlypoisoned:
+        print("__BADLY_POISONED__")
+    if red.burned:
+        print("__BURNED__")
+    if red.paralyzed:
+        print("__PARALYZED__")
+    if red.frozen:
+        print("__FROZEN__")
+    if red.sleep:
+        print("__ASLEEP__")
+    if red.confused:
+        print("**confused**")
+    #show hp
+    if red.currenthpp>=91:
+        print(f"HP |############| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<91 and red.currenthpp>=82:
+        print(f"HP |###########.| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=82 and red.currenthpp>75:
+        print(f"HP |##########..| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=75 and red.currenthpp>66:
+        print(f"HP |#########...| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=66 and red.currenthpp>58:
+        print(f"HP |########....| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=58 and red.currenthpp>50:
+        print(f"HP |#######.....| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=50 and red.currenthpp>41:
+        print(f"HP |######......| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=41 and red.currenthpp>33:
+        print(f"HP |#####.......| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=33 and red.currenthpp>25:
+        print(f"HP |####........| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=25 and red.currenthpp>16:
+        print(f"HP |###.........| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=16 and red.currenthpp>8:
+        print(f"HP |##..........| {format(red.currenthpp,'.2f')}%")
+    if red.currenthpp<=8 and red.currenthpp>0:
+        print(f"HP |#...........| {format(red.currenthpp,'.2f')}%")
+    #stat boosts
+    redStats=[red.atstage-6,red.destage-6,red.sastage-6,red.sdstage-6,red.spstage-6,red.acstage-6,red.evstage-6]
+    statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
+    print("\nStat Boosts and Nerfs\n****************************")
+    for i in range(len(redStats)):
+        if redStats[i]==0:
+            print(statstrs[i]+" none")
+        elif redStats[i]>0:
+            print(statstrs[i]+f" +{redStats[i]}")
+        elif redStats[i]<0:
+            print(statstrs[i]+f" {redStats[i]}")
+    print("------------------------------------")
+    print("-------Battle Settings-------")
+    if weather=="clear":
+        weat="CLEAR"
+    elif weather=="sunny":
+        weat="SUNNY"
+    elif weather=="rain":
+        weat="RAINING"
+    elif weather=="sandstorm":
+        weat="SANDSTORM"
+    elif weather=="hail":
+        weat="HAILING"
+    print(f"Weather : {weat}")
+    if terrain=="none":
+        terr="NONE"
+    elif terrain=="grassy":
+        terr="GRASSY"
+    elif terrain=="electric":
+        terr="ELECTRIC"
+    elif terrain=="psychic":
+        terr="PSYCHIC"
+    elif terrain=="misty":
+        terr="MISTY"
+    print(f"Terrain : {terr}")
+    print("\n___ End of battle status ___")
+    
+    
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
     move=mov[moveCode]
@@ -1152,15 +1294,15 @@ while 1:
     ####Battles####
     if userChoice=='b':
         ####Battle starts####
-        print("A battle has started!")
+        print("\nYou've been challenged to a Pokemon Battle!")
         t.sleep(1)
         userMon=userParty[0]
         userInd=0
-        print(f"{userMon.name}! I choose you!")
+        print(f"\n{userMon.name}! I choose you!")
         t.sleep(1)
         trainerMon=trainerParty[0]
         trainerInd=0
-        print(f"{opponentName}: {trainerMon.name}! Go!")
+        print(f"\n{opponentName}: {trainerMon.name}! Go!")
         t.sleep(1)
         turn=1
         ####turn begins####
@@ -1185,13 +1327,18 @@ while 1:
                     print(f"\n{userMon.name} is recharging and can't move...")
                 else:
                     resting=False
-                    userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[R]un\n: ")
+                    userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[S]tatus\n[R]un\n: ")
                     
                     ####run away to end battle####
                     if userMove=='r':
                         print(f"You and {userMon.name} get away safely!")
                         battleOver=True
                         break
+                    
+                    ###check status of battle?
+                    if userMove=="s" or userMove=="S":
+                        checkBattle(userMon,trainerMon)
+                        input("enter anything to go back...")
     
                     #go party pokemon
                     if userMove=='p':
