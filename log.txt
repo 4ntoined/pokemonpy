@@ -250,4 +250,7 @@ need more moves...
 7 november 2020
 5:21P- added weather ball
 started working on the solar moves, and so as well the infrastructure for 2-turn moves
+7:45P- think i figured out 2-turn moves for the user, but they are a little broken for opponents
+also haven't properly figured out the pp-situation w/ 2-turns
+but im tired now
 
