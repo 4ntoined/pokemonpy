@@ -3,7 +3,7 @@ decided to start a dedicated log
 started work on a "pokedex" to store information for pokemon like stat details so they can be called upon in the code
 ran into some trouble with getting astropy tables to let me store a numpy array in the table
 found a work around but i don't like it
-debating whether or not a like representing the pokemon types as numbers, especially directly to the player
+debating whether or not i like representing the pokemon types as numbers, especially directly to the player
 but the numbers are very convenient for coding like...
 bruh idk
 
@@ -253,4 +253,11 @@ started working on the solar moves, and so as well the infrastructure for 2-turn
 7:45P- think i figured out 2-turn moves for the user, but they are a little broken for opponents
 also haven't properly figured out the pp-situation w/ 2-turns
 but im tired now
+
+9 november 2020
+8:14A- not working on the code rn but pp exhaustion should go *in* move, this should help get the 2-turn mess in order
+8:33P- shoutout to my past 12 hours yikes lol
+gonna look into fixing 2-turn moves no promises
+9:23P- bruh the way i just fixed 2-turn moves
+still haven't fixed the PP though so watch out for those patch notes soon
 

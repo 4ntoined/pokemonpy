@@ -22,8 +22,11 @@ moremon=[
         ("Dragonite",91,134,95,100,100,80,14,9),
         ('Lugia',106,90,130,90,154,110,10,9),
         ('Ho-oh',106,130,90,110,154,90,1,9),
-        ('Luxray',80,120,79,95,79,70,4,20)
+        ('Luxray',80,120,79,95,79,70,4,20),
+        ("Spiritomb",50,92,108,92,108,35,13,15),
+        ("Lucario",70,110,70,115,70,90,6,16),
         #
+        ("The Last Pokemon",80,80,80,80,80,80,0,1)
         ]
 dex=tbl.Table(rows=moremon,names=('name','hp','at','de','sa','sd','sp','type1','type2'),dtype=('U16','i4','i4','i4','i4','i4','i4','i4','i4'))
 indie=tbl.Column(range(0,len(dex)),dtype='i4')

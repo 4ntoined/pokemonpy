@@ -56,12 +56,13 @@ moremoves=[
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
         ("Dragon Dance",0,100,20,2,0,14,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss"),
+        ("Geomancy",0,100,10,2,0,17,"The user absorbs energy from its surroundings to power up!\nBoosts Sp.A Sp.D Spd. 2 stages each.\nTwo-turn move.","stat self,sa:sd:sp,2:2:2 noMiss 2turn geomance"),
         ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
         ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
         ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
-        #to do: max moves! weather ball?, terrain pulse
+        #to do: max moves! terrain pulse
         ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
         ]
 mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))

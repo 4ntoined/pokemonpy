@@ -172,6 +172,7 @@ class mon:
             self.poisonCounter=1
         self.resting=False
         self.flinched=False
+        self.charged=False
     
     #fainting
     def faint(self):
@@ -503,9 +504,9 @@ class mon:
         #check if move needs to be charged
         if "2turn" in notas:
             if self.charged: #pokemon has charged the move already
-                pass
+                self.charged=False #pokemon will release the move
             else:
-                if "solar" in notas:
+                if "solar" in notas: #all of these will lead to a return, ending move()
                     print(f"\n{self.name} is taking in sunlight!")
                     self.charged=True
                     if weather=="sunny": #if sun is out, continue to use the move
@@ -514,6 +515,11 @@ class mon:
                         return
                 elif "skullbash" in notas:
                     print(f"{self.name} tucks its head in...")
+                    self.charged=True
+                    self.stageChange("de",1)
+                    return
+                elif "geomance" in notas:
+                    print(f"{self.name} is absorbing energy!")
                     self.charged=True
                     return
                 #other labels for other moves and charging contexts
@@ -1065,19 +1071,19 @@ def checkBattle(red,blue):
         print(f"{typeStrings[blue.tipe[0]]}")
     #should be all status conditions
     if blue.poisoned:
-        print("__POISONED__")
+        print("__ POISONED __")
     if blue.badlypoisoned:
-        print("__BADLY_POISONED__")
+        print("__ BADLY POISONED __")
     if blue.burned:
-        print("__BURNED__")
+        print("__ BURNED __")
     if blue.paralyzed:
-        print("__PARALYZED__")
+        print("__ PARALYZED __")
     if blue.frozen:
-        print("__FROZEN__")
+        print("__ FROZEN __")
     if blue.sleep:
-        print("__ASLEEP__")
+        print("__ ASLEEP __")
     if blue.confused:
-        print("**confused**")
+        print("** confused **")
     #show hp
     if blue.currenthpp>=91:
         print(f"HP |############| {format(blue.currenthpp,'.2f')}%")
@@ -1272,7 +1278,7 @@ starter.PP=[mov[i]["pp"] for i in ranMoves]
 rival=makeMon(-1,5)
 rival2=makeMon(9,12)
 bugs=rng.choice(len(mov),size=6,replace=False)
-bugs=[28,31,32]
+bugs=[28,26,32,42]
 rival.knownMoves=list(bugs)
 rival.PP=[mov[i]["pp"] for i in bugs]
 boos=rng.choice(len(mov),size=6,replace=False)
@@ -1282,10 +1288,10 @@ rival2.PP=[mov[i]["pp"] for i in boos]
 userParty=[starter]
 trainerParty=[rival,rival2]
 
-#print(dex)
-#t.sleep(0.5)
-print(mov)
+print(dex)
 t.sleep(0.5)
+#print(mov)
+#t.sleep(0.5)
 
 #####testing####
 #trainerParty=loadMon("cynthia.sav").copy()
@@ -1497,7 +1503,7 @@ while 1:
                     #10% chance for opponent to randomly switch pokemon
                     #check how many nonfainted pokemon trainer has
                     nfp,nfpList=checkBlackout(trainerParty)
-                    if nfp>1 and rng.random()<0.1 and (not trainerRest) and (not trainerCharge): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
+                    if nfp>1 and rng.random()<0.1 and (not trainerRest) and (not trainerMon.charged): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
                         del nfpList[int(np.argwhere(np.array(nfpList)==trainerInd))] #removing the current pokemon from the list of nonfainted pokemon in the party
                         trainerMon.withdraw()
                         trainerParty[trainerInd]=trainerMon #put pokemon away
@@ -1517,6 +1523,10 @@ while 1:
                     uFaint=False
                     tFaint=False
                     flinching=False
+                    if trainerMon.charged:
+                        pass #trainMoveInd should already be set from last round
+                    else:
+                        trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
                     ##USER FASTER##
                     if userFast:
                         #USER ATTACK
@@ -1541,10 +1551,6 @@ while 1:
                             elif np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
                                 trainerMon.move(userMon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                if trainerCharge:
-                                    pass
-                                else:
-                                    trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
                                 trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
                                 trainerMon.PP[trainMoveInd]-=1
                             if userMon.fainted:
@@ -1558,7 +1564,6 @@ while 1:
                             if np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
                                 trainerMon.move(userMon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
                                 trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
                                 trainerMon.PP[trainMoveInd]-=1
                             #check for faints
@@ -1590,10 +1595,6 @@ while 1:
                         userMon.resting=False
                     if trainerRest:
                         trainerMon.resting=False
-                    if charging:
-                        userMon.charged=False
-                    if trainerCharge:
-                        trainerMon.charged=False
                     #check for USER BLACKOUT
                     if checkBlackout(userParty)[0]==0:
                         battleOver=True

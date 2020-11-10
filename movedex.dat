@@ -29,23 +29,28 @@ index name pwr accu pp special? contact? type desc notes
 Two-turn move, one-turn in harsh sunlight." "2turn solar"
 27 "Solar Blade" 125 100 10 0 1 3 "The user focuses sunlight into a blade to attack!
 Two-turn move, one-turn in harsh sunlight." "2turn solar"
-28 "Weather Ball" 50 100 10 1 0 0 "The user harnesses the power of the weather to attack!
+28 "Skull Bash" 130 100 10 0 1 0 "The user tucks its head in and charges at the target.
+Two-turn move." "2turn skullbash"
+29 "Weather Ball" 50 100 10 1 0 0 "The user harnesses the power of the weather to attack!
 Changes type and doubles power in non-clear weather." weatherball
-29 Struggle 50 100 1 0 1 18 "The user is otherwise out of moves." "noMiss recoil 1/4maxhp"
-30 "Sunny Day" 0 100 5 2 0 1 "The user calls on the Sun and causes harsh sunlight!" "sun noMiss"
-31 "Rain Dance" 0 100 5 2 0 2 "The user disrupts the air pressure and causes rain!" "rain noMiss"
-32 Sandstorm 0 100 5 2 0 12 "The user calls on the local sands to whip up a sandstorm!" "sand noMiss"
-33 Hail 0 100 5 2 0 5 "The user summons a cloudy cold front and creates a hailstorm!" "hail noMiss"
-34 "Electric Terrain" 0 100 10 2 0 4 "The user electrifies the battlefield! Electric-type moves get a 30% boost." "electric noMiss"
-35 "Grassy Terrain" 0 100 10 2 0 3 "The user covers the battlefield with grass! Grass-type moves get a 30% boost." "grassy noMiss"
-36 "Misty Terrain" 0 100 10 2 0 17 "The user covers the battlefield in mist! Dragon-type moves get a 50% nerf." "misty noMiss"
-37 "Psychic Terrain" 0 100 10 2 0 10 "The user makes the battlefield weird! Psychic-type moves get a 30% boost." "psychic noMiss"
-38 "Swords Dance" 0 100 20 2 0 0 "Boosts Atk. 2 stages." "stat self,at,2 noMiss"
-39 "Nasty Plot" 0 100 20 2 0 15 "Boosts SpA. 2 stages." "stat self,sa,2 noMiss"
-40 "Dragon Dance" 0 100 20 2 0 14 "Boosts Atk. and Sp. 1 stage each." "stat self,at:sp,1:1 noMiss"
-41 "Stun Spore" 0 75 30 2 0 3 "The user releases spores that paralyze the target!" "para 100 typeImmune grass"
-42 "Sleep Powder" 0 75 15 2 0 3 "The user uses a powder to lull the target to sleep!" "sleep 100 typeImmune grass"
-43 "Poison Powder" 0 75 35 2 0 7 "The user creates a powder to poison the target!" "pois 100 typeImmune grass"
-44 Toxic 0 90 10 2 0 7 "The user badly poisons the target!" "badPois 100 noMissPoisons"
-45 "Confuse Ray" 0 100 10 2 0 13 "The user let loose a sinister beam that causes confusion!" "conf 100"
-46 "The Final Move" 90 100 15 1 0 0 "Last indexed move, for coding convenience." null
+30 Struggle 50 100 1 0 1 18 "The user is otherwise out of moves." "noMiss recoil 1/4maxhp"
+31 "Sunny Day" 0 100 5 2 0 1 "The user calls on the Sun and causes harsh sunlight!" "sun noMiss"
+32 "Rain Dance" 0 100 5 2 0 2 "The user disrupts the air pressure and causes rain!" "rain noMiss"
+33 Sandstorm 0 100 5 2 0 12 "The user calls on the local sands to whip up a sandstorm!" "sand noMiss"
+34 Hail 0 100 5 2 0 5 "The user summons a cloudy cold front and creates a hailstorm!" "hail noMiss"
+35 "Electric Terrain" 0 100 10 2 0 4 "The user electrifies the battlefield! Electric-type moves get a 30% boost." "electric noMiss"
+36 "Grassy Terrain" 0 100 10 2 0 3 "The user covers the battlefield with grass! Grass-type moves get a 30% boost." "grassy noMiss"
+37 "Misty Terrain" 0 100 10 2 0 17 "The user covers the battlefield in mist! Dragon-type moves get a 50% nerf." "misty noMiss"
+38 "Psychic Terrain" 0 100 10 2 0 10 "The user makes the battlefield weird! Psychic-type moves get a 30% boost." "psychic noMiss"
+39 "Swords Dance" 0 100 20 2 0 0 "Boosts Atk. 2 stages." "stat self,at,2 noMiss"
+40 "Nasty Plot" 0 100 20 2 0 15 "Boosts SpA. 2 stages." "stat self,sa,2 noMiss"
+41 "Dragon Dance" 0 100 20 2 0 14 "Boosts Atk. and Sp. 1 stage each." "stat self,at:sp,1:1 noMiss"
+42 Geomancy 0 100 10 2 0 17 "The user absorbs energy from its surroundings to power up!
+Boosts Sp.A Sp.D Spd. 2 stages each.
+Two-turn move." "stat self,sa:sd:sp,2:2:2 noMiss 2turn geomance"
+43 "Stun Spore" 0 75 30 2 0 3 "The user releases spores that paralyze the target!" "para 100 typeImmune grass"
+44 "Sleep Powder" 0 75 15 2 0 3 "The user uses a powder to lull the target to sleep!" "sleep 100 typeImmune grass"
+45 "Poison Powder" 0 75 35 2 0 7 "The user creates a powder to poison the target!" "pois 100 typeImmune grass"
+46 Toxic 0 90 10 2 0 7 "The user badly poisons the target!" "badPois 100 noMissPoisons"
+47 "Confuse Ray" 0 100 10 2 0 13 "The user let loose a sinister beam that causes confusion!" "conf 100"
+48 "The Final Move" 90 100 15 1 0 0 "Last indexed move, for coding convenience." null
