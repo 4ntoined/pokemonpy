@@ -505,8 +505,8 @@ class mon:
         if "2turn" in notas:
             if self.charged: #pokemon has charged the move already
                 self.charged=False #pokemon will release the move
-            else:
-                if "solar" in notas: #all of these will lead to a return, ending move()
+            else: #all of these will lead to a return, ending move() before anything else happens
+                if "solar" in notas:
                     print(f"\n{self.name} is taking in sunlight!")
                     self.charged=True
                     if weather=="sunny": #if sun is out, continue to use the move
@@ -514,12 +514,12 @@ class mon:
                     else: #otherwise end the move
                         return
                 elif "skullbash" in notas:
-                    print(f"{self.name} tucks its head in...")
+                    print(f"\n{self.name} tucks its head in...")
                     self.charged=True
                     self.stageChange("de",1)
                     return
                 elif "geomance" in notas:
-                    print(f"{self.name} is absorbing energy!")
+                    print(f"\n{self.name} is absorbing energy!")
                     self.charged=True
                     return
                 #other labels for other moves and charging contexts
@@ -1275,10 +1275,10 @@ ranMoves=rng.choice(len(mov),size=4,replace=False)
 starter.knownMoves=list(ranMoves)
 starter.PP=[mov[i]["pp"] for i in ranMoves]
 #oppo
-rival=makeMon(-1,5)
-rival2=makeMon(9,12)
+rival=makeMon(rng.integers(0,len(dex)),starter.level-1)
+rival2=makeMon(rng.integers(0,len(dex)),starter.level+5)
 bugs=rng.choice(len(mov),size=6,replace=False)
-bugs=[28,26,32,42]
+#bugs=[28,26,32,42]
 rival.knownMoves=list(bugs)
 rival.PP=[mov[i]["pp"] for i in bugs]
 boos=rng.choice(len(mov),size=6,replace=False)

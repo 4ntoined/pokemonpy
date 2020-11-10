@@ -262,3 +262,6 @@ gonna look into fixing 2-turn moves no promises
 still haven't fixed the PP though so watch out for those patch notes soon
 10:17P- user can change battle conditions ie weather/terrain
 
+10 november 2020
+11:38A- nothing substantial, but im done testing 2turn moves for now i think, so opponent moves and now opponent pokemon are set to be randomized
+
