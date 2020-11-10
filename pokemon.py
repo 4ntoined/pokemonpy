@@ -1306,8 +1306,79 @@ t.sleep(1)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(0.7)
 while 1:
-    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\n[R]eset Party\n[L]oad\nMove D[E]leter\n:")
-
+    userChoice=input("\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n:")
+    
+    #user setting the weather and terrain
+    if userChoice=="s" or userChoice=="S":
+        print("\n------------ Set the Stage of Battle ------------\n-------------------------------------------------")
+        t.sleep(0.4)
+        while 1: #user input loop
+            print("Current Battle conditions:")
+            t.sleep(0.4)
+            print(f"Weather: {weather}\nTerrain: {terrain}")
+            print("\nOptions:\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually\n")
+            setChoice=input("What [#] would you like to do?\nor [b]ack: ")
+            #go back
+            if setChoice=="b" or setChoice=="B":
+                break
+            #randomize both
+            if setChoice=="1":
+                weather=rng.choice(Weathers)
+                terrain=rng.choice(Terrains)
+                print("Conditions have been randomized!")
+                t.sleep(0.4)
+            #randomize weather
+            if setChoice=="2":
+                weather=rng.choice(Weathers)
+                print("Weather has been randomized!")
+                t.sleep(0.4)
+            #randomize terrain
+            if setChoice=="3":
+                terrain=rng.choice(Terrains)
+                print("Terrain has been randomized!")
+                t.sleep(0.4)
+            #manual set
+            if setChoice=="4":
+                while 1: #user input loop, weather or terrain
+                    conChoice=input("Set\n[1] Weather \n[2] Terrain\nor [b]ack: ")
+                    if conChoice=="b" or conChoice=="B":
+                        break
+                    #weather
+                    if conChoice=="1":
+                        while 1: #user input loop, whats the new terrain
+                            print("")
+                            for i in range(len(Weathers)):
+                                print(f"{i}\t{Weathers[i]}")
+                            newWeath=input("What should the new weather be?\n[#] or [b]ack: ")
+                            if newWeath=="b" or newWeath=="B":
+                                break
+                            try:
+                                weather=Weathers[int(newWeath)]
+                                print("New weather set!")
+                                break
+                            except IndexError:
+                                print("*\n** Entry out of range **\n*")
+                            except ValueError:
+                                print("*\n** Not a valid entry **\n*")
+                    #weather
+                    if conChoice=="2":
+                        while 1: #user input loop, whats the new terrain
+                            print("")
+                            for i in range(len(Terrains)):
+                                print(f"{i}\t{Terrains[i]}")
+                            newTerr=input("What should the new terrain be?\n[#] or [b]ack: ")
+                            if newTerr=="b" or newTerr=="B":
+                                break
+                            try:
+                                terrain=Terrains[int(newTerr)]
+                                print("New terrain set!")
+                                break
+                            except IndexError:
+                                print("*\n** Entry out of range **\n*")
+                            except ValueError:
+                                print("*\n** Not a valid entry **\n*")
+            #more options to change cattle conditions
+                                
     ####Reseting the Opponent in Battle function####
     if userChoice=='o':
         print("\n________ Opponent Reset ________")
