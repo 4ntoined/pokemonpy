@@ -854,7 +854,7 @@ class mon:
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
     def summary(self):
-        print(f"\n############ {self.name} Summary ############")
+        print(f"\n############ {self.name} ############")
         if self.dualType:
             print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
@@ -869,7 +869,7 @@ class mon:
         print("##############################################")
         
     def battleSummary(self):
-        print(f"\n############ {self.name} Summary ############")
+        print(f"\n############ {self.name} ############")
         if self.dualType:
             print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
@@ -883,11 +883,22 @@ class mon:
         print("\n** These stats reflect in-battle boosts and nerfs...")
         self.showMoves()
         print("##############################################")
-
+    
     def showMoves(self):
         print(f"############ {self.name}'s Moves #############")
         for i in range(len(self.knownMoves)):
             print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
+    
+    #show evs and ivs
+    def appraise(self):
+        ez=[self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
+        iz=[self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
+        st=["HP  :","Atk :","Def :","Sp.A:","Sp.D:","Spe :"]
+        print(f"\n############ {self.name} ############")
+        print("\n     \tIV\tEV")
+        for i in range(len(st)):
+            print(f"{st[i]}\t{iz[i]}\t{ez[i]}")
+        print("------------------------")
     #anymore pokemon attributes?
         
         
@@ -1080,7 +1091,7 @@ def checkBlackout(party):
 
 #check status of battle
 def checkBattle(red,blue):
-    print(f"\n******{blue.name}******")
+    print(f"\n****** {blue.name} ({opponentName}) ******")
     if blue.dualType:
             print(f"{typeStrings[blue.tipe[0]]} // {typeStrings[blue.tipe[1]]}")
     else:
@@ -1137,7 +1148,7 @@ def checkBattle(red,blue):
         elif blueStats[i]<0:
             print(statstrs[i]+f" {blueStats[i]}")
     print("------------------------------------")
-    print(f"************{red.name}************")
+    print(f"************ {red.name} ({opponentName}) ************")
     if red.dualType:
             print(f"{typeStrings[red.tipe[0]]} // {typeStrings[red.tipe[1]]}")
     else:
@@ -1287,13 +1298,13 @@ else:
 #team settings
 #user
 #starter=mon(int(rng.normal(loc=80,scale=3.)),"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
-starter=makeMon(rng.integers(len(dex)),int(rng.normal(loc=80,scale=3.)))
+starter=makeMon(rng.integers(len(dex)),int(rng.normal(loc=80,scale=30)))
 ranMoves=rng.choice(len(mov),size=6,replace=False)
 starter.knownMoves=list(ranMoves)
 starter.PP=[mov[i]["pp"] for i in ranMoves]
 #oppo
-rival=makeMon(rng.integers(0,len(dex)),starter.level-1)
-rival2=makeMon(rng.integers(0,len(dex)),starter.level+5)
+rival=makeMon(rng.integers(len(dex)),starter.level-1)
+rival2=makeMon(rng.integers(len(dex)),starter.level+5)
 bugs=rng.choice(len(mov),size=6,replace=False)
 #bugs=[28,26,32,42]
 rival.knownMoves=list(bugs)
@@ -1457,13 +1468,11 @@ while 1:
                     resting=False
                     charging=False
                     userMove=input(f"What should {userMon.name} do?\n[F]ight\n[P]okemon\n[S]tatus\n[R]un\n: ")
-                    
                     ####run away to end battle####
                     if userMove=='r':
                         print(f"You and {userMon.name} get away safely!")
                         battleOver=True
                         break
-                    
                     ###check status of battle?
                     if userMove=="s" or userMove=="S":
                         checkBattle(userMon,trainerMon)
@@ -1495,6 +1504,7 @@ while 1:
                                     #show move details
                                     if pChoice=="m" or pChoice=="M":
                                         while 1: #move input loop for displaying move info
+                                            print("")
                                             select.showMoves()
                                             movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
                                             if movChoice=="b" or movChoice=="B":
@@ -1550,18 +1560,35 @@ while 1:
                             #go back
                             if userFight=='b':
                                 break
-                            #try to use user input to call a move
-                            try:
-                                fightChoice=int(userFight)-1 #make sure given input refers to a move
-                                if userMon.PP[fightChoice]==0:
-                                    print(f"{userMon.name} does not have enough energy to use this move!")
-                                    continue
-                                moveDex=userMon.knownMoves[fightChoice]
-                                fighting=True
-                                break
-                            except:
-                                print("\n**Enter one of the numbers above.**")
-                
+                            if userFight.split()[0]=="i" or userFight.split()[0]=="I":
+                                try:
+                                    movez=userFight.split()[1:] #pokemon movelist index (string)
+                                    movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                    movez=[userMon.knownMoves[i] for i in movez] #pokemon move movedex index
+                                except ValueError:
+                                    print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                except IndexError:
+                                    print("\n** Use the indices to select moves to take a closer look at. **")
+                                else:
+                                    for i in range(len(movez)):
+                                        print("")
+                                        moveInfo(movez[i])
+                                        t.sleep(0.4) #drama
+                                    #we got all the move info out?, go back to pokemon?
+                                    input("\nenter anything to continue...")
+                            else:
+                                #try to use user input to call a move
+                                try:
+                                    fightChoice=int(userFight)-1 #make sure given input refers to a move
+                                    if userMon.PP[fightChoice]==0:
+                                        print(f"{userMon.name} does not have enough energy to use this move!")
+                                        continue
+                                    moveDex=userMon.knownMoves[fightChoice]
+                                    fighting=True
+                                    break
+                                except:
+                                    print("\n**Enter one of the numbers above.**")
+                    
                 ####after either swithing or attacking
                 if fighting or switching or resting or charging:
                     #user shifting?
@@ -1937,11 +1964,7 @@ while 1:
             print("\n*******************************\n")
             partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
             #go back to main screen
-            if partyChoice=='b':
-                print("Leaving Party screen...")
-                t.sleep(0.7) #kills
-                break
-            if partyChoice=='B':
+            if partyChoice=='b' or partyChoice=="B":
                 print("Leaving Party screen...")
                 t.sleep(0.7) #kills
                 break
@@ -1955,7 +1978,7 @@ while 1:
             else:
                 while 1:
                     selMon.summary()
-                    sumChoice=input(f"What to do with {selMon.name}?\n[s]ave, set [f]irst, see [m]oves or [b]ack: ")
+                    sumChoice=input(f"What to do with {selMon.name}?\nset [f]irst, see [m]oves [s]ave, [j]udge or [b]ack: ")
                     #go back to pokemon selection
                     if sumChoice=='b' or sumChoice=="B":
                         t.sleep(0.7)
@@ -1980,7 +2003,6 @@ while 1:
                                 print(f"{selMon.name} was saved to the file!\n")
                                 t.sleep(0.7) #kills
                                 continue
-                            #
                         #
                     #set first
                     if sumChoice=='f':
@@ -2017,7 +2039,9 @@ while 1:
                                 #we got all the move info out?, go back to pokemon?
                                 pause=input("\nEnter anything to continue back to Pokemon summary...")
                                 break
-                #
+                    #judge
+                    if sumChoice=="j" or sumChoice=="J":
+                        selMon.appraise()
             #end of while block
         print("Going back to main screen...")
         t.sleep(1)
