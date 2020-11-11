@@ -6,8 +6,10 @@
 #dark 15,steel 16,fairy 17
 
 import astropy.table as tbl
-#import numpy as np
+import numpy as np
 
+dats=np.loadtxt("somemons.dat",delimiter=",",dtype="U20")
+"""
 moremon=[
         ('Bulbasaur',45,49,49,65,65,45,3,7),
         ('Ivysaur',60,62,63,80,80,60,3,7),
@@ -28,9 +30,10 @@ moremon=[
         #
         ("The Last Pokemon",80,80,80,80,80,80,0,1)
         ]
-dex=tbl.Table(rows=moremon,names=('name','hp','at','de','sa','sd','sp','type1','type2'),dtype=('U16','i4','i4','i4','i4','i4','i4','i4','i4'))
-indie=tbl.Column(range(0,len(dex)),dtype='i4')
-dex.add_column(indie,index=0,name='index')
+"""
+dex=tbl.Table(dats,names=('index','name','hp','at','de','sa','sd','sp','type1','type2'),dtype=('i4','U16','i4','i4','i4','i4','i4','i4','i4','i4'))
+#indie=tbl.Column(range(0,len(dex)),dtype='i4')
+#dex.add_column(indie,index=0,name='index')
 
 moretype=[
         ('Normal',0),

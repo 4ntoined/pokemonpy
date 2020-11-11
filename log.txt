@@ -282,4 +282,11 @@ love my sudden use of capital I it's like I suddenly became self-aware in the mi
 9:56A- pokemon appraisal is here, also check move info in the same place as selecting a move to use for battle
 (lead with "i" or "I" and list whatever moves you wanna know about)
 i did other things I think but who could ever know
+10:45A- was gonna be finished after writing that last note but the i kept going
+added all the pokemon sans Sword&Shield dlc thanks to the work of github user ryanluuwas
+(https://github.com/ryanluuwas/Bulbapedia-Web-Scraper)
+so that's p nice, i also *think* i fixed it so mons wont be randomly assigned struggle
+it should work fine in theory if it's selected and intentionally used,
+but it's a little weird for the opponent to throw it out randomly
+and it's a 1PP move, whose PP is never exhausted so yeah it had to go
 

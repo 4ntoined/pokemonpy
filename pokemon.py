@@ -524,6 +524,8 @@ class mon:
                     return
                 #other labels for other moves and charging contexts
         print(f"\n{self.name} uses {moveI['name']}!")
+        if moveIndex!=struggle:
+            self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
         t.sleep(0.4)
         ###accuracy check###
         if "noMiss" in notas:
@@ -1148,7 +1150,7 @@ def checkBattle(red,blue):
         elif blueStats[i]<0:
             print(statstrs[i]+f" {blueStats[i]}")
     print("------------------------------------")
-    print(f"************ {red.name} ({opponentName}) ************")
+    print(f"************ {red.name} (You) ************")
     if red.dualType:
             print(f"{typeStrings[red.tipe[0]]} // {typeStrings[red.tipe[1]]}")
     else:
@@ -1299,33 +1301,25 @@ else:
 #user
 #starter=mon(int(rng.normal(loc=80,scale=3.)),"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
 starter=makeMon(rng.integers(len(dex)),int(rng.normal(loc=80,scale=30)))
-ranMoves=rng.choice(len(mov),size=6,replace=False)
+mo=list(range(len(mov)))
+mo.remove(struggleInd) #get struggle out of pool of moes
+ranMoves=rng.choice(mo,size=6,replace=False)
 starter.knownMoves=list(ranMoves)
 starter.PP=[mov[i]["pp"] for i in ranMoves]
 #oppo
 rival=makeMon(rng.integers(len(dex)),starter.level-1)
 rival2=makeMon(rng.integers(len(dex)),starter.level+5)
-bugs=rng.choice(len(mov),size=6,replace=False)
+bugs=rng.choice(mo,size=6,replace=False)
 #bugs=[28,26,32,42]
 rival.knownMoves=list(bugs)
 rival.PP=[mov[i]["pp"] for i in bugs]
-boos=rng.choice(len(mov),size=6,replace=False)
+boos=rng.choice(mo,size=6,replace=False)
 rival2.knownMoves=list(boos)
 rival2.PP=[mov[i]["pp"] for i in boos]
 #stuff them into their parties
 userParty=[starter]
 trainerParty=[rival,rival2]
-
-print(dex)
-t.sleep(0.5)
-#print(mov)
-#t.sleep(0.5)
-
-#####testing####
-#trainerParty=loadMon("cynthia.sav").copy()
-#userParty=loadMon("bulba.sav")
-#userParty.append(loadMon("pypokemon.sav")[0])
-#opponentName="Cynthia"
+#
 opponentName="OPPONENT"
 ################
 
@@ -1648,8 +1642,6 @@ while 1:
                         #make sure user/trainer didn't switch in this turn
                         if fighting or charging: #is never set to true if resting is true this turn, not set to true if the user decided to switch mons
                             userMon.move(trainerMon,moveDex)
-                            if moveDex!=struggleInd or userMon.charged:
-                                userMon.PP[fightChoice]-=1
                             if trainerMon.fainted:
                                 tFaint=True
                             if userMon.fainted:
@@ -1667,7 +1659,6 @@ while 1:
                                 trainerMon.move(userMon,struggleInd)
                             else: #otherwise, cue up one of the known moves
                                 trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
-                                trainerMon.PP[trainMoveInd]-=1
                             if userMon.fainted:
                                 uFaint=True
                             if trainerMon.fainted:
@@ -1680,7 +1671,6 @@ while 1:
                                 trainerMon.move(userMon,struggleInd)
                             else: #otherwise, cue up one of the known moves
                                 trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
-                                trainerMon.PP[trainMoveInd]-=1
                             #check for faints
                             if userMon.fainted:
                                 uFaint=True
@@ -1698,8 +1688,6 @@ while 1:
                                 t.sleep(0.7)
                             else:
                                 userMon.move(trainerMon,moveDex)
-                                if moveDex!=struggleInd:
-                                    userMon.PP[fightChoice]-=1
                             if trainerMon.fainted:
                                 tFaint=True
                             if userMon.fainted:
@@ -1865,7 +1853,7 @@ while 1:
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
                             trainerMon=trainerParty[trainerInd]
-                            print(f"\n{opponentName}: {trainerMon.name} I'm counting on you!")
+                            print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
                             t.sleep(0.7)
                     #pokemon have been switched in
                     print("")
