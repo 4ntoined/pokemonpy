@@ -8,9 +8,8 @@
 import numpy as np
 
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Typeless"]
-index,names,gens,type1,type2,he,at,de,sa,sd,sp,tot=np.loadtxt("list800.csv",dtype="U140",delimiter=",",skiprows=1,unpack=True,comments="%")
+index,names,gens,type1,type2,hp,at,de,sa,sd,sp,tot=np.loadtxt("list800.csv",dtype="U140",delimiter=",",skiprows=1,unpack=True,comments="%")
 type2=[i.split()[0] for i in type2]
-print(type2)
 #i need name, stats, and types
 for i in range(len(type1)):
     for j in range(len(typeStrings)):
@@ -20,7 +19,7 @@ for i in range(len(type1)):
             type2[i]=j
     if type2[i]=="Unknown":
         type2[i]=20 #may one day turn this into nan...not today though
-
-save=np.empty(shape=(len(name),9))
+ofile=open("somemons.dat","w")
 for i in range(len(names)):
-    pass
+    ofile.write(f"{i},{names[i]},{hp[i]},{at[i]},{de[i]},{sa[i]},{sd[i]},{sp[i]},{type1[i]},{type2[i]}\n")
+ofile.close()
