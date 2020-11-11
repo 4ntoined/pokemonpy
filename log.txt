@@ -264,4 +264,15 @@ still haven't fixed the PP though so watch out for those patch notes soon
 
 10 november 2020
 11:38A- nothing substantial, but im done testing 2turn moves for now i think, so opponent moves and now opponent pokemon are set to be randomized
+11:05P- hi what's up
+flinching was broken this whole time, I flipped a switch and forgot to unflip it
+so pokemon that flinched once would flinch for every subsequent move
+i think i fixed it but i didnt test it
+I also did something else just now but who could ever recall
+oh if you look at a pokemon's summary during a battle, it'll show their effective stats!
+so if Bulbasaur's speed stat of 17 becomes like 28 or something after a dragon dance
+and now you can just check the summary to check that out
+it should also factor in paralysis speed cut, which would apply to pokemon in the party as well (non-battling pokemon don't have stat stages)
+anyway I'm tired more work to do so maybe I'll be back later maybe I'll go to sleep
+love my sudden use of capital I it's like I suddenly became self-aware in the middle of typing
 

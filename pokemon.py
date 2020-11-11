@@ -867,9 +867,25 @@ class mon:
         print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
         print("\n##############################################")
+        
+    def battleSummary(self):
+        print(f"\n############ {self.name} Summary ############")
+        if self.dualType:
+            print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+        else:
+            print(f"\n{typeStrings[self.tipe[0]]}")
+        print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
+        print(f"Atk : \t{format(self.bat,'.2f')}")
+        print(f"Def : \t{format(self.bde,'.2f')}")
+        print(f"Sp.A: \t{format(self.bsa,'.2f')}")
+        print(f"Sp.D: \t{format(self.bsd,'.2f')}")
+        print(f"Spe : \t{format(self.bsp,'.2f')}")
+        print("\n** These stats reflect in-battle boosts and nerfs...")
+        self.showMoves()
+        print("\n##############################################")
 
     def showMoves(self):
-        print(f"\n############ {self.name}'s Moves #############")
+        print(f"############ {self.name}'s Moves #############")
         for i in range(len(self.knownMoves)):
             print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
     #anymore pokemon attributes?
@@ -1457,14 +1473,14 @@ while 1:
                         while 1:
                             print("\n****************\nParty Pokemon:")
                             for i in range(len(userParty)):
-                                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}%")
                             partyChoice=input("Select a Pokemon...\n[#] or [b] to go back: ")
-                            if partyChoice=='b':
+                            if partyChoice=='b' or partyChoice=="B":
                                 break #goes back to user turn loop from pokemon selection
                             try:
                                 select=userParty[int(partyChoice)-1]
                                 nuserInd=int(partyChoice)-1
-                                select.summary()
+                                select.battleSummary()
                             except ValueError:
                                 print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
                             except IndexError:
@@ -1504,10 +1520,10 @@ while 1:
                                     if pChoice=="s" or pChoice=="S":
                                         #keep fainted pokemon off the field
                                         if select.fainted:
-                                            print("** Cannot switch in fainted Pokemon! **")
+                                            print("\n** Cannot switch in fainted Pokemon! **")
                                             break
                                         if nuserInd==userInd:
-                                            print("** {select.name} is already in battle! **")
+                                            print(f"\n** {select.name} is already in battle! **")
                                             break
                                         switching=True
                                         break
@@ -1666,6 +1682,9 @@ while 1:
                         userMon.resting=False
                     if trainerRest:
                         trainerMon.resting=False
+                    if flinching: #moves have already been used, we can reset them
+                        userMon.flinched=False
+                        trainerMon.flinshed=False
                     #check for USER BLACKOUT
                     if checkBlackout(userParty)[0]==0:
                         battleOver=True
@@ -1743,7 +1762,7 @@ while 1:
                                 try:
                                     nuserInd=int(newPoke)-1
                                     select=userParty[nuserInd]
-                                    select.summary()
+                                    select.battleSummary()
                                 except ValueError:
                                     print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
                                 except IndexError:
