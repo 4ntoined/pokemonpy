@@ -275,4 +275,8 @@ and now you can just check the summary to check that out
 it should also factor in paralysis speed cut, which would apply to pokemon in the party as well (non-battling pokemon don't have stat stages)
 anyway I'm tired more work to do so maybe I'll be back later maybe I'll go to sleep
 love my sudden use of capital I it's like I suddenly became self-aware in the middle of typing
+11:14P- the way I went back to the code only to stare at it, not knowing what to do next
+
+11 november 2020
+12:40A- started on getting some more preset pokemon up in here
 

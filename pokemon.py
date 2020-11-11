@@ -866,7 +866,7 @@ class mon:
         print(f"Sp.D: \t{format(self.spdef,'.2f')}")
         print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
-        print("\n##############################################")
+        print("##############################################")
         
     def battleSummary(self):
         print(f"\n############ {self.name} Summary ############")
@@ -882,7 +882,7 @@ class mon:
         print(f"Spe : \t{format(self.bsp,'.2f')}")
         print("\n** These stats reflect in-battle boosts and nerfs...")
         self.showMoves()
-        print("\n##############################################")
+        print("##############################################")
 
     def showMoves(self):
         print(f"############ {self.name}'s Moves #############")
@@ -1286,8 +1286,9 @@ else:
 
 #team settings
 #user
-starter=mon(11,"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
-ranMoves=rng.choice(len(mov),size=4,replace=False)
+#starter=mon(int(rng.normal(loc=80,scale=3.)),"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
+starter=makeMon(rng.integers(len(dex)),int(rng.normal(loc=80,scale=3.)))
+ranMoves=rng.choice(len(mov),size=6,replace=False)
 starter.knownMoves=list(ranMoves)
 starter.PP=[mov[i]["pp"] for i in ranMoves]
 #oppo
