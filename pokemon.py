@@ -1281,6 +1281,8 @@ statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 struggleInd=struggle #move index of struggle
+mo=list(range(len(mov)))
+mo.remove(struggleInd) #get struggle out of pool of moves
 
 #battle setting
 Weathers=['clear','sunny','rain','sandstorm','hail']
@@ -1301,8 +1303,6 @@ else:
 #user
 #starter=mon(int(rng.normal(loc=80,scale=3.)),"Bulbasaur",hpbase=45,atbase=49,debase=49,sabase=65,sdbase=65,spbase=45,tipe=np.array([3,7]))
 starter=makeMon(rng.integers(len(dex)),int(rng.normal(loc=80,scale=30)))
-mo=list(range(len(mov)))
-mo.remove(struggleInd) #get struggle out of pool of moes
 ranMoves=rng.choice(mo,size=6,replace=False)
 starter.knownMoves=list(ranMoves)
 starter.PP=[mov[i]["pp"] for i in ranMoves]

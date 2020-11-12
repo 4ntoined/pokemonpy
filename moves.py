@@ -41,7 +41,8 @@ moremoves=[
         ("Solar Blade",125,100,10,0,1,3,"The user focuses sunlight into a blade to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
         ("Skull Bash",130,100,10,0,1,0,"The user tucks its head in and charges at the target.\nTwo-turn move.","2turn skullbash"), #needs to raise defense 1 stage on the prep
         ("Weather Ball",50,100,10,1,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
-        ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp"),
+        ("X-Scissor",80,100,15,0,1,11,"The user slashes the target by crossing its claws!","null"),
+        ("Signal Beam",75,100,15,1,0,11,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
         ("Rain Dance",0,100,5,2,0,2,"The user disrupts the air pressure and causes rain!","rain noMiss"),
@@ -62,8 +63,9 @@ moremoves=[
         ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
+        ("String Shot",0,95,40,2,0,11,"The user spins silk to bind the target! Lowers targets Spd. 1 stage.","stat targ,sp,-1"),
         #to do: max moves! terrain pulse
-        ("The Final Move",90,100,15,1,0,0,"Last indexed move, for coding convenience.","null")
+        ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]
 mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
 coll=tbl.Column(range(0,len(mov)),dtype='i4')

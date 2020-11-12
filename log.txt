@@ -289,4 +289,5 @@ so that's p nice, i also *think* i fixed it so mons wont be randomly assigned st
 it should work fine in theory if it's selected and intentionally used,
 but it's a little weird for the opponent to throw it out randomly
 and it's a 1PP move, whose PP is never exhausted so yeah it had to go
+7:50P- added some bugs moves, figured id go through all the types and add whatever moves catch my eye on bulbapedia
 
