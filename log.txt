@@ -291,3 +291,8 @@ but it's a little weird for the opponent to throw it out randomly
 and it's a 1PP move, whose PP is never exhausted so yeah it had to go
 7:50P- added some bugs moves, figured id go through all the types and add whatever moves catch my eye on bulbapedia
 
+22 november 2020
+11:48A- I had so much homework...
+when you make a pokemon through dex selection it takes on the level of the lead in your party now
+i also tweaked the nursery so you give all 6 stats at once...efficiency
+

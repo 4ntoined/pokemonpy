@@ -858,9 +858,9 @@ class mon:
     def summary(self):
         print(f"\n############ {self.name} ############")
         if self.dualType:
-            print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
-            print(f"\n{typeStrings[self.tipe[0]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.attack,'.2f')}")
         print(f"Def : \t{format(self.defense,'.2f')}")
@@ -873,9 +873,9 @@ class mon:
     def battleSummary(self):
         print(f"\n############ {self.name} ############")
         if self.dualType:
-            print(f"\n{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
-            print(f"\n{typeStrings[self.tipe[0]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.bat,'.2f')}")
         print(f"Def : \t{format(self.bde,'.2f')}")
@@ -941,6 +941,12 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         if weather=="hail":
             moveTipe=5
         damages.append("Weather Ball changes type!")
+    #solarbeam gets nerfed in inclement weather
+    if ("solar" in note) and (weather=="rain" or weather=="sandstorm" or weather=="hail"):
+        power*=0.5
+    #earthquake, bulldoze and magnitude nerfed on grassy terrain
+    if ("nerfGrassy" in note) and (terrain=="grassy"):
+        power*=0.5
     ####weather damage boost####
     weatherBonus=1.
     if weather=='sunny':
@@ -1402,15 +1408,11 @@ while 1:
             #more options to change cattle conditions
                                 
     ####Reseting the Opponent in Battle function####
-    if userChoice=='o':
+    if userChoice=='o' or userChoice=="O":
         print("\n________ Opponent Reset ________")
         t.sleep(0.7)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
-        if aceChoice=='y':
-            trainerParty=userParty.copy()
-            print("The Battle Opponent has a new Party! Good Luck!")
-            t.sleep(0.7) #kills
-        if aceChoice=='Y':
+        if aceChoice=='y' or aceChoice=="Y":
             trainerParty=userParty.copy()
             print("The Battle Opponent has a new Party! Good Luck!")
             t.sleep(0.7) #kills
@@ -1420,7 +1422,7 @@ while 1:
         #end of opponent set, back to main screen
 
     ####Battles####
-    if userChoice=='b':
+    if userChoice=="b" or userChoice=="B":
         ####Battle starts####
         print("\nYou've been challenged to a Pokemon Battle!")
         t.sleep(1)
@@ -1937,8 +1939,8 @@ while 1:
         t.sleep(0.7) #kills
     ###end of battle block###
         
-    ####check party pokemon?####
-    if userChoice=='p':
+    #### check party pokemon? aa:pokemonparty ####
+    if userChoice=="p" or userChoice=="P":
         while 1:
             print("\n******** Party Pokemon ********\n*******************************\n")
             for i in range(len(userParty)):
@@ -2036,86 +2038,69 @@ while 1:
         #end of party pokemon
     ###end of party display block###
 
-    ####pokemon nursery####
-    if userChoice=='n':
-        print("\n____Welcome to the Pokemon Nursery!____")
+    ####pokemon aa:nursery####
+    if userChoice=='n' or userChoice=='N':
+        print("\n____ Welcome to the Pokemon Nursery! ____")
         t.sleep(1)
         print("Here, you can create Pokemon from scratch!")
         t.sleep(1)
         ####nursery loop####
         while 1:
             nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n:")
-            
+            if nurseChoice=='b' or nurseChoice=='B':
+                break #exits nursery loop
             ####new pokemon####
             if nurseChoice=='p':
                 newName=input("Would you like to give your Pokemon a name?: ")
                 print(f"Let's get {newName} some STATS")
-                while 1:
-                    HPstatS=input("HP stat? 1-255: ")
-                    ATstatS=input("Attack stat? 1-255: ")
-                    DEstatS=input("Defense stat? 1-255: ")
-                    SAstatS=input("Sp. Atk stat? 1-255: ")
-                    SDstatS=input("Sp. Def stat? 1-255: ")
-                    SPstatS=input("Speed stat? 1-255: ")
+                while 1: #stat input loop
+                    statS=input("Enter 6 stats [1-255]\n[HP] [ATK] [DEF] [SPA] [SPD] [SPE]\n")
                     try:
-                        HPstat=int(HPstatS)
-                        ATstat=int(ATstatS)
-                        DEstat=int(DEstatS)
-                        SAstat=int(SAstatS)
-                        SDstat=int(SDstatS)
-                        SPstat=int(SPstatS)
-                        if np.min(np.array([HPstat,ATstat,DEstat,SAstat,SDstat,SPstat]))>0:
+                        stat=[int(float(i)) for i in statS.split(" ")]
+                        if len(stat)!=6:
+                            print("\n!! Enter all 6 stats at once !!")
+                            continue
+                        if min(stat)>0:
                             break #stats acccepted, exits stat input loop
                         else:
                             print("\n**Base stats must be at least 1**")
-                    except:
-                        print("\n**Stats must be numbers**")
+                    except ValueError:
+                        print("\n** Stats must be numbers **")
                 ##type choice##
                 print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************")
                 while 1: #type input loop
                     newTipe=input(f"Use the legend above to give {newName} a type or two: ")
                     try:
-                        newTipes=newTipe.split()
-                        newTipe1=int(newTipes[0])
-                        newTipeInt=np.array([newTipe1])
-                        if len(newTipes)>1: #if second type was inputted
-                            newTipe2=int(newTipes[1])
-                            newTipeInt=np.append(newTipeInt,newTipe2)
-                        if np.max(newTipeInt)<=17: #no types above 17
-                            if np.min(newTipeInt)>=0: #no types below 0
+                        newTipe=[int(i) for i in newTipe.split()]
+                        if max(newTipe)<=18: #no types above 18
+                            if min(newTipe)>=0: #no types below 0
                                 break #input valid, exit type input loop
                             else:
-                                print("\n**Highest number: 17, lowest number: 0**")
+                                print("\n** Highest type: 17, lowest type: 0 **")
                         else:
-                            print("\n**Highest number: 17, lowest number: 0**")
+                            print("\n** Highest number: 17, lowest number: 0 **")
                     except ValueError:
-                        print("\n**Use the legend above and enter a number (or 2 separated with a space)**")
-                
+                        print("\n** Use the legend above and enter a number (or 2 separated with a space) **")
                 ##level input##
                 while 1: #level input loop
                     lvlS=input(f"What level should {newName} be? 1-100: ")
                     try:
-                        lvl=int(lvlS)
-                        if lvl>=1:
-                            break
+                        lvlS=int(lvlS)
+                        if lvlS>=1:
+                            break #break level input
                         else:
-                            print("\n**Level must be at least 1!**")
-                    except:
-                        print("\n**Enter a number!**")
-                    #end of while block
-                                    
+                            print("\n** Level must be at least 1 **")
+                    except ValueError:
+                        print("\n** Enter a number! **")
                 ##make the pokemon!##
-                if len(newTipes)==1:
-                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1]))
-                if len(newTipes)>1:
-                    newMon=mon(lvl,newName,hpbase=HPstat,atbase=ATstat,debase=DEstat,sabase=SAstat,sdbase=SDstat,spbase=SPstat,tipe=np.array([newTipe1,newTipe2]))
+                if len(newTipe)==1:
+                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
+                if len(newTipe)>1:
+                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
                 print(f"\n{newName} is born!")
                 t.sleep(1)
                 userParty.append(newMon)
                 print("Take good care of them!")
-            
-            if nurseChoice=='b':
-                break #exits nursery loop
             pass #loops back to start of nursery
         pass #loops back to start of game
     ###end of nursery block
@@ -2366,7 +2351,7 @@ while 1:
                 if max(pokInts)<len(dex):
                     if min(pokInts)>=0:
                         for i in pokInts:
-                            newbie=makeMon(i)
+                            newbie=makeMon(i,userParty[0].level)
                             print(f"{newbie.name} is born!")
                             t.sleep(1)
                             userParty.append(newbie)
