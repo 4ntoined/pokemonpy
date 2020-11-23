@@ -845,7 +845,16 @@ class mon:
                 self.currenthp=self.maxhp
                 self.currenthpp=100
             else:
-                self.currenthpp=100*self.currenthp/self.maxhp
+                self.currenthpp=100.*self.currenthp/self.maxhp
+    #entry hazard damages
+    #stealthrock
+    def stealthRockDamage(self):
+        self.currenthp-=self.maxhp/8*checkTypeEffectiveness(12, self.tipe)
+        print("Pointed stones dig into (self.name}!")
+        if self.currenthp<=0.:
+            self.faint()
+        else:
+            self.currenthpp=100.*self.currenhp/self.maxhp
     
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")

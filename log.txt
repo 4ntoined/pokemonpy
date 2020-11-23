@@ -295,4 +295,7 @@ and it's a 1PP move, whose PP is never exhausted so yeah it had to go
 11:48A- I had so much homework...
 when you make a pokemon through dex selection it takes on the level of the lead in your party now
 i also tweaked the nursery so you give all 6 stats at once...efficiency
+8:57P- started work on stealth rock...currently theres only the function of mon() doing stealth tock damage
+no idea if it works the way i expect
+I probably won't test it until we get some deeper implementation but heres a commit
 
