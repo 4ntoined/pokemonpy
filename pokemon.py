@@ -161,6 +161,8 @@ class mon:
         self.sastage=6
         self.sdstage=6
         self.spstage=6
+        self.acstage=6
+        self.evstage=6
         self.bat=self.attack
         self.bde=self.defense
         self.bsa=self.spatk
@@ -187,7 +189,6 @@ class mon:
         self.burned=False
         self.poisoned=False
         self.badlypoisoned=False
-        self.flinched=False
         print(f"{self.name} fainted!")
         t.sleep(1)
     
@@ -206,7 +207,7 @@ class mon:
         self.sleepCounter=0
         self.frozen=False
         
-    ####things to call when a pokemon is thrown into battle
+    ####things to call when a pokemon is battling
     def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
@@ -223,7 +224,7 @@ class mon:
             if weather=='sandstorm':
                 #rock type sp.def boost in a sandstorm!
                 self.bsd*=1.5
-                print(f"{self.name}'s boosted by the sandstorm!")
+                print(f"{self.name} is boosted by the sandstorm!")
         #ground or unground pokemon?
         #further in the list
     
@@ -648,6 +649,8 @@ class mon:
                     statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="conf"))]))
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
+                #entry hazards of boy oh geeze
+                
                 #more status move effects
                 return
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
@@ -912,6 +915,19 @@ class mon:
         print("------------------------")
     #anymore pokemon attributes?
         
+class battle:
+    def __init__(self):
+        #A for Red B for Blue?
+        self.rocksA=False
+        self.rocksB=False
+        self.steelA=False
+        self.steelB=False
+        self.stickyA=False
+        self.stickyB=False
+        self.spikesA=0 #up to 3
+        self.spikesB=0
+        self.toxicA=0 #up to 2 
+        self.toxicB=0
         
 #def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
@@ -1447,6 +1463,7 @@ while 1:
         ####turn begins####
         while 1: #only breaks when BattleOver is True
             #battle conditions?
+            indigo=battle()
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move usage if user uses a move or shifts, otherwise the loop accomplishes nothing
                 battleOver=False
@@ -2087,7 +2104,7 @@ while 1:
                             else:
                                 print("\n** Highest type: 17, lowest type: 0 **")
                         else:
-                            print("\n** Highest number: 17, lowest number: 0 **")
+                            print("\n** Highest type: 17, lowest type: 0 **")
                     except ValueError:
                         print("\n** Use the legend above and enter a number (or 2 separated with a space) **")
                 ##level input##
@@ -2105,7 +2122,7 @@ while 1:
                 if len(newTipe)==1:
                     newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
                 if len(newTipe)>1:
-                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
+                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
                 print(f"\n{newName} is born!")
                 t.sleep(1)
                 userParty.append(newMon)

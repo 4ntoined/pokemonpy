@@ -299,3 +299,16 @@ i also tweaked the nursery so you give all 6 stats at once...efficiency
 no idea if it works the way i expect
 I probably won't test it until we get some deeper implementation but heres a commit
 
+24 november 2020
+10:31A- yeah still haven't really tested anything of course
+but i have added moves for the main entry hazards
+one of the entry hazards is activated solely via g-max move so thats a little far off
+i also started a battle class? dk if it's gonna be useful the way i think its gonna be useful
+but im mainly using it to store variable about the battlefield
+like it makes sense i think, I will need to work out how this new battle class will interact with
+the pokemon class and all the pokemon functions and the like
+i should be able to just name an instance of battle() when the player starts a battle and then refer to that same
+instance within mon functions like move() right?
+like who am i asking when I type all this out it reeks of insanity to me its so funny
+alright goodnight
+
