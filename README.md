@@ -1,2 +1,4 @@
 # pokemon.py
-a python game by Antoine D.
+## Anybody here play pokemon?
+a python game by Antoine D
+
