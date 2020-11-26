@@ -649,8 +649,10 @@ class mon:
                     statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="conf"))]))
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
-                #entry hazards of boy oh geeze
-                
+                #entry hazards oh boy oh geeze
+                if "rocks" in notas:
+                    print("\nhaven't programmed this move yet")
+                    pass
                 #more status move effects
                 return
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)

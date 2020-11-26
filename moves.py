@@ -55,9 +55,9 @@ moremoves=[
         ("Psychic Terrain",0,100,10,2,0,10,"The user makes the battlefield weird! Psychic-type moves get a 30% boost.","psychic noMiss"),
         #entry hazards
         ("Spikes",0,100,20,2,0,8,"The user spreads spikes on the opponent's side of the field!\nStack up to 3 times!","noMiss spikes"),
+        ("Toxic Spikes",0,100,20,2,0,7,"The user sends out toxic barbs on the target's side of the field!\nPokemon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk"),
         ("Stealth Rocks",0,100,20,2,0,12,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks"),
         ("Sticky Web",0,100,20,2,0,11,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky"),
-        ("Toxix Spikes",0,100,20,2,0,7,"The user sends out toxic barbs on the target's side of the field!\nPokemon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk"),
         #status moves
         ("Swords Dance",0,100,20,2,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
