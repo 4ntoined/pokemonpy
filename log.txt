@@ -312,3 +312,33 @@ instance within mon functions like move() right?
 like who am i asking when I type all this out it reeks of insanity to me its so funny
 alright goodnight
 
+28 november 2020
+12:12A- hey i was thinking about entry hazards
+there's an issue where, in checking for entry hazrds, there's a need to differentiate
+between which side of the field to check for a particular pokemon, and these mon objects
+have no capability to store which side of the field their on
+so I'm thinking thats gonna have to be another mon attribute
+wait i need to program transform.....i might be able to just copy the mon object no?
+more questions for the wind...
+12:26A- yeah in other news i fixed a bug with opponent reset where the opponent and the user share the user's pokemon
+the solution was python deepcopy()s as opposed to flimsy old copy()s
+so i think that works as intended now, i did test it
+at some point I will put together more notable teams like i did with Cynthia
+and implement them somehow, maybe in like an "Elite Four" mode kinda thing idk
+but before I do that I'd want to have more moves programmed
+and I feel like if I'm programming moves i should prioritize moves around which I can add yet another
+mechanic of pokemon battling
+because other moves, though relatively simple to add since the infrastucture already exists, won't push
+the code to better emulating pokemon battles. Like who cares if there's Fire Fang, Fire Blast, Flamethrower
+and Flare Blitz, if I couldn't figure out Spikes....or semi-invulnerable moves likes Fly and Dig
+The semi-invulnerables also sorta give me a preemptive headache only because
+they're practically 2-turn moves with an (almost) untouchable first turn
+But 2-turn moves are already coded! So will I be able to build off of that and code
+these semi-invulnerables as 2-turns with certain special additions?
+or will the circumstances of the various 2-turn moves and their many effects
+preclude (don't know if that's the right word but we're gonna roll with it) the use of
+the pre-existing 2-turn move functionality?
+Imagine you're like an anthropologist in like 4030 and you find an ancient github repository and
+dig into it to find some grown man talking to himself and playing pokemon in one of the most
+tumultuous times in recorded human history....what kinda paper would you write about that
+

@@ -8,10 +8,11 @@
 #*******************: 
 #
 
+import copy
+import time as t
 import numpy as np
 #import astropy.table as tbl
 #import astropy.io.ascii as asc
-import time as t
 from moves import getMoveInfo,mov,struggle
 from pokedex import dex
 
@@ -1440,7 +1441,7 @@ while 1:
         t.sleep(0.7)
         aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
         if aceChoice=='y' or aceChoice=="Y":
-            trainerParty=userParty.copy()
+            trainerParty=copy.deepcopy(userParty)
             print("The Battle Opponent has a new Party! Good Luck!")
             t.sleep(0.7) #kills
         else:
