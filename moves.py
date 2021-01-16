@@ -68,7 +68,7 @@ moremoves=[
         ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
-        ("String Shot",0,95,40,2,0,11,"The user spins silk to bind the target! Lowers targets Spd. 1 stage.","stat targ,sp,-1"),
+        ("String Shot",0,95,40,2,0,11,"The user spins silk to bind the target! Lowers target's Spd. 1 stage.","stat targ,sp,-1"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]
