@@ -316,7 +316,7 @@ alright goodnight
 12:12A- hey i was thinking about entry hazards
 there's an issue where, in checking for entry hazrds, there's a need to differentiate
 between which side of the field to check for a particular pokemon, and these mon objects
-have no capability to store which side of the field their on
+have no capability to store which side of the field they're on
 so I'm thinking thats gonna have to be another mon attribute
 wait i need to program transform.....i might be able to just copy the mon object no?
 more questions for the wind...
@@ -341,4 +341,10 @@ the pre-existing 2-turn move functionality?
 Imagine you're like an anthropologist in like 4030 and you find an ancient github repository and
 dig into it to find some grown man talking to himself and playing pokemon in one of the most
 tumultuous times in recorded human history....what kinda paper would you write about that
+
+15 january 2021
+8:19P- first point of order: hey what's up it's been a while
+second: BOY
+third: i don't remember which of the many copies of this repo I have lying around is the most recent or what these changes I have staged for commit are so we're just gonna commit and hope for the best
+fourth: hey what's up
 
