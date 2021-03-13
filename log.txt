@@ -348,3 +348,8 @@ second: BOY
 third: i don't remember which of the many copies of this repo I have lying around is the most recent or what these changes I have staged for commit are so we're just gonna commit and hope for the best
 fourth: hey what's up
 
+13 march 2021
+5:55P bro it's spring break
+somewhere I added a move or something and the newest movedex.dat
+(made when i ran the game directly from this repo) needs to be committed!
+
