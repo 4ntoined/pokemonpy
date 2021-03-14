@@ -159,6 +159,14 @@ class mon:
         self.currenthp=self.maxhp
         self.currenthpp=100.
     
+    #sending a pokemon out
+    def chosen(self, trainer):
+        global indigo
+        if trainer == "user":
+            self.battlespot = "red"
+        elif trainer == "cpu":
+            self.battlespot = "blue"
+    
     ####things to reset upon being withdrawn
     def withdraw(self):
         self.atstage=6
@@ -948,21 +956,77 @@ class battle:
         #tailwind?
         #reflect
         #light screen
+    
+    def clearfield(self):
+        self.rocksA=False
+        self.rocksB=False
+        self.steelA=False
+        self.steelB=False
+        self.stickyA=False
+        self.stickyB=False
+        self.spikesA=0 #up to 3
+        self.spikesB=0
+        self.toxicA=0 #up to 2 
+        self.toxicB=0
         
     def hazarding(self,elem,side):
         #need to account for hazards already being out and that trnaslating to the move failing
+        #hazards on player side
         if side == "red":
             if elem == "rocks":
-                self.rocksA=True
+                if self.rocksA == True:
+                    print( "Rocks are already set up!" )
+                    return "failed"
+                else:
+                    self.rocksA = True
             elif elem == "spikes":
-                self.spikesA==True
+                if self.spikesA >= 3:
+                    print("No more spikes will fit")
+                    return "failed"
+                else:
+                    self.spikesA += 1
             elif elem == "toxspk":
-                self.toxicA+=1
-                
+                if self.toxicA >= 2:
+                    print("No more toxic spikes will fit")
+                    return "failed"
+                else:
+                    self.spikesA += 1
+            elif elem == "sticky":
+                if self.stickyA == True:
+                    print("The web is already set up!")
+                    return "failed"
+                else:
+                    self.stickyA = True
+            #think thats all the hazards for now
+        #opponent side
+        elif side == "blue":
+            if elem == "rocks":
+                if self.rocksB == True:
+                    print( "Rocks are already set up!" )
+                    return "failed"
+                else:
+                    self.rocksB = True
+            elif elem == "spikes":
+                if self.spikesB >= 3:
+                    print("No more spikes will fit")
+                    return "failed"
+                else:
+                    self.spikesB += 1
+            elif elem == "toxspk":
+                if self.toxicB >= 2:
+                    print("No more toxic spikes will fit")
+                    return "failed"
+                else:
+                    self.spikesB += 1
+            elif elem == "sticky":
+                if self.stickyB == True:
+                    print("The web is already set up!")
+                    return "failed"
+                else:
+                    self.stickyB = True
+            #think thats all the hazards for now
+                    
             
-            
-        
-        
 #def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####damage read-out strings####
@@ -1506,6 +1570,8 @@ while 1:
                 fighting=False
                 charging=False
                 print(f"\n____________ Turn {turn} ____________\n")
+                userMon.chosen("user")
+                trainerMon.chosen("cpu")
                 userMon.inBattle()
                 trainerMon.inBattle()
                 #----UI----#
@@ -1660,6 +1726,7 @@ while 1:
                         userInd=nuserInd
                         print(f"{userMon.name}, it's your turn!")
                         t.sleep(0.7)
+                        userMon.chosen()
                         userMon.inBattle()
                     #does the trainer mon need to rest?
                     if trainerMon.resting:
@@ -1687,6 +1754,7 @@ while 1:
                         trainerMon=trainerParty[trainerInd]
                         print(f"{opponentName}: {trainerMon.name}! Finish them off!")
                         t.sleep(0.7)
+                        trainerMon.chosen()
                         trainerMon.inBattle()
                         trainerShift=True
                         #end of trainer switching
@@ -1894,6 +1962,7 @@ while 1:
                                             userInd=nuserInd
                                             print(f"{userMon.name}, it's your turn!")
                                             t.sleep(0.4)
+                                            userMon.chosen()
                                             userMon.inBattle()
                                             bShifted=True
                                             break
@@ -1916,6 +1985,8 @@ while 1:
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
                             trainerMon=trainerParty[trainerInd]
+                            trainerMon.chosen()
+                            trainerMon.inBattle()
                             print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
                             t.sleep(0.7)
                     #pokemon have been switched in
@@ -1985,6 +2056,7 @@ while 1:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
+        indigo.clearfields()
         weather=rng.choice(Weathers)
         weatherCounter=np.inf
         terrain=rng.choice(Terrains)

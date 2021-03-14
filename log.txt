@@ -366,5 +366,9 @@ worked on implementing entry hazards, very incomplete rn though
 but I need to make a commit because I'm getting tired of looking at this
 hopefully I fix it up with another commit soon because this will probably break the game
 okay it at least starts running, no telling what happens when you try to play
+6:11P- oh boy
+got more done with entry hazards...i think i now just need to program in their various effects
+most of the other infrastructure is down already its mostly
+just adding some attributes to pokemon to do damage or lower speed etcetera
 
 
