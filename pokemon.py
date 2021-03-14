@@ -34,6 +34,7 @@ class mon:
         self.saev=0
         self.sdev=0
         self.spev=0
+        ##base stats===##
         self.hpb=hpbase
         self.atb=atbase
         self.deb=debase
@@ -43,11 +44,13 @@ class mon:
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
         self.currenthp=self.maxhp
         self.currenthpp=100
+        ##final stats, with evs, ivs, and one day natures==============##
         self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
         self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
         self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
         self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
         self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        ##=============================================================##
         self.name=named
         self.tipe=tipe
         if len(tipe)>1:
@@ -69,17 +72,18 @@ class mon:
         self.spstage=6
         self.evstage=6
         self.acstage=6
-        #in battle stats ugh
+        ##stats for battle, including temporary stat buffs and nerfs##
         self.bat=self.attack
         self.bde=self.defense
         self.bsa=self.spatk
         self.bsd=self.spdef
         self.bsp=self.speed
+        ##==========================================================##
+        self.battlespot = None #will be set to "red" or "blue" when sent out
         #battle statuses
         self.sleep=False
         self.sleepCounter=0
         self.frozen=False
-        #self.freezeCounter=0
         self.burned=False
         self.paralyzed=False
         self.poisoned=False
@@ -190,7 +194,7 @@ class mon:
         self.burned=False
         self.poisoned=False
         self.badlypoisoned=False
-        print(f"{self.name} fainted!")
+        print(f"{self.name} faints!")
         t.sleep(1)
     
     #back to full health!
@@ -208,7 +212,7 @@ class mon:
         self.sleepCounter=0
         self.frozen=False
         
-    ####things to call when a pokemon is battling
+    ####things to call/recall when a pokemon is battling
     def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
@@ -460,11 +464,11 @@ class mon:
         return
     
     #pokemon move
-    def move(self,opponent,moveIndex):
+    def move(self, opponent, moveIndex):
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
-        #frozen, can't move
-        if self.frozen:
+        #frozen, can't move #thinking out loud: maybe we should track
+        if self.frozen:  #when a pokemons move fails/doesn't execute for whatever reason
             if "thaws" in notas:
                 self.frozen=False
                 print(f"\n{self.name} thaws itself out!")
@@ -490,7 +494,6 @@ class mon:
                 return
         #confusion prevents rest of move execution
         if self.confused:
-            print(f"\n{self.name} is confused!")
             #lower confusion counter for chance to snap out of confusion
             self.confusionCounter-=1
             #if counter is at 0, undo confusion
@@ -498,7 +501,8 @@ class mon:
                 self.confused=False
                 print(f"{self.name} snaps out of confusion!")
             #if still confused, chance to hurt self, end move()
-            if self.confused:
+            else:
+                print(f"\n{self.name} is confused!")
                 if rng.random()<1/3:
                     self.confusionDamage()
                     return
@@ -537,18 +541,18 @@ class mon:
             effAccu=self.acstage-opponent.evstage+6 #get difference in evasion/accuracy stats, offset by proper center, index 6
             if effAccu>12:
                 effAccu=12
-            if effAccu<0:
+            elif effAccu<0:
                 effAccu=0
             effAccu=acevStages[effAccu]
-            hitCheck=rng.random()<=effAccu*(moveI['accu']/100.)
+            hitCheck = rng.random() <= effAccu * ( moveI['accu'] / 100. )
         if hitCheck==False: #move misses
             print(f"\n{self.name}'s attack misses!")
             t.sleep(0.4)
             return
         else: #move will connect
-            #check if status?#
+            ##===========================status moves==========================##
             if moveI['special?']==2:
-                #stat changes
+                ##stat changes
                 if "stat" in notas:
                     statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
                     targ,stat,phase=statInfo.split(",")[0:3]
@@ -562,8 +566,8 @@ class mon:
                         for i in range(len(stat)):
                             opponent.stageChange(stat[i],int(phase[i]))
                         opponent.inBatle()
-                    #end of stat changes
-                #weathers
+                #end of stat changes
+                ##weathers
                 global weatherCounter
                 if "sun" in notas:
                     if weather=='sunny':
@@ -651,11 +655,20 @@ class mon:
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
                 #entry hazards oh boy oh geeze
-                if "rocks" in notas:
-                    print("\nhaven't programmed this move yet")
-                    pass
+                global indigo
+                hazs = ["rocks", "spikes", "toxspk", "sticky"]
+                haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!", "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
+                for i in range(len(hazs)):
+                    if i in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
+                        if self.battlespot=="red": #user's pokemon
+                            indigo.hazarding(hazs[i], "blue")
+                        elif self.battespot=="blue": #cpu
+                            indigo.hazarding(hazs[i], "red")
+                        print(haz_dialog[i])
+                #end of entry hazards
                 #more status move effects
                 return
+            ##=================================================================##
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
             opponent.hit(self,ans,eff,notas,moveI['type'],comment)
             #stat changes
@@ -932,6 +945,23 @@ class battle:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
+        #tailwind?
+        #reflect
+        #light screen
+        
+    def hazarding(self,elem,side):
+        #need to account for hazards already being out and that trnaslating to the move failing
+        if side == "red":
+            if elem == "rocks":
+                self.rocksA=True
+            elif elem == "spikes":
+                self.spikesA==True
+            elif elem == "toxspk":
+                self.toxicA+=1
+                
+            
+            
+        
         
 #def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
@@ -1325,6 +1355,7 @@ Terrains=['none','electric','grassy','misty','psychic']
 #set weather and terrain, random
 weather=rng.choice(Weathers)
 terrain=rng.choice(Terrains)
+indigo = battle()
 #but i still make the rules
 #weather='sandstorm'
 #terrain='grassy'
@@ -1467,7 +1498,7 @@ while 1:
         ####turn begins####
         while 1: #only breaks when BattleOver is True
             #battle conditions?
-            indigo=battle()
+            #indigo=battle()
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move usage if user uses a move or shifts, otherwise the loop accomplishes nothing
                 battleOver=False
@@ -1673,7 +1704,7 @@ while 1:
                         #USER ATTACK
                         #make sure user/trainer didn't switch in this turn
                         if fighting or charging: #is never set to true if resting is true this turn, not set to true if the user decided to switch mons
-                            userMon.move(trainerMon,moveDex)
+                            userMon.move(trainerMon, moveDex)
                             if trainerMon.fainted:
                                 tFaint=True
                             if userMon.fainted:

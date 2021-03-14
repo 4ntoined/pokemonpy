@@ -360,3 +360,11 @@ idk we'll see i still gotta figure out entry hazards
 also i should use raise exception more with the error messages
 i feel like it'd be cleaner
 
+14 march 2021
+1:27P- happy pi daylight saving time
+worked on implementing entry hazards, very incomplete rn though
+but I need to make a commit because I'm getting tired of looking at this
+hopefully I fix it up with another commit soon because this will probably break the game
+okay it at least starts running, no telling what happens when you try to play
+
+
