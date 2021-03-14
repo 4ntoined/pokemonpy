@@ -352,4 +352,7 @@ fourth: hey what's up
 5:55P bro it's spring break
 somewhere I added a move or something and the newest movedex.dat
 (made when i ran the game directly from this repo) needs to be committed!
+nope, turns out i fixed a typo in moves.py probably and it translated
+into a new movedex.dat
+let's see if I can code something ?
 
