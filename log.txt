@@ -352,4 +352,11 @@ fourth: hey what's up
 5:55P bro it's spring break
 somewhere I added a move or something and the newest movedex.dat
 (made when i ran the game directly from this repo) needs to be committed!
+6:40P- I was looking at the damage calculation and I'm wondering if
+I wanna leave open the possibilities of moves with mulitples types
+there's only one such move officially, flying press and idk if that even made it to sword and shield?
+But the point of this is to break te rules in places we other literally cannot
+idk we'll see i still gotta figure out entry hazards
+also i should use raise exception more with the error messages
+i feel like it'd be cleaner
 
