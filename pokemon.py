@@ -719,8 +719,8 @@ class mon:
                 t.sleep(0.7)
                 #status conditions
                 #statuses bro
-                statuses=[]
-                if "para" in notes:
+                statuses=[]  #hey, hear me out, what if we made a numpy array out of these strings, "para" "burn" etc., and used numpy tricks to do all
+                if "para" in notes:    #these lines, but like in one shot
                     statuses.append("para")
                     statuses.append(int(notes[1+int(np.argwhere(np.array(notes)=="para"))]))
                 if "burn" in notes:
@@ -772,22 +772,23 @@ class mon:
     #flinching
     def flinch(self):
         self.flinched=True
-    #recoil
-    def recoil(self,damagedone,recoilAmount):
-        self.currenthp-=damagedone*recoilAmount
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} takes recoil damage!")
+    #recoil, gonna experiment with spacing here I guess whatever
+    def recoil(self, damagedone, recoilAmount):
+        self.currenthp -= damagedone * recoilAmount
+        self.currenthpp = 100 * self.currenthp / self.maxhp
+        print( f"{self.name} takes recoil damage!" )
         t.sleep(0.3)
-        if self.currenthp<=0.:
+        if self.currenthp <= 0.:
             self.faint()
+        #i don't hate it
     #confusion
     def confusionDamage(self):
-        dmg=((((2.*self.level)/5. + 2.)*40.*self.bat/self.bde)/50. + 2.)
-        self.currenthp-=dmg
-        self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} hurt itself in its confusion!")
+        dmg = (((( 2. * self.level ) / 5. + 2.) * 40. * self.bat / self.bde) / 50. + 2. )
+        self.currenthp -= dmg
+        self.currenthpp = 100 * self.currenthp / self.maxhp
+        print( f"{self.name} hurt itself in its confusion!" )
         t.sleep(0.3)
-        if self.currenthp<=0.:
+        if self.currenthp <= 0.:
             self.faint()
     #poison
     def poisonDamage(self):
@@ -981,14 +982,14 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         if moveTipe==1:
             weatherBonus=4/3
             damages.append("Sun boost!")
-        if moveTipe==2:
+        elif moveTipe==2:
             weatherBonus=2/3
             damages.append("Weakened by the sunlight...")
-    if weather=='rain':
+    elif weather=='rain':
         if moveTipe==1:
             weatherBonus=2/3
             damages.append("Weakened by the rain...")
-        if moveTipe==2:
+        elif moveTipe==2:
             weatherBonus=4/3
             damages.append("Rain boost!")
     ####terrain moves####
