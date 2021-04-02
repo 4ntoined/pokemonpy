@@ -371,4 +371,10 @@ got more done with entry hazards...i think i now just need to program in their v
 most of the other infrastructure is down already its mostly
 just adding some attributes to pokemon to do damage or lower speed etcetera
 
+2 apr 2021
+5:37P- hey
+making progress with entry hazards
+i think i'm almost done there's just a lot to do
+i am having to add a whole new class and balancing all of its variables like...
+this is for FUN
 

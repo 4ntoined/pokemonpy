@@ -968,6 +968,21 @@ class battle:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
+    
+    def landing(self,poke,side):
+        #this function will simulate pokemon being damaged by entry hazards
+        #need to make functions for mon() of the entry hazard damages being done
+        #need to check for rocks, spikes, toxix spikes (except for poisons) and sticky web
+        #only for grounded pokemon tho...
+        rocksOn = ( side == "red" and self.rocksA ) or ( side == "blue" and self.rocksB )
+        stickyOn = ( side == "red" and self.stickyA ) or ( side == "blue" and self.stickyB )
+        spikesOn = ( side == "red" and self.spikesA ) or ( side == "blue" and self.spikesB )
+        toxicOn = ( side == "red" and self.toxicA ) or ( side == "blue" and self.toxicB )
+        if poke.grounded==False:
+            #non-grounded pokemon don't land, this function is over?
+            return
+        else:
+            
         
     def hazarding(self,elem,side):
         #need to account for hazards already being out and that trnaslating to the move failing
