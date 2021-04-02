@@ -377,4 +377,11 @@ making progress with entry hazards
 i think i'm almost done there's just a lot to do
 i am having to add a whole new class and balancing all of its variables like...
 this is for FUN
+6:53P- stealth rock works
+ostensibly all the other entry hazards work as intended
+but i've yet to test that much
+i still have work to do, poisons need to absorb toxic spikes
+and generally i believe there are a lot of loose ends to tie up
+but that it seems to work is promising i did that
+what's next lol
 

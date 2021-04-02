@@ -667,10 +667,10 @@ class mon:
                 hazs = ["rocks", "spikes", "toxspk", "sticky"]
                 haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!", "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
                 for i in range(len(hazs)):
-                    if i in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
+                    if hazs[i] in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
                         if self.battlespot=="red": #user's pokemon
                             indigo.hazarding(hazs[i], "blue")
-                        elif self.battespot=="blue": #cpu
+                        elif self.battlespot=="blue": #cpu
                             indigo.hazarding(hazs[i], "red")
                         print(haz_dialog[i])
                 #end of entry hazards
@@ -875,14 +875,52 @@ class mon:
             else:
                 self.currenthpp=100.*self.currenthp/self.maxhp
     #entry hazard damages
+    #guess we should check for faint after entry hazard damage
     #stealthrock
-    def stealthRockDamage(self):
-        self.currenthp-=self.maxhp/8*checkTypeEffectiveness(12, self.tipe)
-        print("Pointed stones dig into (self.name}!")
+    def rocksDamage(self):
+        self.currenthp-=self.maxhp/8.*checkTypeEffectiveness(12, self.tipe)
+        print(f"Pointed stones dig into {self.name}!")
+        t.sleep(0.4)
+        if self.currenthp<=0.:
+            self.faint()
+        else:
+            self.currenthpp=100.*self.currenthp/self.maxhp
+    def spikesDamage(self,level):
+        ##3 levels oop
+        if level == 1:
+            self.currenthp -= self.maxhp / 8.
+        elif level == 2:
+            self.currenthp -= self.maxhp / 6.
+        elif level == 3:
+            self.currenthp -= self.maxhp / 4.
+        print(f"{self.name} is hurt by the spikes!")
+        t.sleep(0.4)
         if self.currenthp<=0.:
             self.faint()
         else:
             self.currenthpp=100.*self.currenhp/self.maxhp
+        
+    def toxicAffliction(self,level): #1 layer of toxic spikes or two?
+        #need to check for pre-existing status conditions
+        if self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned:
+            #pokemon already has status condition, no poisoning
+            return
+        if level == 1:
+            self.poisoned=True
+            print(f"{self.name} is poisoned by the spikes!")
+            t.sleep(0.3)
+            return
+        elif level == 2:
+            self.badlypoisoned=True
+            self.poisonCounter=1
+            print(f"\n{self.name} is badly poisoned by the spikes!")
+            t.sleep(0.3)
+            return
+        
+    def stickyNerf(self):
+        self.stageChange('sp', -1)
+        print(f"{self.name} is slowed down by the web!")
+        return
     
     def checkup(self):
         print(f"Name: {self.name} // Lv. {self.level}")
@@ -976,13 +1014,27 @@ class battle:
         #only for grounded pokemon tho...
         rocksOn = ( side == "red" and self.rocksA ) or ( side == "blue" and self.rocksB )
         stickyOn = ( side == "red" and self.stickyA ) or ( side == "blue" and self.stickyB )
-        spikesOn = ( side == "red" and self.spikesA ) or ( side == "blue" and self.spikesB )
-        toxicOn = ( side == "red" and self.toxicA ) or ( side == "blue" and self.toxicB )
-        if poke.grounded==False:
-            #non-grounded pokemon don't land, this function is over?
-            return
-        else:
-            
+        spikesOn = ( side == "red" and self.spikesA > 0 ) or ( side == "blue" and self.spikesB > 0)
+        toxicOn = ( side == "red" and self.toxicA > 0 ) or ( side == "blue" and self.toxicB > 0)
+        ##some hazards
+        if rocksOn:
+            poke.rocksDamage()
+        ##hazards flying and levitating are immune to
+        if poke.grounded:
+            if stickyOn:
+                poke.stickyNerf()
+            elif spikesOn:
+                if poke.battlespot == "red":
+                    poke.spikesDamage(self.spikesA)
+                elif poke.battlespot == "blue":
+                    poke.spikesDamage(self.spikesB)
+            elif toxicOn:
+                if poke.battlespot == "red":
+                    poke.toxicAffliction(self.toxicA)
+                elif poke.battlespot == "blue":
+                    poke.toxicAffliction(self.toxicB)
+        # there will be more entry hazards unfortunately
+        return
         
     def hazarding(self,elem,side):
         #need to account for hazards already being out and that trnaslating to the move failing
@@ -1741,8 +1793,9 @@ while 1:
                         userInd=nuserInd
                         print(f"{userMon.name}, it's your turn!")
                         t.sleep(0.7)
-                        userMon.chosen()
+                        userMon.chosen("user")
                         userMon.inBattle()
+                        indigo.landing(userMon, "red")
                     #does the trainer mon need to rest?
                     if trainerMon.resting:
                         trainerRest=True
@@ -1769,8 +1822,9 @@ while 1:
                         trainerMon=trainerParty[trainerInd]
                         print(f"{opponentName}: {trainerMon.name}! Finish them off!")
                         t.sleep(0.7)
-                        trainerMon.chosen()
+                        trainerMon.chosen("cpu")
                         trainerMon.inBattle()
+                        indigo.landing(trainerMon,"blue")
                         trainerShift=True
                         #end of trainer switching
                     #set boolean to true if user has higher effective speed stat
@@ -1977,8 +2031,9 @@ while 1:
                                             userInd=nuserInd
                                             print(f"{userMon.name}, it's your turn!")
                                             t.sleep(0.4)
-                                            userMon.chosen()
+                                            userMon.chosen("user")
                                             userMon.inBattle()
+                                            indigo.landing(userMon,"red")
                                             bShifted=True
                                             break
                                         #anything other than y repeats the loop
@@ -2000,8 +2055,9 @@ while 1:
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
                             trainerMon=trainerParty[trainerInd]
-                            trainerMon.chosen()
+                            trainerMon.chosen("cpu")
                             trainerMon.inBattle()
+                            indigo.landing(trainerMon, "blue")
                             print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
                             t.sleep(0.7)
                     #pokemon have been switched in
