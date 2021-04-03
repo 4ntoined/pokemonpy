@@ -1023,21 +1023,31 @@ class battle:
         if poke.grounded:
             if stickyOn:
                 poke.stickyNerf()
-            elif spikesOn:
+            if spikesOn:
                 if poke.battlespot == "red":
                     poke.spikesDamage(self.spikesA)
                 elif poke.battlespot == "blue":
                     poke.spikesDamage(self.spikesB)
-            elif toxicOn:
+            if toxicOn:
                 if poke.battlespot == "red":
-                    poke.toxicAffliction(self.toxicA)
+                    #check for poison type
+                    if 7 in poke.tipe:
+                        self.toxicA = 0
+                        print(f"{poke.name} absorbs the toxic spikes!")
+                        t.sleep(0.3)
+                    else:
+                        poke.toxicAffliction(self.toxicA)
                 elif poke.battlespot == "blue":
-                    poke.toxicAffliction(self.toxicB)
+                    if 7 in poke.tipe:
+                        self.toxicB = 0
+                        print(f"{poke.name} absorbs the toxic spikes!")
+                        t.sleep(0.3)
+                    else:
+                        poke.toxicAffliction(self.toxicB)
         # there will be more entry hazards unfortunately
         return
         
     def hazarding(self,elem,side):
-        #need to account for hazards already being out and that trnaslating to the move failing
         #hazards on player side
         if side == "red":
             if elem == "rocks":
@@ -1057,7 +1067,7 @@ class battle:
                     print("No more toxic spikes will fit")
                     return "failed"
                 else:
-                    self.spikesA += 1
+                    self.toxicA += 1
             elif elem == "sticky":
                 if self.stickyA == True:
                     print("The web is already set up!")
@@ -1075,16 +1085,16 @@ class battle:
                     self.rocksB = True
             elif elem == "spikes":
                 if self.spikesB >= 3:
-                    print("No more spikes will fit")
+                    print("No more spikes will fit!")
                     return "failed"
                 else:
                     self.spikesB += 1
             elif elem == "toxspk":
                 if self.toxicB >= 2:
-                    print("No more toxic spikes will fit")
+                    print("No more toxic spikes will fit!")
                     return "failed"
                 else:
-                    self.spikesB += 1
+                    self.toxicB += 1
             elif elem == "sticky":
                 if self.stickyB == True:
                     print("The web is already set up!")

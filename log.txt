@@ -385,3 +385,9 @@ and generally i believe there are a lot of loose ends to tie up
 but that it seems to work is promising i did that
 what's next lol
 
+3 apr 2021
+10:35A- fixed some typos with entry hazards
+and set grounded poison types to absorb tox spikes
+i should do gravity/telekinesis next
+sigh, i'll add it to the list
+
