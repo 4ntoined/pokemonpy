@@ -169,6 +169,7 @@ class mon:
     
     ####things to reset upon being withdrawn
     def withdraw(self):
+        #reset stat stages
         self.atstage=6
         self.destage=6
         self.sastage=6
@@ -181,8 +182,10 @@ class mon:
         self.bsa=self.spatk
         self.bsd=self.spdef
         self.bsp=self.speed
+        #undo confusion
         self.confused=False
         self.confusionCounter=0
+        #reset bad poison counter
         if self.poisonCounter>0:
             self.poisonCounter=1
         self.resting=False
@@ -203,7 +206,7 @@ class mon:
         self.poisoned=False
         self.badlypoisoned=False
         print(f"{self.name} faints!")
-        t.sleep(1)
+        t.sleep(0.5)
     
     #back to full health!
     def restore(self):
@@ -1048,6 +1051,7 @@ class battle:
         return
         
     def hazarding(self,elem,side):
+        #will place entry hazards on the battlefield
         #hazards on player side
         if side == "red":
             if elem == "rocks":
@@ -2717,7 +2721,8 @@ while 1:
                         print("\n!! Entry must be number or list of numbers separated by spaces !!")
                     except IndexError:
                         print("\n!! Entry must correspond to Party Pokemon !!")
-            #
+    
+    #move deleting
     if userChoice=="e" or userChoice=="E":
         print("\n******** Move Deleter ********")
         t.sleep(0.7)
