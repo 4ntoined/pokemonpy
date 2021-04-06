@@ -391,3 +391,18 @@ and set grounded poison types to absorb tox spikes
 i should do gravity/telekinesis next
 sigh, i'll add it to the list
 
+6 apr 2021
+6:56P- not doing any coding i think
+dropping in to say that telekinesis was removed in gen VIII
+while gravity, and magnet rise are still around so that's interesting
+the mechanics of those moves (really status effects) are a lot deeper
+than i thought at first also like there is a lot to keep track of
+also everytime I look into adding a new pokemon mechanic I am
+more and more certain that we are never making it to double battles
+honestly such a simple premise but utterly opaque when it comes to this python code I've got set up
+(I feel very deep down that it won't even be that difficult to parse out.
+the mechanics are almost already there, more pokemon just means intializing more mon() objects
+but how they interact and how the code shepard's the user through is going to need to be adjusted)
+okay that's enough writing about the things I want to do instead of just doing them for today
+maybe i'll be back tomorrow, hopefully with some code
+
