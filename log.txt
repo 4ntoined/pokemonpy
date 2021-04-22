@@ -406,3 +406,11 @@ but how they interact and how the code shepard's the user through is going to ne
 okay that's enough writing about the things I want to do instead of just doing them for today
 maybe i'll be back tomorrow, hopefully with some code
 
+22 apr 2021
+9:16A- i have so much homework you would not believe
+but i'm going to test entry hazards more rigorously and see what i can see
+9:47A- okay i tested stealth rocks and toxic spikes...they seem to work as intended
+should probably start thinking about rapid spin and defog oof
+idk why movedex.dat wants to be added to the commit bc i swear i didn't touch it
+but whatever
+

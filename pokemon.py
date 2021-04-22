@@ -672,10 +672,11 @@ class mon:
                 for i in range(len(hazs)):
                     if hazs[i] in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
                         if self.battlespot=="red": #user's pokemon
-                            indigo.hazarding(hazs[i], "blue")
+                            xx = indigo.hazarding(hazs[i], "blue")
                         elif self.battlespot=="blue": #cpu
-                            indigo.hazarding(hazs[i], "red")
-                        print(haz_dialog[i])
+                            xx = indigo.hazarding(hazs[i], "red")
+                        if xx == "x": #makes sure hazard was executed successfully before printing the dialog
+                            print(haz_dialog[i])
                 #end of entry hazards
                 #more status move effects
                 return
@@ -1060,24 +1061,28 @@ class battle:
                     return "failed"
                 else:
                     self.rocksA = True
+                    return "x"
             elif elem == "spikes":
                 if self.spikesA >= 3:
-                    print("No more spikes will fit")
+                    print("No more spikes will fit!")
                     return "failed"
                 else:
                     self.spikesA += 1
+                    return "x"
             elif elem == "toxspk":
                 if self.toxicA >= 2:
-                    print("No more toxic spikes will fit")
+                    print("No more toxic spikes will fit!")
                     return "failed"
                 else:
                     self.toxicA += 1
+                    return "x"
             elif elem == "sticky":
                 if self.stickyA == True:
                     print("The web is already set up!")
                     return "failed"
                 else:
                     self.stickyA = True
+                    return "x"
             #think thats all the hazards for now
         #opponent side
         elif side == "blue":
@@ -1087,24 +1092,28 @@ class battle:
                     return "failed"
                 else:
                     self.rocksB = True
+                    return "x"
             elif elem == "spikes":
                 if self.spikesB >= 3:
                     print("No more spikes will fit!")
                     return "failed"
                 else:
                     self.spikesB += 1
+                    return "x"
             elif elem == "toxspk":
                 if self.toxicB >= 2:
                     print("No more toxic spikes will fit!")
                     return "failed"
                 else:
                     self.toxicB += 1
+                    return "x"
             elif elem == "sticky":
                 if self.stickyB == True:
                     print("The web is already set up!")
                     return "failed"
                 else:
                     self.stickyB = True
+                    return "x"
             #think thats all the hazards for now
                     
             
@@ -2141,7 +2150,7 @@ while 1:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        indigo.clearfields()
+        indigo.clearfield()
         weather=rng.choice(Weathers)
         weatherCounter=np.inf
         terrain=rng.choice(Terrains)
