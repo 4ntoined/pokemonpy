@@ -414,3 +414,8 @@ should probably start thinking about rapid spin and defog oof
 idk why movedex.dat wants to be added to the commit bc i swear i didn't touch it
 but whatever
 
+29 apr 2021
+7:13P- testing the other 2 entry hazards rn
+just thought about having to add entry hazard info to [status] for battles
+so there's a note about that you're welcome
+

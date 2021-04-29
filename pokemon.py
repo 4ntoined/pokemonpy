@@ -902,7 +902,7 @@ class mon:
         if self.currenthp<=0.:
             self.faint()
         else:
-            self.currenthpp=100.*self.currenhp/self.maxhp
+            self.currenthpp=100.*self.currenthp/self.maxhp
         
     def toxicAffliction(self,level): #1 layer of toxic spikes or two?
         #need to check for pre-existing status conditions
