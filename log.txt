@@ -441,4 +441,6 @@ also as well we need to add somewhere some mechanism for changing a pokemons nat
 or beef up the dex selection so that the user can select directly from there
 (that functionality is already in the nursery/pokemon creation you're welcome)
 someone give me my flowers like....
+23:51- also some sort of function to randomize natures so that its not always the default, Hardy
+okay goodnight
 
