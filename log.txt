@@ -419,3 +419,26 @@ but whatever
 just thought about having to add entry hazard info to [status] for battles
 so there's a note about that you're welcome
 
+16 jun 2021
+21:30- doin 24-hour time now
+i was gonna call it military time but I am fundamentally opposed
+so let's just move on
+I was thinking about maybe making the battle functionality a python function
+so it can be called whenever and wherever in the code
+idk that makes more sense to me from a utility standpoint
+like the only way to start a battle is from the main menu
+and what if i wanna throw you into a battle from somewhere else?
+right
+21:38- movedex.dat always wants to reupload because moves.py which is called directly by pokemon.py
+writes it and explicitly overwrites it so there you go
+it's so funny computers always do literally what they're told and if you look closely enough you can see why
+anyway gonna add natures
+23:43- very sleepy but natures are here
+i ran into a little bug where after successfully saving a pokemon, the game loops back to
+asking you for a savefile name again, should probably go back to the pokemon summary screen
+but natures work p well from what i can tell so far, I havent tested it too extensively though
+also as well we need to add somewhere some mechanism for changing a pokemons nature
+or beef up the dex selection so that the user can select directly from there
+(that functionality is already in the nursery/pokemon creation you're welcome)
+someone give me my flowers like....
+

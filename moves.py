@@ -81,3 +81,17 @@ struggle=int(mov[i]["index"])
 #save the table, especially for readability
 import astropy.io.ascii as asc
 asc.write(mov,'movedex.dat',overwrite=True)
+#
+#Natures?
+#no idea the best way to store this data
+#okay got it
+#atk = 0, def = 1, spatk = 2, spdef = 3, speed = 4
+natures = [ ["Hardy","Lonely","Adamant","Naughty","Brave"], \
+           ["Bold","Docile","Impish","Lax","Relaxed"], \
+               ["Modest","Mild","Bashful","Rash","Quiet"],\
+                   ["Calm","Gentle","Careful","Quirky","Sassy"], \
+                       ["Timid","Hasty","Jolly","Naive","Serious"] ]
+natures = np.array(natures,dtype=object)
+
+
+

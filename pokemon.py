@@ -13,15 +13,25 @@ import time as t
 import numpy as np
 #import astropy.table as tbl
 #import astropy.io.ascii as asc
-from moves import getMoveInfo,mov,struggle
+from moves import getMoveInfo,mov,struggle,natures
 from pokedex import dex
 
 rng=np.random.default_rng()
 
 class mon:
-    def __init__(self,level,named,hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
+    def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
         self.level=level
+        self.nature = nature
+        self.nature_str = natures[nature[0],nature[1]]
+        self.null_nature = False
+        if self.nature[0] == self.nature[1]:
+            self.null_nature = True
+            self.nature_multipliers = np.ones(5)
+        else:
+            self.nature_multipliers = np.ones(5)
+            self.nature_multipliers[self.nature[0]] = 1.1
+            self.nature_multipliers[self.nature[1]] = 0.9
         self.hpiv=rng.integers(0,32)
         self.ativ=rng.integers(0,32)
         self.deiv=rng.integers(0,32)
@@ -45,11 +55,11 @@ class mon:
         self.currenthp=self.maxhp
         self.currenthpp=100
         ##final stats, with evs, ivs, and one day natures==============##
-        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
-        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
-        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
-        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
-        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,self.nature_multipliers[0])
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,self.nature_multipliers[1])
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,self.nature_multipliers[2])
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,self.nature_multipliers[3])
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,self.nature_multipliers[4])
         ##=============================================================##
         self.name=named
         self.tipe=tipe
@@ -126,6 +136,8 @@ class mon:
         ev=[hpe,ate,dee,sae,sde,spe]
         #pokemon types
         tip=self.tipe
+        #nature
+        nacher = self.nature
         #known moves
         mvs=self.knownMoves
         #construct line to save all pokemon data
@@ -143,6 +155,9 @@ class mon:
         for i in tip:
             line+=f" {i}"
         line+=","
+        for i in nacher:
+            line+=f" {i}"
+        line+=","
         for i in mvs:
             line+=f" {i}"
         f.write(line+"\n")
@@ -151,11 +166,11 @@ class mon:
     #recalculate stats
     def reStat(self):
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
-        self.attack=stats(self.level,self.atb,self.ativ,self.atev,1)
-        self.defense=stats(self.level,self.deb,self.deiv,self.deev,1)
-        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,1)
-        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,1)
-        self.speed=stats(self.level,self.spb,self.spiv,self.spev,1)
+        self.attack=stats(self.level,self.atb,self.ativ,self.atev,self.nature_multipliers[0])
+        self.defense=stats(self.level,self.deb,self.deiv,self.deev,self.nature_multipliers[1])
+        self.spatk=stats(self.level,self.sab,self.saiv,self.saev,self.nature_multipliers[2])
+        self.spdef=stats(self.level,self.sdb,self.sdiv,self.sdev,self.nature_multipliers[3])
+        self.speed=stats(self.level,self.spb,self.spiv,self.spev,self.nature_multipliers[4])
         self.currenthp=self.maxhp
         self.currenthpp=100.
     
@@ -940,6 +955,10 @@ class mon:
             print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
             print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
+        if self.null_nature == False:
+            print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
+        else:
+            print(f"Nature : {self.nature_str} | Up - None, Down - None")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.attack,'.2f')}")
         print(f"Def : \t{format(self.defense,'.2f')}")
@@ -955,6 +974,10 @@ class mon:
             print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
         else:
             print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
+        if self.null_nature == False:
+            print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
+        else:
+            print(f"Nature : {self.nature_str} | Up - None, Down - None")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.bat,'.2f')}")
         print(f"Def : \t{format(self.bde,'.2f')}")
@@ -1243,7 +1266,7 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     return matchup1*matchup2
 
 #create a pokemon from the pokedex
-def makeMon(pokedexNumber,level=1):
+def makeMon(pokedexNumber,level=1,nacher = (0,0)):
     Hp=dex[pokedexNumber]['hp']
     At=dex[pokedexNumber]['at']
     De=dex[pokedexNumber]['de']
@@ -1254,9 +1277,9 @@ def makeMon(pokedexNumber,level=1):
     tipe1=dex[pokedexNumber]['type1']
     tipe2=dex[pokedexNumber]['type2']
     if dex[pokedexNumber]['type2']==20: #single-typed mon
-        return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
     else: #dual-typed
-        return mon(level,nayme,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
 
 #load pokemon
 def loadMon(savefile):
@@ -1280,8 +1303,9 @@ def loadMon(savefile):
             typ=np.array([int(iiii) for iiii in i[5].split()])
             if max(typ)>18 or min(typ)<0: #invalid types
                 return [0]
-            newP=mon(int(i[1]),i[0],hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
-            newP.knownMoves=[int(iiiii) for iiiii in i[6].split()]
+            nacher = np.array([int(iv) for iv in i[6].split()])
+            newP=mon(int(i[1]),i[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+            newP.knownMoves=[int(iiiii) for iiiii in i[7].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
             newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
@@ -1499,6 +1523,7 @@ typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
+nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
 struggleInd=struggle #move index of struggle
 mo=list(range(len(mov)))
 mo.remove(struggleInd) #get struggle out of pool of moves
@@ -2204,10 +2229,7 @@ while 1:
                     if sumChoice=='s':
                         while 1:
                             savename=input("Enter name of savefile...\n[blank] to use default savefile name\nor [b]ack\n: ")
-                            if savename=='b':
-                                t.sleep(0.7)
-                                break
-                            if savename=='B':
+                            if (savename=='b') or (savename=='B'):
                                 t.sleep(0.7)
                                 break
                             if savename=='':
@@ -2319,11 +2341,40 @@ while 1:
                             print("\n** Level must be at least 1 **")
                     except ValueError:
                         print("\n** Enter a number! **")
+                ##oh boy nature input###
+                while 1:
+                    print("Attack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
+                    nachup = input(f"What should be {newName}'s boosted stat: ")
+                    try:
+                        nachup = int(nachup)
+                        if (nachup <= 4) and (nachup >= 0):
+                            break #stat good
+                        else:
+                            print("\n!! Enter a number between 0 and 4 !!")
+                            t.sleep(.3)
+                    except ValueError:
+                        print("\n!! Enter a number !!")
+                        t.sleep(.3)
+                    ##okay if all goes well the code should progress here and we need to ask for hindered nature
+                while 1:
+                    print("\n~~~~~~~~~~\nAttack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
+                    nachdo = input(f"What should be {newName}'s nerfed stat: ")
+                    try:
+                        nachdo = int(nachdo)
+                        if (nachdo <= 4) and (nachdo >= 0):
+                            break #stat is good, break input loop
+                        else:
+                            print("\n!! Enter a number between 0 and 4 !!")
+                            t.sleep(.3)
+                    except ValueError:
+                        print("\n!! Enter a number !!")
+                        t.sleep(.3)
+                nacher = (nachup, nachdo)
                 ##make the pokemon!##
                 if len(newTipe)==1:
-                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
                 if len(newTipe)>1:
-                    newMon=mon(lvlS,newName,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
                 print(f"\n{newName} is born!")
                 t.sleep(1)
                 userParty.append(newMon)
