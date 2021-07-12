@@ -43,6 +43,11 @@ moremoves=[
         ("Weather Ball",50,100,10,1,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
         ("X-Scissor",80,100,15,0,1,11,"The user slashes the target by crossing its claws!","null"),
         ("Signal Beam",75,100,15,1,0,11,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
+        ("Draco Meteor",130,90,5,1,0,14,"The user calls upon its draconic powers...\nand unleashes a storm of meteors!\nLowers SpA. 2 stages.","stat self,sa,-2,100"),
+        ("Dragon Pulse",85,100,10,1,0,14,"The user summons a beastly beam from its mouth!","null"),
+        ("Dragon Claw",80,100,15,0,1,14,"The user slashes the target with shape claws!","null"),
+        ("Clanging Scales",110,100,5,1,0,14,"","stat self,de,-1,100"),
+        
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
         ("Rain Dance",0,100,5,2,0,2,"The user disrupts the air pressure and causes rain!","rain noMiss"),
