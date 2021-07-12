@@ -451,3 +451,15 @@ okay goodnight
 23:15- i once again wanted to see something
 really its repository maintenience(sp?) its boring
 
+11 jul 2021
+20:50- can you believe
+i added some dragon type moves
+I am scheming on using some of these move as an avenue toward more functionality
+dragon tail forces the target to withdraw and dragon darts is a multi-hit move
+and outrage locks the user into the move for a varying number of turns 2/3
+so I may need to reroute some battle stuff to get all of this running smoothly
+and also to set the infrastructure to be used for other moves that do this same kinda stuff
+python really is so powerful like this is still a rough draft, a proof of concept, if you will
+just wait until someone steps up and optimizes all of this ...
+what now
+
