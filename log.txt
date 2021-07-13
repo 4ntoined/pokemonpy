@@ -463,3 +463,11 @@ python really is so powerful like this is still a rough draft, a proof of concep
 just wait until someone steps up and optimizes all of this ...
 what now
 
+13 jul 2021
+7:46- was playtesting and got a rrlicanth with a negative level
+i thought it was a glitch or something but starter level determimation is determined
+with a normal distribution centered on lvl 80
+so negative numbers are unlikely but not entirely impossible
+which kinda makes negative leveled pokemon rare like shinies!
+nice
+
