@@ -3,7 +3,7 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: natures, ABILITIES *cough*, genders ugh
+#*********to do list: ABILITIES *cough*, genders ugh
 #*******************: user set battle setting,
 #*******************: 
 #
@@ -1569,7 +1569,7 @@ opponentName="OPPONENT"
 ################
 
 print("\n... A Python game by Antoine D. ...")
-t.sleep(1)
+t.sleep(0.7)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(0.7)
 while 1:
