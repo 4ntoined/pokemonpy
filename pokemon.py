@@ -1568,7 +1568,7 @@ trainerParty=[rival,rival2]
 opponentName="OPPONENT"
 ################
 
-print("\n... A Python game by Antoine D. ...")
+print("\n... A Python game by Antoine ...")
 t.sleep(0.7)
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 t.sleep(0.7)

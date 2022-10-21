@@ -471,3 +471,28 @@ so negative numbers are unlikely but not entirely impossible
 which kinda makes negative leveled pokemon rare like shinies!
 nice
 
+20 oct 2022
+21:21- wrote the date just now and really couldn't believe it's been more than a year
+like a year and a half...
+that's.....unbelievable for me like it has not felt like a year plus
+anyway I was reading this log earlier and I remembered I love this
+mostly unrelated, I was trying to update python and I realized that my anaconda distro
+took up like half of the space on my hard drive dedicated to linux and that's a little too much
+so i went and deleted anaconda, figured I don't use most of those packages anyway
+especially not on my personal laptop, where I also have access to like state-funded computing systems
+and networks. I would personally install the few packages I do use, and everyone would say love
+that was this morning and I spent all day troubleshooting my way to the goal
+at one point I actually broke linux and literally had to abandon ship and 
+reinstall linux. I had to download an iso of linux mint (took like 10 minutes to download)
+and then I had to format my little usb flash drive and so I could burn the iso so i could 
+boot a new, clean version of linux from the drive. it was literally so much work and it took so long
+but I did it and then I had to install python AGAIN (and... git, ssh, pip,)
+To install python from scratch you have 
+to compile it like 3 times and each time takes just a little too long. And when python was finally
+installed and worked, the modules i needed didn't!! it was troubleshooting and forum searching all the
+way down. And each time I made a fix I had to recompile and reinstall python. It took,,, all day.
+And I only log it because the first thing I did when it looked like everything had worked was
+I started playing the game, and it was working (until I entered a blank and it crashed lol)
+idk what's next...I was thinking I might completely overhaul battling
+like it's been a little while I think I can spin something up
+
