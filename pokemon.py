@@ -591,7 +591,7 @@ class mon:
                     if targ=='targ':
                         for i in range(len(stat)):
                             opponent.stageChange(stat[i],int(phase[i]))
-                        opponent.inBatle()
+                        opponent.inBattle()
                 #end of stat changes
                 ##weathers
                 global weatherCounter
