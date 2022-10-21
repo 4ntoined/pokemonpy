@@ -72,20 +72,39 @@ moremoves=[
         ("Sleep Powder",0,75,15,2,0,3,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
         ("Poison Powder",0,75,35,2,0,7,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
-        ("Confuse Ray",0,100,10,2,0,13,"The user let loose a sinister beam that causes confusion!","conf 100"),
+        ("Confuse Ray",0,100,10,2,0,13,"The user lets loose a sinister beam that causes confusion!","conf 100"),
         ("String Shot",0,95,40,2,0,11,"The user spins silk to bind the target! Lowers target's Spd. 1 stage.","stat targ,sp,-1"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]
-mov = tbl.Table(rows=moremoves,names=('name','pwr','accu','pp','special?','contact?','type','desc','notes'),dtype=('U25','i4','i4','i4','i4','i4','i4','U140','U140'))
-coll=tbl.Column(range(0,len(mov)),dtype='i4')
-mov.add_column(coll,index=0,name='index')
+#constructing dtypes and names to accompany data
+labels = np.dtype( [('name','U25'),('pwr','i4'),('accu','i4'),('pp','i4'),('special?','i4'),('contact?','i4'),('type','i4'),('desc','U140'),('notes','U140')] )
+#creating structed arrays
+mov = np.array(moremoves, dtype=labels)
+#new dtype to add the index column
+new_dt = np.dtype( [('index','i4')] + mov.dtype.descr)
+#new structured array for the new dtype
+mov2 = np.zeros(mov.shape, dtype=new_dt)
+#dump data from old array into new array
+for i in mov.dtype.names:
+    mov2[i] = mov[i]
+    pass
+mov = mov2
+mov['index'] = np.arange(0,len(mov), dtype=int)
 #find struggle
-i=np.argwhere(mov["name"]=="Struggle")
-struggle=int(mov[i]["index"])
+ind=np.argwhere(mov["name"]=="Struggle")
+struggle=int(mov[ind]["index"])
 #save the table, especially for readability
-import astropy.io.ascii as asc
-asc.write(mov,'movedex.dat',overwrite=True)
+mov.tofile('movedex2.txt', sep='\n')
+with open('movedex2.txt', 'a') as ofile:
+    ofile.write('\n')
+
+#with open('movedex2.dat','w') as ofile:
+#    ofile.write('index name pwr accu pp special? contact? type desc notes\n')
+#    for i in range(len(mov)):
+#        for j in range(len(mov[i])):
+#            file.write("{j}, ")
+
 #
 #Natures?
 #no idea the best way to store this data

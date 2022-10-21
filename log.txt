@@ -496,3 +496,11 @@ I started playing the game, and it was working (until I entered a blank and it c
 idk what's next...I was thinking I might completely overhaul battling
 like it's been a little while I think I can spin something up
 
+21 oct 2022
+15:45- just changed the moves data from moves.py into a nump structured array instead of astropy table
+trying to get rid of pesky astropy dependency. i'm mostly done, movedex.dat is now movdex2.txt and
+I don't quite like it as much as the old one but its the only solution i've come up with so far
+I also haven't edited the main code to reflect these new changes now so it might be broken
+in fact i'd say its probably broken
+commiting anyway xoxo
+
