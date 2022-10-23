@@ -523,4 +523,5 @@ wanted to say that in battle the turn should end when a pokemon faints, but a no
 should go through end-of-round weatherchecks, counters, etc, before the next pokemon shifts in
 (different from when a trainer opts to shift a pokemon as their move that turn)
 okay cool bye again love you
+17:55- forgot to program growth's double effect in sunny weather, did that and tested and approved
 

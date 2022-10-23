@@ -576,6 +576,7 @@ class mon:
         if hitCheck==False: #move misses
             print(f"\n{self.name}'s attack misses!")
             t.sleep(0.4)
+            # move failed 
             return
         else: #move will connect
             ##===========================status moves==========================##
@@ -587,6 +588,8 @@ class mon:
                     stat=stat.split(":")
                     phase=phase.split(":")
                     if targ=='self':
+                        if ("growth" in notas) and weather=='sunny':
+                            phase=np.array([2,2],dtype=int)
                         for i in range(len(stat)):
                             self.stageChange(stat[i],int(phase[i]))
                         self.inBattle()
