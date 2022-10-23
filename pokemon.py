@@ -3,10 +3,12 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-#*********to do list: ABILITIES *cough*, genders ugh
-#*******************: user set battle setting,
-#*******************: 
+# *****************************   to do list   *****************************: 
+# ABILITIES *cough* // genders ugh
+# priority // fly/dig/dive/etc // baton pass // bide // trapping moves bind/whirlpool 
+# multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
 #
+# ***************************************************************************
 
 import copy
 import time as t
@@ -799,9 +801,11 @@ class mon:
             if "recoil" in notes:
                 amnt=notes[1+int(np.argwhere(np.array(notes)=="recoil"))]
                 if amnt=="1/3":
-                    attacker.recoil(recoilDmg,1/3)
+                    attacker.recoil(recoilDmg,1./3.)
+                elif amnt=="1/4":
+                    attacker.recoil(recoilDmg,1./4.)
                 elif amnt=="1/4maxhp":
-                    attacker.recoil(attacker.maxhp,1/4)
+                    attacker.recoil(attacker.maxhp,1./4.)
                 #more possible recoil amounts?
             #recoil belongs in hit, because it doesn't happen if the target is immune to the hit()
             #setting need to rest
@@ -1165,6 +1169,10 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=1.
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
+    #### facade ####
+    if ('facade' in note) and (attacker.burned or attacker.poisoned or attacker.badlypoisoned or attacker.paralyzed):
+        power*=2.
+        damages.append("Power boosted from status condition!")
     ####weather ball#### doubles power and changes type
     if ("weatherball" in note) and (weather!="clear"):
         power*=2.

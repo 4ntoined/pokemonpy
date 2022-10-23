@@ -517,4 +517,10 @@ np struct. arrays. the array['colomn name'] function is identical and that's the
 I uses these data structures for. so theres that! woo!
 I should be able to play on termux on my phone now
 alright nice bye for now
+17:38- okay so I went and added a whole bunch of easy normal type moves from A-H
+also facade is new functionality but idk if the function necessarily works, it just hasnt broken the code yet
+wanted to say that in battle the turn should end when a pokemon faints, but a non-fainted opposing pokemon
+should go through end-of-round weatherchecks, counters, etc, before the next pokemon shifts in
+(different from when a trainer opts to shift a pokemon as their move that turn)
+okay cool bye again love you
 
