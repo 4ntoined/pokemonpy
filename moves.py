@@ -5,7 +5,7 @@
 #dark 15,steel 16,fairy 17
 
 import numpy as np
-from astropy import table as tbl
+#from astropy import table as tbl
 
 def getMoveInfo(moveIndex):
     return mov[moveIndex]

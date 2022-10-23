@@ -504,3 +504,17 @@ I also haven't edited the main code to reflect these new changes now so it might
 in fact i'd say its probably broken
 commiting anyway xoxo
 
+23 oct 2022
+16:07- so it turns out i also used an astropy table for the pokedex
+so I spent way too many hours just now making that numpy structured
+this was actually dumbly more difficult than the transistion with the moves
+the pokemon are loaded in as a (normal) numpy array from the csv file w/ the data
+to make them structured each row needs to be encoded as a tuple so that the dtype-types
+are appropriately assigned i guess idk it was broken for so long
+but I fixed it now, played a quick game, and everything worked. I died quickly though
+that mostly makes sense that my usage of mov and dex in pokemon.py work as both astropy tables and
+np struct. arrays. the array['colomn name'] function is identical and that's the only fancy thing
+I uses these data structures for. so theres that! woo!
+I should be able to play on termux on my phone now
+alright nice bye for now
+
