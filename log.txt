@@ -525,3 +525,24 @@ should go through end-of-round weatherchecks, counters, etc, before the next pok
 okay cool bye again love you
 17:55- forgot to program growth's double effect in sunny weather, did that and tested and approved
 
+24 oct 2022
+15:05- as fun as this is, it's never gonna be complete as long as Im soloing it
+so my endgame is to create an Elite Four mode and get that working
+it would entail 4 trainers, at least 4 poke each (and im thinking each has 4 predetermined moves and 2 random)
+and a champion with at least 5 mons. You'd battle them all, in order like the namesake from the games
+Of course, there are no rules/restrictions as to your pokemon, they can be legal and reasonable, or completely broken, illegal monsters
+The whole point of this was playing with the mechanics of pokemon beyond what Gamefreak generally allows so go crazy
+it'll be a good excuse to work in a whole lotta moves and mechanics. And it should demo the capabilities of this code
+pretty well to anyone who is curious. If I can take this that far, I'd be satisfied to let someone(s) else take it from there
+So I might never have to touch it again
+And that really isn't too far off. I'd have to finalize whom makes the cut, decide on their movesets, and then the controlling factor
+is how apt I am at implementing any (necessary) missing mechanics. If all the moves in all the Elite movesets work as intended,
+the last part is coding up the mode itself, press L for elite four, first battle, okay you won here's the second battle, etc. champion finale
+And that's gonna require me to modularize the battle mode entirely, because currently as a flat block of code that runs when you
+press B, on the main menu, thats not gonna cut it for elite 4 mode.
+any mechanics still missing (abilities, items, baton pass potentially etc.) will have to be filled in by the next python-using pokemon nerd.
+Or maybe I'll do it 10 years later in a fit of boredom, its possible. But I'd like to be able to say this project reached some sort of completetion
+see it's like a lot of work, but it's not crazy pie-in-the-sky kinda stuff its attainable but at the same time GIRTHY and TEXTURED
+gonna set an abritrary release date so I have an artificial deadline so I actually do this stuff
+Pokemon.py by Antoine - Beta release coming Holiday 2023 mark your calendars folks
+

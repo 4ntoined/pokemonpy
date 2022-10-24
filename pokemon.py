@@ -1028,6 +1028,11 @@ class battle:
         #tailwind?
         #reflect
         #light screen
+        #trick room
+        #the same way weather and terrain are set globally, i think trick room could be as well
+        #also weather and terrain could be an attribute of battle() rn not much difference
+        #it would allow us to set up several battlefields w different conditions but thats a little extra
+        #so maybe I'll make trick room global for now 
     
     def clearfield(self):
         self.rocksA=False
@@ -1886,6 +1891,10 @@ while 1:
                         indigo.landing(trainerMon,"blue")
                         trainerShift=True
                         #end of trainer switching
+                    ########################################################
+                    # if both pokemon are attacking, compare move priority #
+                    # then compare pokemon speeds ##########################
+                    ########################################################
                     #set boolean to true if user has higher effective speed stat
                     userFast=userMon.bsp>=trainerMon.bsp
                     uFaint=False
