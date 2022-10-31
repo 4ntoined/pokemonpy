@@ -1,4 +1,4 @@
-#Antoine Washington
+#Antoine
 #Pokemon x Python
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
