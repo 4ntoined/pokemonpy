@@ -546,3 +546,27 @@ see it's like a lot of work, but it's not crazy pie-in-the-sky kinda stuff its a
 gonna set an abritrary release date so I have an artificial deadline so I actually do this stuff
 Pokemon.py by Antoine - Beta release coming Holiday 2023 mark your calendars folks
 
+27 oct 2022
+18:13- I have pretty much decided on whom the champion will be, not gonna spoil it in the log
+(it's a pretty basic choice tbh, like if you know basic pokemon lore you'd prob be able to guess)
+(and also it'll be spoiled uhhh in the code, which is just as accessible as this log, so there)
+i'm a sinnoh baby at heart so cynthia in the e4 very likely. prob with lucario, spiritomb, garchomp,
+and maybe her milotic, that this was ANNOYING so yeah she's an icon
+wait maybe I will give each of the four a legendary....yes I like this idea Cynthia needs a giratina
+think Im gonna use this entry to brainstorm,,,, if that doesn't interest you move on hun
+other champions: leon, kukui/hau, diantha(sp?), alder/iris, steven/wallace, lance, blue
+yeah none of them are really inspiring me. maybe iris or diantha, gamefreak really gave Diantha NO shine
+pulling from other e4s: *drasna - dragon from kalos, *caitlin - psychic from unova, flint - fire from sinnoh
+koga - poison from johto, agatha - ghost from kanto, kahili - flying from alola, *molayne - steel from alola
+so that's cool. I have leads and ideas. I think I wanted some non-e4 trainers in there too
+Now Im thinking of rivals and team bosses, like so many characters have iconic pokemon and teams that a
+fan would recognize. So maybe i'll build out this e4 mode with more preset trainers to battle
+18:39- something else for someone else to deal with.....enemy trainer AI, I literally...dont know how to do that
+I could definitely look into it. I think i'd have to write a program that could look at the current battle environment:
+all the info of the trainer's pokemon, the opponent's (player's) pokemon available info (like level and type, but not ivs and evs),
+the weather and terrain and rocks/spikes and stage changes, use that info to deduce the results of the cpu
+choosing each of the pokemons moves (potentially a very large number) and shifting to one of its other party pokemon
+(again potentially a very large number), rank all of those outcomes against one another,
+and choose one based on that ranking
+so like simple in theory and easy enough to write out but my man....im not all built like that
+
