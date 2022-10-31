@@ -264,6 +264,7 @@ class mon:
     def stageChange(self,stat,level):
         #stat='at','de','sa','sd','sp'
         #level= 1,2,3 or -1,-2,-3
+        #i think that this would be a good place to use match/case, but that low priority and would break pre 3.10 pythons
         if stat=='at':
             maxd=(self.atstage==12 and level>0)
             mind=(self.atstage==0 and level<0)
@@ -581,7 +582,7 @@ class mon:
         else: #move will connect
             ##===========================status moves==========================##
             if moveI['special?']==2:
-                ##stat changes
+                ## stat changes ##
                 if "stat" in notas:
                     statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
                     targ,stat,phase=statInfo.split(",")[0:3]
@@ -597,8 +598,8 @@ class mon:
                         for i in range(len(stat)):
                             opponent.stageChange(stat[i],int(phase[i]))
                         opponent.inBattle()
-                #end of stat changes
-                ##weathers
+                ### end of stat changes ###
+                ## weathers ##
                 global weatherCounter
                 if "sun" in notas:
                     if weather=='sunny':
@@ -628,8 +629,8 @@ class mon:
                         weather='hail'
                         weatherCounter=5
                         print("It starts hailing!")
-                #end of the weathers
-                #terrains
+                ### end of the weathers ###
+                ## terrains ##
                 global terrain
                 global terrainCounter
                 if "electric" in notas:
@@ -660,7 +661,7 @@ class mon:
                         terrain="psychic"
                         terrainCounter=5
                         print("The battlefield gets weird!")
-                #statuses bro
+                ## statuses bro ##
                 statuses=[]
                 if "para" in notas:
                     statuses.append("para")
@@ -685,7 +686,7 @@ class mon:
                     statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="conf"))]))
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
-                #entry hazards oh boy oh geeze
+                ## entry hazards oh boy oh geeze ##
                 global indigo
                 hazs = ["rocks", "spikes", "toxspk", "sticky"]
                 haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!", "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
@@ -697,8 +698,12 @@ class mon:
                             xx = indigo.hazarding(hazs[i], "red")
                         if xx == "x": #makes sure hazard was executed successfully before printing the dialog
                             print(haz_dialog[i])
-                #end of entry hazards
-                #more status move effects
+                ### end of entry hazards ###
+                ## healing ## heal pulse? healing the target instead of the user, in the future
+                if 'recover' in notas:
+                    heals = self.maxhp/2.
+                    self.healing(heals)
+                ### end of healing ###
                 return
             ##=================================================================##
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
@@ -815,14 +820,20 @@ class mon:
             if "mustRest" in notes:
                 attacker.resting=True
         #end of hit()
-    
+    #healing via moves
+    def healing(self, amount):
+        self.currenthp += amount
+        print(f"{self.name} heals {format(100.*amount/self.maxhp,'.2f')}% HP!")
+        if self.currenthp > self.maxhp:
+            self.currenthp = self.maxhp
+        self.currenthpp = 100. * self.currenthp/self.maxhp
     #flinching
     def flinch(self):
         self.flinched=True
     #recoil, gonna experiment with spacing here I guess whatever
     def recoil(self, damagedone, recoilAmount):
         self.currenthp -= damagedone * recoilAmount
-        self.currenthpp = 100 * self.currenthp / self.maxhp
+        self.currenthpp = 100. * self.currenthp / self.maxhp
         print( f"{self.name} takes recoil damage!" )
         t.sleep(0.3)
         if self.currenthp <= 0.:
@@ -830,7 +841,7 @@ class mon:
         #i don't hate it
     #confusion
     def confusionDamage(self):
-        dmg = (((( 2. * self.level ) / 5. + 2.) * 40. * self.bat / self.bde) / 50. + 2. )
+        dmg = (((( 2. * self.level ) / 5. + 2.) * 40. * self.bat / self.bde) / 50. + 2. ) * (rng.integers(85,101)*0.01)
         self.currenthp -= dmg
         self.currenthpp = 100 * self.currenthp / self.maxhp
         print( f"{self.name} hurt itself in its confusion!" )

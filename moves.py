@@ -95,7 +95,7 @@ moremoves=[
         ("Geomancy",0,100,10,2,0,17,"The user absorbs energy from its surroundings to power up!\nBoosts Sp.A Sp.D Spd. 2 stages each.\nTwo-turn move.","stat self,sa:sd:sp,2:2:2 noMiss 2turn geomance"),
         ("Confide",0,100,20,2,0,0,"The user tells the target a (quite inappropriate) secret.\nIt lowers the target's Sp.A 1 stage.","stat targ,sa,-1 noMiss"),
         ("String Shot",0,95,40,2,0,11,"The user spins silk to bind the target! Lowers target's Spd. 1 stage.","stat targ,sp,-1"),
-        ("Double Team",0,100,15,2,0,0,"The user moves so quick it creates afterimages.\nRaises evasiveness 1 stage.","stat targ,ev,1 noMiss"),
+        ("Double Team",0,100,15,2,0,0,"The user moves so quick it creates afterimages.\nRaises evasiveness 1 stage.","stat self,ev,1 noMiss"),
         ("Growl",0,100,40,2,0,0,"The user growls cutely.\nIt lowers the target's Atk. 1 stage.","stat targ,at,-1"),
          #stat(us) conditions
         ("Stun Spore",0,75,30,2,0,3,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
@@ -104,7 +104,7 @@ moremoves=[
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user lets loose a sinister beam that causes confusion!","conf 100"),
          #healing
-        #("Recover",0,100,10,2,0,0,"The user regenerates cells to heal itself by half its max HP.","recover noMiss"),
+        ("Recover",0,100,10,2,0,0,"The user regenerates cells to heal itself by half its max HP.","recover noMiss"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]

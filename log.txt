@@ -581,4 +581,7 @@ still need to program the effects of psystrike/shock, water spout, fake out (pri
 and the concept of healing for recover
 so progress is being made but its slow, need to do this for 4 other teams and then program the mode
 and now im sleepy so bye see you later
+18:40- recover is functional now! will prob change the technicalities as we include more healing moves
+also fixed a bug where double team boosts the oppo's evasion instead of the user
+the recover thing also introduces a move that could very easily fail, which I should start tracking
 
