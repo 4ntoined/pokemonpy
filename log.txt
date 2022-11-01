@@ -596,4 +596,5 @@ and rework literally everything from there as need be....but that's like....so m
 12:05- i think we have psystrike now. would be kinda hard to test, but give me a second
 12:19- tested psystrike cause I'm a legend. works fine
 12:25- added psyshock and secret sword, scheming on body press and its variations (user phys. atk vs target spec. def)
+12:37- nvm body press isnt what I thought it is, it uses the users phys def (instead of user's phys atk) to calc damage
 
