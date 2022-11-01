@@ -593,4 +593,7 @@ for optimization. but im not even there yet. I added synthesis a second ago. hav
 11:43- okay tested it, it works now. I want to do more moves (psystrike and water spout come to mind)
 but I also really feel like I should modularize the battle feature, make weather and terrain an attribute of the battle class,
 and rework literally everything from there as need be....but that's like....so much
+12:05- i think we have psystrike now. would be kinda hard to test, but give me a second
+12:19- tested psystrike cause I'm a legend. works fine
+12:25- added psyshock and secret sword, scheming on body press and its variations (user phys. atk vs target spec. def)
 

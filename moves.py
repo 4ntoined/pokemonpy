@@ -42,7 +42,7 @@ moremoves=[
         ("Earthquake",100,100,10,0,0,8,"The user causes a powerful earthquake.","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
         ("Judgement",100,100,10,1,0,0,"The user pelts the battlefield with bolts of light from the sky.",""),
         ("Iron Tail",100,75,15,0,1,16,"The user slams the target wit a steel-hard tail!\n30% chance to lower target's Def. 1 stage.","stat targ,de,-1,30"),
-        #("Psystrike",100,100,10,1,0,10,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
+        ("Psystrike",100,100,10,1,0,10,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
         ("Flamethrower",90,100,15,1,0,1,"The user attacks with a powerful flame! 10% chance to burn.","burn 10"),
         ("Ice Beam",90,100,15,1,0,5,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze 10"),
         ("Thunderbolt",90,100,15,1,0,4,"The user attacks with a bolt of lightning! 10% chance to paralyze.","para 10"),
@@ -50,10 +50,12 @@ moremoves=[
         ("Attack Order",90,100,15,0,0,11,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Sludge Bomb",90,100,10,1,0,7,"Unsanitary sludge is hurled at the target.\n30% chance to poison the target.","pois 30"),
         ("Dragon Pulse",85,100,10,1,0,14,"The user summons a beastly beam from its mouth!","null"),
+        ("Secret Sword",85,100,10,1,0,6,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Dark Pulse",80,100,15,1,0,15,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch 20"),
         ("X-Scissor",80,100,15,0,1,11,"The user slashes the target by crossing its claws!","null"),
         ("Dragon Claw",80,100,15,0,1,14,"The user slashes the target with shape claws!","null"),
         ("Aura Sphere",80,100,20,1,0,6,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
+        ("Psyshock",80,100,10,1,0,10,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Signal Beam",75,100,15,1,0,11,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         ("Crush Claw",75,95,10,0,1,0,"The user slashes the target with hard, sharp claws\n May lower Def. 1 stage.","stat targ,de,-1,50"), #at some point we'll track sound-based moves
         #("Brick Break",75,100,15,0,1,6,'The user attacks with a swift chop. This removes Light Screen and Reflect.','breakScreens'), #need to program light screen and reflect and aurora veil

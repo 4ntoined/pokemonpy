@@ -1105,7 +1105,7 @@ class battle:
                         poke.toxicAffliction(self.toxicB)
         # there will be more entry hazards unfortunately
         return
-        
+
     def hazarding(self,elem,side):
         #will place entry hazards on the battlefield
         #hazards on player side
@@ -1170,8 +1170,9 @@ class battle:
                     self.stickyB = True
                     return "x"
             #think thats all the hazards for now
-                    
-            
+    #more functions of battle
+## end of battle class ##
+
 #def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####damage read-out strings####
@@ -1180,7 +1181,10 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     level=attacker.level
     if isSpecial:
         attack=attacker.bsa
-        defense=defender.bsd
+        if 'psystrike' in note:
+            defense=defender.bde
+        else:
+            defense=defender.bsd
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
