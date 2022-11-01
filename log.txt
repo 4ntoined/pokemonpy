@@ -570,11 +570,11 @@ choosing each of the pokemons moves (potentially a very large number) and shifti
 and choose one based on that ranking
 so like simple in theory and easy enough to write out but my man....im not all built like that
 
-31 oct 2022-
+31 oct 2022
 13:26- hallow's eve!
 reconsidering the e4 bc I think I want N on it. more ideas: Silver, AZ (he used no gen 6 mons in XY?)
 Zinnia from ORAS instead of AZ,  okay I think i like that lineup a lot more.
-e4 will be Cynthia G4, N G5, Silver G2, and Zinnia G6. Champion is mans. So i habe to decide about their
+e4 will be Cynthia G4, N G5, Silver G2, and Zinnia G6. Champion is mans. So i have to decide about their
 parties and their movesets. nice
 17:35- added some moves in anticipation of e4 teams. Mostly completed the movesets of the champions mons
 still need to program the effects of psystrike/shock, water spout, fake out (priority AND first-used move only), and screens for brick break
@@ -584,4 +584,13 @@ and now im sleepy so bye see you later
 18:40- recover is functional now! will prob change the technicalities as we include more healing moves
 also fixed a bug where double team boosts the oppo's evasion instead of the user
 the recover thing also introduces a move that could very easily fail, which I should start tracking
+
+1 nov 2022
+11:35- i noticed that we check for status condition affliction in status moves but not in special/physical (attacking)
+moves...which is very wrong. and having thought about it idt I've ever had a status condition inflicted from an attacking
+move. which tracks. and the move() function is already so complicated and repeats a lot of code so there might be room in there
+for optimization. but im not even there yet. I added synthesis a second ago. havent tested it yet
+11:43- okay tested it, it works now. I want to do more moves (psystrike and water spout come to mind)
+but I also really feel like I should modularize the battle feature, make weather and terrain an attribute of the battle class,
+and rework literally everything from there as need be....but that's like....so much
 

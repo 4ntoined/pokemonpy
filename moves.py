@@ -104,7 +104,8 @@ moremoves=[
         ("Toxic",0,90,10,2,0,7,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,"The user lets loose a sinister beam that causes confusion!","conf 100"),
          #healing
-        ("Recover",0,100,10,2,0,0,"The user regenerates cells to heal itself by half its max HP.","recover noMiss"),
+        ("Recover",0,100,10,2,0,0,"The user regenerates cells to heal itself by half its max HP.","heals recover noMiss"),
+        ("Synthesis",0,100,5,2,0,3,"The user takes in sunlight to restore HP.\nRestores more HP in harsh sunlight, less in non-sunny, non-clear weather.","heals synthesis noMiss"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]

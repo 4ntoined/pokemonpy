@@ -663,7 +663,7 @@ class mon:
                         print("The battlefield gets weird!")
                 ## statuses bro ##
                 statuses=[]
-                if "para" in notas:
+                if "para" in notas: #yeah these if statements are literally all the same besides the strings, i can for loop this
                     statuses.append("para")
                     statuses.append(int(notas[1+int(np.argwhere(np.array(notas)=="para"))]))
                 if "burn" in notas:
@@ -689,7 +689,8 @@ class mon:
                 ## entry hazards oh boy oh geeze ##
                 global indigo
                 hazs = ["rocks", "spikes", "toxspk", "sticky"]
-                haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!", "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
+                haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!",\
+                        "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
                 for i in range(len(hazs)):
                     if hazs[i] in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
                         if self.battlespot=="red": #user's pokemon
@@ -700,9 +701,17 @@ class mon:
                             print(haz_dialog[i])
                 ### end of entry hazards ###
                 ## healing ## heal pulse? healing the target instead of the user, in the future
-                if 'recover' in notas:
-                    heals = self.maxhp/2.
-                    self.healing(heals)
+                if 'heals' in notas:
+                    if 'recover' in notas:
+                        healamount = self.maxhp/2.
+                    if 'synthesis' in notas:
+                        if (weather == 'rain') or (weather == 'sandstorm') or (weather == 'hail'):
+                            healamount = self.maxhp/4.
+                        elif weather == 'sunny':
+                            healamount = 2.*self.maxhp/3.
+                        else:
+                            healamount = self.maxhp/2.
+                    self.healing(healamount)
                 ### end of healing ###
                 return
             ##=================================================================##
