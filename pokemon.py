@@ -1031,8 +1031,16 @@ class mon:
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}")
         print("------------------------")
     #anymore pokemon attributes?
-        
+
 class battle:
+    def __init__(self, usr_party, cpu_party, field):
+        ###can i get a uhhhhhhh
+
+        weather=rng.choice(Weathers)
+        terrain=rng.choice(Terrains)
+
+
+class battlefield:
     def __init__(self):
         #A for Red B for Blue?
         self.rocksA=False
@@ -1201,12 +1209,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=1.
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
+    #### water spout ####
+    if 'spout' in note:
+        power = np.floor( 150.*attacker.currenthp/attacker.maxhp )
+        if power<1.:
+            power = 1.
+        pass
     #### facade ####
     if ('facade' in note) and (attacker.burned or attacker.poisoned or attacker.badlypoisoned or attacker.paralyzed):
         power*=2.
         damages.append("Power boosted from status condition!")
     ####weather ball#### doubles power and changes type
-    if ("weatherball" in note) and (weather!="clear"):
+    if ('weatherball' in note) and (weather!='clear'):
         power*=2.
         if weather=="sunny":
             moveTipe=1
@@ -1227,18 +1241,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     weatherBonus=1.
     if weather=='sunny':
         if moveTipe==1:
-            weatherBonus=4/3
-            damages.append("Sun boost!")
+            weatherBonus=4./3.
+            damages.append("The Sun boosts the attack power!")
         elif moveTipe==2:
-            weatherBonus=2/3
-            damages.append("Weakened by the sunlight...")
+            weatherBonus=2./3.
+            damages.append("The attack is weakened by the sunlight...")
     elif weather=='rain':
         if moveTipe==1:
-            weatherBonus=2/3
-            damages.append("Weakened by the rain...")
+            weatherBonus=2./3.
+            damages.append("The attack is weakened by the rain...")
         elif moveTipe==2:
-            weatherBonus=4/3
-            damages.append("Rain boost!")
+            weatherBonus=4./3.
+            damages.append("The rain boosts the attack power!")
     ####terrain moves####
     if terrain=='none':
         pass
@@ -1574,7 +1588,7 @@ Terrains=['none','electric','grassy','misty','psychic']
 #set weather and terrain, random
 weather=rng.choice(Weathers)
 terrain=rng.choice(Terrains)
-indigo = battle()
+indigo = battlefield()
 #but i still make the rules
 #weather='sandstorm'
 #terrain='grassy'

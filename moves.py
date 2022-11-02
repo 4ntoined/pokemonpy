@@ -18,9 +18,9 @@ moremoves=[
         ("Giga Impact",150,90,5,0,1,0,"Must rest on next turn.","mustRest"),
         ("Roar of Time",150,90,5,1,0,14,"The user roars to distort time and inflict damage. Must rest on next turn.","mustRest"),
         ("Rock Wrecker",150,90,5,0,0,12,"Must rest on next turn.","mustRest"),
-        #("Water Spout",150,100,5,1,0,2,"The user spouts water to damage the target!\nThe lower the user's HP, the lower move's power.","spout"), #will use 'spout' for this, eruption, and drag energy
-        #("Eruption",150,100,5,1,0,1,"The user attacks with a furious explosion!\nThe lower the user's HP, the lower move's power.","spout"),
-        #("Dragon Energy",150,100,5,1,0,14,"The user attacks by converting its life-force into power.\nThe lower the user's HP, the lower move's power.","spout"),
+        ("Water Spout",150,100,5,1,0,2,"The user spouts water to damage the target!\nThe lower the user's HP, the lower this move's power.","spout"), #will use 'spout' for this, eruption, and drag energy
+        ("Eruption",150,100,5,1,0,1,"The user attacks with a furious explosion!\nThe lower the user's HP, the lower this move's power.","spout"),
+        ("Dragon Energy",150,100,5,1,0,14,"The user attacks by converting its life-force into power.\nThe lower the user's HP, the lower this move's power.","spout"),
         ("Boomburst",140,100,10,1,0,0,"The user attacks with a terrible, explosive sound!","null"), #at some point we'll track sound-based moves
         ("Draco Meteor",130,90,5,1,0,14,"The user calls upon its draconic powers and unleashes a storm of meteors!\nLowers SpA. 2 stages.","stat self,sa,-2,100"),
         ("Skull Bash",130,100,10,0,1,0,"The user tucks its head in and charges at the target.\nTwo-turn move.","2turn skullbash"), #needs to raise defense 1 stage on the prep

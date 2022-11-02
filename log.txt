@@ -598,3 +598,13 @@ and rework literally everything from there as need be....but that's like....so m
 12:25- added psyshock and secret sword, scheming on body press and its variations (user phys. atk vs target spec. def)
 12:37- nvm body press isnt what I thought it is, it uses the users phys def (instead of user's phys atk) to calc damage
 
+2 nov 2022
+14:44- here to report that i made up that thing about attacking moves not afflicting conditions, they def should,
+that functionality isnt in the move() function but its in hit(), because target should only be afflicted if the move hit
+and the target is not immune to the move
+gonna work on water spout and its derivatives and maybe possibly modularizing poke battles
+15:05- water spout and friends are here, tested, and working shoutout to me
+15:27- started the battle renovations currently deciding how to make weather and terrain no longer global variables, and instead
+attach them to the battle() or battlefield() classes, but before I go to deep Im gonna make a commit so we can easily reverse
+should I break it
+
