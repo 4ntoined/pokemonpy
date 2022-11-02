@@ -607,4 +607,7 @@ gonna work on water spout and its derivatives and maybe possibly modularizing po
 15:27- started the battle renovations currently deciding how to make weather and terrain no longer global variables, and instead
 attach them to the battle() or battlefield() classes, but before I go to deep Im gonna make a commit so we can easily reverse
 should I break it
+16:19- started figuring some of this stuff out, but I think I need spyder (been working a lot in vim) to rearrange large blocks of code
+so Im gonna commit and switch oses so I can use spyder, codes probably broken
+nvm just tested it and it works fine so far
 

@@ -92,6 +92,7 @@ class mon:
         self.bsp=self.speed
         ##==========================================================##
         self.battlespot = None #will be set to "red" or "blue" when sent out
+        self.field = None #will be set equal to the battle() instance into which a pokemon is sent out?
         #battle statuses
         self.sleep=False
         self.sleepCounter=0
@@ -177,8 +178,9 @@ class mon:
         self.currenthpp=100.
     
     #sending a pokemon out
-    def chosen(self, trainer):
-        global indigo
+    def chosen(self, trainer, field):
+        #global indigo
+        self.field=field
         if trainer == "user":
             self.battlespot = "red"
         elif trainer == "cpu":
@@ -1035,13 +1037,26 @@ class mon:
 class battle:
     def __init__(self, usr_party, cpu_party, field):
         ###can i get a uhhhhhhh
+        self.usrs = usr_party
+        self.cpus = cpu_party
+        self.field = field
 
-        weather=rng.choice(Weathers)
-        terrain=rng.choice(Terrains)
+    def startbattle(self):
+        return
 
 
 class battlefield:
     def __init__(self):
+        global Weathers
+        global Terrains
+        self.weather=rng.choice(Weathers)
+        self.terrain=rng.choice(Terrains)
+        self.weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
+        if self.terrain=='none':
+            self.terrainCounter=np.inf
+        else:
+            self.terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
+
         #A for Red B for Blue?
         self.rocksA=False
         self.rocksB=False
@@ -1053,6 +1068,7 @@ class battlefield:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
+        
         #tailwind?
         #reflect
         #light screen
@@ -1060,8 +1076,12 @@ class battlefield:
         #the same way weather and terrain are set globally, i think trick room could be as well
         #also weather and terrain could be an attribute of battle() rn not much difference
         #it would allow us to set up several battlefields w different conditions but thats a little extra
-        #so maybe I'll make trick room global for now 
-    
+        #so maybe I'll make trick room global for now
+        #like a week after I wrote this ^ out I decided the time is now to modularize battle so I can set up several battlefield
+        #with different conditions so really just don't believe anything I say
+
+    def bugging(self):
+        print('activated')
     def clearfield(self):
         self.rocksA=False
         self.rocksB=False
@@ -1546,10 +1566,9 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
-
 #class party():
     #def __init__(self):
-        
+
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
@@ -1714,6 +1733,15 @@ while 1:
             t.sleep(0.7) #kills
         #end of opponent set, back to main screen
 
+    #############################################   E4?   ###########################################################
+    if userChoice=='4':
+        ##### uhhhhh #####
+        bug1 = userParty[0]
+        print(bug1.field)
+        bug1.chosen('user', indigo)
+        bug1.field.bugging()
+        pass
+    #### end of e4? mode ###
     ####Battles####
     if userChoice=="b" or userChoice=="B":
         ####Battle starts####
@@ -1739,8 +1767,8 @@ while 1:
                 fighting=False
                 charging=False
                 print(f"\n____________ Turn {turn} ____________\n")
-                userMon.chosen("user")
-                trainerMon.chosen("cpu")
+                userMon.chosen("user",indigo)
+                trainerMon.chosen("cpu",indigo)
                 userMon.inBattle()
                 trainerMon.inBattle()
                 #----UI----#
@@ -1895,7 +1923,7 @@ while 1:
                         userInd=nuserInd
                         print(f"{userMon.name}, it's your turn!")
                         t.sleep(0.7)
-                        userMon.chosen("user")
+                        userMon.chosen("user",indigo)
                         userMon.inBattle()
                         indigo.landing(userMon, "red")
                     #does the trainer mon need to rest?
@@ -1924,7 +1952,7 @@ while 1:
                         trainerMon=trainerParty[trainerInd]
                         print(f"{opponentName}: {trainerMon.name}! Finish them off!")
                         t.sleep(0.7)
-                        trainerMon.chosen("cpu")
+                        trainerMon.chosen("cpu",indigo)
                         trainerMon.inBattle()
                         indigo.landing(trainerMon,"blue")
                         trainerShift=True
@@ -2137,7 +2165,7 @@ while 1:
                                             userInd=nuserInd
                                             print(f"{userMon.name}, it's your turn!")
                                             t.sleep(0.4)
-                                            userMon.chosen("user")
+                                            userMon.chosen("user",indigo)
                                             userMon.inBattle()
                                             indigo.landing(userMon,"red")
                                             bShifted=True
@@ -2161,7 +2189,7 @@ while 1:
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
                             trainerMon=trainerParty[trainerInd]
-                            trainerMon.chosen("cpu")
+                            trainerMon.chosen("cpu",indigo)
                             trainerMon.inBattle()
                             indigo.landing(trainerMon, "blue")
                             print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
