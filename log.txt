@@ -624,4 +624,6 @@ nvm just tested it and it works fine so far
 it's gonna take a hot minute for me to parse through the battle code to make the tweaks where they need to be made
 and also probably totally remake and refine things as I stumble onto them... here's a commit
 also shout out to spyder she is really the workhorse behind this work Im just the stupid rider
+18:59- trying to resist the urge to program priority while I'm here... since it looks like IM just gonna
+marathon this whole thing without testing it, I might be REALLY pushing my luck with that one. but we'll see
 

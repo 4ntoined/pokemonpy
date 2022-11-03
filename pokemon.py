@@ -19,6 +19,9 @@ from moves import getMoveInfo,mov,struggle,natures
 from pokedex import dex
 
 rng=np.random.default_rng()
+def micropause():
+    t.sleep(0.3)
+    return
 def shortpause():
     t.sleep(0.7)
     return
@@ -1026,7 +1029,7 @@ class mon:
         print(f"############ {self.name}'s Moves #############")
         for i in range(len(self.knownMoves)):
             print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
-    
+        return
     #show evs and ivs
     def appraise(self):
         ez=[self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
@@ -1040,7 +1043,7 @@ class mon:
     #anymore pokemon attributes?
 
 def catcalls(poke,):
-    words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!"  ]
+    words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!", f"\n{poke.name} come back!", f"{poke.name}, it's your turn!"  ]
     return
 
 class battle:
@@ -1058,8 +1061,8 @@ class battle:
         ####Battle starts####
         print("\nYou've been challenged to a Pokemon Battle!")
         dramaticpause()
-        #userMon=userParty[0]
-        #trainerMon=trainerParty[0]
+        #userMon=self.usrs[0]
+        #self.cpu_mon=self.cpus[0]
         userInd=0
         trainerInd=0
         print(f"\n {self.usr_mon.name}! I choose you!")
@@ -1115,6 +1118,7 @@ class battle:
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
                             print("\n////////////////////////////////\n//////// Party Pokemon: /////////\n////////////////////////////////")
+                            ## show the player's pokemon
                             for i in range(len(self.usrs)):
                                 print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
                             partyChoice=input("Select a Pokemon...\n[#] or [b] to go back: ")
@@ -1124,17 +1128,18 @@ class battle:
                                 select=self.usrs[int(partyChoice)-1]
                                 nuserInd=int(partyChoice)-1
                                 select.battleSummary()
-                            except ValueError:
+                            except ValueError: #will print warning, and restart the party loop without seeing a pokemon
                                 print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
                             except IndexError:
                                 print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
                             else:
-                                while 1:
+                                ### looking at a pokemon in the party ###
+                                while 1: 
                                     pChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
-                                    #go back
+                                    ## go back
                                     if pChoice=="b" or pChoice=="B":
-                                        break
-                                    #show move details
+                                        break #breaks the singular pokemon loop and back to the party
+                                    ## show move details
                                     if pChoice=="m" or pChoice=="M":
                                         while 1: #move input loop for displaying move info
                                             print("")
@@ -1156,24 +1161,27 @@ class battle:
                                                 for i in range(len(movez)):
                                                     print("")
                                                     moveInfo(movez[i])
-                                                    t.sleep(0.4) #drama
+                                                    micropause()
                                                 #we got all the move info out?, go back to pokemon?
-                                                pause=input("\nEnter anything to continue back to Pokemon summary...")
-                                                break 
+                                                #pause the code for reading purposes
+                                                pause=input("\nEnter anything to go back to Pokemon summary...")
+                                                break #bacl to pokemon summary
+                                            #move info contents
+                                        #
                                     #switch pokemon
                                     if pChoice=="s" or pChoice=="S":
                                         #keep fainted pokemon off the field
                                         if select.fainted:
                                             print("\n** Cannot switch in fainted Pokemon! **")
-                                            break
+                                            break #back to party
                                         if nuserInd==userInd:
                                             print(f"\n** {select.name} is already in battle! **")
-                                            break
+                                            break #bacl to party
                                         switching=True
                                         break
                                     #anything other than approved things repeat the loop
                                 if switching:
-                                    break
+                                    break #breaks the party loop and throws you back into the turn loop, user will switch pokemon
                             #end of pokemon selection loop
                         #end of party pokemon block
                         #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
@@ -1181,14 +1189,14 @@ class battle:
                     if userMove=='f':                    
                         #fighting options
                         while 1: #move input loop
-                            for i in range(len(userMon.knownMoves)):
-                                print(f"[{i+1}] \t{getMoveInfo(userMon.knownMoves[i])['name']} \t{userMon.PP[i]} PP")
-                            if np.count_nonzero(userMon.PP)==0:
-                                print(f"{userMon.name} can only Struggle!")
+                            for i in range(len(self.usr_mon.knownMoves)):
+                                print(f"[{i+1}] \t{getMoveInfo(self.usr_mon.knownMoves[i])['name']} \t{self.usr_mon.PP[i]} PP")
+                            if np.count_nonzero(self.usr_mon.PP)==0:
+                                print(f"{self.usr_mon.name} can only Struggle!")
                                 fighting=True
                                 moveDex=struggleInd
                                 break
-                            userFight=input(f"What move should {userMon.name} use?\n[#] or [b]: ")
+                            userFight=input(f"What move should {self.usr_mon.name} use?\n[#] or [b]: ")
                             #go back
                             if userFight=='b':
                                 break
@@ -1196,7 +1204,7 @@ class battle:
                                 try:
                                     movez=userFight.split()[1:] #pokemon movelist index (string)
                                     movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
-                                    movez=[userMon.knownMoves[i] for i in movez] #pokemon move movedex index
+                                    movez=[self.usr_mon.knownMoves[i] for i in movez] #pokemon move movedex index
                                 except ValueError:
                                     print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
                                 except IndexError:
@@ -1212,10 +1220,10 @@ class battle:
                                 #try to use user input to call a move
                                 try:
                                     fightChoice=int(userFight)-1 #make sure given input refers to a move
-                                    if userMon.PP[fightChoice]==0:
-                                        print(f"{userMon.name} does not have enough energy to use this move!")
+                                    if self.usr_mon.PP[fightChoice]==0:
+                                        print(f"{self.usr_mon.name} does not have enough energy to use this move!")
                                         continue
-                                    moveDex=userMon.knownMoves[fightChoice]
+                                    moveDex=self.usr_mon.knownMoves[fightChoice]
                                     fighting=True
                                     break
                                 except:
@@ -1226,47 +1234,53 @@ class battle:
                     #user shifting?
                     if switching:
                         #put current pokemon back?
-                        userMon.withdraw()
-                        userParty[userInd]=userMon
-                        print(f"\n{userMon.name} come back!")
-                        t.sleep(0.7)
+                        self.usr_mon.withdraw()
+                        self.usrs[userInd]=self.usr_mon
+                        print(f"\n{self.usr_mon.name} come back!")
+                        shortpause()
                         #set new selection as user pokemon
-                        userMon=select
+                        self.usr_mon=select
                         userInd=nuserInd
-                        print(f"{userMon.name}, it's your turn!")
-                        t.sleep(0.7)
-                        userMon.chosen("user",indigo)
-                        userMon.inBattle()
-                        indigo.landing(userMon, "red")
+                        print(f"{self.usr_mon.name}, it's your turn!")
+                        shortpause()
+                        #assign the pokemon to users side of the field
+                        self.usr_mon.chosen("user",emerald)
+                        # calculate the pokemon's stat's, considering the weather and status conditions
+                        self.usr_mon.inBattle()
+                        # apply the field to the pokemon (entry hazards)
+                        emerald.landing(self.usr_mon, "red")
                     #does the trainer mon need to rest?
-                    if trainerMon.resting:
-                        trainerRest=True
-                        print(f"\n{trainerMon.name} must recharge and cannot attack!")
+                    if self.cpu_mon.resting:
+                        #trainerRest=True
+                        print(f"\n{self.cpu_mon.name} must recharge and cannot attack!")
                     else:
-                        trainerRest=False
-                    if trainerMon.charged:
-                        trainerCharge=True
+                        #trainerRest=False
+                        pass
+                    if self.cpu_mon.charged:
+                        #trainerCharge=True
+                        pass
                     else:
-                        trainerCharge=False
+                        #trainerCharge=False
+                        pass
                     trainerShift=False
                     #10% chance for opponent to randomly switch pokemon
                     #check how many nonfainted pokemon trainer has
-                    nfp,nfpList=checkBlackout(trainerParty)
-                    if nfp>1 and rng.random()<0.1 and (not trainerRest) and (not trainerMon.charged): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
+                    nfp,nfpList=checkBlackout(self.cpus)
+                    if nfp>1 and rng.random()<0.1 and (not self.cpu_mon.resting) and (not self.cpu_mon.charged): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
                         del nfpList[int(np.argwhere(np.array(nfpList)==trainerInd))] #removing the current pokemon from the list of nonfainted pokemon in the party
-                        trainerMon.withdraw()
-                        trainerParty[trainerInd]=trainerMon #put pokemon away
-                        print(f"\n{opponentName}'s {trainerMon.name} is withdrawn!")
-                        t.sleep(0.7)
+                        self.cpu_mon.withdraw()
+                        self.cpus[trainerInd]=self.cpu_mon #put pokemon away
+                        print(f"\n{self.cpu_name}'s {self.cpu_mon.name} is withdrawn!")
                         #take new pokemon out, random
                         nTrainerInd=rng.choice(nfpList)
                         trainerInd=nTrainerInd
-                        trainerMon=trainerParty[trainerInd]
-                        print(f"{opponentName}: {trainerMon.name}! Finish them off!")
+                        self.cpu_mon=self.cpus[trainerInd]
+                        shortpause()
+                        print(f"{self.cpu_name}: {self.cpu_mon.name}! Finish them off!")
                         t.sleep(0.7)
-                        trainerMon.chosen("cpu",indigo)
-                        trainerMon.inBattle()
-                        indigo.landing(trainerMon,"blue")
+                        self.cpu_mon.chosen("cpu",emerald)
+                        self.cpu_mon.inBattle()
+                        emerald.landing(self.cpu_mon,"blue")
                         trainerShift=True
                         #end of trainer switching
                     ########################################################
@@ -1274,81 +1288,81 @@ class battle:
                     # then compare pokemon speeds ##########################
                     ########################################################
                     #set boolean to true if user has higher effective speed stat
-                    userFast=userMon.bsp>=trainerMon.bsp
+                    userFast=self.usr_mon.bsp>=self.cpu_mon.bsp
                     uFaint=False
                     tFaint=False
                     flinching=False
-                    if trainerMon.charged:
+                    if self.cpu_mon.charged:
                         pass #trainMoveInd should already be set from last round
                     else:
-                        trainMoveInd=rng.choice(range(len(trainerMon.knownMoves)))
+                        trainMoveInd=rng.choice(range(len(self.cpu_mon.knownMoves)))
                     ##USER FASTER##
                     if userFast:
                         #USER ATTACK
                         #make sure user/trainer didn't switch in this turn
                         if fighting or charging: #is never set to true if resting is true this turn, not set to true if the user decided to switch mons
-                            userMon.move(trainerMon, moveDex)
-                            if trainerMon.fainted:
+                            self.usr_mon.move(self.cpu_mon, moveDex)
+                            if self.cpu_mon.fainted:
                                 tFaint=True
-                            if userMon.fainted:
+                            if self.usr_mon.fainted:
                                 uFaint=True
-                            if trainerMon.flinched and (not tFaint):
+                            if self.cpu_mon.flinched and (not tFaint):
                                 flinching=True
-                                print(f"\n{opponentName}'s {trainerMon.name} flinches and can't attack!")
-                                t.sleep(0.7)
+                                print(f"\n{self.cpu_name}'s {self.cpu_mon.name} flinches and can't attack!")
+                                shortpause()
                         ##OPPO ATTACK
                         if (not trainerShift) and (not flinching) and (not tFaint):
                             if uFaint:
-                                print(f"\nThere is no target for {trainerMon.name} to attack!")
+                                print(f"\nThere is no target for {self.cpu_mon.name} to attack!")
                                 t.sleep(0.7)
-                            elif np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
-                                trainerMon.move(userMon,struggleInd)
+                            elif np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
+                                self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
-                            if userMon.fainted:
+                                self.cpu_mon.move(self.usr_mon,self.cpu_mon.knownMoves[trainMoveInd])
+                            if self.usr_mon.fainted:
                                 uFaint=True
-                            if trainerMon.fainted:
+                            if self.cpu_mon.fainted:
                                 tFaint=True
                     ##USER SLOWER##
                     else:
                         ##OPPO ATTACK##
                         if (not trainerShift) and (not trainerRest):
-                            if np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
-                                trainerMon.move(userMon,struggleInd)
+                            if np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
+                                self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                trainerMon.move(userMon,trainerMon.knownMoves[trainMoveInd])
+                                self.cpu_mon.move(self.usr_mon,self.cpu_mon.knownMoves[trainMoveInd])
                             #check for faints
-                            if userMon.fainted:
+                            if self.usr_mon.fainted:
                                 uFaint=True
-                            if trainerMon.fainted:
+                            if self.cpu_mon.fainted:
                                 tFaint=True
                             #check for flinch
-                            if userMon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
+                            if self.usr_mon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
                                 flinching=True
-                                print(f"\n{userMon.name} flinches and can't attack!")
+                                print(f"\n{self.usr_mon.name} flinches and can't attack!")
                                 t.sleep(0.7)
                         ##USER ATTACK##
                         if (fighting or charging) and (not flinching) and (not uFaint):
                             if tFaint:
-                                print(f"\nThere is no target for {userMon.name}'s attack!")
+                                print(f"\nThere is no target for {self.usr_mon.name}'s attack!")
                                 t.sleep(0.7)
                             else:
-                                userMon.move(trainerMon,moveDex)
-                            if trainerMon.fainted:
+                                self.usr_mon.move(self.cpu_mon,moveDex)
+                            if self.cpu_mon.fainted:
                                 tFaint=True
-                            if userMon.fainted:
+                            if self.usr_mon.fainted:
                                 uFaint=True
                     #end of turn, pokemon have attacked
                     #regardless of whether pokemon fainted this turn, if they were recognized to be resting while the attacks were exchanged, we can repeal the resting tags
                     if resting:
-                        userMon.resting=False
+                        self.usr_mon.resting=False
                     if trainerRest:
-                        trainerMon.resting=False
+                        self.cpu_mon.resting=False
                     if flinching: #moves have already been used, we can reset them
-                        userMon.flinched=False
-                        trainerMon.flinshed=False
+                        self.usr_mon.flinched=False
+                        self.cpu_mon.flinshed=False
                     #check for USER BLACKOUT
-                    if checkBlackout(userParty)[0]==0:
+                    if checkBlackout(self.usrs)[0]==0:
                         battleOver=True
                         print("\nYou're out of usable Pokemon!")
                         t.sleep(0.7)
@@ -1356,58 +1370,58 @@ class battle:
                         t.sleep(0.7)
                         break
                     #check for TRAINER BLACKOUT
-                    if checkBlackout(trainerParty)[0]==0:
+                    if checkBlackout(self.cpus)[0]==0:
                         battleOver=True
-                        print(f"\n{opponentName} is out of usable pokemon!\nYou win!")
+                        print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
                         t.sleep(0.7)
                         break
                     print("")
                     #damages for pokemon that made it through the turn
                     #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
                     #burns
-                    if userMon.burned and (not uFaint):
-                        userMon.burnDamage()
-                    if trainerMon.burned and (not tFaint):
-                        trainerMon.burnDamage()
+                    if self.usr_mon.burned and (not uFaint):
+                        self.usr_mon.burnDamage()
+                    if self.cpu_mon.burned and (not tFaint):
+                        self.cpu_mon.burnDamage()
                     #poisons
-                    if userMon.poisoned and (not uFaint):
-                        userMon.poisonDamage()
-                    if trainerMon.poisoned and (not tFaint):
-                        trainerMon.poisonDamage()
+                    if self.usr_mon.poisoned and (not uFaint):
+                        self.usr_mon.poisonDamage()
+                    if self.cpu_mon.poisoned and (not tFaint):
+                        self.cpu_mon.poisonDamage()
                     #badPoisons
-                    if userMon.badlypoisoned and (not uFaint):
-                        userMon.badPoison()
-                        userMon.poisonCounter+=1
-                    if trainerMon.badlypoisoned and (not tFaint):
-                        trainerMon.badPoison()
-                        trainerMon.poisonCounter+=1
+                    if self.usr_mon.badlypoisoned and (not uFaint):
+                        self.usr_mon.badPoison()
+                        self.usr_mon.poisonCounter+=1
+                    if self.cpu_mon.badlypoisoned and (not tFaint):
+                        self.cpu_mon.badPoison()
+                        self.cpu_mon.poisonCounter+=1
                     #weather
                     if weather=="sandstorm":
                         if (not uFaint):
-                            userMon.sandDamage()
+                            self.usr_mon.sandDamage()
                         if (not tFaint):
-                            trainerMon.sandDamage()
+                            self.cpu_mon.sandDamage()
                     if weather=="hail":
                         if (not uFaint):
-                            userMon.hailDamage()
+                            self.usr_mon.hailDamage()
                         if (not tFaint):
-                            trainerMon.hailDamage()
+                            self.cpu_mon.hailDamage()
                     #grassy terrain heal
                     #make sure we're not bringing anyone back to life after possible damages
-                    if userMon.fainted:
+                    if self.usr_mon.fainted:
                         uFaint=True
-                    if trainerMon.fainted:
+                    if self.cpu_mon.fainted:
                         tFaint=True
                     if terrain=="grassy":
-                        if userMon.grounded and (not uFaint):
-                            userMon.grassyHeal()
-                        if trainerMon.grounded and (not tFaint):
-                            trainerMon.grassyHeal()
+                        if self.usr_mon.grounded and (not uFaint):
+                            self.usr_mon.grassyHeal()
+                        if self.cpu_mon.grounded and (not tFaint):
+                            self.cpu_mon.grassyHeal()
                     #make switches in case of faints
                     #user switch
                     if uFaint:
                         #check for USER BLACKOUT
-                        if checkBlackout(userParty)[0]==0:
+                        if checkBlackout(self.usrs)[0]==0:
                             battleOver=True
                             print("\nYou're out of usable Pokemon!")
                             t.sleep(0.7)
@@ -1418,12 +1432,12 @@ class battle:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             while 1:
                                 print("\n****************\nParty Pokemon:")
-                                for i in range(len(userParty)):
-                                    print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {userParty[i].currenthpp}%")
+                                for i in range(len(self.usrs)):
+                                    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {self.usrs[i].currenthpp}%")
                                 newPoke=input("Select a Pokemon for battle...\n[#]: ")
                                 try:
                                     nuserInd=int(newPoke)-1
-                                    select=userParty[nuserInd]
+                                    select=self.usrs[nuserInd]
                                     select.battleSummary()
                                 except ValueError:
                                     print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
@@ -1468,18 +1482,18 @@ class battle:
                                                 print("** {select.name} is already in battle! **")
                                                 break
                                             #put current pokemon back?
-                                            userMon.withdraw()
-                                            userParty[userInd]=userMon
-                                            print(f"\n{userMon.name} come back!")
+                                            self.usr_mon.withdraw()
+                                            self.usrs[userInd]=self.usr_mon
+                                            print(f"\n{self.usr_mon.name} come back!")
                                             t.sleep(0.4)
                                             #set new selection as user pokemon
-                                            userMon=select
+                                            self.usr_mon=select
                                             userInd=nuserInd
-                                            print(f"{userMon.name}, it's your turn!")
+                                            print(f"{self.usr_mon.name}, it's your turn!")
                                             t.sleep(0.4)
-                                            userMon.chosen("user",indigo)
-                                            userMon.inBattle()
-                                            indigo.landing(userMon,"red")
+                                            self.usr_mon.chosen("user",emerald)
+                                            self.usr_mon.inBattle()
+                                            emerald.landing(self.usr_mon,"red")
                                             bShifted=True
                                             break
                                         #anything other than y repeats the loop
@@ -1488,23 +1502,23 @@ class battle:
                     #oppo switch
                     if tFaint:
                         #check for TRAINER BLACKOUT
-                        blk,blkList=checkBlackout(trainerParty)
+                        blk,blkList=checkBlackout(self.cpus)
                         if blk==0:
                             battleOver=True
-                            print(f"\n{opponentName} is out of usable pokemon!\nYou win!")
+                            print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
                             t.sleep(0.7)
                             break
                         else:
                             #put fainted one away
-                            trainerMon.withdraw()
-                            trainerParty[trainerInd]=trainerMon
+                            self.cpu_mon.withdraw()
+                            self.cpus[trainerInd]=self.cpu_mon
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
-                            trainerMon=trainerParty[trainerInd]
-                            trainerMon.chosen("cpu",indigo)
-                            trainerMon.inBattle()
-                            indigo.landing(trainerMon, "blue")
-                            print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
+                            self.cpu_mon=self.cpus[trainerInd]
+                            self.cpu_mon.chosen("cpu",emerald)
+                            self.cpu_mon.inBattle()
+                            emerald.landing(self.cpu_mon, "blue")
+                            print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
                             t.sleep(0.7)
                     #pokemon have been switched in
                     print("")
@@ -1573,7 +1587,7 @@ class battle:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        indigo.clearfield()
+        emerald.clearfield()
         weather=rng.choice(Weathers)
         weatherCounter=np.inf
         terrain=rng.choice(Terrains)
@@ -1581,10 +1595,10 @@ class battle:
             terrainCounter=np.inf
         else:
             terrainCounter=5
-        for i in trainerParty:
+        for i in self.cpus:
             i.withdraw()
             i.restore()
-        for i in userParty:
+        for i in self.usrs:
             i.withdraw()
         t.sleep(0.7) #kills
     ###end of battle block###
@@ -1592,19 +1606,23 @@ class battle:
         
         return
 
-
+##Weathers=['clear','sunny','rain','sandstorm','hail']
+##Terrains=['none','electric','grassy','misty','psychic']
 class battlefield:
-    def __init__(self):
+    def __init__(self, weath = 'clear', terra = 'none', rando = False):
         global Weathers
         global Terrains
-        self.weather=rng.choice(Weathers)
-        self.terrain=rng.choice(Terrains)
+        if rando:
+            self.weather=rng.choice(Weathers)
+            self.terrain=rng.choice(Terrains)
+        else:
+            self.weather = weath
+            self.terrain = terra
         self.weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
         if self.terrain=='none':
             self.terrainCounter=np.inf
         else:
             self.terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
-
         #A for Red B for Blue?
         self.rocksA=False
         self.rocksB=False
@@ -1616,7 +1634,6 @@ class battlefield:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
-        
         #tailwind?
         #reflect
         #light screen
