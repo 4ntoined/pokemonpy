@@ -28,6 +28,7 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.2)
     return
+# aa:monclass
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
@@ -100,7 +101,7 @@ class mon:
         self.bsp=self.speed
         ##==========================================================##
         self.battlespot = None #will be set to "red" or "blue" when sent out
-        #self.field = None #will be set equal to the battle() instance into which a pokemon is sent out?
+        self.field = None #will be set equal to the battle() instance into which a pokemon is sent out?
         #battle statuses
         self.sleep=False
         self.sleepCounter=0
@@ -186,9 +187,9 @@ class mon:
         self.currenthpp=100.
     
     #sending a pokemon out
-    def chosen(self, trainer, field):
+    def chosen(self, trainer, fields):
         #global indigo
-        #self.field=field
+        self.field=fields
         if trainer == "user":
             self.battlespot = "red"
         elif trainer == "cpu":
@@ -251,7 +252,7 @@ class mon:
         self.frozen=False
         
     ####things to call/recall when a pokemon is battling
-    def inBattle(self, field):
+    def inBattle(self):
         #stat changes
         self.bat=self.attack*statStages[self.atstage]
         self.bde=self.defense*statStages[self.destage]
@@ -264,7 +265,7 @@ class mon:
             print(f"{self.name} is slowed by paralysis..")
         #weather
         if 12 in self.tipe:
-            if field.weather=='sandstorm':
+            if self.field.weather=='sandstorm':
                 #rock type sp.def boost in a sandstorm!
                 self.bsd*=1.5
                 print(f"{self.name} is boosted by the sandstorm!")
@@ -391,11 +392,11 @@ class mon:
                 print(f"{self.name}'s Evasion {stageStrings[level+3]}!")
         #end of stat changes
     
-    def afflictStatuses(self,notes,field):
+    def afflictStatuses(self,notes):
         #global weather
         #global terrain
         afflicted=self.sleep or self.frozen or self.paralyzed or self.burned or self.poisoned or self.badlypoisoned
-        mistyCheck=(field.terrain=="misty") and self.grounded #is the pokemon grounded on misty terrain?
+        mistyCheck=(self.field.terrain=="misty") and self.grounded #is the pokemon grounded on misty terrain?
         #paralyze
         if "para" in notes:
             if 4 in self.tipe: #electric types immune to paralysis
@@ -456,7 +457,7 @@ class mon:
                     t.sleep(0.4)
         #sleep
         if "sleep" in notes:
-            electricCheck=(field.terrain=="electric") and self.grounded #electric terrain prevents sleep
+            electricCheck=(self.field.terrain=="electric") and self.grounded #electric terrain prevents sleep
             if electricCheck:
                 print(f"\nThe electricity keeps {self.name} awake!")
             elif mistyCheck:
@@ -472,7 +473,7 @@ class mon:
                     t.sleep(0.4)
         #freeze
         if "frze" in notes:
-            if self.field.weather=='sunny': #harsh sunlight prevents freezing
+            if self.self.field.weather=='sunny': #harsh sunlight prevents freezing
                 print("\nThe harsh sunlight prevents freezing!")
             elif 5 in self.tipe: #ice types immune to freeze
                 print(f"\n{self.name} is immune to being frozen!")
@@ -503,7 +504,7 @@ class mon:
         return
     
     #pokemon move
-    def move(self, opponent, moveIndex, field):
+    def move(self, opponent, moveIndex):
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
         #frozen, can't move #thinking out loud: maybe we should track
@@ -554,7 +555,7 @@ class mon:
                 if "solar" in notas:
                     print(f"\n{self.name} is taking in sunlight!")
                     self.charged=True
-                    if field.weather=="sunny": #if sun is out, continue to use the move
+                    if self.field.weather=="sunny": #if sun is out, continue to use the move
                         self.charged=False
                     else: #otherwise end the move
                         return
@@ -599,7 +600,7 @@ class mon:
                     stat=stat.split(":")
                     phase=phase.split(":")
                     if targ=='self':
-                        if ("growth" in notas) and field.weather=='sunny':
+                        if ("growth" in notas) and self.field.weather=='sunny':
                             phase=np.array([2,2],dtype=int)
                         for i in range(len(stat)):
                             self.stageChange(stat[i],int(phase[i]))
@@ -612,64 +613,64 @@ class mon:
                 ## weathers ##
                 #global weatherCounter
                 if "sun" in notas:
-                    if field.weather=='sunny':
+                    if self.field.weather=='sunny':
                         print("The move fails! It's already sunny!")
                     else:
-                        field.weather='sunny'
-                        field.weatherCounter=5
+                        self.field.weather='sunny'
+                        self.field.weatherCounter=5
                         print("The sunlight turns harsh!")
                 if "rain" in notas:
-                    if field.weather=='rain':
+                    if self.field.weather=='rain':
                         print("The move fails! It's already raining!")
                     else:
-                        field.weather='rain'
-                        field.weatherCounter=5
+                        self.field.weather='rain'
+                        self.field.weatherCounter=5
                         print("It starts raining!")
                 if 'sand' in notas:
-                    if field.weather=='sandstorm':
+                    if self.field.weather=='sandstorm':
                         print("The move fails! There's already a sandstorm!")
                     else:
-                        field.weather='sandstorm'
-                        field.weatherCounter=5
+                        self.field.weather='sandstorm'
+                        self.field.weatherCounter=5
                         print("A sandstorm kicks up!")                
                 if 'hail' in notas:
-                    if field.weather=='hail':
+                    if self.field.weather=='hail':
                         print("The move fails! It's already hailing")
                     else:
-                        field.weather='hail'
-                        field.weatherCounter=5
+                        self.field.weather='hail'
+                        self.field.weatherCounter=5
                         print("It starts hailing!")
                 ### end of the weathers ###
                 ## terrains ##
                 #global terrain
                 #global terrainCounter
                 if "electric" in notas:
-                    if field.terrain=="electric":
+                    if self.field.terrain=="electric":
                         print("The move fails! The battlefield is already electrified!")
                     else:
-                        field.terrain="electric"
-                        field.terrainCounter=5
+                        self.field.terrain="electric"
+                        self.field.terrainCounter=5
                         print("Electricity surges throughout the battlefield!")
                 if "grassy" in notas:
-                    if field.terrain=="grassy":
+                    if self.field.terrain=="grassy":
                         print("The move fails! The battlefield is already grassy!")
                     else:
-                        field.terrain="grassy"
-                        field.terrainCounter=5
+                        self.field.terrain="grassy"
+                        self.field.terrainCounter=5
                         print("Grass grows all over the place!")
                 if "misty" in notas:
-                    if field.terrain=="misty":
+                    if self.field.terrain=="misty":
                         print("The move fails! The battlefield is already covered in mist!")
                     else:
-                        field.terrain="misty"
-                        field.terrainCounter=5
+                        self.field.terrain="misty"
+                        self.field.terrainCounter=5
                         print("A mist descends on the battlefield!")
                 if "psychic" in notas:
-                    if field.terrain=="psychic":
+                    if self.field.terrain=="psychic":
                         print("The move fails! The battlefield is already weird!")
                     else:
-                        field.terrain="psychic"
-                        field.terrainCounter=5
+                        self.field.terrain="psychic"
+                        self.field.terrainCounter=5
                         print("The battlefield gets weird!")
                 ## statuses bro ##
                 statuses=[]
@@ -704,9 +705,9 @@ class mon:
                 for i in range(len(hazs)):
                     if hazs[i] in notas: #i know theres a better way to do this but if i sit here and fixate on that before i start a rough draft i'm never gonna get anywhere
                         if self.battlespot=="red": #user's pokemon
-                            xx = field.hazarding(hazs[i], "blue")
+                            xx = self.field.hazarding(hazs[i], "blue")
                         elif self.battlespot=="blue": #cpu
-                            xx = field.hazarding(hazs[i], "red")
+                            xx = self.field.hazarding(hazs[i], "red")
                         if xx == "x": #makes sure hazard was executed successfully before printing the dialog
                             print(haz_dialog[i])
                 ### end of entry hazards ###
@@ -715,9 +716,9 @@ class mon:
                     if 'recover' in notas:
                         healamount = self.maxhp/2.
                     if 'synthesis' in notas:
-                        if (field.weather == 'rain') or (field.weather == 'sandstorm') or (field.weather == 'hail'):
+                        if (self.field.weather == 'rain') or (self.field.weather == 'sandstorm') or (self.field.weather == 'hail'):
                             healamount = self.maxhp/4.
-                        elif field.weather == 'sunny':
+                        elif self.field.weather == 'sunny':
                             healamount = 2.*self.maxhp/3.
                         else:
                             healamount = self.maxhp/2.
@@ -1047,9 +1048,9 @@ def catcalls(poke,):
              f"\n{poke.name} come back!" , f"{poke.name}, it's your turn!", \
                  f"\n{poke.name}! I'm counting on you!"]
     return
-
+#aa:battleclass
 class battle:
-    def __init__(self, usr_party, cpu_party, usr_name='You', cpu_name='OPPONENT'):
+    def __init__(self, usr_party, cpu_party, fields, usr_name='You', cpu_name='OPPONENT'):
         ###can i get a uhhhhhhh
         self.usr_name = usr_name
         self.cpu_name = cpu_name
@@ -1057,9 +1058,9 @@ class battle:
         self.cpus = cpu_party
         self.usr_mon = usr_party[0]
         self.cpu_mon = cpu_party[0]
-        #self.field = field
+        self.field = fields
 
-    def startbattle(self, field):
+    def startbattle(self):
         ####Battle starts####
         print("\nYou've been challenged to a Pokemon Battle!")
         dramaticpause()
@@ -1076,16 +1077,16 @@ class battle:
         while 1: #only breaks when BattleOver is True
             #battle conditions?
             battleOver=False
-            emerald = battlefield()
+            #emerald = field()
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move exchange if user selects a move or shifts, otherwise we should loop back here
                 switching=False
                 fighting=False
                 charging=False
                 print(f"\n================ Turn {turn} ================\n")
-                self.usr_mon.chosen("user",emerald)
+                self.usr_mon.chosen("user",self.field)
                 self.usr_mon.inBattle()
-                self.cpu_mon.chosen("cpu",emerald)
+                self.cpu_mon.chosen("cpu",self.field)
                 self.cpu_mon.inBattle()
                 #----UI----#
                 print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
@@ -1246,11 +1247,11 @@ class battle:
                         print(f"{self.usr_mon.name}, it's your turn!")
                         shortpause()
                         #assign the pokemon to users side of the field
-                        self.usr_mon.chosen("user",emerald)
+                        self.usr_mon.chosen("user",self.field)
                         # calculate the pokemon's stat's, considering the weather and status conditions
                         self.usr_mon.inBattle()
                         # apply the field to the pokemon (entry hazards)
-                        emerald.landing(self.usr_mon, "red")
+                        self.field.landing(self.usr_mon, "red")
                     #does the trainer mon need to rest?
                     if self.cpu_mon.resting:
                         #trainerRest=True
@@ -1280,9 +1281,9 @@ class battle:
                         shortpause()
                         print(f"{self.cpu_name}: {self.cpu_mon.name}! Finish them off!")
                         t.sleep(0.7)
-                        self.cpu_mon.chosen("cpu",emerald)
+                        self.cpu_mon.chosen("cpu",self.field)
                         self.cpu_mon.inBattle()
-                        emerald.landing(self.cpu_mon,"blue")
+                        self.field.landing(self.cpu_mon,"blue")
                         trainerShift=True
                         #end of trainer switching
                     ########################################################
@@ -1332,7 +1333,7 @@ class battle:
                     ##USER SLOWER##
                     else:
                         ##OPPO ATTACK##
-                        if (not trainerShift) and (not trainerRest):
+                        if (not trainerShift) and (not self.cpu_mon.resting):
                             if np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
                                 self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
@@ -1362,7 +1363,7 @@ class battle:
                     #regardless of whether pokemon fainted this turn, if they were recognized to be resting while the attacks were exchanged, we can repeal the resting tags
                     if resting:
                         self.usr_mon.resting=False
-                    if trainerRest:
+                    if self.cpu_mon.resting:
                         self.cpu_mon.resting=False
                     if flinching: #moves have already been used, we can reset them
                         self.usr_mon.flinched=False
@@ -1402,12 +1403,12 @@ class battle:
                         self.cpu_mon.badPoison()
                         self.cpu_mon.poisonCounter+=1
                     #weather
-                    if field.weather=="sandstorm":
+                    if self.field.weather=="sandstorm":
                         if (not uFaint):
                             self.usr_mon.sandDamage()
                         if (not tFaint):
                             self.cpu_mon.sandDamage()
-                    if field.weather=="hail":
+                    if self.field.weather=="hail":
                         if (not uFaint):
                             self.usr_mon.hailDamage()
                         if (not tFaint):
@@ -1418,7 +1419,7 @@ class battle:
                         uFaint=True
                     if self.cpu_mon.fainted:
                         tFaint=True
-                    if field.terrain=="grassy":
+                    if self.field.terrain=="grassy":
                         if self.usr_mon.grounded and (not uFaint):
                             self.usr_mon.grassyHeal()
                         if self.cpu_mon.grounded and (not tFaint):
@@ -1497,9 +1498,9 @@ class battle:
                                             shortpause()
                                             print(f"{self.usr_mon.name}, it's your turn!")
                                             shortpause()
-                                            self.usr_mon.chosen("user",emerald)
+                                            self.usr_mon.chosen("user",self.field)
                                             self.usr_mon.inBattle()
-                                            emerald.landing(self.usr_mon,"red")
+                                            self.field.landing(self.usr_mon,"red")
                                             bShifted=True
                                             break
                                         #anything other than y repeats the loop
@@ -1521,68 +1522,68 @@ class battle:
                             #take out random non fainted one
                             trainerInd=rng.choice(blkList)
                             self.cpu_mon=self.cpus[trainerInd]
-                            self.cpu_mon.chosen("cpu",emerald)
+                            self.cpu_mon.chosen("cpu",self.field)
                             self.cpu_mon.inBattle()
-                            emerald.landing(self.cpu_mon, "blue")
+                            self.field.landing(self.cpu_mon, "blue")
                             print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
                             shortpause()
                     #pokemon have been switched in
                     print("")
                     #is weather still happening
-                    field.weatherCounter-=1
-                    if field.weather=='sunny':
-                        if field.weatherCounter==0:
-                            field.weather='clear'
-                            field.weatherCounter=np.inf
+                    self.field.weatherCounter-=1
+                    if self.field.weather=='sunny':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The harsh sunlight is fading...")
                             shortpause()
                         else:
                             print("The sunlight is harsh!")
                             shortpause()
-                    if field.weather=='rain':
-                        if field.weatherCounter==0:
-                            field.weather='clear'
-                            field.weatherCounter=np.inf
+                    if self.field.weather=='rain':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The rain stops...")
                             shortpause()
                         else:
                             print("It's raining!")
                             shortpause()
-                    if field.weather=='sandstorm':
-                        if field.weatherCounter==0:
-                            field.weather='clear'
-                            field.weatherCounter=np.inf
+                    if self.field.weather=='sandstorm':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The sandstorm is subsiding...")
                             shortpause()
                         else:
                             print("The sandstorm is raging!")
                             shortpause()
-                    if field.weather=='hail':
-                        if field.weatherCounter==0:
-                            field.weather='clear'
-                            field.weatherCounter=np.inf
+                    if self.field.weather=='hail':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The hail stops")
                             shortpause()
                         else:
                             print("It's hailing!")
                             shortpause()
                     #is the terrain still on?
-                    field.terrainCounter-=1
-                    if field.terrainCounter==0:
-                        field.terrain="none"
-                        field.terrainCounter=np.inf
+                    self.field.terrainCounter-=1
+                    if self.field.terrainCounter==0:
+                        self.field.terrain="none"
+                        self.field.terrainCounter=np.inf
                         print("The terrain faded away...")
                         shortpause()
-                    elif field.terrain=="grassy":
+                    elif self.field.terrain=="grassy":
                         print("The battlefield is grassy!")
                         shortpause()
-                    elif field.terrain=="electric":
+                    elif self.field.terrain=="electric":
                         print("The battlefield is electrified!")
                         shortpause()
-                    elif field.terrain=="psychic":
+                    elif self.field.terrain=="psychic":
                         print("The battlefield is weird!")
                         shortpause()
-                    elif field.terrain=="misty":
+                    elif self.field.terrain=="misty":
                         print("The battlefield is misty!")
                         shortpause()
                     turn+=1
@@ -1593,7 +1594,7 @@ class battle:
             #if a pokemon has fainted, loop ends
         print("The battle ended!")
         #clean up
-        emerald.clearfield()
+        self.field.clearfield()
         #self.field.weather=rng.choice(Weathers)
         self.field.weatherCounter=np.inf
         self.field.terrain=rng.choice(Terrains)
@@ -1607,14 +1608,16 @@ class battle:
         for i in self.usrs:
             i.withdraw()
         shortpause() #kills
+        return
     ###end of battle block###
-    
-        
+    def moreBattleFunctions(self):
         return
 
 ##Weathers=['clear','sunny','rain','sandstorm','hail']
 ##Terrains=['none','electric','grassy','misty','psychic']
-class battlefield:
+#I may refer to this as 'battlefield' in the documentation, I wanna distinguish it from battle() as much as 
+##aa:fieldclass## possible in the code, but I like the clarity of battlefield while working all this out
+class field:
     def __init__(self, weath = 'clear', terra = 'none', rando = False):
         global Weathers
         global Terrains
@@ -1653,7 +1656,12 @@ class battlefield:
 
     def bugging(self):
         print('activated')
+        
     def clearfield(self):
+        self.weather='clear'
+        self.terrain='none'
+        self.weatherCounter=np.inf
+        self.terrainCounter=5
         self.rocksA=False
         self.rocksB=False
         self.steelA=False
@@ -1664,6 +1672,19 @@ class battlefield:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
+    
+    def shuffleweather(self,wea=True,ter=True):
+        global Weathers
+        global Terrains
+        if wea:
+            self.weather=rng.choice(Weathers)
+            self.weatherCounter=np.inf
+            print(f"\nBattlefield weather is {self.weather} now.")
+        if ter:
+            self.terrain=rng.choice(Terrains)
+            self.terrainCounter=5
+            print(f"\nBattlefield terrain is {self.terrain} now.")
+        return
     
     def landing(self,poke,side):
         #this function will simulate pokemon being damaged by entry hazards
@@ -1772,7 +1793,7 @@ class battlefield:
     #more functions of battle
 ## end of battle class ##
 
-#def damage(level,attack,plaintiffTipe,defense,defendantTipe,power,moveTipe,note):
+#aa:damagefunction
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####damage read-out strings####
     damages=[]
@@ -2179,11 +2200,12 @@ Terrains=['none','electric','grassy','misty','psychic']
 #set weather and terrain, random
 #weather='rng.choice(Weathers)'
 #terrain=rng.choice(Terrains)
-indigo = battlefield()
+indigo = field()
 #but i still make the rules
 weather='broke'
 terrain='broke'
-#weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
+weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
+terrainCounter=5
 #if terrain=='none':
 #    terrainCounter=np.inf
 #else:
@@ -2217,10 +2239,9 @@ print("\n... A Python game by Antoine ...")
 shortpause()
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 shortpause()
+#aa:mainmenu
 while 1:
-    mainmenu = """\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove
-                    Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset
-                    Party\n[L]oad\nMove D[E]leter\n:"""
+    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n:"
     userChoice=input(mainmenu)
     
     #user setting the weather and terrain
@@ -2315,12 +2336,12 @@ while 1:
         #print(bug1.field)
         #bug1.chosen('user', indigo)
         #bug1.field.bugging()
-        pearl = battlefield(weath='hail',terra='electric')
+        pearl = field(weath='hail',terra='electric')
         battle1 = battle(userParty, trainerParty, pearl)
         battle1.startbattle()
         pass
     #### end of e4? mode ###
-    ####Battles####
+    ####Battles#### aa:battlemode
     if userChoice=="b" or userChoice=="B":
         ####Battle starts####
         print("\nYou've been challenged to a Pokemon Battle!")

@@ -632,3 +632,11 @@ use global weather and terrain
 I think I see what ive done wrong now but thats only after thinking that another
 thing was the problem and going through the code and changing things maybe unnessarily
 
+3 nov 2022
+10:03- no I really did it this time. It took some debugging, but I just got through a whole match and everything
+worked as expected. I lost but that's fair I only had 1 Cyndaquil. But weather, terrains, and hazards all worked
+when I tested them, so this is very extremely exciting I had been dreading doing this for so long
+now I can go back to Elite 4 team making (making the moves for their mons, and then programming the teams altogether
+and then loading those teams into battles against the player)
+and then we can release. wow I really thought I was gonna need another year...
+
