@@ -2346,11 +2346,12 @@ while 1:
         battle1.startbattle()
         pass
     #### end of e4? mode ###
-    ####Battles#### aa:battlemode
+    #### Classic Battle #### aa:battlemode
     if userChoice=="b" or userChoice=="B":
         ni, ny = checkBlackout(userParty)
         if ni==0:
             print("\nYou can't battle without a healthy Pokemon!")
+            shortpause()
             continue #go back to main without starting the battle
         classicbattle = battle(userParty, trainerParty, emerald)
         classicbattle.startbattle()
