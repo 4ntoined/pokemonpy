@@ -644,4 +644,6 @@ I looked it up, hardly understand what it means, but I think its just the the co
 and is trying to do too much in a single package, I can increase that limit, but its there
 for a reason, so it looks like I may have to break some of these things up into separate files
 its wild, im gonna commit
+im soooo silly it was that I accidentally replaced the t.sleep() in micropause() with micropause() which
+yes is definitely recursive
 

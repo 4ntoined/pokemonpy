@@ -17,7 +17,7 @@ from moves import getMoveInfo,mov,struggle,natures
 from pokedex import dex
 
 def micropause():
-    micropause()
+    t.sleep(0.4)
     return
 def shortpause():
     t.sleep(0.9)
