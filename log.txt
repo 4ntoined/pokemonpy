@@ -628,3 +628,7 @@ also shout out to spyder she is really the workhorse behind this work Im just th
 marathon this whole thing without testing it, I might be REALLY pushing my luck with that one. but we'll see
 20:09- ...i think i did it... i just need to rewrite all the code within move() hit() and damage() etc that
 use global weather and terrain
+20:58- terrains and weather don't work and probably also entry hazards
+I think I see what ive done wrong now but thats only after thinking that another
+thing was the problem and going through the code and changing things maybe unnessarily
+
