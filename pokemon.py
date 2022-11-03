@@ -173,7 +173,13 @@ class mon:
             line+=f" {i}"
         f.write(line+"\n")
         f.close()
-    
+    #place moveset with random moves
+    def randomizeMoveset(self,numb=6):
+        global mo
+        ranMoves = rng.choice(mo,size=numb,replace=False)
+        self.knownMoves = list(ranMoves)
+        self.PP=[mov[i]["pp"] for i in ranMoves]
+        return
     #recalculate stats
     def reStat(self):
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
@@ -698,7 +704,6 @@ class mon:
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
                 ## entry hazards oh boy oh geeze ##
-                #global indigo
                 hazs = ["rocks", "spikes", "toxspk", "sticky"]
                 haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!",\
                         "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
@@ -1050,7 +1055,7 @@ class mon:
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}")
         print("------------------------")
     #anymore pokemon attributes?
-
+#zz:monclass
 def catcalls(poke,):
     words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!", f"\n{poke.name} come back!", \
              f"\n{poke.name} come back!" , f"{poke.name}, it's your turn!", \
@@ -1966,8 +1971,7 @@ class field:
                     return "x"
             #think thats all the hazards for now
     #more functions of battle
-## end of battle class ##
-
+##zz:fieldclass
 #aa:damagefunction
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####damage read-out strings####
@@ -2007,33 +2011,33 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         power*=2.
         damages.append("Power boosted from status condition!")
     ####weather ball#### doubles power and changes type
-    if ('weatherball' in note) and (weather!='clear'):
+    if ('weatherball' in note) and (attacker.field.weather!='clear'):
         power*=2.
-        if weather=="sunny":
+        if attacker.field.weather=="sunny":
             moveTipe=1
-        if weather=="rain":
+        if attacker.field.weather=="rain":
             moveTipe=2
-        if weather=="sandstorm":
+        if attacker.field.weather=="sandstorm":
             moveTipe=12
-        if weather=="hail":
+        if attacker.field.weather=="hail":
             moveTipe=5
         damages.append("Weather Ball changes type!")
     #solarbeam gets nerfed in inclement weather
-    if ("solar" in note) and (weather=="rain" or weather=="sandstorm" or weather=="hail"):
+    if ("solar" in note) and (attacker.field.weather=="rain" or attacker.field.weather=="sandstorm" or attacker.field.weather=="hail"):
         power*=0.5
     #earthquake, bulldoze and magnitude nerfed on grassy terrain
     if ("nerfGrassy" in note) and (attacker.field.terrain=="grassy"):
         power*=0.5
     ####weather damage boost####
     weatherBonus=1.
-    if weather=='sunny':
+    if attacker.field.weather=='sunny':
         if moveTipe==1:
             weatherBonus=4./3.
             damages.append("The Sun boosts the attack power!")
         elif moveTipe==2:
             weatherBonus=2./3.
             damages.append("The attack is weakened by the sunlight...")
-    elif weather=='rain':
+    elif attacker.field.weather=='rain':
         if moveTipe==1:
             weatherBonus=2./3.
             damages.append("The attack is weakened by the rain...")
@@ -2087,17 +2091,16 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
     return ans,tyype,damages
-
+#zz:damagefunction
+#aa:functions
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
     ans=((2*base+IV+EV/4)*level/100+5)*nature
     return ans
-
 #calculates HP stat
 def HP(level,base,IV,EV):
     ans=((2*base+IV+EV/4)*level/100)+level+10
     return ans
-
 def checkTypeEffectiveness(moveTipe,defendantTipe):
     matchup1=codex[moveTipe,defendantTipe[0]]
     if len(defendantTipe)>1:
@@ -2105,7 +2108,6 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     else:
         matchup2=1.0
     return matchup1*matchup2
-
 #create a pokemon from the pokedex
 def makeMon(pokedexNumber,level=1,nacher = (0,0)):
     Hp=dex[pokedexNumber]['hp']
@@ -2121,7 +2123,6 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0)):
         return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
     else: #dual-typed
         return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
-
 #load pokemon
 def loadMon(savefile):
     try:
@@ -2164,7 +2165,13 @@ def loadMon(savefile):
     except IndexError:
         print("!! The save file is corrupted !!")
         return [0]
-    
+def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6):
+    global mo
+    dome = makeMon( rng.integers( len(dex) ), level, (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))))
+    ranMoves = rng.choice(mo,size=numMoves,replace=False)
+    dome.knownMoves = list(ranMoves)
+    dome.PP=[mov[i]["pp"] for i in ranMoves]
+    return dome
 #check party for non fainted pokemon
 def checkBlackout(party):
     """
@@ -2182,9 +2189,6 @@ def checkBlackout(party):
             p+=1
             alive.append(i)
     return p,alive
-
-    
-    
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
     move=mov[moveCode]
@@ -2201,9 +2205,9 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
+#zz:functions
 #class party():
     #def __init__(self):
-
 #codex encodes all type matchups, first index is attacking the second index
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
@@ -2232,42 +2236,26 @@ statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
+Weathers=['clear','sunny','rain','sandstorm','hail']
+Terrains=['none','electric','grassy','misty','psychic']
 struggleInd=struggle #move index of struggle
 mo=list(range(len(mov)))
 mo.remove(struggleInd) #get struggle out of pool of moves
-## --------------------this stuff ...------------------ ###
-#battle setting
-Weathers=['clear','sunny','rain','sandstorm','hail']
-Terrains=['none','electric','grassy','misty','psychic']
-#set weather and terrain, random
-#weather='rng.choice(Weathers)'
-#terrain=rng.choice(Terrains)
-indigo = field()
-#but i still make the rules
-weather='broke'
-terrain='broke'
-weatherCounter=np.inf #weather lasts indefinitely when encountered naturally!
-terrainCounter=5
-#if terrain=='none':
-#    terrainCounter=np.inf
-#else:
-#    terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
-##############---------------this stuff may not be necessary in the long haul-------------------############
-############   give the player a starter ###############
+#indigo = field()
+############   give the player a starter  ###############
 #user
-starter= makeMon( rng.integers( len(dex) ), int( rng.normal( loc=80, scale=30 )))
-ranMoves=rng.choice(mo,size=6,replace=False)
-starter.knownMoves=list(ranMoves)
-starter.PP=[mov[i]["pp"] for i in ranMoves]
+starter= makeRandom()
 ##### creating the trainer for classic mode #####
-rival= makeMon( rng.integers( len(dex) ), starter.level-1 )
-rival2= makeMon( rng.integers( len(dex) ), starter.level+5 )
-bugs=rng.choice(mo,size=6,replace=False)
-rival.knownMoves=list(bugs)
-rival.PP=[mov[i]["pp"] for i in bugs]
-boos=rng.choice(mo,size=6,replace=False)
-rival2.knownMoves=list(boos)
-rival2.PP=[mov[i]["pp"] for i in boos]
+rival= makeRandom(starter.level-1, 6)
+#makeMon( rng.integers( len(dex) ), starter.level-1 )
+rival2= makeRandom(starter.level+5, 6)
+#makeMon( rng.integers( len(dex) ), starter.level+5 )
+#bugs=rng.choice(mo,size=6,replace=False)
+#rival.knownMoves=list(bugs)
+#rival.PP=[mov[i]["pp"] for i in bugs]
+#boos=rng.choice(mo,size=6,replace=False)
+#rival2.knownMoves=list(boos)
+#rival2.PP=[mov[i]["pp"] for i in boos]
 #stuff them into their parties
 userParty=[starter]
 trainerParty=[rival,rival2]
@@ -2293,7 +2281,7 @@ while 1:
         while 1: #user input loop
             print("Current Battle conditions:")
             micropause()
-            print(f"Weather: {emerald.weather}\nTerrain: {terrain}")
+            print(f"Weather: {emerald.weather}\nTerrain: {emerald.terrain}")
             print("\nOptions:\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually\n")
             setChoice=input("What [#] would you like to do?\nor [b]ack: ")
             #go back
@@ -2712,7 +2700,8 @@ while 1:
         print("\nLeaving SuperHyper Training...")
         t.sleep(1) #exiting training
     ###end of training block###
-
+    #zz:training
+    #aa:movetutor
     ####move learner####
     if userChoice=='m':
         print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
@@ -2776,10 +2765,18 @@ while 1:
                     while 1: #input loop
                         chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
                         #go back to choose a pokemon
-                        if chooseMove=='b':
+                        if chooseMove=='b' or chooseMove=='B':
                             break
-                        if chooseMove=='B':
-                            break
+                        if chooseMove.split()[0]=='random':
+                            try:
+                                n_moves = int(chooseMove.split()[1])
+                            except ValueError:
+                                print('\n**Bad Value**')
+                            except IndexError:
+                                print('\n**Bad Index**')
+                            else:
+                                studentMon.randomizeMoveset(n_moves)
+                                break #randomized moves, go back to pokemon selecting loop
                         #extract and apply moves
                         try:
                             chooseMoves=chooseMove.split() #separate move indices into own strings

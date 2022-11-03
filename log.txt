@@ -655,4 +655,6 @@ you should be able to use fakeout after returning a pokemon to the party and sen
 just thought about how i wrote that code and I think its broken, if you switch in as your turn that round,
 ur pokemon will have fake out disabled for it even though it never got the chance to attack
 14:57- okay i think I fixed it, seems to work now dk what's next
+15:55- you can randomize your pokes movesets now, should think about how to remove moves
+(how to let the user remove individual moves)
 
