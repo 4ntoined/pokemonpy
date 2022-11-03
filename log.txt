@@ -619,4 +619,5 @@ should I break it
 16:19- started figuring some of this stuff out, but I think I need spyder (been working a lot in vim) to rearrange large blocks of code
 so Im gonna commit and switch oses so I can use spyder, codes probably broken
 nvm just tested it and it works fine so far
+17:12- uhh gonna do a quick commit because im starting to do some very unhinged things its getting sweaty in here
 

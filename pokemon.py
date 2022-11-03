@@ -19,7 +19,12 @@ from moves import getMoveInfo,mov,struggle,natures
 from pokedex import dex
 
 rng=np.random.default_rng()
-
+def shortpause():
+    t.sleep(0.7)
+    return
+def dramaticpause():
+    t.sleep(1.2)
+    return
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
@@ -1034,14 +1039,36 @@ class mon:
         print("------------------------")
     #anymore pokemon attributes?
 
+def catcalls(poke,):
+    words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!"  ]
+    return
+
 class battle:
-    def __init__(self, usr_party, cpu_party, field):
+    def __init__(self, usr_party, cpu_party, field, usr_name='You', cpu_name='OPPONENT'):
         ###can i get a uhhhhhhh
+        self.usr_name = usr_name
         self.usrs = usr_party
+        self.cpu_name = cpu_name
         self.cpus = cpu_party
         self.field = field
+        self.usr_mon = usr_party[0]
+        self.cpu_mon = cpu_party[0]
+        
 
     def startbattle(self):
+        ####Battle starts####
+        print("\nYou've been challenged to a Pokemon Battle!")
+        dramaticpause()
+        #userMon=userParty[0]
+        #trainerMon=trainerParty[0]
+        userInd=0
+        trainerInd=0
+        print(f"\n {userMon.name}! I choose you!")
+        shortpause()
+        print(f"\n{opponentName}: {trainerMon.name}! Go!")
+        shortpause()
+        turn=1
+        
         return
 
 
