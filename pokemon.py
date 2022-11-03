@@ -1057,10 +1057,154 @@ class battle:
         self.usr_mon = usr_party[0]
         self.cpu_mon = cpu_party[0]
         self.field = fields
+        
+    #check status of battle
+    #this needs to go IN battle()
+    def checkBattle(self):
+        print(f"\n****** {self.cpu_mon.name} ({self.cpu_name}) ******")
+        if self.cpu_mon.dualType:
+                print(f"{typeStrings[self.cpu_mon.tipe[0]]} // {typeStrings[self.cpu_mon.tipe[1]]}")
+        else:
+            print(f"{typeStrings[self.cpu_mon.tipe[0]]}")
+        #should be all status conditions
+        if self.cpu_mon.poisoned:
+            print("__ POISONED __")
+        elif self.cpu_mon.badlypoisoned:
+            print("__ BADLY POISONED __")
+        elif self.cpu_mon.burned:
+            print("__ BURNED __")
+        elif self.cpu_mon.paralyzed:
+            print("__ PARALYZED __")
+        elif self.cpu_mon.frozen:
+            print("__ FROZEN __")
+        elif self.cpu_mon.sleep:
+            print("__ ASLEEP __")
+        if self.cpu_mon.confused:
+            print("** confused **")
+        #show hp
+        if self.cpu_mon.currenthpp>=91:
+            print(f"HP |############| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<91 and self.cpu_mon.currenthpp>=82:
+            print(f"HP |###########.| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=82 and self.cpu_mon.currenthpp>75:
+            print(f"HP |##########..| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=75 and self.cpu_mon.currenthpp>66:
+            print(f"HP |#########...| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=66 and self.cpu_mon.currenthpp>58:
+            print(f"HP |########....| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=58 and self.cpu_mon.currenthpp>50:
+            print(f"HP |#######.....| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=50 and self.cpu_mon.currenthpp>41:
+            print(f"HP |######......| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=41 and self.cpu_mon.currenthpp>33:
+            print(f"HP |#####.......| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=33 and self.cpu_mon.currenthpp>25:
+            print(f"HP |####........| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=25 and self.cpu_mon.currenthpp>16:
+            print(f"HP |###.........| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=16 and self.cpu_mon.currenthpp>8:
+            print(f"HP |##..........| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.cpu_mon.currenthpp<=8 and self.cpu_mon.currenthpp>0:
+            print(f"HP |#...........| {format(self.cpu_mon.currenthpp,'.2f')}%")
+        #stat boosts
+        blueStats=[self.cpu_mon.atstage-6,self.cpu_mon.destage-6,self.cpu_mon.sastage-6, \
+                   self.cpu_mon.sdstage-6,self.cpu_mon.spstage-6,self.cpu_mon.acstage-6, \
+                       self.cpu_mon.evstage-6]
+        statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
+        print("\nStat Boosts and Nerfs\n****************************")
+        for i in range(len(blueStats)):
+            if blueStats[i]==0:
+                print(statstrs[i]+" none")
+            elif blueStats[i]>0:
+                print(statstrs[i]+f" +{blueStats[i]}")
+            elif blueStats[i]<0:
+                print(statstrs[i]+f" {blueStats[i]}")
+        print("------------------------------------")
+        print(f"************ {self.usr_mon.name} (You) ************")
+        if self.usr_mon.dualType:
+                print(f"{typeStrings[self.usr_mon.tipe[0]]} // {typeStrings[self.usr_mon.tipe[1]]}")
+        else:
+            print(f"{typeStrings[self.usr_mon.tipe[0]]}")
+        #should be all status conditions
+        if self.usr_mon.poisoned:
+            print("__POISONED__")
+        elif self.usr_mon.badlypoisoned:
+            print("__BADLY_POISONED__")
+        elif self.usr_mon.burned:
+            print("__BURNED__")
+        elif self.usr_mon.paralyzed:
+            print("__PARALYZED__")
+        elif self.usr_mon.frozen:
+            print("__FROZEN__")
+        elif self.usr_mon.sleep:
+            print("__ASLEEP__")
+        if self.usr_mon.confused:
+            print("**confused**")
+        #show hp
+        if self.usr_mon.currenthpp>=91:
+            print(f"HP |############| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<91 and self.usr_mon.currenthpp>=82:
+            print(f"HP |###########.| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=82 and self.usr_mon.currenthpp>75:
+            print(f"HP |##########..| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=75 and self.usr_mon.currenthpp>66:
+            print(f"HP |#########...| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=66 and self.usr_mon.currenthpp>58:
+            print(f"HP |########....| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=58 and self.usr_mon.currenthpp>50:
+            print(f"HP |#######.....| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=50 and self.usr_mon.currenthpp>41:
+            print(f"HP |######......| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=41 and self.usr_mon.currenthpp>33:
+            print(f"HP |#####.......| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=33 and self.usr_mon.currenthpp>25:
+            print(f"HP |####........| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=25 and self.usr_mon.currenthpp>16:
+            print(f"HP |###.........| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=16 and self.usr_mon.currenthpp>8:
+            print(f"HP |##..........| {format(self.usr_mon.currenthpp,'.2f')}%")
+        if self.usr_mon.currenthpp<=8 and self.usr_mon.currenthpp>0:
+            print(f"HP |#...........| {format(self.usr_mon.currenthpp,'.2f')}%")
+        #stat boosts
+        redStats=[self.usr_mon.atstage-6,self.usr_mon.destage-6,self.usr_mon.sastage-6,self.usr_mon.sdstage-6,self.usr_mon.spstage-6,self.usr_mon.acstage-6,self.usr_mon.evstage-6]
+        print("\nStat Boosts and Nerfs\n****************************")
+        for i in range(len(redStats)):
+            if redStats[i]==0:
+                print(statstrs[i]+" none")
+            elif redStats[i]>0:
+                print(statstrs[i]+f" +{redStats[i]}")
+            elif redStats[i]<0:
+                print(statstrs[i]+f" {redStats[i]}")
+        print("------------------------------------")
+        print("-------Battle Settings-------")
+        if self.field.weather=="clear":
+            weat="CLEAR"
+        elif self.field.weather=="sunny":
+            weat="SUNNY"
+        elif self.field.weather=="rain":
+            weat="RAINING"
+        elif self.field.weather=="sandstorm":
+            weat="SANDSTORM"
+        elif self.field.weather=="hail":
+            weat="HAILING"
+        print(f"Weather : {weat}")
+        if self.field.terrain=="none":
+            terr="NONE"
+        elif self.field.terrain=="grassy":
+            terr="GRASSY"
+        elif self.field.terrain=="electric":
+            terr="ELECTRIC"
+        elif self.field.terrain=="psychic":
+            terr="PSYCHIC"
+        elif self.field.terrain=="misty":
+            terr="MISTY"
+        print(f"Terrain : {terr}")
+        print("\n___ End of battle status ___")
+
 
     def startbattle(self):
         ####Battle starts####
-        print("\nYou've been challenged to a Pokemon Battle!")
+        print(f"\n{self.cpu_name} has challenged you to a Pokemon Battle!")
         dramaticpause()
         #userMon=self.usrs[0]
         #self.cpu_mon=self.cpus[0]
@@ -1097,6 +1241,7 @@ class battle:
                     resting=True
                     charging=False
                     print(f"\n{self.usr_mon.name} is recharging and can't move...")
+                    shortpause()
                 ## if the usrs pokemon is already committed to a move, and it was just charging it...
                 elif self.usr_mon.charged:
                     charging=True
@@ -1113,12 +1258,12 @@ class battle:
                         break #break the otherwise indefinite turn-loop, ending the battle
                     #### check status of battle? ####
                     if userMove=="s" or userMove=="S":
-                        checkBattle(self.usr_mon,self.cpu_mon)
+                        self.checkBattle()
                         input("enter anything to go back...")
                     #### go party pokemon ####
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
-                            print("\n////////////////////////////////\n//////// Party Pokemon: /////////\n////////////////////////////////")
+                            print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
                             ## show the player's pokemon
                             for i in range(len(self.usrs)):
                                 print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
@@ -1438,7 +1583,7 @@ class battle:
                             while 1:
                                 print("\n////////////////////////////////\n//////// Party Pokemon: /////////\n////////////////////////////////")
                                 for i in range(len(self.usrs)):
-                                    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {self.usrs[i].currenthpp}%")
+                                    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
                                 newPoke=input("Select a Pokemon for battle...\n[#]: ")
                                 try:
                                     nuserInd=int(newPoke)-1
@@ -1608,6 +1753,7 @@ class battle:
         shortpause() #kills
         return
     ###end of battle block###
+    
     def moreBattleFunctions(self):
         return
 
@@ -2006,147 +2152,6 @@ def checkBlackout(party):
             alive.append(i)
     return p,alive
 
-#check status of battle
-#this needs to go IN battle()
-def checkBattle(red,blue):
-    print(f"\n****** {blue.name} ({opponentName}) ******")
-    if blue.dualType:
-            print(f"{typeStrings[blue.tipe[0]]} // {typeStrings[blue.tipe[1]]}")
-    else:
-        print(f"{typeStrings[blue.tipe[0]]}")
-    #should be all status conditions
-    if blue.poisoned:
-        print("__ POISONED __")
-    if blue.badlypoisoned:
-        print("__ BADLY POISONED __")
-    if blue.burned:
-        print("__ BURNED __")
-    if blue.paralyzed:
-        print("__ PARALYZED __")
-    if blue.frozen:
-        print("__ FROZEN __")
-    if blue.sleep:
-        print("__ ASLEEP __")
-    if blue.confused:
-        print("** confused **")
-    #show hp
-    if blue.currenthpp>=91:
-        print(f"HP |############| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<91 and blue.currenthpp>=82:
-        print(f"HP |###########.| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=82 and blue.currenthpp>75:
-        print(f"HP |##########..| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=75 and blue.currenthpp>66:
-        print(f"HP |#########...| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=66 and blue.currenthpp>58:
-        print(f"HP |########....| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=58 and blue.currenthpp>50:
-        print(f"HP |#######.....| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=50 and blue.currenthpp>41:
-        print(f"HP |######......| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=41 and blue.currenthpp>33:
-        print(f"HP |#####.......| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=33 and blue.currenthpp>25:
-        print(f"HP |####........| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=25 and blue.currenthpp>16:
-        print(f"HP |###.........| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=16 and blue.currenthpp>8:
-        print(f"HP |##..........| {format(blue.currenthpp,'.2f')}%")
-    if blue.currenthpp<=8 and blue.currenthpp>0:
-        print(f"HP |#...........| {format(blue.currenthpp,'.2f')}%")
-    #stat boosts
-    blueStats=[blue.atstage-6,blue.destage-6,blue.sastage-6,blue.sdstage-6,blue.spstage-6,blue.acstage-6,blue.evstage-6]
-    statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
-    print("\nStat Boosts and Nerfs\n****************************")
-    for i in range(len(blueStats)):
-        if blueStats[i]==0:
-            print(statstrs[i]+" none")
-        elif blueStats[i]>0:
-            print(statstrs[i]+f" +{blueStats[i]}")
-        elif blueStats[i]<0:
-            print(statstrs[i]+f" {blueStats[i]}")
-    print("------------------------------------")
-    print(f"************ {red.name} (You) ************")
-    if red.dualType:
-            print(f"{typeStrings[red.tipe[0]]} // {typeStrings[red.tipe[1]]}")
-    else:
-        print(f"{typeStrings[red.tipe[0]]}")
-    #should be all status conditions
-    if red.poisoned:
-        print("__POISONED__")
-    if red.badlypoisoned:
-        print("__BADLY_POISONED__")
-    if red.burned:
-        print("__BURNED__")
-    if red.paralyzed:
-        print("__PARALYZED__")
-    if red.frozen:
-        print("__FROZEN__")
-    if red.sleep:
-        print("__ASLEEP__")
-    if red.confused:
-        print("**confused**")
-    #show hp
-    if red.currenthpp>=91:
-        print(f"HP |############| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<91 and red.currenthpp>=82:
-        print(f"HP |###########.| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=82 and red.currenthpp>75:
-        print(f"HP |##########..| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=75 and red.currenthpp>66:
-        print(f"HP |#########...| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=66 and red.currenthpp>58:
-        print(f"HP |########....| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=58 and red.currenthpp>50:
-        print(f"HP |#######.....| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=50 and red.currenthpp>41:
-        print(f"HP |######......| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=41 and red.currenthpp>33:
-        print(f"HP |#####.......| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=33 and red.currenthpp>25:
-        print(f"HP |####........| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=25 and red.currenthpp>16:
-        print(f"HP |###.........| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=16 and red.currenthpp>8:
-        print(f"HP |##..........| {format(red.currenthpp,'.2f')}%")
-    if red.currenthpp<=8 and red.currenthpp>0:
-        print(f"HP |#...........| {format(red.currenthpp,'.2f')}%")
-    #stat boosts
-    redStats=[red.atstage-6,red.destage-6,red.sastage-6,red.sdstage-6,red.spstage-6,red.acstage-6,red.evstage-6]
-    statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
-    print("\nStat Boosts and Nerfs\n****************************")
-    for i in range(len(redStats)):
-        if redStats[i]==0:
-            print(statstrs[i]+" none")
-        elif redStats[i]>0:
-            print(statstrs[i]+f" +{redStats[i]}")
-        elif redStats[i]<0:
-            print(statstrs[i]+f" {redStats[i]}")
-    print("------------------------------------")
-    print("-------Battle Settings-------")
-    if weather=="clear":
-        weat="CLEAR"
-    elif weather=="sunny":
-        weat="SUNNY"
-    elif weather=="rain":
-        weat="RAINING"
-    elif weather=="sandstorm":
-        weat="SANDSTORM"
-    elif weather=="hail":
-        weat="HAILING"
-    print(f"Weather : {weat}")
-    if terrain=="none":
-        terr="NONE"
-    elif terrain=="grassy":
-        terr="GRASSY"
-    elif terrain=="electric":
-        terr="ELECTRIC"
-    elif terrain=="psychic":
-        terr="PSYCHIC"
-    elif terrain=="misty":
-        terr="MISTY"
-    print(f"Terrain : {terr}")
-    print("\n___ End of battle status ___")
     
     
 #moves have pwr, phys/spec, type, accu, descipt

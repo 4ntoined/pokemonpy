@@ -646,4 +646,6 @@ for a reason, so it looks like I may have to break some of these things up into 
 its wild, im gonna commit
 im soooo silly it was that I accidentally replaced the t.sleep() in micropause() with micropause() which
 yes is definitely recursive
+11:49- fixed checking the battle status/conditions by making it a function of battle()
+really not sure what to do next, i guess priority
 
