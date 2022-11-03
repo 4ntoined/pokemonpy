@@ -1043,7 +1043,9 @@ class mon:
     #anymore pokemon attributes?
 
 def catcalls(poke,):
-    words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!", f"\n{poke.name} come back!", f"{poke.name}, it's your turn!"  ]
+    words = [ f"\n {poke.name}! I choose you!", f"\n{poke.name}! Go!", f"\n{poke.name} come back!", \
+             f"\n{poke.name} come back!" , f"{poke.name}, it's your turn!", \
+                 f"\n{poke.name}! I'm counting on you!"]
     return
 
 class battle:
@@ -1295,7 +1297,11 @@ class battle:
                     if self.cpu_mon.charged:
                         pass #trainMoveInd should already be set from last round
                     else:
-                        trainMoveInd=rng.choice(range(len(self.cpu_mon.knownMoves)))
+                        cpu_ppcheck = np.argwhere(np.array(self.cpu_mon.PP) > 0)
+                        if np.size(cpu_ppcheck) > 0:
+                            trainMoveInd=rng.choice(cpu_ppcheck)
+                        else:
+                            trainMoveInd=0
                     ##USER FASTER##
                     if userFast:
                         #USER ATTACK
@@ -1314,7 +1320,7 @@ class battle:
                         if (not trainerShift) and (not flinching) and (not tFaint):
                             if uFaint:
                                 print(f"\nThere is no target for {self.cpu_mon.name} to attack!")
-                                t.sleep(0.7)
+                                shortpause()
                             elif np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
                                 self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
@@ -1340,12 +1346,12 @@ class battle:
                             if self.usr_mon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
                                 flinching=True
                                 print(f"\n{self.usr_mon.name} flinches and can't attack!")
-                                t.sleep(0.7)
+                                micropause()
                         ##USER ATTACK##
                         if (fighting or charging) and (not flinching) and (not uFaint):
                             if tFaint:
                                 print(f"\nThere is no target for {self.usr_mon.name}'s attack!")
-                                t.sleep(0.7)
+                                shortpause()
                             else:
                                 self.usr_mon.move(self.cpu_mon,moveDex)
                             if self.cpu_mon.fainted:
@@ -1365,15 +1371,15 @@ class battle:
                     if checkBlackout(self.usrs)[0]==0:
                         battleOver=True
                         print("\nYou're out of usable Pokemon!")
-                        t.sleep(0.7)
+                        shortpause()
                         print("You blacked out!")
-                        t.sleep(0.7)
+                        shortpause()
                         break
                     #check for TRAINER BLACKOUT
                     if checkBlackout(self.cpus)[0]==0:
                         battleOver=True
                         print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
-                        t.sleep(0.7)
+                        shortpause()
                         break
                     print("")
                     #damages for pokemon that made it through the turn
@@ -1396,12 +1402,12 @@ class battle:
                         self.cpu_mon.badPoison()
                         self.cpu_mon.poisonCounter+=1
                     #weather
-                    if weather=="sandstorm":
+                    if self.field.weather=="sandstorm":
                         if (not uFaint):
                             self.usr_mon.sandDamage()
                         if (not tFaint):
                             self.cpu_mon.sandDamage()
-                    if weather=="hail":
+                    if self.field.weather=="hail":
                         if (not uFaint):
                             self.usr_mon.hailDamage()
                         if (not tFaint):
@@ -1412,7 +1418,7 @@ class battle:
                         uFaint=True
                     if self.cpu_mon.fainted:
                         tFaint=True
-                    if terrain=="grassy":
+                    if self.field.terrain=="grassy":
                         if self.usr_mon.grounded and (not uFaint):
                             self.usr_mon.grassyHeal()
                         if self.cpu_mon.grounded and (not tFaint):
@@ -1424,14 +1430,14 @@ class battle:
                         if checkBlackout(self.usrs)[0]==0:
                             battleOver=True
                             print("\nYou're out of usable Pokemon!")
-                            t.sleep(0.7)
+                            shortpause()
                             print("You blacked out!")
-                            t.sleep(0.7)
+                            shortpause()
                             break
                         else:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             while 1:
-                                print("\n****************\nParty Pokemon:")
+                                print("\n////////////////////////////////\n//////// Party Pokemon: /////////\n////////////////////////////////")
                                 for i in range(len(self.usrs)):
                                     print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {self.usrs[i].currenthpp}%")
                                 newPoke=input("Select a Pokemon for battle...\n[#]: ")
@@ -1485,12 +1491,12 @@ class battle:
                                             self.usr_mon.withdraw()
                                             self.usrs[userInd]=self.usr_mon
                                             print(f"\n{self.usr_mon.name} come back!")
-                                            t.sleep(0.4)
                                             #set new selection as user pokemon
                                             self.usr_mon=select
                                             userInd=nuserInd
+                                            shortpause()
                                             print(f"{self.usr_mon.name}, it's your turn!")
-                                            t.sleep(0.4)
+                                            shortpause()
                                             self.usr_mon.chosen("user",emerald)
                                             self.usr_mon.inBattle()
                                             emerald.landing(self.usr_mon,"red")
@@ -1506,7 +1512,7 @@ class battle:
                         if blk==0:
                             battleOver=True
                             print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
-                            t.sleep(0.7)
+                            shortpause()
                             break
                         else:
                             #put fainted one away
@@ -1519,66 +1525,66 @@ class battle:
                             self.cpu_mon.inBattle()
                             emerald.landing(self.cpu_mon, "blue")
                             print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
-                            t.sleep(0.7)
+                            shortpause()
                     #pokemon have been switched in
                     print("")
                     #is weather still happening
-                    weatherCounter-=1
-                    if weather=='sunny':
-                        if weatherCounter==0:
-                            weather='clear'
-                            weatherCounter=np.inf
+                    self.field.weatherCounter-=1
+                    if self.field.weather=='sunny':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The harsh sunlight is fading...")
-                            t.sleep(0.7)
+                            shortpause()
                         else:
                             print("The sunlight is harsh!")
-                            t.sleep(0.7)
-                    if weather=='rain':
-                        if weatherCounter==0:
-                            weather='clear'
-                            weatherCounter=np.inf
+                            shortpause()
+                    if self.field.weather=='rain':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The rain stops...")
-                            t.sleep(0.7)
+                            shortpause()
                         else:
                             print("It's raining!")
-                            t.sleep(0.7)
-                    if weather=='sandstorm':
-                        if weatherCounter==0:
-                            weather='clear'
-                            weatherCounter=np.inf
+                            shortpause()
+                    if self.field.weather=='sandstorm':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The sandstorm is subsiding...")
-                            t.sleep(0.7)
+                            shortpause()
                         else:
                             print("The sandstorm is raging!")
-                            t.sleep(0.7)
-                    if weather=='hail':
-                        if weatherCounter==0:
-                            weather='clear'
-                            weatherCounter=np.inf
+                            shortpause()
+                    if self.field.weather=='hail':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
                             print("The hail stops")
-                            t.sleep(0.7)
+                            shortpause()
                         else:
                             print("It's hailing!")
-                            t.sleep(0.7)
+                            shortpause()
                     #is the terrain still on?
-                    terrainCounter-=1
-                    if terrainCounter==0:
-                        terrain="none"
-                        terrainCounter=np.inf
+                    self.field.terrainCounter-=1
+                    if self.field.terrainCounter==0:
+                        self.field.terrain="none"
+                        self.field.terrainCounter=np.inf
                         print("The terrain faded away...")
-                        t.sleep(0.7)
-                    elif terrain=="grassy":
+                        shortpause()
+                    elif self.field.terrain=="grassy":
                         print("The battlefield is grassy!")
-                        t.sleep(0.7)
-                    elif terrain=="electric":
+                        shortpause()
+                    elif self.field.terrain=="electric":
                         print("The battlefield is electrified!")
-                        t.sleep(0.7)
-                    elif terrain=="psychic":
+                        shortpause()
+                    elif self.field.terrain=="psychic":
                         print("The battlefield is weird!")
-                        t.sleep(0.7)
-                    elif terrain=="misty":
+                        shortpause()
+                    elif self.field.terrain=="misty":
                         print("The battlefield is misty!")
-                        t.sleep(0.7)
+                        shortpause()
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
@@ -1588,19 +1594,19 @@ class battle:
         print("The battle ended!")
         #clean up
         emerald.clearfield()
-        weather=rng.choice(Weathers)
-        weatherCounter=np.inf
-        terrain=rng.choice(Terrains)
-        if terrain=="none":
-            terrainCounter=np.inf
+        #self.field.weather=rng.choice(Weathers)
+        self.field.weatherCounter=np.inf
+        self.field.terrain=rng.choice(Terrains)
+        if self.field.terrain=="none":
+            self.field.terrainCounter=np.inf
         else:
-            terrainCounter=5
+            self.field.terrainCounter=5
         for i in self.cpus:
             i.withdraw()
             i.restore()
         for i in self.usrs:
             i.withdraw()
-        t.sleep(0.7) #kills
+        shortpause() #kills
     ###end of battle block###
     
         
@@ -2308,6 +2314,8 @@ while 1:
         print(bug1.field)
         bug1.chosen('user', indigo)
         bug1.field.bugging()
+        battle1 = battle(userParty, trainerParty, indigo)
+        battle1.startbattle()
         pass
     #### end of e4? mode ###
     ####Battles####
@@ -2551,12 +2559,12 @@ while 1:
                             if trainerMon.flinched and (not tFaint):
                                 flinching=True
                                 print(f"\n{opponentName}'s {trainerMon.name} flinches and can't attack!")
-                                t.sleep(0.7)
+                                shortpause()
                         ##OPPO ATTACK
                         if (not trainerShift) and (not flinching) and (not tFaint):
                             if uFaint:
                                 print(f"\nThere is no target for {trainerMon.name} to attack!")
-                                t.sleep(0.7)
+                                shortpause()
                             elif np.count_nonzero(trainerMon.PP)==0: #if trainer is out of PP, use struggle
                                 trainerMon.move(userMon,struggleInd)
                             else: #otherwise, cue up one of the known moves
@@ -2582,12 +2590,12 @@ while 1:
                             if userMon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
                                 flinching=True
                                 print(f"\n{userMon.name} flinches and can't attack!")
-                                t.sleep(0.7)
+                                shortpause()
                         ##USER ATTACK##
                         if (fighting or charging) and (not flinching) and (not uFaint):
                             if tFaint:
                                 print(f"\nThere is no target for {userMon.name}'s attack!")
-                                t.sleep(0.7)
+                                shortpause()
                             else:
                                 userMon.move(trainerMon,moveDex)
                             if trainerMon.fainted:
@@ -2595,6 +2603,7 @@ while 1:
                             if userMon.fainted:
                                 uFaint=True
                     #end of turn, pokemon have attacked
+                    
                     #regardless of whether pokemon fainted this turn, if they were recognized to be resting while the attacks were exchanged, we can repeal the resting tags
                     if resting:
                         userMon.resting=False
@@ -2607,15 +2616,15 @@ while 1:
                     if checkBlackout(userParty)[0]==0:
                         battleOver=True
                         print("\nYou're out of usable Pokemon!")
-                        t.sleep(0.7)
+                        shortpause()
                         print("You blacked out!")
-                        t.sleep(0.7)
+                        shortpause()
                         break
                     #check for TRAINER BLACKOUT
                     if checkBlackout(trainerParty)[0]==0:
                         battleOver=True
                         print(f"\n{opponentName} is out of usable pokemon!\nYou win!")
-                        t.sleep(0.7)
+                        shortpause()
                         break
                     print("")
                     #damages for pokemon that made it through the turn
@@ -2666,9 +2675,9 @@ while 1:
                         if checkBlackout(userParty)[0]==0:
                             battleOver=True
                             print("\nYou're out of usable Pokemon!")
-                            t.sleep(0.7)
+                            shortpause()
                             print("You blacked out!")
-                            t.sleep(0.7)
+                            shortpause()
                             break
                         else:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
@@ -2748,7 +2757,7 @@ while 1:
                         if blk==0:
                             battleOver=True
                             print(f"\n{opponentName} is out of usable pokemon!\nYou win!")
-                            t.sleep(0.7)
+                            shortpause()
                             break
                         else:
                             #put fainted one away
@@ -2761,7 +2770,7 @@ while 1:
                             trainerMon.inBattle()
                             indigo.landing(trainerMon, "blue")
                             print(f"\n{opponentName}: {trainerMon.name}! I'm counting on you!")
-                            t.sleep(0.7)
+                            shortpause()
                     #pokemon have been switched in
                     print("")
                     #is weather still happening
@@ -2771,10 +2780,10 @@ while 1:
                             weather='clear'
                             weatherCounter=np.inf
                             print("The harsh sunlight is fading...")
-                            t.sleep(0.7)
+                            shortpause()
                         else:
                             print("The sunlight is harsh!")
-                            t.sleep(0.7)
+                            shortpause()
                     if weather=='rain':
                         if weatherCounter==0:
                             weather='clear'

@@ -626,4 +626,5 @@ and also probably totally remake and refine things as I stumble onto them... her
 also shout out to spyder she is really the workhorse behind this work Im just the stupid rider
 18:59- trying to resist the urge to program priority while I'm here... since it looks like IM just gonna
 marathon this whole thing without testing it, I might be REALLY pushing my luck with that one. but we'll see
-
+20:09- ...i think i did it... i just need to rewrite all the code within move() hit() and damage() etc that
+use global weather and terrain
