@@ -639,4 +639,9 @@ when I tested them, so this is very extremely exciting I had been dreading doing
 now I can go back to Elite 4 team making (making the moves for their mons, and then programming the teams altogether
 and then loading those teams into battles against the player)
 and then we can release. wow I really thought I was gonna need another year...
+11:08- i got a 'maximum recursion depth exceeded' error just now trying to playtest
+I looked it up, hardly understand what it means, but I think its just the the code is too big
+and is trying to do too much in a single package, I can increase that limit, but its there
+for a reason, so it looks like I may have to break some of these things up into separate files
+its wild, im gonna commit
 
