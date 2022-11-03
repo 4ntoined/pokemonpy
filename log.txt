@@ -650,4 +650,9 @@ yes is definitely recursive
 really not sure what to do next, i guess priority
 12:24- did priority, only quick attack for now though. fake out is going to take some more finesse/otherwise
 useless booleans
+14:41- I did fakeout. tested and it works so far, even for the cpu player. haven't tested the fact that
+you should be able to use fakeout after returning a pokemon to the party and sending it out again
+just thought about how i wrote that code and I think its broken, if you switch in as your turn that round,
+ur pokemon will have fake out disabled for it even though it never got the chance to attack
+14:57- okay i think I fixed it, seems to work now dk what's next
 

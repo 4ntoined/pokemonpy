@@ -62,7 +62,7 @@ class mon:
         self.spb=spbase
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
         self.currenthp=self.maxhp
-        self.currenthpp=100
+        self.currenthpp=100.
         ##final stats, with evs, ivs, and one day natures==============##
         self.attack=stats(self.level,self.atb,self.ativ,self.atev,self.nature_multipliers[0])
         self.defense=stats(self.level,self.deb,self.deiv,self.deev,self.nature_multipliers[1])
@@ -114,6 +114,7 @@ class mon:
         self.flinched=False #might not necessarily need this? idk
         self.resting=False #for moves where pokemon need to recharge
         self.charged=False #when true, pokemon has a 2turn move ready to use
+        self.firstturnout=False
 
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -187,6 +188,7 @@ class mon:
     #sending a pokemon out
     def chosen(self, trainer, fields):
         self.field=fields
+        self.firstturnout=True
         if trainer == "user":
             self.battlespot = "red"
         elif trainer == "cpu":
@@ -216,6 +218,7 @@ class mon:
         self.resting=False
         self.flinched=False
         self.charged=False
+        self.firstturnout=False
     
     #fainting
     def faint(self):
@@ -470,7 +473,7 @@ class mon:
                     micropause()
         #freeze
         if "frze" in notes:
-            if self.self.field.weather=='sunny': #harsh sunlight prevents freezing
+            if self.field.weather=='sunny': #harsh sunlight prevents freezing
                 print("\nThe harsh sunlight prevents freezing!")
             elif 5 in self.tipe: #ice types immune to freeze
                 print(f"\n{self.name} is immune to being frozen!")
@@ -722,7 +725,14 @@ class mon:
                     self.healing(healamount)
                 ### end of healing ###
                 return
-            ##=================================================================##
+            ##==========================    end of status moves    =======================================##
+            #fake out fails if its the not pokemons first turn out
+            #print(notas)
+            #print(self.firstturnout)
+            #print('fakeout' in notas)
+            if ('fakeout' in notas) and (not self.firstturnout):
+                print('The move fails!')
+                return
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
             opponent.hit(self,ans,eff,notas,moveI['type'],comment)
             #stat changes
@@ -922,7 +932,7 @@ class mon:
         else:
             mount = self.maxhp/16.
             self.currenthp+=mount
-            print(f"{self.name} is healed {format(mount/self.maxhp,'.2f')} by the grassy terrain!")
+            print(f"{self.name} is healed {format(100.*mount/self.maxhp,'.2f')}% by the grassy terrain!")
             micropause()
             if self.currenthp>self.maxhp: #lets not heal above the max lol
                 self.currenthp=self.maxhp
@@ -1220,15 +1230,16 @@ class battle:
             #battle conditions?
             battleOver=False
             #emerald = field()
+            self.usr_mon.chosen("user",self.field)
+            self.cpu_mon.chosen("cpu",self.field)
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move exchange if user selects a move or shifts, otherwise we should loop back here
                 switching=False
                 fighting=False
                 charging=False
                 print(f"\n================ Turn {turn} ================\n")
-                self.usr_mon.chosen("user",self.field)
+                
                 self.usr_mon.inBattle()
-                self.cpu_mon.chosen("cpu",self.field)
                 self.cpu_mon.inBattle()
                 #----UI----#
                 print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
@@ -1517,6 +1528,11 @@ class battle:
                             if self.usr_mon.fainted:
                                 uFaint=True
                     #end of turn, pokemon have attacked
+                    #if poke didnt just switch in, first turn flag is turned off
+                    if (not switching):
+                        self.usr_mon.firstturnout=False
+                    if (not trainerShift):
+                        self.cpu_mon.firstturnout=False
                     #regardless of whether pokemon fainted this turn, if they were recognized to be resting while the attacks were exchanged, we can repeal the resting tags
                     if resting:
                         self.usr_mon.resting=False
@@ -1524,7 +1540,7 @@ class battle:
                         self.cpu_mon.resting=False
                     if flinching: #moves have already been used, we can reset them
                         self.usr_mon.flinched=False
-                        self.cpu_mon.flinshed=False
+                        self.cpu_mon.flinched=False
                     #check for USER BLACKOUT
                     if checkBlackout(self.usrs)[0]==0:
                         battleOver=True
@@ -1770,6 +1786,7 @@ class battle:
     
     def moreBattleFunctions(self):
         return
+#zz:battleclass
 
 ##Weathers=['clear','sunny','rain','sandstorm','hail']
 ##Terrains=['none','electric','grassy','misty','psychic']

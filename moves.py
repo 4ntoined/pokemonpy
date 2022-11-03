@@ -70,7 +70,7 @@ moremoves=[
         ("Cut",50,95,30,0,1,0,0,"The use cuts the target with a scythe or claw!","null"),
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has increased +1 priority.","null"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
-        #("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout") need priority AND first-turn tracking
+        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
