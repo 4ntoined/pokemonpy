@@ -657,4 +657,12 @@ ur pokemon will have fake out disabled for it even though it never got the chanc
 14:57- okay i think I fixed it, seems to work now dk what's next
 15:55- you can randomize your pokes movesets now, should think about how to remove moves
 (how to let the user remove individual moves)
+19:30- there's already a move deleter lol it's like right there, the fact that I could just overlook it
+is a testament to how darn overboard I'm going
+also I added the rest of the pre-gen 9 pokemon 1 commit ago. there are alt. forms I still can and want
+to include in the presets, and i think I also want to add mega evolutions
+i can do it by hand and thats prob the simplest solution, but thats a lot of work so maybe ill look into
+ways to have that done automatically. (literally just the ~20 pokes I added between zamazenta and enamorus
+took so long)
+19:38- oh and im working on screens
 

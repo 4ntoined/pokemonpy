@@ -510,6 +510,7 @@ class mon:
         return
     
     #pokemon move
+    #aa:movefunction
     def move(self, opponent, moveIndex):
         moveI=getMoveInfo(moveIndex)
         notas=moveI['notes'].split()
@@ -760,7 +761,8 @@ class mon:
             #anything else to do after a successful hit?
         #anything else to do after either moving or missing?
         #end of move
-    
+    #zz:movefunction
+    #aa:hitfunction
     def hit(self,attacker,damagepoints,effectiveness,notes,moveTipe,comments):
         if effectiveness==0.:
             print(f"{self.name} is immune!")
@@ -852,6 +854,7 @@ class mon:
             if "mustRest" in notes:
                 attacker.resting=True
         #end of hit()
+    #zz:hitfunction
     #healing via moves
     def healing(self, amount):
         self.currenthp += amount
@@ -1823,6 +1826,14 @@ class field:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
+        self.reflectA=False
+        self.reflectB=False
+        self.lightscA=False
+        self.lightscB=False
+        self.reflectACounter = 0
+        self.reflectBCounter = 0
+        self.lightscACounter = 0
+        self.lightscBCounter = 0
         #tailwind?
         #reflect
         #light screen
@@ -1848,11 +1859,19 @@ class field:
         self.steelB=False
         self.stickyA=False
         self.stickyB=False
+        self.reflectA=False
+        self.reflectB=False
+        self.lightscA=False
+        self.lightscB=False
         self.spikesA=0 #up to 3
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
-    
+        self.reflectACounter = 0
+        self.reflectBCounter = 0
+        self.lightscACounter = 0
+        self.lightscBCounter = 0
+        
     def shuffleweather(self,wea=True,ter=True):
         global Weathers
         global Terrains
@@ -1905,7 +1924,7 @@ class field:
                         poke.toxicAffliction(self.toxicB)
         # there will be more entry hazards unfortunately
         return
-
+    #aa:hazards
     def hazarding(self,elem,side):
         #will place entry hazards on the battlefield
         #hazards on player side
@@ -1970,7 +1989,57 @@ class field:
                     self.stickyB = True
                     return "x"
             #think thats all the hazards for now
-    #more functions of battle
+    #aa:screens
+    def upScreens(self,scr,side):
+        if side=='red':
+            ## reflect is already up for player
+            if (scr=='reflect') and (self.reflectA==True):
+                print("\nThe move fails! Reflect is already up!")
+                micropause()
+                return "failed"
+            ## light screen is already up for player
+            elif (scr=='lightscreen') and (self.lightscA==True):
+                print("\nThe move fails! Light Screen is already up!")
+                micropause()
+                return "failed"
+            ## player puts up reflect
+            elif scr=='reflect':
+                self.reflectA==True
+                self.reflectACounter=5
+                print("\nThe Pokemon's side is protected by Reflect!")
+                micropause()
+            ## player puts up light screen
+            elif scr=='lightscreen':
+                self.lightscA==True
+                self.lightscACounter=5
+                print("\nThe Pokemon's side is protected by Light Screen!")
+                micropause()
+            pass
+        elif side=='blue':
+            ## reflect is already up for cpu
+            if (scr=='reflect') and (self.reflectB==True):
+                print("\nThe move fails! Reflect is already up!")
+                micropause()
+                return "failed"
+            ## light screen is already up for cpu
+            elif (scr=='lightscreen') and (self.lightscB==True):
+                print("\nThe move fails! Light Screen is already up!")
+                micropause()
+                return "failed"
+            ## cpu puts up reflect
+            elif scr=='reflect':
+                self.reflectB==True
+                self.reflectBCounter=5
+                print("\nThe Pokemon's side is protected by Reflect!")
+                micropause()
+            ## cpu puts up light screen
+            elif scr=='lightscreen':
+                self.lightscB==True
+                self.lightscBCounter=5
+                print("\nThe Pokemon's side is protected by Light Screen!")
+                micropause()
+            pass
+    #more functions of field
 ##zz:fieldclass
 #aa:damagefunction
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
