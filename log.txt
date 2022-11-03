@@ -648,4 +648,6 @@ im soooo silly it was that I accidentally replaced the t.sleep() in micropause()
 yes is definitely recursive
 11:49- fixed checking the battle status/conditions by making it a function of battle()
 really not sure what to do next, i guess priority
+12:24- did priority, only quick attack for now though. fake out is going to take some more finesse/otherwise
+useless booleans
 

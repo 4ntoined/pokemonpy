@@ -1433,25 +1433,37 @@ class battle:
                     # if both pokemon are attacking, compare move priority #
                     # then compare pokemon speeds ##########################
                     ########################################################
-                    #set boolean to true if user has higher effective speed stat
-                    userFast=self.usr_mon.bsp>=self.cpu_mon.bsp
                     uFaint=False
                     tFaint=False
                     flinching=False
+                    ######## opponent selecting a move #######
                     if self.cpu_mon.charged:
                         pass #trainMoveInd should already be set from last round
                     else:
+                        trainStruggle=False
                         cpu_ppcheck = np.argwhere(np.array(self.cpu_mon.PP) > 0)
                         if np.size(cpu_ppcheck) > 0:
                             trainMoveInd=int(rng.choice(cpu_ppcheck))
-                        else:
-                            trainMoveInd=0
+                            tmovedex = self.cpu_mon.knownMoves[trainMoveInd]
+                        else: #struggle will trigger 
+                            trainStruggle=True
+                        pass
+                    #### speed and priority check ####
+                    prior_check = (getMoveInfo(moveDex)['priority'], getMoveInfo(tmovedex)['priority'])
+                    if prior_check[0] == prior_check[1]:
+                        #set boolean to true if user has higher effective speed stat
+                        userFast=self.usr_mon.bsp>=self.cpu_mon.bsp
+                    elif prior_check[0] > prior_check[1]:
+                        userFast=True
+                    else:
+                        userFast=False
                     ##USER FASTER##
                     if userFast:
                         #USER ATTACK
                         #make sure user/trainer didn't switch in this turn
                         if fighting or charging: #is never set to true if resting is true this turn, not set to true if the user decided to switch mons
                             self.usr_mon.move(self.cpu_mon, moveDex)
+                            # check for faints after 1st move used
                             if self.cpu_mon.fainted:
                                 tFaint=True
                             if self.usr_mon.fainted:
@@ -1465,10 +1477,11 @@ class battle:
                             if uFaint:
                                 print(f"\nThere is no target for {self.cpu_mon.name} to attack!")
                                 shortpause()
-                            elif np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
+                            elif trainStruggle: #np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
                                 self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                self.cpu_mon.move(self.usr_mon,self.cpu_mon.knownMoves[trainMoveInd])
+                                self.cpu_mon.move(self.usr_mon,tmovedex)
+                            # check for faints as result of 2nd move used
                             if self.usr_mon.fainted:
                                 uFaint=True
                             if self.cpu_mon.fainted:
@@ -1480,8 +1493,8 @@ class battle:
                             if np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
                                 self.cpu_mon.move(self.usr_mon,struggleInd)
                             else: #otherwise, cue up one of the known moves
-                                self.cpu_mon.move(self.usr_mon,self.cpu_mon.knownMoves[trainMoveInd])
-                            #check for faints
+                                self.cpu_mon.move(self.usr_mon,tmovedex)
+                            # check for faints after 1st move used
                             if self.usr_mon.fainted:
                                 uFaint=True
                             if self.cpu_mon.fainted:
@@ -1498,6 +1511,7 @@ class battle:
                                 shortpause()
                             else:
                                 self.usr_mon.move(self.cpu_mon,moveDex)
+                            # check for faints after 2nd move used
                             if self.cpu_mon.fainted:
                                 tFaint=True
                             if self.usr_mon.fainted:
