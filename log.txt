@@ -471,6 +471,15 @@ so negative numbers are unlikely but not entirely impossible
 which kinda makes negative leveled pokemon rare like shinies!
 nice
 
+24 feb 2022
+16:16- no updates to the game just wanted to comment on the fact that gamefreak
+has decided to make the most dramatic changes to the pokemon battle system since like
+the introduction of pokemon
+I started this bc I was so familiar with that 25-yo system that I knew with enough
+time and care I could replicate it at least kinda, in python.
+And before I can even finish, gamefreak was like okay this is over
+but whatever, im sure ill come back to this at some point
+
 20 oct 2022
 21:21- wrote the date just now and really couldn't believe it's been more than a year
 like a year and a half...
