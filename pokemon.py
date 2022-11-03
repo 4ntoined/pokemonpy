@@ -13,21 +13,19 @@
 import copy
 import time as t
 import numpy as np
-#import astropy.table as tbl
-#import astropy.io.ascii as asc
 from moves import getMoveInfo,mov,struggle,natures
 from pokedex import dex
 
-rng=np.random.default_rng()
 def micropause():
-    t.sleep(0.3)
+    micropause()
     return
 def shortpause():
-    t.sleep(0.7)
+    t.sleep(0.9)
     return
 def dramaticpause():
-    t.sleep(1.2)
+    t.sleep(1.4)
     return
+rng=np.random.default_rng()
 # aa:monclass
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
@@ -188,7 +186,6 @@ class mon:
     
     #sending a pokemon out
     def chosen(self, trainer, fields):
-        #global indigo
         self.field=fields
         if trainer == "user":
             self.battlespot = "red"
@@ -233,8 +230,8 @@ class mon:
         self.burned=False
         self.poisoned=False
         self.badlypoisoned=False
-        print(f"{self.name} faints!")
-        t.sleep(0.5)
+        print(f"\n{self.name} faints!")
+        shortpause()
     
     #back to full health!
     def restore(self):
@@ -410,7 +407,7 @@ class mon:
                 if rng.random()<=odds/100.:
                     self.paralyzed=True
                     print(f"\n{self.name} is paralyzed by the hit!")
-                    t.sleep(0.4)
+                    micropause()
         #burn
         if "burn" in notes:
             if 1 in self.tipe: #fire types immune to burns
@@ -424,7 +421,7 @@ class mon:
                 if rng.random()<=odds/100.:
                     self.burned=True
                     print(f"\n{self.name} is burned by the hit!")
-                    t.sleep(0.4)
+                    micropause()
         #poison
         if "pois" in notes:
             if (7 in self.tipe) or (16 in self.tipe): #poison and steel types immune
@@ -438,7 +435,7 @@ class mon:
                 if rng.random()<=odds/100.:
                     self.poisoned=True
                     print(f"\n{self.name} is poisoned by the hit!")
-                    t.sleep(0.4)
+                    micropause()
         #who's gonna do badly poisoned lol
         #me ugh
         if "badPois" in notes:
@@ -454,7 +451,7 @@ class mon:
                     self.badlypoisoned=True
                     self.poisonCounter=1
                     print(f"\n{self.name} is badly poisoned by the hit!")
-                    t.sleep(0.4)
+                    micropause()
         #sleep
         if "sleep" in notes:
             electricCheck=(self.field.terrain=="electric") and self.grounded #electric terrain prevents sleep
@@ -470,7 +467,7 @@ class mon:
                     self.sleep=True
                     self.sleepCounter=rng.integers(1,4)
                     print(f"\n{self.name} falls asleep!")
-                    t.sleep(0.4)
+                    micropause()
         #freeze
         if "frze" in notes:
             if self.self.field.weather=='sunny': #harsh sunlight prevents freezing
@@ -486,7 +483,7 @@ class mon:
                 if rng.random()<=odds/100.:
                     self.frozen=True
                     print(f"\n{self.name} is frozen in place!")
-                    t.sleep(0.4)
+                    micropause()
         #confusion
         if "conf" in notes:
             if mistyCheck:
@@ -499,7 +496,7 @@ class mon:
                     self.confused=True
                     self.confusionCounter=rng.integers(2,6)
                     print(f"\n{self.name} is confused now!")
-                    t.sleep(0.4)
+                    micropause()
                 #more status move effects
         return
     
@@ -572,7 +569,7 @@ class mon:
         print(f"\n{self.name} uses {moveI['name']}!")
         if moveIndex!=struggle:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
-        t.sleep(0.4)
+        micropause()
         ###accuracy check###
         if "noMiss" in notas:
             hitCheck=True
@@ -587,7 +584,7 @@ class mon:
             hitCheck = rng.random() <= effAccu * ( moveI['accu'] / 100. )
         if hitCheck==False: #move misses
             print(f"\n{self.name}'s attack misses!")
-            t.sleep(0.4)
+            micropause()
             # move failed 
             return
         else: #move will connect
@@ -754,7 +751,7 @@ class mon:
             print(f"{self.name} is immune!")
         else:
             print(f"\n{self.name} is hit!")
-            t.sleep(0.4)
+            micropause()
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
                 recoilDmg=self.currenthp
@@ -765,9 +762,9 @@ class mon:
             self.currenthpp=100*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
-                t.sleep(0.4) #for drama
+                micropause() #for drama
                 print(f"{i}")
-            t.sleep(0.4)
+            micropause()
             #show effectiveness
             if effectiveness>2.:
                 print("It's MEGA-effective!!")
@@ -777,7 +774,7 @@ class mon:
                 print("It's barely effective...")
             if effectiveness>=0.5 and effectiveness<1.:
                 print("It's not very effective.")
-            t.sleep(0.4)
+            micropause()
             #result of hit
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             t.sleep(0.7)
@@ -855,7 +852,7 @@ class mon:
         self.currenthp -= damagedone * recoilAmount
         self.currenthpp = 100. * self.currenthp / self.maxhp
         print( f"{self.name} takes recoil damage!" )
-        t.sleep(0.3)
+        micropause()
         if self.currenthp <= 0.:
             self.faint()
         #i don't hate it
@@ -865,7 +862,7 @@ class mon:
         self.currenthp -= dmg
         self.currenthpp = 100 * self.currenthp / self.maxhp
         print( f"{self.name} hurt itself in its confusion!" )
-        t.sleep(0.3)
+        micropause()
         if self.currenthp <= 0.:
             self.faint()
     #poison
@@ -873,7 +870,7 @@ class mon:
         self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took poison damage!")
-        t.sleep(0.3)
+        micropause()
         if self.currenthp<=0.:
             self.faint()
     #badly poisoned
@@ -881,7 +878,7 @@ class mon:
         self.currenthp-=self.poisonCounter*self.maxhp/16.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took bad poison damage!")
-        t.sleep(0.3)
+        micropause()
         if self.currenthp<=0.0:
             self.faint()
     #burn
@@ -890,7 +887,7 @@ class mon:
         self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
         print(f"{self.name} took burn damage!")
-        t.sleep(0.3)
+        micropause()
         if self.currenthp<=0.:
             self.faint()
     #sandstorm
@@ -898,24 +895,24 @@ class mon:
         immune=(12 in self.tipe) or (8 in self.tipe) or (16 in self.tipe) #check for rock, ground, and steel types
         if immune:
             print(f"{self.name} is unaffected by the sandstorm!")
-            t.sleep(0.3)
+            micropause()
         else:
             self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
             print(f"{self.name} took some damage from the sandstorm!")
-            t.sleep(0.3)
+            micropause()
             if self.currenthp<=0.:
                 self.faint()
     #hail
     def hailDamage(self):
         if 5 in self.tipe:
             print(f"{self.name} is unaffected by the hail!")
-            t.sleep(0.3)
+            micropause()
         else:
             self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
             print(f"{self.name} took some damage from the hail!")
-            t.sleep(0.3)
+            micropause()
             if self.currenthp<=0.:
                 self.faint()
     #healing from grassy terrain
@@ -923,12 +920,13 @@ class mon:
         if self.currenthp==self.maxhp:
             return #do nothing, say nothing
         else:
-            self.currenthp+=self.maxhp/16.
-            print(f"{self.name} is healed by the grassy terrain!")
-            t.sleep(0.3)
+            mount = self.maxhp/16.
+            self.currenthp+=mount
+            print(f"{self.name} is healed {format(mount/self.maxhp,'.2f')} by the grassy terrain!")
+            micropause()
             if self.currenthp>self.maxhp: #lets not heal above the max lol
                 self.currenthp=self.maxhp
-                self.currenthpp=100
+                self.currenthpp=100.
             else:
                 self.currenthpp=100.*self.currenthp/self.maxhp
     #entry hazard damages
@@ -937,7 +935,7 @@ class mon:
     def rocksDamage(self):
         self.currenthp-=self.maxhp/8.*checkTypeEffectiveness(12, self.tipe)
         print(f"Pointed stones dig into {self.name}!")
-        t.sleep(0.4)
+        micropause()
         if self.currenthp<=0.:
             self.faint()
         else:
@@ -951,7 +949,7 @@ class mon:
         elif level == 3:
             self.currenthp -= self.maxhp / 4.
         print(f"{self.name} is hurt by the spikes!")
-        t.sleep(0.4)
+        micropause()
         if self.currenthp<=0.:
             self.faint()
         else:
@@ -965,13 +963,13 @@ class mon:
         if level == 1:
             self.poisoned=True
             print(f"{self.name} is poisoned by the spikes!")
-            t.sleep(0.3)
+            micropause()
             return
         elif level == 2:
             self.badlypoisoned=True
             self.poisonCounter=1
             print(f"\n{self.name} is badly poisoned by the spikes!")
-            t.sleep(0.3)
+            micropause()
             return
         
     def stickyNerf(self):
@@ -1068,7 +1066,7 @@ class battle:
         #self.cpu_mon=self.cpus[0]
         userInd=0
         trainerInd=0
-        print(f"\n {self.usr_mon.name}! I choose you!")
+        print(f"\n{self.usr_mon.name}! I choose you!")
         shortpause()
         print(f"\n{self.cpu_name}: {self.cpu_mon.name}! Go!")
         shortpause()
@@ -1216,7 +1214,7 @@ class battle:
                                     for i in range(len(movez)):
                                         print("")
                                         moveInfo(movez[i])
-                                        t.sleep(0.4) #drama
+                                        micropause() #drama
                                     #we got all the move info out?, go back to pokemon?
                                     input("\nenter anything to continue...")
                             else:
@@ -1476,7 +1474,7 @@ class battle:
                                                     for i in range(len(movez)):
                                                         print("")
                                                         moveInfo(movez[i])
-                                                        t.sleep(0.4) #drama
+                                                        micropause() #drama
                                                     #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
                                                     break 
                                         #switch pokemon
@@ -1713,14 +1711,14 @@ class field:
                     if 7 in poke.tipe:
                         self.toxicA = 0
                         print(f"{poke.name} absorbs the toxic spikes!")
-                        t.sleep(0.3)
+                        micropause()
                     else:
                         poke.toxicAffliction(self.toxicA)
                 elif poke.battlespot == "blue":
                     if 7 in poke.tipe:
                         self.toxicB = 0
                         print(f"{poke.name} absorbs the toxic spikes!")
-                        t.sleep(0.3)
+                        micropause()
                     else:
                         poke.toxicAffliction(self.toxicB)
         # there will be more entry hazards unfortunately
@@ -1978,7 +1976,7 @@ def loadMon(savefile):
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")
-            t.sleep(0.4)
+            micropause()
         return loadPokes
     except FileNotFoundError:
         print("! The file name wasn't found... !\n")
@@ -2238,7 +2236,7 @@ opponentName="OPPONENT"
 print("\n... A Python game by Antoine ...")
 shortpause()
 print("** Welcome to the Wonderful World of Pokemon Simulation! **")
-shortpause()
+dramaticpause()
 #aa:mainmenu
 while 1:
     mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n:"
@@ -2247,10 +2245,10 @@ while 1:
     #user setting the weather and terrain
     if userChoice=="s" or userChoice=="S":
         print("\n------------ Set the Stage of Battle ------------\n-------------------------------------------------")
-        t.sleep(0.4)
+        micropause()
         while 1: #user input loop
             print("Current Battle conditions:")
-            t.sleep(0.4)
+            micropause()
             print(f"Weather: {weather}\nTerrain: {terrain}")
             print("\nOptions:\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually\n")
             setChoice=input("What [#] would you like to do?\nor [b]ack: ")
@@ -2262,17 +2260,17 @@ while 1:
                 weather=rng.choice(Weathers)
                 terrain=rng.choice(Terrains)
                 print("Conditions have been randomized!")
-                t.sleep(0.4)
+                micropause()
             #randomize weather
             if setChoice=="2":
                 weather=rng.choice(Weathers)
                 print("Weather has been randomized!")
-                t.sleep(0.4)
+                micropause()
             #randomize terrain
             if setChoice=="3":
                 terrain=rng.choice(Terrains)
                 print("Terrain has been randomized!")
-                t.sleep(0.4)
+                micropause()
             #manual set
             if setChoice=="4":
                 while 1: #user input loop, weather or terrain
@@ -2442,7 +2440,7 @@ while 1:
                                                 for i in range(len(movez)):
                                                     print("")
                                                     moveInfo(movez[i])
-                                                    t.sleep(0.4) #drama
+                                                    micropause() #drama
                                                 #we got all the move info out?, go back to pokemon?
                                                 pause=input("\nEnter anything to continue back to Pokemon summary...")
                                                 break 
@@ -2492,7 +2490,7 @@ while 1:
                                     for i in range(len(movez)):
                                         print("")
                                         moveInfo(movez[i])
-                                        t.sleep(0.4) #drama
+                                        micropause() #drama
                                     #we got all the move info out?, go back to pokemon?
                                     input("\nenter anything to continue...")
                             else:
@@ -2743,7 +2741,7 @@ while 1:
                                                     for i in range(len(movez)):
                                                         print("")
                                                         moveInfo(movez[i])
-                                                        t.sleep(0.4) #drama
+                                                        micropause() #drama
                                                     #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
                                                     break 
                                         #switch pokemon
@@ -2759,12 +2757,12 @@ while 1:
                                             userMon.withdraw()
                                             userParty[userInd]=userMon
                                             print(f"\n{userMon.name} come back!")
-                                            t.sleep(0.4)
+                                            micropause()
                                             #set new selection as user pokemon
                                             userMon=select
                                             userInd=nuserInd
                                             print(f"{userMon.name}, it's your turn!")
-                                            t.sleep(0.4)
+                                            micropause()
                                             userMon.chosen("user",indigo)
                                             userMon.inBattle()
                                             indigo.landing(userMon,"red")
@@ -2960,7 +2958,7 @@ while 1:
                                 for i in range(len(movez)):
                                     print("")
                                     moveInfo(movez[i])
-                                    t.sleep(0.4) #drama
+                                    micropause() #drama
                                 #we got all the move info out?, go back to pokemon?
                                 pause=input("\nEnter anything to continue back to Pokemon summary...")
                                 break
@@ -3238,7 +3236,7 @@ while 1:
                         for i in range(len(movez)):
                             print("")
                             moveInfo(movez[i])
-                            t.sleep(0.4) #drama
+                            micropause() #drama
                         pause=input("\nEnter anything to continue back to Pokemon summary...")
                         continue
             else:
@@ -3393,7 +3391,7 @@ while 1:
                 for i in userParty:
                     i.restore()
                     print(f"{i.name} is ready for more battles!")
-                    t.sleep(0.4)
+                    micropause()
                 print("\nYour party is looking better than ever!!")
                 t.sleep(0.7)
                 print("\nHave a nice day! and have fun!")
@@ -3405,7 +3403,7 @@ while 1:
         print("\n******** Party Reset ********")
         t.sleep(0.7)
         print("\nYou can remove individual Pokemon from your party...")
-        t.sleep(0.4)
+        micropause()
         print("Or you can reset your team to just the starter (Bulbasaur for now)")
         t.sleep(0.7)
         while 1: #input loop only to catch players leaving individual pokemon removal
