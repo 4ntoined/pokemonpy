@@ -620,4 +620,8 @@ should I break it
 so Im gonna commit and switch oses so I can use spyder, codes probably broken
 nvm just tested it and it works fine so far
 17:12- uhh gonna do a quick commit because im starting to do some very unhinged things its getting sweaty in here
+17:58- yeah its all coming together now, we might really be in the endgame sooner than I thought
+it's gonna take a hot minute for me to parse through the battle code to make the tweaks where they need to be made
+and also probably totally remake and refine things as I stumble onto them... here's a commit
+also shout out to spyder she is really the workhorse behind this work Im just the stupid rider
 
