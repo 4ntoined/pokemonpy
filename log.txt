@@ -724,5 +724,16 @@ whether or not fusion bolt or fusion flare was executed, so that it knows whethe
 of any subsequent flares or bolts. such a small detail, but such is the nature of these pokemon battles, these mechanics were
 built up game-by-game, and now this thing is a behemoth, but its still knowable
 yo anyway I probably need a break from this but I want it finished like......so badly
-and I am so close....like literally 5 moves separate me from the final sprint to the e4
+19:45- and I am so close....like literally 5 moves separate me from the final sprint to the e4
+for the record, the moves needed for the e4 that DON'T require new mechanics:
+flash cannon, metal sound, night slash, crunch, acrobatics, stone edge, frost breath, zen headbutt
+earth power, surf, psychic, silver wind, dark pulse, muddy water, thunder fang, fire fang, aeroblast
+swift, Infernal parade, Bite, Air Cutter, Metal Claw, Icy Wind, Faint Attack, Shadow Claw
+the nice things about those is it's mostly just me looking up their details, jotting down some stats,
+and making money. All of these moves do things that other moves in this game already do
+going through my notes again I missed some moves w new mechanics: shadow force (semi-invulnerable 2-turn) and 
+Retaliate (double power if an ally fainted during the previous turn)
+THEY are the annoying ones. that's where all the work happens. And then even when I work ALL of those moves in
+there are still no abilities, no items, leech seed, protect etc., SO much to do
+that's why I'm NOT committing to doing them lol, Im gonna make e4 and DIP
 
