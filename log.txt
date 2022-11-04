@@ -700,4 +700,6 @@ BOY
 I was more concerned about having to make battle(). but reading all of it back it looks DUUMB
 11:39- i added defense curl in anticipation for rollout and i think I did rollout p much but I have no time to test it
 so someone else do it
+13:02- from what I could tell, rollout works, i havent ensured it works when the cpu uses it, but I believe it will
+I'm sure it will unexpectantly break the code eventually if there are any problems
 

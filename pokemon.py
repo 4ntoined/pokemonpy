@@ -792,8 +792,11 @@ class mon:
             print(f"\n{self.name} is hit!")
             micropause()
             #with a successful hit from rollout, the attacker rolling out counter increases
-            if ('rollout' in notes) and (attacker.rolling_out<5):
+            if ('rollout' in notes):
                 attacker.rolling_out+=1
+                if attacker.rolling_out==5:
+                    attacker.rolling_out=0 #pokemon is all rolled out,
+                pass
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
                 recoilDmg=self.currenthp
@@ -1542,6 +1545,7 @@ class battle:
                                 uFaint=True
                             if self.cpu_mon.flinched and (not tFaint):
                                 flinching=True
+                                self.cpu_mon.rolling_out=0
                                 print(f"\n{self.cpu_name}'s {self.cpu_mon.name} flinches and can't attack!")
                                 shortpause()
                         ##OPPO ATTACK
@@ -1574,6 +1578,7 @@ class battle:
                             #check for flinch
                             if self.usr_mon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
                                 flinching=True
+                                self.usr_mon.rolling_out=0
                                 print(f"\n{self.usr_mon.name} flinches and can't attack!")
                                 micropause()
                         ##USER ATTACK##
