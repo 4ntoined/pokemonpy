@@ -71,7 +71,8 @@ moremoves=[
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has increased +1 priority.","null"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
         ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
-        
+        ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),
+
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
         ("Rain Dance",0,100,5,2,0,2,0,"The user disrupts the air pressure and causes rain!","rain noMiss"),
@@ -93,6 +94,7 @@ moremoves=[
         #status moves
          #stat(istic) changes
         ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
+        ("Defense Curl",0,100,40,2,0,0,0,"The user curls up to hide its weak spots!\nRaises Def. 1 stage.","stat self,de,1 noMiss curled"),
         ("Swords Dance",0,100,20,2,0,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
         ("Nasty Plot",0,100,20,2,0,15,0,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
         ("Amnesia",0,100,20,2,0,10,0,"The user empties its mind and forgets its concerns.\nBoosts SpD. 2 stages.","stat self,sd,2 noMiss"),

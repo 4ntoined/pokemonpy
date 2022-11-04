@@ -698,4 +698,6 @@ rollout, future sight, Core enforcer, thousands Arrows, Fusion Bolt, brick break
 BOY
 ....who is gonna do all of that......writing it down the first time I was like 'yeah,, I'll figure it out.'
 I was more concerned about having to make battle(). but reading all of it back it looks DUUMB
+11:39- i added defense curl in anticipation for rollout and i think I did rollout p much but I have no time to test it
+so someone else do it
 

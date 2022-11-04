@@ -114,6 +114,8 @@ class mon:
         self.resting=False #for moves where pokemon need to recharge
         self.charged=False #when true, pokemon has a 2turn move ready to use
         self.firstturnout=False
+        self.rolling_out=0
+        self.curled=False
 
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -224,6 +226,7 @@ class mon:
         self.flinched=False
         self.charged=False
         self.firstturnout=False
+        self.rolling_out=0
     
     #fainting
     def faint(self):
@@ -523,6 +526,7 @@ class mon:
                 print(f"\n{self.name} thaws out!")
             else:
                 print(f"\n{self.name} is frozen and can't move!")
+                self.rolling_out = 0
                 return #end move() user still frozen
         #asleep, can't move
         if self.sleep:
@@ -532,11 +536,13 @@ class mon:
                 print(f"\n{self.name} wakes up!")
             else:
                 print(f"\n{self.name} is fast asleep!")
+                self.rolling_out = 0
                 return
         #paralysis prevents move execution
         if self.paralyzed:
             if rng.random()<0.25:
                 print(f"\n{self.name} is fully paralyzed!")
+                self.rolling_out = 0
                 return
         #confusion prevents rest of move execution
         if self.confused:
@@ -551,8 +557,8 @@ class mon:
                 print(f"\n{self.name} is confused!")
                 if rng.random()<1/3:
                     self.confusionDamage()
+                    self.rolling_out = 0
                     return
-        #global weather
         #check if move needs to be charged
         if "2turn" in notas:
             if self.charged: #pokemon has charged the move already
@@ -578,7 +584,7 @@ class mon:
         print(f"\n{self.name} uses {moveI['name']}!")
         if moveIndex!=struggle:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
-        micropause()
+        shortpause()
         ###accuracy check###
         if "noMiss" in notas:
             hitCheck=True
@@ -593,7 +599,8 @@ class mon:
             hitCheck = rng.random() <= effAccu * ( moveI['accu'] / 100. )
         if hitCheck==False: #move misses
             print(f"\n{self.name}'s attack misses!")
-            micropause()
+            self.rolling_out = 0
+            shortpause()
             # move failed 
             return
         else: #move will connect
@@ -616,6 +623,10 @@ class mon:
                             opponent.stageChange(stat[i],int(phase[i]))
                         opponent.inBattle()
                 ### end of stat changes ###
+                #### defense curl, rollout boost ####
+                if 'curled' in notas:
+                    self.curled=True
+                    print(f"{self.name} curled up!")
                 ## weathers ##
                 #global weatherCounter
                 if "sun" in notas:
@@ -780,6 +791,9 @@ class mon:
         else:
             print(f"\n{self.name} is hit!")
             micropause()
+            #with a successful hit from rollout, the attacker rolling out counter increases
+            if ('rollout' in notes) and (attacker.rolling_out<5):
+                attacker.rolling_out+=1
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
                 recoilDmg=self.currenthp
@@ -1291,6 +1305,12 @@ class battle:
                 elif self.usr_mon.charged:
                     charging=True
                     resting=False
+                ## if the usr is locked into rollout
+                elif self.usr_mon.rolling_out>0:
+                    charging=False
+                    resting=False
+                    fighting=True
+                    pass
                 ## the usr will select a move, or send out another pokemon
                 else:
                     resting=False
@@ -1489,6 +1509,8 @@ class battle:
                     ######## opponent selecting a move #######
                     if self.cpu_mon.charged:
                         pass #trainMoveInd should already be set from last round
+                    elif self.cpu_mon.rolling_out>0:
+                        pass #uhh same
                     else:
                         trainStruggle=False
                         cpu_ppcheck = np.argwhere(np.array(self.cpu_mon.PP) > 0)
@@ -2147,6 +2169,11 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             screen_i = 0
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
+    #### rollout #### 
+    if 'rollout' in note: 
+        if attacker.curled: #another boost if poke has used defense curl
+            power*=2
+        power *= 2** (float(attacker.rolling_out))
     #### water spout ####
     if 'spout' in note:
         power = np.floor( 150.*attacker.currenthp/attacker.maxhp )
