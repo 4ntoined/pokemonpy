@@ -9,7 +9,6 @@
 # multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
 #
 # ***************************************************************************
-
 import copy
 import time as t
 import numpy as np
@@ -26,7 +25,7 @@ def dramaticpause():
     t.sleep(1.4)
     return
 rng=np.random.default_rng()
-# aa:monclass
+#aa:monclass
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
@@ -705,7 +704,7 @@ class mon:
                 if len(statuses)>0:
                     opponent.afflictStatuses(statuses)
                 ## entry hazards oh boy oh geeze ##
-                hazs = ["rocks", "spikes", "toxspk", "sticky"]
+                hazs = ("rocks", "spikes", "toxspk", "sticky")
                 haz_dialog = ["Pointed rocks are scattered on the opposing side!", "Pointy spikes are scattered on the opposing side!",\
                         "Poison spikes are scattered on the opposing side!", "The opposing side is covered in a sticky web!"]
                 for i in range(len(hazs)):
@@ -730,6 +729,18 @@ class mon:
                             healamount = self.maxhp/2.
                     self.healing(healamount)
                 ### end of healing ###
+                ## screens ##
+                screenz = ("reflect","lightscreen")
+                for i in range(len(screenz)):
+                    if screenz[i] in notas:
+                        if self.battlespot=='red':
+                            self.field.upScreens(screenz[i], 'red')
+                        elif self.battlespot=='blue':
+                            self.field.upScreens(screenz[i], 'blue')
+                        pass
+                    #end if, if not, move on
+                ### end of screens ###
+                #what's next
                 return
             ##==========================    end of status moves    =======================================##
             #fake out fails if its the not pokemons first turn out
@@ -1075,7 +1086,7 @@ class battle:
         self.usr_mon = usr_party[0]
         self.cpu_mon = cpu_party[0]
         self.field = fields
-        
+
     #check status of battle
     #this needs to go IN battle()
     def checkBattle(self):
@@ -1137,6 +1148,14 @@ class battle:
                 print(statstrs[i]+f" +{blueStats[i]}")
             elif blueStats[i]<0:
                 print(statstrs[i]+f" {blueStats[i]}")
+        ## is there a screen up
+        walls = (self.field.reflectB, self.field.lightscB)
+        #print(walls)
+        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===")
+        for i in list(enumerate(walls)):
+            if i[1]:
+                print(prii[i[0]])
+            pass
         print("------------------------------------")
         print(f"************ {self.usr_mon.name} (You) ************")
         if self.usr_mon.dualType:
@@ -1193,6 +1212,13 @@ class battle:
                 print(statstrs[i]+f" +{redStats[i]}")
             elif redStats[i]<0:
                 print(statstrs[i]+f" {redStats[i]}")
+        ## is there a screen up
+        halls = (self.field.reflectA, self.field.lightscA)
+        drii = (f"\n=== Reflect Up : {self.field.reflectACounter} ===", f"\n=== Light Screen Up : {self.field.lightscACounter} ===")
+        for i in list(enumerate(halls)):
+            if i[1]:
+                print(drii[i[0]])
+            pass
         print("------------------------------------")
         print("-------Battle Settings-------")
         if self.field.weather=="clear":
@@ -1767,6 +1793,24 @@ class battle:
                     elif self.field.terrain=="misty":
                         print("The battlefield is misty!")
                         shortpause()
+                    print("\n")
+                    #if nothing was set, will go from 0 to -1, and keeping going negative
+                    #until someone sets a screen, at which point itll be set to 5, decrease from there
+                    #to 0, which we will catch and call out
+                    self.field.lightscACounter-=1
+                    self.field.lightscBCounter-=1
+                    self.field.reflectACounter-=1
+                    self.field.reflectBCounter-=1
+                    #are these screens still up?
+                    say = ("Your team's Light Screen fades away!","Their Light Screen fades away!",\
+                           "Your team's Reflect fades away!","Their Reflect fades away!")
+                    for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter,self.field.reflectACounter,self.field.reflectBCounter))) :
+                        #print([ee[1]])
+                        if ee[1] == 0:
+                            print("\n"+say[ee[0]])
+                            micropause()
+                        pass
+                    #yo what's next
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
@@ -1847,7 +1891,7 @@ class field:
 
     def bugging(self):
         print('activated')
-        
+       
     def clearfield(self):
         self.weather='clear'
         self.terrain='none'
@@ -1884,7 +1928,19 @@ class field:
             self.terrainCounter=5
             print(f"\nBattlefield terrain is {self.terrain} now.")
         return
-    
+
+    def checkScreen(self,color,screen):
+            #color = 'red' or 'blue', screen='reflect' or 'lightscreen' eventually 'veil'
+            matri= ((self.reflectA, self.lightscA),(self.reflectB, self.lightscB) )
+            ans='error'
+            for i in list(enumerate(('red','blue'))):
+                for j in list(enumerate(('reflect','lightscreen'))):
+                    if (color == i[1]) and (screen == j[1]):
+                        ans = float(matri[i[0]][j[0]])
+                    pass
+                pass
+            return ans
+        
     def landing(self,poke,side):
         #this function will simulate pokemon being damaged by entry hazards
         #need to make functions for mon() of the entry hazard damages being done
@@ -2004,13 +2060,13 @@ class field:
                 return "failed"
             ## player puts up reflect
             elif scr=='reflect':
-                self.reflectA==True
+                self.reflectA=True
                 self.reflectACounter=5
                 print("\nThe Pokemon's side is protected by Reflect!")
                 micropause()
             ## player puts up light screen
             elif scr=='lightscreen':
-                self.lightscA==True
+                self.lightscA=True
                 self.lightscACounter=5
                 print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
@@ -2028,13 +2084,13 @@ class field:
                 return "failed"
             ## cpu puts up reflect
             elif scr=='reflect':
-                self.reflectB==True
+                self.reflectB=True
                 self.reflectBCounter=5
                 print("\nThe Pokemon's side is protected by Reflect!")
                 micropause()
             ## cpu puts up light screen
             elif scr=='lightscreen':
-                self.lightscB==True
+                self.lightscB=True
                 self.lightscBCounter=5
                 print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
@@ -2047,6 +2103,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     damages=[]
     ####set some variable straight
     level=attacker.level
+    screennerf = 1.0
+    screen_tag = ("Reflect","Light Screen")
     if isSpecial:
         attack=attacker.bsa
         if 'psystrike' in note:
@@ -2056,6 +2114,10 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
+        if attacker.field.checkScreen(defender.battlespot, 'lightscreen'):
+            screennerf = 0.5 #light screen protects the defending pokemon
+            screen_i = 1
+        pass
     else:
         attack=attacker.bat
         defense=defender.bde
@@ -2067,6 +2129,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             damages.append("The burn reduces damage...")
         else:
             burn=1.
+        if attacker.field.checkScreen(defender.battlespot, 'reflect'):
+            screennerf = 0.5 #light screen protects the defending pokemon
+            screen_i = 0
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
     #### water spout ####
@@ -2146,6 +2211,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         if statBoost>1: #if change is productive to defender
             defense/=statBoost #undo it
         damages.append("It's a critical hit!")
+        screennerf=1.0 #critical hits bypass screens
+    if screennerf < 1.0:
+        damages.append(f"Protected by {screen_tag[screen_i]}")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
     ####STAB####
@@ -2156,7 +2224,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ####modifiers united####
-    damageModifier=weatherBonus*critical*rando*STAB*tyype*burn
+    damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
     return ans,tyype,damages
@@ -2480,7 +2548,7 @@ while 1:
             else:
                 while 1:
                     selMon.summary()
-                    sumChoice=input(f"What to do with {selMon.name}?\nset [f]irst, see [m]oves [s]ave, [j]udge or [b]ack: ")
+                    sumChoice=input(f"What to do with {selMon.name}?\nset [f]irst, see [m]oves, [s]ave, [j]udge or [b]ack: ")
                     #go back to pokemon selection
                     if sumChoice=='b' or sumChoice=="B":
                         shortpause()

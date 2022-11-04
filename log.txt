@@ -665,4 +665,18 @@ i can do it by hand and thats prob the simplest solution, but thats a lot of wor
 ways to have that done automatically. (literally just the ~20 pokes I added between zamazenta and enamorus
 took so long)
 19:38- oh and im working on screens
+23:33- okay it took almost literally just about the rest of my day but I did reflect and light screen
+they were so much work and as usual I ran through implementing all of it everywhere in the code before testing
+any of my work as I added it. so when I was ready to test everything kept breaking everywhere because
+so much code was being ran for the very first time. I made a stupid '==' instead of '=' mistake that i am
+regretful to report was responsible for a very strong bug, I tried to be fancy in counting down the screen timers
+at the end of the turn and it just didnt work. so I am very plainly subtracting each one of them separately
+the screen status wasn't reflected in the battle [s]tatus screen and I didnt know if that was because I wasnt
+setting the screens right (that was the same issue with the == instead of = you see) or because I was doing
+sloppy with my for loops iterating through the 2 screens (also that but we'll never know because I fixed that
+issue and it was still broken bc of the other thing, maybe it was fine the other way I had it too)
+yeah next we will go and break the screens with brick break, and defog, and psychic fangs
+and then onto the rest of my elite four, finishing brick break finalizes all the moves for the champions team
+okay bye love you still
+23:41- oh and aurora veil...you know, while we're on the topic
 

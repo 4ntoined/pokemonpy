@@ -88,8 +88,8 @@ moremoves=[
         ("Stealth Rocks",0,100,20,2,0,12,0,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks"),
         ("Sticky Web",0,100,20,2,0,11,0,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky"),
         #reflect, lightscreen
-        #("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
-        #("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
+        ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
+        ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
         #status moves
          #stat(istic) changes
         ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
