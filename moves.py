@@ -38,17 +38,21 @@ moremoves=[
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure.","null"),
-        #("Blizzard",110,70,5,1,0,5,0,"The user summons a howling blizzard to strike the target.\n10% chance to freeze.","frze 10 blizzard"), #doesn't miss in hail, need to program
+        ("Blizzard",110,70,5,1,0,5,0,"The user summons a howling blizzard to strike the target.\n10% chance to freeze.","frze 10 blizzard"), #doesn't miss in hail, need to program
+        ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked thunderbolt on the target to inflict damage.\n30% chance to paralyze.","para 30 thunder"),
+        ("Hurricane",110,70,10,1,0,9,0,"The user wraps its target in a fierce wind that flies up into the sky.\n30% chance to confuse.","conf 30 thunder"),
         ("Earthquake",100,100,10,0,0,8,0,"The user causes a powerful earthquake.","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
         ("Judgement",100,100,10,1,0,0,0,"The user pelts the battlefield with bolts of light from the sky.",""),
         ("Iron Tail",100,75,15,0,1,16,0,"The user slams the target wit a steel-hard tail!\n30% chance to lower target's Def. 1 stage.","stat targ,de,-1,30"),
         ("Psystrike",100,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
+        ("Core Enforcer",100,100,10,1,0,14,0,"The user unleases a super sick laser and draws a 'Z'!","null"), #otherwise would suppress abilities, but we have none
         ("Flamethrower",90,100,15,1,0,1,0,"The user attacks with a powerful flame! 10% chance to burn.","burn 10"),
         ("Ice Beam",90,100,15,1,0,5,0,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze 10"),
         ("Thunderbolt",90,100,15,1,0,4,0,"The user attacks with a bolt of lightning! 10% chance to paralyze.","para 10"),
         ("Leaf Blade",90,100,15,0,1,3,0,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
         ("Attack Order",90,100,15,0,0,11,0,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Sludge Bomb",90,100,10,1,0,7,0,"Unsanitary sludge is hurled at the target.\n30% chance to poison the target.","pois 30"),
+        ("Thousand Arrows",90,100,10,0,0,8,0,"The user creates arrows from the very ground and hurls them at the target.\nHits ungrounded targets and grounds them.","arrows"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
         ("Secret Sword",85,100,10,1,0,6,0,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Dark Pulse",80,100,15,1,0,15,0,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch 20"),

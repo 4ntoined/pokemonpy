@@ -702,4 +702,11 @@ I was more concerned about having to make battle(). but reading all of it back i
 so someone else do it
 13:02- from what I could tell, rollout works, i havent ensured it works when the cpu uses it, but I believe it will
 I'm sure it will unexpectantly break the code eventually if there are any problems
+15:01- I started work on thousand arrows, so I've been thinking a lot more about grounding and ungrounding pokemon
+which makes me want to add telekinesis and magnet rise. I actually think Im technically done with thousand arrowss
+i just need to test it
+15:12- and roost, takes away the flying type for the turn, could be weird if non-flying types are allowed to have it
+15:55- spending so long on grounding flyings and making them susceptiple to ground type attacks
+am making progress but the game just broke after using thousand arrows a second (time) first time didnt take
+so here a commit, i'll be back
 

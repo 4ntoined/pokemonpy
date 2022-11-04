@@ -216,6 +216,11 @@ class mon:
         self.bsa=self.spatk
         self.bsd=self.spdef
         self.bsp=self.speed
+        #re-unground flying types
+        if 9 in self.tipe: 
+            self.grounded=False
+        else:
+            self.grounded=True
         #undo confusion
         self.confused=False
         self.confusionCounter=0
@@ -586,7 +591,13 @@ class mon:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
         shortpause()
         ###accuracy check###
+        ## moves that don't miss
         if "noMiss" in notas:
+            hitCheck=True
+        ## moves bypass accuracy under certain conditions
+        elif ('blizzard' in notas) and (self.field.weather=='hail'):
+            hitCheck=True
+        elif ('thunder' in notas) and (self.field.weather=='rain'):
             hitCheck=True
         else:
             #check evasion and accuracy stats
@@ -596,7 +607,12 @@ class mon:
             elif effAccu<0:
                 effAccu=0
             effAccu=acevStages[effAccu]
-            hitCheck = rng.random() <= effAccu * ( moveI['accu'] / 100. )
+            ##rain-moves in sun get accuracies tweaked
+            if ('thunder' in notas) and (self.field.weather=='sunny'):
+                hitCheck = rng.random() <= effAccu * ( 50. / 100. )
+            else:
+                hitCheck = rng.random() <= effAccu * ( moveI['accu'] / 100. )
+            pass
         if hitCheck==False: #move misses
             print(f"\n{self.name}'s attack misses!")
             self.rolling_out = 0
@@ -786,9 +802,14 @@ class mon:
     #zz:movefunction
     #aa:hitfunction
     def hit(self,attacker,damagepoints,effectiveness,notes,moveTipe,comments):
-        if effectiveness==0.:
+        if effectiveness==0. and not ('arrows' in notes):
             print(f"{self.name} is immune!")
         else:
+            if effectiveness==0 and ('arrows' in notes):
+                print(f"The arrows can reach {self.name}!")
+                self.grounded=True
+                self.field.grounding(self)
+                effectiveness=1.0
             print(f"\n{self.name} is hit!")
             micropause()
             #with a successful hit from rollout, the attacker rolling out counter increases
@@ -1980,44 +2001,50 @@ class field:
                     pass
                 pass
             return ans
-        
-    def landing(self,poke,side):
+    ### only the hazards on the ground
+    def grounding(self,poke):
+        #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
+        stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
+        spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
+        toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
+        if stickyOn:
+            poke.stickyNerf()
+        if spikesOn:
+            if poke.battlespot == "red":
+                poke.spikesDamage(self.spikesA)
+            elif poke.battlespot == "blue":
+                poke.spikesDamage(self.spikesB)
+        if toxicOn:
+            if poke.battlespot == "red":
+                #check for poison type
+                if 7 in poke.tipe:
+                    self.toxicA = 0
+                    print(f"{poke.name} absorbs the toxic spikes!")
+                    micropause()
+                else:
+                    poke.toxicAffliction(self.toxicA)
+            elif poke.battlespot == "blue":
+                if 7 in poke.tipe:
+                    self.toxicB = 0
+                    print(f"{poke.name} absorbs the toxic spikes!")
+                    micropause()
+                else:
+                    poke.toxicAffliction(self.toxicB)
+    ### call when a pokemon comes out
+    def landing(self,poke):
         #this function will simulate pokemon being damaged by entry hazards
         #need to make functions for mon() of the entry hazard damages being done
         #need to check for rocks, spikes, toxix spikes (except for poisons) and sticky web
         #only for grounded pokemon tho...
-        rocksOn = ( side == "red" and self.rocksA ) or ( side == "blue" and self.rocksB )
-        stickyOn = ( side == "red" and self.stickyA ) or ( side == "blue" and self.stickyB )
-        spikesOn = ( side == "red" and self.spikesA > 0 ) or ( side == "blue" and self.spikesB > 0)
-        toxicOn = ( side == "red" and self.toxicA > 0 ) or ( side == "blue" and self.toxicB > 0)
+        rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
+        #stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
+        #spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
+        #toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
         ##some hazards
         if rocksOn:
             poke.rocksDamage()
-        ##hazards flying and levitating are immune to
         if poke.grounded:
-            if stickyOn:
-                poke.stickyNerf()
-            if spikesOn:
-                if poke.battlespot == "red":
-                    poke.spikesDamage(self.spikesA)
-                elif poke.battlespot == "blue":
-                    poke.spikesDamage(self.spikesB)
-            if toxicOn:
-                if poke.battlespot == "red":
-                    #check for poison type
-                    if 7 in poke.tipe:
-                        self.toxicA = 0
-                        print(f"{poke.name} absorbs the toxic spikes!")
-                        micropause()
-                    else:
-                        poke.toxicAffliction(self.toxicA)
-                elif poke.battlespot == "blue":
-                    if 7 in poke.tipe:
-                        self.toxicB = 0
-                        print(f"{poke.name} absorbs the toxic spikes!")
-                        micropause()
-                    else:
-                        poke.toxicAffliction(self.toxicB)
+            self.grounding(poke)
         # there will be more entry hazards unfortunately
         return
     #aa:hazards
@@ -2268,7 +2295,17 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         damages.append("Same Type Attack Bonus!")
     ####type effectiveness####
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
+    ## flying pokemon being targeted with ground move is grounded, should lose flying type
+    print(moveTipe,defendantTipe,defender.grounded)
+    if (moveTipe==8) and (9 in defendantTipe) and (defender.grounded):
+        if defender.dualType:
+            defendantTipe = defendantTipe[np.argwhere(defendantTipe!=9)]
+            print(defendantTipe)
+            tyype = checkTypeEffectiveness(moveTipe, defendantTipe)
+        else:
+            tyype = 1.0
     ####modifiers united####
+    print(tyype)
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
     ####damage calculation####
     ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
