@@ -1355,7 +1355,7 @@ class battle:
                                                     micropause()
                                                 #we got all the move info out?, go back to pokemon?
                                                 #pause the code for reading purposes
-                                                pause=input("\nEnter anything to go back to Pokemon summary...")
+                                                input("\nEnter anything to go back to Pokemon summary...")
                                                 break #bacl to pokemon summary
                                             #move info contents
                                         #
@@ -1387,7 +1387,7 @@ class battle:
                                 fighting=True
                                 moveDex=struggleInd
                                 break
-                            userFight=input(f"What move should {self.usr_mon.name} use?\n[#] or [b]: ")
+                            userFight=input(f"What move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
                             #go back
                             infom = userFight.split()
                             if userFight=='b':
@@ -1409,7 +1409,8 @@ class battle:
                                             micropause() #drama
                                         #we got all the move info out?, go back to pokemon?
                                         input("\nenter anything to continue...")
-                                #
+                                else: #other secret options
+                                    pass
                             else:
                                 #try to use user input to call a move
                                 try:

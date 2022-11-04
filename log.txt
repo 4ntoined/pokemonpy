@@ -684,4 +684,18 @@ okay bye love you still
 08:57- knew I was forgetting something with screens and it was that I never turned them off
 turned out to be easier to get rid of the flags and just use the counter, counters greater than 0 indicate
 screen is up, p simple
+09:12- it is a very side-track, out-of-the-way feature considering my endgame roadmap, but I should do multiple
+party support. the player should be able to use and store multiple parties at the same time
+an indefinite amount of pokemon can be loaded from a saved txt file into a single party,
+(and then further played with and once again saved into whatever party the player wants), but to be able
+to manage that in game would be like....sick. It's really easy for me, code-side, to make pokemon and stuff
+them into parties (they are just plain old python lists after all) but coding in the capabilities for the user
+to, while using, wield those same kinda powers sounds like a whole lotta loud
+but I'm sure I could do it if I spent long enough on it so maybe that's our first post-release project/maybe I'll
+work on it while procrastinating doing the endgame stuff
+9:23- I'm gonna go through my book and list the moves we still need (I need to program) for the e4:
+rollout, future sight, Core enforcer, thousands Arrows, Fusion Bolt, brick break, aqua ring, and mirror coat
+BOY
+....who is gonna do all of that......writing it down the first time I was like 'yeah,, I'll figure it out.'
+I was more concerned about having to make battle(). but reading all of it back it looks DUUMB
 
