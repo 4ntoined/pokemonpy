@@ -2297,13 +2297,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     tyype=checkTypeEffectiveness(moveTipe,defendantTipe)
     ## flying pokemon being targeted with ground move is grounded, should lose flying type
     print(moveTipe,defendantTipe,defender.grounded)
-    if (moveTipe==8) and (9 in defendantTipe) and (defender.grounded):
-        if defender.dualType:
-            defendantTipe = defendantTipe[np.argwhere(defendantTipe!=9)]
-            print(defendantTipe)
-            tyype = checkTypeEffectiveness(moveTipe, defendantTipe)
-        else:
+    ## 
+    if (moveTipe==8) and (9 in defendantTipe): #be wary of grounds attacking flyings
+        if defender.grounded: #easy
+            if defender.dualType:
+                defendantTipe = defendantTipe[np.argwhere(defendantTipe!=9)]
+                print(defendantTipe)
+                tyype = checkTypeEffectiveness(moveTipe, defendantTipe)
+            else:  #flying type pokemon is grounded, no other types to compare
+                tyype = 1.0
+        elif ('arrows' in note): #pokemon not grounded yet, but arrows hits flying regardless
             tyype = 1.0
+    #elif ('arrows' in note) and defender.:
     ####modifiers united####
     print(tyype)
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
