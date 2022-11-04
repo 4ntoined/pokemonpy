@@ -35,6 +35,7 @@ moremoves=[
         ("Solar Beam",120,100,10,1,0,3,0,"The user focuses sunlight into a beam to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
         ("Head Charge",120,100,15,0,1,0,0,"The user charges with its head and powerful guard hair!\nDoes 1/4 recoil damage.","recoil 1/4"),
         ("Focus Blast",120,70,5,1,0,6,0,"The user heightens its mental focus an unleashs its power\n10% chance to lower target's SpD. 1 stage.","stat targ,sa,-1,10"),
+        #("Future Sight",120,100,5,,"The user looks into the future and predicts an attack.","futuresight"),
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure.","null"),
@@ -46,6 +47,8 @@ moremoves=[
         ("Iron Tail",100,75,15,0,1,16,0,"The user slams the target wit a steel-hard tail!\n30% chance to lower target's Def. 1 stage.","stat targ,de,-1,30"),
         ("Psystrike",100,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
         ("Core Enforcer",100,100,10,1,0,14,0,"The user unleases a super sick laser and draws a 'Z'!","null"), #otherwise would suppress abilities, but we have none
+        #("Fusion Bolt",100,100,5,0,0,4,0,"The user throws down a giant lightning bolt.\nMore powerful if used after Fusion Flare.","fusion-b"),
+        #("Fusion Flare",100,100,5,1,0,1,0,"The user throws down a giant lightning bolt.\nMore powerful if used after Fusion Flare.","fusion-f"),
         ("Flamethrower",90,100,15,1,0,1,0,"The user attacks with a powerful flame! 10% chance to burn.","burn 10"),
         ("Ice Beam",90,100,15,1,0,5,0,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze 10"),
         ("Thunderbolt",90,100,15,1,0,4,0,"The user attacks with a bolt of lightning! 10% chance to paralyze.","para 10"),
@@ -76,7 +79,9 @@ moremoves=[
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
         ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),
-
+        #counter and mirror coat,
+        #("Counter",1,100,20,0,1,6,-5,"Counter","counter"),
+        #("Mirror Coat",1,100,20,1,0,10,-5,"Special move counter","mirrorcoat"),
         #weather moves
         ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
         ("Rain Dance",0,100,5,2,0,2,0,"The user disrupts the air pressure and causes rain!","rain noMiss"),
@@ -95,6 +100,7 @@ moremoves=[
         #reflect, lightscreen
         ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
         ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
+        #("Aurora Veil",0,100,,"that veil","veil noMiss"),
         #status moves
          #stat(istic) changes
         ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
@@ -118,6 +124,7 @@ moremoves=[
          #healing
         ("Recover",0,100,10,2,0,0,0,"The user regenerates cells to heal itself by half its max HP.","heals recover noMiss"),
         ("Synthesis",0,100,5,2,0,3,0,"The user takes in sunlight to restore HP.\nRestores more HP in harsh sunlight, less in non-sunny, non-clear weather.","heals synthesis noMiss"),
+        #("Aqua Ring",0,100,20,2,0,2,0,"The user envelops itself with a veil of healing waters.","aquaring noMiss"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,0,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]

@@ -714,4 +714,15 @@ any ungrounded pokemon are immune to ground type (this sets up this weird paradi
 in that their flying-typing makes them ungrounded, if for whatever reason they become grounded. any grounded pokemon that can
 find a way to unground itself gets that same ground immunity that flyings have. i havent tested that grounding condition is
 reset upon being withdrawn, someone will one day im sure though
+smack down, and gravity also grounds
+19:15- I added all the remaining, new-mechanic moves in commented-out lines of moves.py so I know all what's left
+i think mirror coat and coutner are gonna be the most annoying, the fusion moves will be weird, but it really just sounds like
+another variable in field, that records whether and which of the fusion moves were executed every round
+everytime I have to add something Im like 'does it really have to be this complicated?' and like the answer is yes,
+everytime you battle in a post gen5, non-Lets Go, non-LA, non-BDSP, pokemon game, the game is tracking every turn
+whether or not fusion bolt or fusion flare was executed, so that it knows whether or not to double the power
+of any subsequent flares or bolts. such a small detail, but such is the nature of these pokemon battles, these mechanics were
+built up game-by-game, and now this thing is a behemoth, but its still knowable
+yo anyway I probably need a break from this but I want it finished like......so badly
+and I am so close....like literally 5 moves separate me from the final sprint to the e4
 
