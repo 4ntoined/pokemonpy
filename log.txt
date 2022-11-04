@@ -709,4 +709,9 @@ i just need to test it
 15:55- spending so long on grounding flyings and making them susceptiple to ground type attacks
 am making progress but the game just broke after using thousand arrows a second (time) first time didnt take
 so here a commit, i'll be back
+18:43- okay I finally got thousand arrows working as expected. I think there's room to introduce more generally that
+any ungrounded pokemon are immune to ground type (this sets up this weird paradigm where flyings are only immune to ground
+in that their flying-typing makes them ungrounded, if for whatever reason they become grounded. any grounded pokemon that can
+find a way to unground itself gets that same ground immunity that flyings have. i havent tested that grounding condition is
+reset upon being withdrawn, someone will one day im sure though
 

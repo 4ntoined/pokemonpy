@@ -805,7 +805,7 @@ class mon:
         if effectiveness==0. and not ('arrows' in notes):
             print(f"{self.name} is immune!")
         else:
-            if effectiveness==0 and ('arrows' in notes):
+            if ('arrows' in notes) and (self.grounded==False):
                 print(f"The arrows can reach {self.name}!")
                 self.grounded=True
                 self.field.grounding(self)
@@ -2301,7 +2301,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     if (moveTipe==8) and (9 in defendantTipe): #be wary of grounds attacking flyings
         if defender.grounded: #easy
             if defender.dualType:
-                defendantTipe = defendantTipe[np.argwhere(defendantTipe!=9)]
+                defendantTipe = [np.squeeze(defendantTipe[np.argwhere(defendantTipe!=9)])]
                 print(defendantTipe)
                 tyype = checkTypeEffectiveness(moveTipe, defendantTipe)
             else:  #flying type pokemon is grounded, no other types to compare
