@@ -1149,11 +1149,11 @@ class battle:
             elif blueStats[i]<0:
                 print(statstrs[i]+f" {blueStats[i]}")
         ## is there a screen up
-        walls = (self.field.reflectB, self.field.lightscB)
+        walls = (self.field.reflectBCounter, self.field.lightscBCounter)
         #print(walls)
         prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===")
         for i in list(enumerate(walls)):
-            if i[1]:
+            if i[1]>0:
                 print(prii[i[0]])
             pass
         print("------------------------------------")
@@ -1213,10 +1213,10 @@ class battle:
             elif redStats[i]<0:
                 print(statstrs[i]+f" {redStats[i]}")
         ## is there a screen up
-        halls = (self.field.reflectA, self.field.lightscA)
+        halls = (self.field.reflectACounter, self.field.lightscACounter)
         drii = (f"\n=== Reflect Up : {self.field.reflectACounter} ===", f"\n=== Light Screen Up : {self.field.lightscACounter} ===")
         for i in list(enumerate(halls)):
-            if i[1]:
+            if i[1]>0:
                 print(drii[i[0]])
             pass
         print("------------------------------------")
@@ -1389,24 +1389,27 @@ class battle:
                                 break
                             userFight=input(f"What move should {self.usr_mon.name} use?\n[#] or [b]: ")
                             #go back
+                            infom = userFight.split()
                             if userFight=='b':
                                 break
-                            if userFight.split()[0]=="i" or userFight.split()[0]=="I":
-                                try:
-                                    movez=userFight.split()[1:] #pokemon movelist index (string)
-                                    movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
-                                    movez=[self.usr_mon.knownMoves[i] for i in movez] #pokemon move movedex index
-                                except ValueError:
-                                    print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
-                                except IndexError:
-                                    print("\n** Use the indices to select moves to take a closer look at. **")
-                                else:
-                                    for i in range(len(movez)):
-                                        print("")
-                                        moveInfo(movez[i])
-                                        micropause() #drama
-                                    #we got all the move info out?, go back to pokemon?
-                                    input("\nenter anything to continue...")
+                            elif len(infom)>1:
+                                if userFight.split()[0]=="i" or userFight.split()[0]=="I":
+                                    try:
+                                        movez=userFight.split()[1:] #pokemon movelist index (string)
+                                        movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                        movez=[self.usr_mon.knownMoves[i] for i in movez] #pokemon move movedex index
+                                    except ValueError:
+                                        print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                    except IndexError:
+                                        print("\n** Use the indices to select moves to take a closer look at. **")
+                                    else:
+                                        for i in range(len(movez)):
+                                            print("")
+                                            moveInfo(movez[i])
+                                            micropause() #drama
+                                        #we got all the move info out?, go back to pokemon?
+                                        input("\nenter anything to continue...")
+                                #
                             else:
                                 #try to use user input to call a move
                                 try:
@@ -1419,6 +1422,7 @@ class battle:
                                     break
                                 except:
                                     print("\n**Enter one of the numbers above.**")
+                                    micropause()
                     
                 ####after either swithing or attacking
                 if fighting or switching or resting or charging:
@@ -1645,7 +1649,7 @@ class battle:
                         else:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             while 1:
-                                print("\n////////////////////////////////\n//////// Party Pokemon: /////////\n////////////////////////////////")
+                                print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
                                 for i in range(len(self.usrs)):
                                     print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
                                 newPoke=input("Select a Pokemon for battle...\n[#]: ")
@@ -1804,9 +1808,13 @@ class battle:
                     #are these screens still up?
                     say = ("Your team's Light Screen fades away!","Their Light Screen fades away!",\
                            "Your team's Reflect fades away!","Their Reflect fades away!")
+                    #scr_flag = [self.field.lightscA,self.field.lightscB,self.field.reflectA,self.field.reflectB]
+                    #if self.field.lightscA
+                    
                     for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter,self.field.reflectACounter,self.field.reflectBCounter))) :
                         #print([ee[1]])
                         if ee[1] == 0:
+                            #scr_flag[ee[0]] = False
                             print("\n"+say[ee[0]])
                             micropause()
                         pass
@@ -1870,14 +1878,16 @@ class field:
         self.spikesB=0
         self.toxicA=0 #up to 2 
         self.toxicB=0
-        self.reflectA=False
-        self.reflectB=False
-        self.lightscA=False
-        self.lightscB=False
+        #self.reflectA=False
+        #self.reflectB=False
+        #self.lightscA=False
+        #self.lightscB=False
         self.reflectACounter = 0
         self.reflectBCounter = 0
         self.lightscACounter = 0
         self.lightscBCounter = 0
+        #feel like we dont need these flags and we can do what
+        #we did for toxic and spikes
         #tailwind?
         #reflect
         #light screen
@@ -1903,10 +1913,12 @@ class field:
         self.steelB=False
         self.stickyA=False
         self.stickyB=False
-        self.reflectA=False
-        self.reflectB=False
-        self.lightscA=False
-        self.lightscB=False
+        #feel like we dont need these flags and we can do what
+        #we did for toxic and spikes
+        #self.reflectA=False
+        #self.reflectB=False
+        #self.lightscA=False
+        #self.lightscB=False
         self.spikesA=0 #up to 3
         self.spikesB=0
         self.toxicA=0 #up to 2 
@@ -1931,7 +1943,7 @@ class field:
 
     def checkScreen(self,color,screen):
             #color = 'red' or 'blue', screen='reflect' or 'lightscreen' eventually 'veil'
-            matri= ((self.reflectA, self.lightscA),(self.reflectB, self.lightscB) )
+            matri= ((self.reflectACounter, self.lightscACounter),(self.reflectBCounter, self.lightscBCounter) )
             ans='error'
             for i in list(enumerate(('red','blue'))):
                 for j in list(enumerate(('reflect','lightscreen'))):
@@ -2049,48 +2061,48 @@ class field:
     def upScreens(self,scr,side):
         if side=='red':
             ## reflect is already up for player
-            if (scr=='reflect') and (self.reflectA==True):
+            if (scr=='reflect') and (self.reflectACounter>0):
                 print("\nThe move fails! Reflect is already up!")
                 micropause()
                 return "failed"
             ## light screen is already up for player
-            elif (scr=='lightscreen') and (self.lightscA==True):
+            elif (scr=='lightscreen') and (self.lightscACounter>0):
                 print("\nThe move fails! Light Screen is already up!")
                 micropause()
                 return "failed"
             ## player puts up reflect
             elif scr=='reflect':
-                self.reflectA=True
+                #self.reflectA=True
                 self.reflectACounter=5
                 print("\nThe Pokemon's side is protected by Reflect!")
                 micropause()
             ## player puts up light screen
             elif scr=='lightscreen':
-                self.lightscA=True
+                #self.lightscA=True
                 self.lightscACounter=5
                 print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
             pass
         elif side=='blue':
             ## reflect is already up for cpu
-            if (scr=='reflect') and (self.reflectB==True):
+            if (scr=='reflect') and (self.reflectBCounter>0):
                 print("\nThe move fails! Reflect is already up!")
                 micropause()
                 return "failed"
             ## light screen is already up for cpu
-            elif (scr=='lightscreen') and (self.lightscB==True):
+            elif (scr=='lightscreen') and (self.lightscBCounter>0):
                 print("\nThe move fails! Light Screen is already up!")
                 micropause()
                 return "failed"
             ## cpu puts up reflect
             elif scr=='reflect':
-                self.reflectB=True
+                #self.reflectB=True
                 self.reflectBCounter=5
                 print("\nThe Pokemon's side is protected by Reflect!")
                 micropause()
             ## cpu puts up light screen
             elif scr=='lightscreen':
-                self.lightscB=True
+                #self.lightscB=True
                 self.lightscBCounter=5
                 print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
@@ -2114,7 +2126,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
-        if attacker.field.checkScreen(defender.battlespot, 'lightscreen'):
+        if attacker.field.checkScreen(defender.battlespot, 'lightscreen') > 0:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 1
         pass
@@ -2129,7 +2141,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             damages.append("The burn reduces damage...")
         else:
             burn=1.
-        if attacker.field.checkScreen(defender.battlespot, 'reflect'):
+        if attacker.field.checkScreen(defender.battlespot, 'reflect') > 0:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 0
     plaintiffTipe=attacker.tipe
