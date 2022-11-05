@@ -740,4 +740,5 @@ that's why I'm NOT committing to doing them lol, Im gonna make e4 and DIP
 5 nov 2022
 10:24- fixed some oversights with the physical attack nerf from burn that were never problems before
 I hope they continue to not be a problem. and I added some more easy attacks
+16:24- i added so many moves and it was only like half of all the moves I was trying to add
 

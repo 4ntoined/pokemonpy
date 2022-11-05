@@ -56,6 +56,8 @@ moremoves=[
         ("Leaf Blade",90,100,15,0,1,3,0,"The user attacks with a sharpened leaf! High crit' ratio.","highCrit"),
         ("Attack Order",90,100,15,0,0,11,0,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Sludge Bomb",90,100,10,1,0,7,0,"Unsanitary sludge is hurled at the target.\n30% chance to poison the target.","pois 30"),
+        ("Psychic",90,100,10,1,0,10,0,"The user hits the target with a strong telekinetic force!\nMay lower target's Sp.D stat.","stat targ,sd,-1,10"),
+        ("Surf",90,100,15,1,0,2,0,"The user swamps everything around it with a giant wave!","null"), #hits during five? if Im doing Shadow Sneak, fly and dive arent the table, in which case the likes of thunder and surf and earthquake also come into play
         ("Thousand Arrows",90,100,10,0,0,8,0,"The user creates arrows from the very ground and hurls them at the target.\nHits ungrounded targets and grounds them.","arrows"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
         ("Secret Sword",85,100,10,1,0,6,0,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
@@ -63,6 +65,7 @@ moremoves=[
         ("X-Scissor",80,100,15,0,1,11,0,"The user slashes the target by crossing its claws!","null"),
         ("Dragon Claw",80,100,15,0,1,14,0,"The user slashes the target with shape claws!","null"),
         ("Aura Sphere",80,100,20,1,0,6,0,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
+        ("Crunch",80,100,15,0,1,15,0,"The user crunches on the target with sharp fangs.\nMay lower the target's Def. 1 stage.","stat targ,de,-1,20"),
         ("Flash Cannon",80,100,10,1,0,16,0,"The user gathers all its light energy and releases it all at once at the target. May lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
         ("Psyshock",80,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Signal Beam",75,100,15,1,0,11,0,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
@@ -73,15 +76,21 @@ moremoves=[
         ("Facade",70,100,20,0,1,0,0,"An attack that does double damage if the user is poisoned, burned, or paralyzed.","facade"),
         #("Retaliate",70,100,5,0,1,0,0,"The user gets revenge for a fainted ally.\nDoubles in power if an ally fainted in the previous turn.","retaliate"),
         ("Headbutt",70,100,15,0,1,0,0,"The user sticks out its head and attacks!\n30% chance to flinch target.","flinch 30"),
-        ("Night Slash",,"The user does some stuff","highCrit"),
+        ("Night Slash",70,100,15,0,1,15,0,"The user sneaks in and slashes the target the instant it gets the opportunity\nHigh crit. ratio.","highCrit"),
+        ("Shadow Claw",70,100,15,0,1,13,0,"The user materializes a sharp claw from the shadows and slashes at the target!\nHigh crit. ratio.","highCrit"),
         ("Stomp",65,100,20,0,1,0,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"), #doesn't miss if target used minimize
         ("Fire Fang",65,95,15,0,1,1,0,"The user bites with flame-cloaked fangs.\n10% chance to flinch, 10% chance to burn.","burn 10 flinch 10"),
         ("Thunder Fang",65,95,15,0,1,4,0,"The user bites with electrified fangs.\n10% chance to flinch, 10% chance to paralyze.","para 10 flinch 10"),
         ("Ice Fang",65,95,15,0,1,5,0,"The user bites with frozen fangs.\n10% chance to flinch, 10% chance to freeze.","frze 10 flinch 10"),
         ("Ominous Wind",60,100,5,1,0,13,0,"The user attacks with a mysterious wind. 10% chance to raise all stats 1 stage.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"),
+        ("Air Cutter",60,95,25,1,0,9,0,"The user launches razor-sharp winds to slash opponents.\nHigh crit. ratio.","highCrit"),
+        #("Feint Attack",60,100,20,0,1,15,0,"",""), uhhh feint attack was nixed in gen 8, and i just programmed night slash so maybes thats a fine replacement?
         ("Flame Wheel",60,100,15,0,1,1,0,"The user covers itself in fire and rolls into the target! 10% chance to burn","burn 10 thaws"),
+        ("Bite",60,100,25,0,1,15,0,"The user bites the target with viciously sharp fangs.\nMay make the target flinch.","flinch 30"),
+        ("Infernal Parade",60,100,15,1,0,13,0,"","facade burn 30"), #this power is a LegendsArceus exclusive and i feel like it's a little overpowered in this meta, but like...whatever its fine
         ("Weather Ball",50,100,10,1,0,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
         ("Cut",50,95,30,0,1,0,0,"The use cuts the target with a scythe or claw!","null"),
+        ("Metal Claw",50,95,35,0,1,16,0,"The user rakes the target with steel claws.\nMay raise the user's Atk. 1 stage.","stat self,at,1,10"),
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has increased +1 priority.","null"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
         ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
