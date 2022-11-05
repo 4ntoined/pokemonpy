@@ -2193,7 +2193,6 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         ####burn####
         if attacker.burned:
             burn=0.5
-            damages.append("The burn reduces damage...")
         else:
             burn=1.
         if attacker.field.checkScreen(defender.battlespot, 'reflect') > 0:
@@ -2215,6 +2214,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #### facade ####
     if ('facade' in note) and (attacker.burned or attacker.poisoned or attacker.badlypoisoned or attacker.paralyzed):
         power*=2.
+        burn = 1.0 #facade undoes burn nerf
         damages.append("Power boosted from status condition!")
     ####weather ball#### doubles power and changes type
     if ('weatherball' in note) and (attacker.field.weather!='clear'):
@@ -2284,6 +2284,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             defense/=statBoost #undo it
         damages.append("It's a critical hit!")
         screennerf=1.0 #critical hits bypass screens
+        burn=1.0 #critical hits bypass burn-attack-nerf
     if screennerf < 1.0:
         damages.append(f"Protected by {screen_tag[screen_i]}")
     ####random fluctuation 85%-100%
@@ -2309,6 +2310,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         elif ('arrows' in note): #pokemon not grounded yet, but arrows hits flying regardless
             tyype = 1.0
     #elif ('arrows' in note) and defender.:
+    #check if the burn nerf survives (non-crit and non-facade)
+    if burn<1.0:
+        damages.append("The burn reduces damage...")
     ####modifiers united####
     #print(tyype)
     damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf

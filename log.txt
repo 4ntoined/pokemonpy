@@ -737,3 +737,7 @@ THEY are the annoying ones. that's where all the work happens. And then even whe
 there are still no abilities, no items, leech seed, protect etc., SO much to do
 that's why I'm NOT committing to doing them lol, Im gonna make e4 and DIP
 
+5 nov 2022
+10:24- fixed some oversights with the physical attack nerf from burn that were never problems before
+I hope they continue to not be a problem. and I added some more easy attacks
+

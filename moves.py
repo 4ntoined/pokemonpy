@@ -35,7 +35,8 @@ moremoves=[
         ("Solar Beam",120,100,10,1,0,3,0,"The user focuses sunlight into a beam to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
         ("Head Charge",120,100,15,0,1,0,0,"The user charges with its head and powerful guard hair!\nDoes 1/4 recoil damage.","recoil 1/4"),
         ("Focus Blast",120,70,5,1,0,6,0,"The user heightens its mental focus an unleashs its power\n10% chance to lower target's SpD. 1 stage.","stat targ,sa,-1,10"),
-        #("Future Sight",120,100,5,,"The user looks into the future and predicts an attack.","futuresight"),
+        #("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
+        #("Future Sight",120,100,5,1,0,10,0,,"The user looks into the future and predicts an attack.","futuresight"),
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure.","null"),
@@ -62,6 +63,7 @@ moremoves=[
         ("X-Scissor",80,100,15,0,1,11,0,"The user slashes the target by crossing its claws!","null"),
         ("Dragon Claw",80,100,15,0,1,14,0,"The user slashes the target with shape claws!","null"),
         ("Aura Sphere",80,100,20,1,0,6,0,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
+        ("Flash Cannon",80,100,10,1,0,16,0,"The user gathers all its light energy and releases it all at once at the target. May lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
         ("Psyshock",80,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Signal Beam",75,100,15,1,0,11,0,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         ("Crush Claw",75,95,10,0,1,0,0,"The user slashes the target with hard, sharp claws\n May lower Def. 1 stage.","stat targ,de,-1,50"), #at some point we'll track sound-based moves
@@ -69,8 +71,13 @@ moremoves=[
         ("Air Slash",75,95,15,1,0,9,0,"The user attacks with a blade of air that slices the sky.\n30% chance to make the target flinch.","flinch 30"),
         #("Dizzy Punch",70,100,10,0,1,0,0,"","conf 20"), Why did dizzy punch get kicked out of the game :(
         ("Facade",70,100,20,0,1,0,0,"An attack that does double damage if the user is poisoned, burned, or paralyzed.","facade"),
+        #("Retaliate",70,100,5,0,1,0,0,"The user gets revenge for a fainted ally.\nDoubles in power if an ally fainted in the previous turn.","retaliate"),
         ("Headbutt",70,100,15,0,1,0,0,"The user sticks out its head and attacks!\n30% chance to flinch target.","flinch 30"),
+        ("Night Slash",,"The user does some stuff","highCrit"),
         ("Stomp",65,100,20,0,1,0,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"), #doesn't miss if target used minimize
+        ("Fire Fang",65,95,15,0,1,1,0,"The user bites with flame-cloaked fangs.\n10% chance to flinch, 10% chance to burn.","burn 10 flinch 10"),
+        ("Thunder Fang",65,95,15,0,1,4,0,"The user bites with electrified fangs.\n10% chance to flinch, 10% chance to paralyze.","para 10 flinch 10"),
+        ("Ice Fang",65,95,15,0,1,5,0,"The user bites with frozen fangs.\n10% chance to flinch, 10% chance to freeze.","frze 10 flinch 10"),
         ("Ominous Wind",60,100,5,1,0,13,0,"The user attacks with a mysterious wind. 10% chance to raise all stats 1 stage.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"),
         ("Flame Wheel",60,100,15,0,1,1,0,"The user covers itself in fire and rolls into the target! 10% chance to burn","burn 10 thaws"),
         ("Weather Ball",50,100,10,1,0,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
@@ -82,26 +89,26 @@ moremoves=[
         #counter and mirror coat,
         #("Counter",1,100,20,0,1,6,-5,"Counter","counter"),
         #("Mirror Coat",1,100,20,1,0,10,-5,"Special move counter","mirrorcoat"),
-        #weather moves
+        #status moves
+         #weather moves
         ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
         ("Rain Dance",0,100,5,2,0,2,0,"The user disrupts the air pressure and causes rain!","rain noMiss"),
         ("Sandstorm",0,100,5,2,0,12,0,"The user calls on the local sands to whip up a sandstorm!","sand noMiss"),
         ("Hail",0,100,5,2,0,5,0,"The user summons a cloudy cold front and creates a hailstorm!","hail noMiss"),
-        #terrain moves
+         #terrain moves
         ("Electric Terrain",0,100,10,2,0,4,0,"The user electrifies the battlefield! Electric-type moves get a 30% boost.","electric noMiss"),
         ("Grassy Terrain",0,100,10,2,0,3,0,"The user covers the battlefield with grass! Grass-type moves get a 30% boost.","grassy noMiss"),
         ("Misty Terrain",0,100,10,2,0,17,0,"The user covers the battlefield in mist! Dragon-type moves get a 50% nerf.","misty noMiss"),
         ("Psychic Terrain",0,100,10,2,0,10,0,"The user makes the battlefield weird! Psychic-type moves get a 30% boost.","psychic noMiss"),
-        #entry hazards
+         #entry hazards
         ("Spikes",0,100,20,2,0,8,0,"The user spreads spikes on the opponent's side of the field!\nStack up to 3 times!","noMiss spikes"),
         ("Toxic Spikes",0,100,20,2,0,7,0,"The user sends out toxic barbs on the target's side of the field!\nPokemon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk"),
         ("Stealth Rocks",0,100,20,2,0,12,0,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks"),
         ("Sticky Web",0,100,20,2,0,11,0,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky"),
-        #reflect, lightscreen
+         #reflect, lightscreen
         ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
         ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
         #("Aurora Veil",0,100,,"that veil","veil noMiss"),
-        #status moves
          #stat(istic) changes
         ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
         ("Defense Curl",0,100,40,2,0,0,0,"The user curls up to hide its weak spots!\nRaises Def. 1 stage.","stat self,de,1 noMiss curled"),
@@ -115,6 +122,7 @@ moremoves=[
         ("String Shot",0,95,40,2,0,11,0,"The user spins silk to bind the target! Lowers target's Spd. 1 stage.","stat targ,sp,-1"),
         ("Double Team",0,100,15,2,0,0,0,"The user moves so quick it creates afterimages.\nRaises evasiveness 1 stage.","stat self,ev,1 noMiss"),
         ("Growl",0,100,40,2,0,0,0,"The user growls cutely.\nIt lowers the target's Atk. 1 stage.","stat targ,at,-1"),
+        ("Metal Sound",0,85,40,2,0,16,0,"The user creates horrible metal-scraping sounds to unnerve the target.\nLowers target's Sp.D 2 stages.","stat targ,sd,-2"), #sound-based, soundproof ability is immune,
          #stat(us) conditions
         ("Stun Spore",0,75,30,2,0,3,0,"The user releases spores that paralyze the target!","para 100 typeImmune grass"), #typeImmune for poke types with immunities
         ("Sleep Powder",0,75,15,2,0,3,0,"The user uses a powder to lull the target to sleep!","sleep 100 typeImmune grass"),
