@@ -1488,7 +1488,7 @@ class battle:
                         # calculate the pokemon's stat's, considering the weather and status conditions
                         self.usr_mon.inBattle()
                         # apply the field to the pokemon (entry hazards)
-                        self.field.landing(self.usr_mon, "red")
+                        self.field.landing(self.usr_mon)
                     #does the trainer mon need to rest?
                     if self.cpu_mon.resting:
                         #trainerRest=True
@@ -1520,7 +1520,7 @@ class battle:
                         shortpause()
                         self.cpu_mon.chosen("cpu",self.field)
                         self.cpu_mon.inBattle()
-                        self.field.landing(self.cpu_mon,"blue")
+                        self.field.landing(self.cpu_mon)
                         trainerShift=True
                         #end of trainer switching
                     ########################################################
@@ -1760,7 +1760,7 @@ class battle:
                                             shortpause()
                                             self.usr_mon.chosen("user",self.field)
                                             self.usr_mon.inBattle()
-                                            self.field.landing(self.usr_mon,"red")
+                                            self.field.landing(self.usr_mon)
                                             bShifted=True
                                             break
                                         #anything other than y repeats the loop
@@ -1784,7 +1784,7 @@ class battle:
                             self.cpu_mon=self.cpus[trainerInd]
                             self.cpu_mon.chosen("cpu",self.field)
                             self.cpu_mon.inBattle()
-                            self.field.landing(self.cpu_mon, "blue")
+                            self.field.landing(self.cpu_mon)
                             print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
                             shortpause()
                     #pokemon have been switched in

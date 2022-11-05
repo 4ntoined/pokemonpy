@@ -741,4 +741,8 @@ that's why I'm NOT committing to doing them lol, Im gonna make e4 and DIP
 10:24- fixed some oversights with the physical attack nerf from burn that were never problems before
 I hope they continue to not be a problem. and I added some more easy attacks
 16:24- i added so many moves and it was only like half of all the moves I was trying to add
+19:46- I finished adding the easy moves. it was so much...
+remaining, the ~7 or so moves that need new mechanics, and setting up all the staging around
+the e4 mode itself...generating the pokemon, putting them together and parties and
+throwing them, and the player into battles! easy
 
