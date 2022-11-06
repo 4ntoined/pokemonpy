@@ -746,3 +746,11 @@ remaining, the ~7 or so moves that need new mechanics, and setting up all the st
 the e4 mode itself...generating the pokemon, putting them together and parties and
 throwing them, and the player into battles! easy
 
+6 nov 2022
+11:05- there's a bug that occurs somewhere aroud line 15-something in battle() while
+using trainerMoveInd to get the cpu to use a move after resetting the opponent's team to ur team
+it may only be an issue after removing moves from your moveset...wait it might be that we delete moves
+and dont delete the corresponding PP slots......dang let me check
+yeah it looked like that was the issue. and i was able to finally test brick break and it looks like that
+works, will have to add aurora veil and defog eventually but not now
+

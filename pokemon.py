@@ -532,6 +532,7 @@ class mon:
             else:
                 print(f"\n{self.name} is frozen and can't move!")
                 self.rolling_out = 0
+                self.charged=False
                 return #end move() user still frozen
         #asleep, can't move
         if self.sleep:
@@ -542,12 +543,14 @@ class mon:
             else:
                 print(f"\n{self.name} is fast asleep!")
                 self.rolling_out = 0
+                self.charged=False
                 return
         #paralysis prevents move execution
         if self.paralyzed:
             if rng.random()<0.25:
                 print(f"\n{self.name} is fully paralyzed!")
                 self.rolling_out = 0
+                self.charged=False
                 return
         #confusion prevents rest of move execution
         if self.confused:
@@ -563,6 +566,7 @@ class mon:
                 if rng.random()<1/3:
                     self.confusionDamage()
                     self.rolling_out = 0
+                    self.charged=False
                     return
         #check if move needs to be charged
         if "2turn" in notas:
@@ -818,6 +822,21 @@ class mon:
                 if attacker.rolling_out==5:
                     attacker.rolling_out=0 #pokemon is all rolled out,
                 pass
+            #with successful hit from brick break, break active screens
+            screens_up = np.count_nonzero(( self.field.checkScreen(self.battlespot,'reflect'), self.field.checkScreen(self.battlespot,'lightscreen') ))
+            if (screens_up >= 1.) and ('breakScreens' in notes):
+                if (self.battlespot=='red'):
+                    self.field.reflectACounter=0
+                    self.field.lightscACounter=0
+                    micropause()
+                    print("It broke the screen(s)!")
+                elif (self.battlespot=='blue'):
+                    self.field.reflectBCounter=0
+                    self.field.lightscBCounter=0
+                    micropause()
+                    print("It broke the screen(s)!")
+            #if (checkScreens(self.battlespot,'reflect')) (checkScreens(self.battlespot,'lightscreen'))
+            #if self.screensup and 'brickbreak': turn that screen off
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
                 recoilDmg=self.currenthp
@@ -2200,6 +2219,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             screen_i = 0
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
+    #### brick break removes screens before doing damage ####
+    if 'breakScreens' in note:
+        screennerf = 1.
     #### rollout #### 
     if 'rollout' in note: 
         if attacker.curled: #another boost if poke has used defense curl
@@ -2250,7 +2272,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         elif moveTipe==2:
             weatherBonus=4./3.
             damages.append("The rain boosts the attack power!")
-    ####terrain moves####
+    #### terrain boosts and nerf ####
     if attacker.field.terrain=='none':
         pass
     else: #only check for terrain boosts when there is a non-none terrain
@@ -3250,15 +3272,20 @@ while 1:
                         chooz=np.array([int(i)-1 for i in mvChoice.split()])
                         for i in range(len(chooz)):
                             if len(select.knownMoves)==1: #catch players trying to dump whole moveset
+                                micropause()
                                 print("** Pokemon cannot forget its last move **")
                                 break
                             if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
                                 byeMove=select.knownMoves.pop(chooz[i])
+                                byePP = select.PP.pop(chooz[i])
+                                micropause()
                                 print(f"{select.name} forgets {mov[byeMove]['name']}...")
                             else:
                                 removedIndices=np.count_nonzero(chooz[0:i]<chooz[i]) #how many selected indices that are *lower* than current one have already been removed
                                 chooz[i]-=removedIndices
                                 byeMove=select.knownMoves.pop(chooz[i])
+                                byePP = select.PP.pop(chooz[i])
+                                micropause()
                                 print(f"{select.name} forgets {mov[byeMove]['name']}...")
                         print("Selected moves have been forgetten!")
                         shortpause() #kills

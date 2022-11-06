@@ -76,7 +76,7 @@ moremoves=[
         ("Psyshock",80,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Signal Beam",75,100,15,1,0,11,0,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         ("Crush Claw",75,95,10,0,1,0,0,"The user slashes the target with hard, sharp claws\n May lower Def. 1 stage.","stat targ,de,-1,50"), #at some point we'll track sound-based moves
-        #("Brick Break",75,100,15,0,1,6,0,'The user attacks with a swift chop. This removes Light Screen and Reflect.','breakScreens'), #need to program light screen and reflect and aurora veil
+        ("Brick Break",75,100,15,0,1,6,0,'The user attacks with a swift chop. This removes Light Screen and Reflect.','breakScreens'), #need to program light screen and reflect and aurora veil
         ("Air Slash",75,95,15,1,0,9,0,"The user attacks with a blade of air that slices the sky.\n30% chance to make the target flinch.","flinch 30"),
         #("Dizzy Punch",70,100,10,0,1,0,0,"","conf 20"), Why did dizzy punch get kicked out of the game :(
         ("Facade",70,100,20,0,1,0,0,"An attack that does double damage if the user is poisoned, burned, or paralyzed.","facade"),
