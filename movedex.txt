@@ -121,4 +121,5 @@
 (120, 'Confuse Ray', 0, 100, 10, 2, 0, 13, 0, 'The user lets loose a sinister beam that causes confusion!', 'conf 100')
 (121, 'Recover', 0, 100, 10, 2, 0, 0, 0, 'The user regenerates cells to heal itself by half its max HP.', 'heals recover noMiss')
 (122, 'Synthesis', 0, 100, 5, 2, 0, 3, 0, 'The user takes in sunlight to restore HP.\nRestores more HP in harsh sunlight, less in non-sunny, non-clear weather.', 'heals synthesis noMiss')
-(123, 'Struggle', 50, 100, 1, 0, 1, 18, 0, 'The user is otherwise out of moves.', 'noMiss recoil 1/4maxhp')
+(123, 'Aqua Ring', 0, 100, 20, 2, 0, 2, 0, 'The user envelops itself with a veil of healing waters.', 'aquaring noMiss')
+(124, 'Struggle', 50, 100, 1, 0, 1, 18, 0, 'The user is otherwise out of moves.', 'noMiss recoil 1/4maxhp')

@@ -753,4 +753,5 @@ it may only be an issue after removing moves from your moveset...wait it might b
 and dont delete the corresponding PP slots......dang let me check
 yeah it looked like that was the issue. and i was able to finally test brick break and it looks like that
 works, will have to add aurora veil and defog eventually but not now
+11:36- aqua ring! here and tested
 

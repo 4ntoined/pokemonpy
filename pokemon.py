@@ -116,6 +116,7 @@ class mon:
         self.firstturnout=False
         self.rolling_out=0
         self.curled=False
+        self.aquaring=False
 
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -231,7 +232,9 @@ class mon:
         self.flinched=False
         self.charged=False
         self.firstturnout=False
+        self.curled=False
         self.rolling_out=0
+        self.aquaring=False
     
     #fainting
     def faint(self):
@@ -771,6 +774,14 @@ class mon:
                         pass
                     #end if, if not, move on
                 ### end of screens ###
+                ## aqua ring ##
+                if 'aquaring' in notas:
+                    if self.aquaring:
+                        print(f"The move fails! {self.name} already has an Aqua Ring...")
+                    else:
+                        self.aquaring=True
+                        print(f"{self.name} is covered by a veil of water!")
+                ### end of a ring ###
                 #what's next
                 return
             ##==========================    end of status moves    =======================================##
@@ -930,6 +941,10 @@ class mon:
         if self.currenthp > self.maxhp:
             self.currenthp = self.maxhp
         self.currenthpp = 100. * self.currenthp/self.maxhp
+    def aquaheal(self):
+        amnt = np.floor(self.maxhp/16.)
+        print(f"{self.name} is healed by its Aqua Ring!")
+        self.healing(amnt)
     #flinching
     def flinch(self):
         self.flinched=True
@@ -1703,6 +1718,11 @@ class battle:
                             self.usr_mon.grassyHeal()
                         if self.cpu_mon.grounded and (not tFaint):
                             self.cpu_mon.grassyHeal()
+                    # aqua ring healing
+                    if self.usr_mon.aquaring and (not uFaint):
+                        self.usr_mon.aquaheal()
+                    if self.cpu_mon.aquaring and (not tFaint):
+                        self.cpu_mon.aquaheal()
                     #make switches in case of faints
                     #user switch
                     if uFaint:
