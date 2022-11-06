@@ -85,6 +85,7 @@ moremoves=[
         ("Night Slash",70,100,15,0,1,15,0,"The user sneaks in and slashes the target the instant it gets the opportunity\nHigh crit. ratio.","highCrit"),
         ("Shadow Claw",70,100,15,0,1,13,0,"The user materializes a sharp claw from the shadows and slashes at the target!\nHigh crit. ratio.","highCrit"),
         ("Stomp",65,100,20,0,1,0,0,"The user forcefully stomps on the target!","flinch 30 noMissMinimize"), #doesn't miss if target used minimize
+        ("Hex",65,100,10,1,0,13,0,"The user attacks relentlessly, doing double damage to a target with status conditions!","hex"),
         ("Fire Fang",65,95,15,0,1,1,0,"The user bites with flame-cloaked fangs.\n10% chance to flinch, 10% chance to burn.","burn 10 flinch 10"),
         ("Thunder Fang",65,95,15,0,1,4,0,"The user bites with electrified fangs.\n10% chance to flinch, 10% chance to paralyze.","para 10 flinch 10"),
         ("Ice Fang",65,95,15,0,1,5,0,"The user bites with frozen fangs.\n10% chance to flinch, 10% chance to freeze.","frze 10 flinch 10"),
@@ -94,7 +95,7 @@ moremoves=[
         ("Flame Wheel",60,100,15,0,1,1,0,"The user covers itself in fire and rolls into the target! 10% chance to burn","burn 10 thaws"),
         ("Silver Wind",60,100,5,1,0,11,0,"The user attacks with powderly scales carried on the wind.\n10% chance to raise all stats 1. stage.","stat self,at:de:sa:sd:sp,1:1:1:1:1,10"), #not in SwSh, but IN LegendsArceus so we move!
         ("Bite",60,100,25,0,1,15,0,"The user bites the target with viciously sharp fangs.\nMay make the target flinch.","flinch 30"),
-        ("Infernal Parade",60,100,15,1,0,13,0,"","facade burn 30"), #this power is a LegendsArceus exclusive and i feel like it's a little overpowered in this meta, but like...whatever its fine
+        ("Infernal Parade",60,100,15,1,0,13,0,"The user attacks with a myriad of fireballs!\nMay leave a burn. Double damaged when the target has a status condition.","hex burn 30"), #this is a LegendsArceus exclusive and i feel like it's a little overpowered in this meta, but like...whatever its fine
         ("Swift",60,100,20,1,0,0,0,"The user shoots star-shaped rays at the target!\nThis move will not miss.","noMiss"),
         ("Frost Breath",60,90,10,1,0,5,0,"The user blows cold breath on the target!\nThis move always lands a critical hit.","frostbreath"),
         ("Storm Throw",60,100,10,0,1,6,0,"The user strikes the target with a fierce blow.\nThis move always lands a critical hit.","frostbreath"),
@@ -129,7 +130,7 @@ moremoves=[
          #reflect, lightscreen
         ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
         ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
-        #("Aurora Veil",0,100,,"that veil","veil noMiss"),
+        ("Aurora Veil",0,100,20,2,0,5,0,"that veil","veil needHail"),
          #stat(istic) changes
         ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
         ("Defense Curl",0,100,40,2,0,0,0,"The user curls up to hide its weak spots!\nRaises Def. 1 stage.","stat self,de,1 noMiss curled"),

@@ -651,7 +651,6 @@ class mon:
                     self.curled=True
                     print(f"{self.name} curled up!")
                 ## weathers ##
-                #global weatherCounter
                 if "sun" in notas:
                     if self.field.weather=='sunny':
                         print("The move fails! It's already sunny!")
@@ -682,8 +681,6 @@ class mon:
                         print("It starts hailing!")
                 ### end of the weathers ###
                 ## terrains ##
-                #global terrain
-                #global terrainCounter
                 if "electric" in notas:
                     if self.field.terrain=="electric":
                         print("The move fails! The battlefield is already electrified!")
@@ -763,8 +760,12 @@ class mon:
                             healamount = self.maxhp/2.
                     self.healing(healamount)
                 ### end of healing ###
+                if ('veil' in notas) and (self.field.weather != 'hail'):
+                    print("The move fails! There isn't enough hail...")
+                    micropause()
+                    return
                 ## screens ##
-                screenz = ("reflect","lightscreen")
+                screenz = ("reflect","lightscreen","veil")
                 for i in range(len(screenz)):
                     if screenz[i] in notas:
                         if self.battlespot=='red':
@@ -1221,9 +1222,9 @@ class battle:
             elif blueStats[i]<0:
                 print(statstrs[i]+f" {blueStats[i]}")
         ## is there a screen up
-        walls = (self.field.reflectBCounter, self.field.lightscBCounter)
+        walls = (self.field.reflectBCounter, self.field.lightscBCounter, self.field.veilBCounter)
         #print(walls)
-        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===")
+        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===",f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
         for i in list(enumerate(walls)):
             if i[1]>0:
                 print(prii[i[0]])
@@ -1285,8 +1286,8 @@ class battle:
             elif redStats[i]<0:
                 print(statstrs[i]+f" {redStats[i]}")
         ## is there a screen up
-        halls = (self.field.reflectACounter, self.field.lightscACounter)
-        drii = (f"\n=== Reflect Up : {self.field.reflectACounter} ===", f"\n=== Light Screen Up : {self.field.lightscACounter} ===")
+        halls = (self.field.reflectACounter, self.field.lightscACounter, self.field.veilACounter)
+        drii = (f"\n=== Reflect Up : {self.field.reflectACounter} ===", f"\n=== Light Screen Up : {self.field.lightscACounter} ===",f"\n=== Aurora Veil Up : {self.field.veilACounter} ===")
         for i in list(enumerate(halls)):
             if i[1]>0:
                 print(drii[i[0]])
@@ -1893,13 +1894,16 @@ class battle:
                     self.field.lightscBCounter-=1
                     self.field.reflectACounter-=1
                     self.field.reflectBCounter-=1
+                    self.field.veilACounter-=1
+                    self.field.veilBCounter-=1
                     #are these screens still up?
                     say = ("Your team's Light Screen fades away!","Their Light Screen fades away!",\
-                           "Your team's Reflect fades away!","Their Reflect fades away!")
+                           "Your team's Reflect fades away!","Their Reflect fades away!", \
+                           "Your team's Aurora Veil fades...","Thier Aurora Veil fades...")
                     #scr_flag = [self.field.lightscA,self.field.lightscB,self.field.reflectA,self.field.reflectB]
                     #if self.field.lightscA
                     
-                    for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter,self.field.reflectACounter,self.field.reflectBCounter))) :
+                    for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter, self.field.reflectACounter,self.field.reflectBCounter, self.field.veilACounter,self.field.veilBCounter))) :
                         #print([ee[1]])
                         if ee[1] == 0:
                             #scr_flag[ee[0]] = False
@@ -1957,23 +1961,28 @@ class field:
             self.terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
         #A for Red B for Blue?
         self.rocksA=False
-        self.rocksB=False
         self.steelA=False
-        self.steelB=False
         self.stickyA=False
-        self.stickyB=False
         self.spikesA=0 #up to 3
-        self.spikesB=0
         self.toxicA=0 #up to 2 
+        self.reflectACounter = 0
+        self.lightscACounter = 0
+        self.veilACounter = 0
+        self.tailwindACounter = 0
+        # 
+        self.rocksB=False
+        self.stickyB=False
+        self.steelB=False
+        self.spikesB=0
         self.toxicB=0
+        self.reflectBCounter = 0
+        self.lightscBCounter = 0
+        self.veilBCounter = 0
+        self.tailwindBCounter = 0
         #self.reflectA=False
         #self.reflectB=False
         #self.lightscA=False
         #self.lightscB=False
-        self.reflectACounter = 0
-        self.reflectBCounter = 0
-        self.lightscACounter = 0
-        self.lightscBCounter = 0
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
         #tailwind?
@@ -2015,6 +2024,10 @@ class field:
         self.reflectBCounter = 0
         self.lightscACounter = 0
         self.lightscBCounter = 0
+        self.veilACounter = 0
+        self.tailwindACounter = 0
+        self.veilBCounter = 0
+        self.tailwindBCounter = 0
         
     def shuffleweather(self,wea=True,ter=True):
         global Weathers
@@ -2031,10 +2044,10 @@ class field:
 
     def checkScreen(self,color,screen):
             #color = 'red' or 'blue', screen='reflect' or 'lightscreen' eventually 'veil'
-            matri= ((self.reflectACounter, self.lightscACounter),(self.reflectBCounter, self.lightscBCounter) )
+            matri= ((self.reflectACounter, self.lightscACounter, self.veilACounter),(self.reflectBCounter, self.lightscBCounter,self.veilBCounter) )
             ans='error'
             for i in list(enumerate(('red','blue'))):
-                for j in list(enumerate(('reflect','lightscreen'))):
+                for j in list(enumerate(('reflect','lightscreen','veil'))):
                     if (color == i[1]) and (screen == j[1]):
                         ans = float(matri[i[0]][j[0]])
                     pass
@@ -2156,50 +2169,63 @@ class field:
         if side=='red':
             ## reflect is already up for player
             if (scr=='reflect') and (self.reflectACounter>0):
-                print("\nThe move fails! Reflect is already up!")
                 micropause()
+                print("\nThe move fails! Reflect is already up!")
                 return "failed"
             ## light screen is already up for player
             elif (scr=='lightscreen') and (self.lightscACounter>0):
-                print("\nThe move fails! Light Screen is already up!")
                 micropause()
+                print("\nThe move fails! Light Screen is already up!")
                 return "failed"
             ## player puts up reflect
-            elif scr=='reflect':
-                #self.reflectA=True
-                self.reflectACounter=5
-                print("\nThe Pokemon's side is protected by Reflect!")
+            elif (scr=='veil') and (self.veilACounter>0):
                 micropause()
+                print("\nThe move fails! Aurora Veil is active!")
+                return "failed"
+            elif scr=='reflect':
+                self.reflectACounter=5
+                micropause()
+                print("\nThe Pokemon's side is protected by Reflect!")
             ## player puts up light screen
             elif scr=='lightscreen':
-                #self.lightscA=True
                 self.lightscACounter=5
-                print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
+                print("\nThe Pokemon's side is protected by Light Screen!")
+            elif scr=='veil':
+                micropause()
+                self.veilACounter=5
+                print("\nThe Pokemon's side is protected by a mystical veil!")
             pass
         elif side=='blue':
             ## reflect is already up for cpu
             if (scr=='reflect') and (self.reflectBCounter>0):
-                print("\nThe move fails! Reflect is already up!")
                 micropause()
+                print("\nThe move fails! Reflect is already up!")
                 return "failed"
             ## light screen is already up for cpu
             elif (scr=='lightscreen') and (self.lightscBCounter>0):
-                print("\nThe move fails! Light Screen is already up!")
                 micropause()
+                print("\nThe move fails! Light Screen is already up!")
+                return "failed"
+            ## cpu puts up reflect
+            elif (scr=='veil') and (self.veilBCounter>0):
+                micropause()
+                print("\nThe move fails! Aurora Veil is already active!")
                 return "failed"
             ## cpu puts up reflect
             elif scr=='reflect':
-                #self.reflectB=True
                 self.reflectBCounter=5
-                print("\nThe Pokemon's side is protected by Reflect!")
                 micropause()
+                print("\nThe Pokemon's side is protected by Reflect!")
             ## cpu puts up light screen
             elif scr=='lightscreen':
-                #self.lightscB=True
                 self.lightscBCounter=5
-                print("\nThe Pokemon's side is protected by Light Screen!")
                 micropause()
+                print("\nThe Pokemon's side is protected by Light Screen!")
+            elif scr=='veil':
+                self.veilBCounter=5
+                micropause()
+                print("\nThe Pokemon's side is protected by a mystical veil!")
             pass
     #more functions of field
 ##zz:fieldclass
@@ -2220,7 +2246,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
-        if attacker.field.checkScreen(defender.battlespot, 'lightscreen') > 0:
+        if (attacker.field.checkScreen(defender.battlespot, 'lightscreen') + attacker.field.checkScreen(defender.battlespot,'veil')) > 0.:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 1
         pass
@@ -2234,7 +2260,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=0.5
         else:
             burn=1.
-        if attacker.field.checkScreen(defender.battlespot, 'reflect') > 0:
+        if (attacker.field.checkScreen(defender.battlespot, 'reflect') + attacker.field.checkScreen(defender.battlespot,'veil')) > 0.:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 0
     plaintiffTipe=attacker.tipe
@@ -2258,6 +2284,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         power*=2.
         burn = 1.0 #facade undoes burn nerf
         damages.append("Power boosted from status condition!")
+    if ('hex' in note) and (defender.burned or defender.poisoned or defender.badlypoisoned or defender.paralyzed or defender.sleep or defender.frozen):
+        power*=2.
+        damages.appends("Power boosted by target's status condition!")
     ####weather ball#### doubles power and changes type
     if ('weatherball' in note) and (attacker.field.weather!='clear'):
         power*=2.
