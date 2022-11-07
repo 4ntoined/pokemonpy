@@ -835,20 +835,21 @@ class mon:
                     attacker.rolling_out=0 #pokemon is all rolled out,
                 pass
             #with successful hit from brick break, break active screens
-            screens_up = np.count_nonzero(( self.field.checkScreen(self.battlespot,'reflect'), self.field.checkScreen(self.battlespot,'lightscreen') ))
+            screens_up = np.count_nonzero(( self.field.checkScreen(self.battlespot,'reflect'), \
+                    self.field.checkScreen(self.battlespot,'lightscreen'), self.field.checkScreen(self.battlespot,'veil') ))
             if (screens_up >= 1.) and ('breakScreens' in notes):
                 if (self.battlespot=='red'):
                     self.field.reflectACounter=0
                     self.field.lightscACounter=0
+                    self.field.veilACounter=0
                     micropause()
                     print("It broke the screen(s)!")
                 elif (self.battlespot=='blue'):
                     self.field.reflectBCounter=0
                     self.field.lightscBCounter=0
+                    self.field.veilBCounter=0
                     micropause()
                     print("It broke the screen(s)!")
-            #if (checkScreens(self.battlespot,'reflect')) (checkScreens(self.battlespot,'lightscreen'))
-            #if self.screensup and 'brickbreak': turn that screen off
             #calculate potential recoil damage before currenthp is changed
             if damagepoints>self.currenthp:
                 recoilDmg=self.currenthp
@@ -2246,7 +2247,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
-        if (attacker.field.checkScreen(defender.battlespot, 'lightscreen') + attacker.field.checkScreen(defender.battlespot,'veil')) > 0.:
+        if ( max((0.,attacker.field.checkScreen(defender.battlespot, 'lightscreen'))) + max( (0., attacker.field.checkScreen(defender.battlespot,'veil')) )) > 0.:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 1
         pass
@@ -2260,7 +2261,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=0.5
         else:
             burn=1.
-        if (attacker.field.checkScreen(defender.battlespot, 'reflect') + attacker.field.checkScreen(defender.battlespot,'veil')) > 0.:
+        if ( max((0.,attacker.field.checkScreen(defender.battlespot, 'reflect'))) + max( (0., attacker.field.checkScreen(defender.battlespot,'veil')) )) > 0.:
             screennerf = 0.5 #light screen protects the defending pokemon
             screen_i = 0
     plaintiffTipe=attacker.tipe

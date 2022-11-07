@@ -39,19 +39,19 @@ moremoves=[
         #("Future Sight",120,100,5,1,0,10,0,,"The user looks into the future and predicts an attack.","futuresight"),
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
-        ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure.","null"),
+        ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure!","null"),
         ("Blizzard",110,70,5,1,0,5,0,"The user summons a howling blizzard to strike the target.\n10% chance to freeze.","frze 10 blizzard"), #doesn't miss in hail, need to program
-        ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked thunderbolt on the target to inflict damage.\n30% chance to paralyze.","para 30 thunder"),
-        ("Hurricane",110,70,10,1,0,9,0,"The user wraps its target in a fierce wind that flies up into the sky.\n30% chance to confuse.","conf 30 thunder"),
-        ("Earthquake",100,100,10,0,0,8,0,"The user causes a powerful earthquake.","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
-        ("Judgement",100,100,10,1,0,0,0,"The user pelts the battlefield with bolts of light from the sky.","null"),
+        ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked thunderbolt on the target to inflict damage!\n30% chance to paralyze.","para 30 thunder"),
+        ("Hurricane",110,70,10,1,0,9,0,"The user wraps its target in a fierce wind from a furious storm!\n30% chance to confuse.","conf 30 thunder"),
+        ("Earthquake",100,100,10,0,0,8,0,"The user causes a powerful earthquake!","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
+        ("Judgement",100,100,10,1,0,0,0,"The user pelts the battlefield with bolts of light from the sky!","null"),
         ("Stone Edge",100,80,5,0,0,12,0,"The user stabs the target from below with sharpened stones!\nHigh crit. ratio.","highCrit"),
         ("Aeroblast",100,95,5,1,0,9,0,"The user shoots a vortex of air at the target!\nHigh crit. ratio.","highCrit"),
         ("Iron Tail",100,75,15,0,1,16,0,"The user slams the target wit a steel-hard tail!\n30% chance to lower target's Def. 1 stage.","stat targ,de,-1,30"),
-        ("Psystrike",100,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
+        ("Psystrike",100,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack!\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"), #will use psystrike tag for psyshock and secret sword
         ("Core Enforcer",100,100,10,1,0,14,0,"The user unleases a super sick laser and draws a 'Z'!","null"), #otherwise would suppress abilities, but we have none
-        #("Fusion Bolt",100,100,5,0,0,4,0,"The user throws down a giant lightning bolt.\nMore powerful if used after Fusion Flare.","fusion-b"),
-        #("Fusion Flare",100,100,5,1,0,1,0,"The user throws down a giant lightning bolt.\nMore powerful if used after Fusion Flare.","fusion-f"),
+        #("Fusion Bolt",100,100,5,0,0,4,0,"The user throws down a giant lightning bolt!\nMore powerful if used after Fusion Flare.","fusion-b"),
+        #("Fusion Flare",100,100,5,1,0,1,0,"The user throws down a giant flame!\nMore powerful if used after Fusion Bolt.","fusion-f thaws"),
         ("Earth Power",90,100,10,1,0,8,0,"The user makes the ground under the target erupt with power!\nMay lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
         ("Flamethrower",90,100,15,1,0,1,0,"The user attacks with a powerful flame! 10% chance to burn.","burn 10"),
         ("Ice Beam",90,100,15,1,0,5,0,"The user focuses a stream of ice at the target! 10% chance to freeze.","frze 10"),
@@ -60,7 +60,7 @@ moremoves=[
         ("Attack Order",90,100,15,0,0,11,0,"The user attacks with a powerful flame! High crit' ratio.","highCrit"),
         ("Sludge Bomb",90,100,10,1,0,7,0,"Unsanitary sludge is hurled at the target.\n30% chance to poison the target.","pois 30"),
         ("Psychic",90,100,10,1,0,10,0,"The user hits the target with a strong telekinetic force!\nMay lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
-        ("Surf",90,100,15,1,0,2,0,"The user swamps everything around it with a giant wave!","null"), #hits during five? if Im doing Shadow Sneak, fly and dive arent the table, in which case the likes of thunder and surf and earthquake also come into play
+        ("Surf",90,100,15,1,0,2,0,"The user swamps everything around it with a giant wave!","null"), #hits during dive? if Im doing Shadow Sneak, fly and dive are on the table, in which case the likes of thunder and surf and earthquake also come into play
         ("Muddy Water",90,85,10,1,0,2,0,"The user attacks by shooting muddy water at the target!\nMay lower the target's accuracy.","stat targ,ac,-1,30"),
         ("Thousand Arrows",90,100,10,0,0,8,0,"The user creates arrows from the very ground and hurls them at the target.\nHits ungrounded targets and grounds them.","arrows"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
@@ -74,6 +74,7 @@ moremoves=[
         ("Dark Pulse",80,100,15,1,0,15,0,"The user releases a terrible aura imbued with dark thoughts!\n20% chance to make the target flinch.","flinch 20"),
         ("Flash Cannon",80,100,10,1,0,16,0,"The user gathers all its light energy and releases it all at once at the target. May lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
         ("Psyshock",80,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
+        ("Extreme Speed",80,100,5,0,1,0,+2,"The user charges at the target with blinding speed.\nThis move has +2 priority.","null"),
         ("Signal Beam",75,100,15,1,0,11,0,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         ("Crush Claw",75,95,10,0,1,0,0,"The user slashes the target with hard, sharp claws\n May lower Def. 1 stage.","stat targ,de,-1,50"), #at some point we'll track sound-based moves
         ("Brick Break",75,100,15,0,1,6,0,'The user attacks with a swift chop. This removes Light Screen and Reflect.','breakScreens'), #need to program light screen and reflect and aurora veil
