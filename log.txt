@@ -757,3 +757,20 @@ works, will have to add aurora veil and defog eventually but not now
 11:52- noticed i misread infernal parade's description, fixed it, also added hex
 12:54- aurora veil, for some reason, very odd move
 
+7 nov 2022
+21:18- I am actually down to the last 5 moves: fusion bolt/flare (counting as 1), counter/mirror coat (also 1), future sight, shadow force, and retaliate
+and i have no motivation or energy or imagination or intent to do any of them. like... i think I probably will eventually
+but it used to be that there was something on my todo list that I was kinda interested in, i was inspired, I went and looked
+about how it might work, I made some changes and additions, and the code would work and I'd have done it or the code would
+have broken and I'd be spending a lot of time trying to fix it (and even in these cases, to date, i've always managed to fix it.
+like we don't talk about it a lot but... i kinda popped off. look at the material.)
+but anyway. Im down to these last five that are really annoying me, as concepts, so I dont wanna deal with them. Future sight needs another counter
+or something. Fusion bolt and flare are mostly self-contained mechanics wise, so a lot of specific coding for not a lot of utility.
+Counter and mc are looking like theyll be another in-battle attribute of mon() where we store the damage and
+type of damage every pokemon takes every turn, so that we can call on that information if they happen to be using
+mc or counter that turn. retaliate, similarly a store-battle-data move, where, I think, we keep an attribute for each side in battle() as to
+whether or not a pokemon on that side fainted in the very most previous turn. Shadow force MIGHT be my way in. We already have 2-turns
+and if I figure out this one, there's no reason we can't also have fly dig dive etc. and that's even more connected to current mechanics
+with earthquake, surf, thunder/hurricane, etc. and that could be really fun. But even with that one...I don't wanna do it. like idk lol
+no I'm sure someone will come by and finish all of this soon. bless them
+
