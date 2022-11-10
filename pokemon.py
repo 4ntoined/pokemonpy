@@ -857,6 +857,11 @@ class mon:
                 if attacker.rolling_out==5:
                     attacker.rolling_out=0 #pokemon is all rolled out,
                 pass
+            #with a successful hit from fusion move, set flag
+            if ('fusion-b' in notes):
+                self.field.fusionb=True
+            if ('fusion-f' in notes):
+                self.field.fusionf=True
             #with successful hit from brick break, break active screens
             screens_up = np.count_nonzero(( self.field.checkScreen(self.battlespot,'reflect'), \
                     self.field.checkScreen(self.battlespot,'lightscreen'), self.field.checkScreen(self.battlespot,'veil') ))
@@ -1686,6 +1691,9 @@ class battle:
                             if self.usr_mon.fainted:
                                 uFaint=True
                     #end of turn, pokemon have attacked
+                    #turn off fusion flags
+                    self.field.fusionf = False
+                    self.field.fusionb = False
                     #if poke didnt just switch in, first turn flag is turned off
                     if (not switching):
                         self.usr_mon.firstturnout=False
@@ -2015,6 +2023,9 @@ class field:
             self.terrainCounter=np.inf
         else:
             self.terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
+        # fusion bolt flare trackers
+        self.fusionb=False
+        self.fusionf=False
         #A for Red
         #entry hazards
         self.rocksA=False
@@ -2046,9 +2057,6 @@ class field:
         #self.lightscB=False
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
-        #tailwind?
-        #reflect
-        #light screen
         #trick room
         #the same way weather and terrain are set globally, i think trick room could be as well
         #also weather and terrain could be an attribute of battle() rn not much difference
@@ -2069,6 +2077,8 @@ class field:
         self.steelB=False
         self.stickyA=False
         self.stickyB=False
+        self.fusionf=False
+        self.fusionb=False
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
         #self.reflectA=False
@@ -2345,7 +2355,14 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         damages.append("Power boosted from status condition!")
     if ('hex' in note) and (defender.burned or defender.poisoned or defender.badlypoisoned or defender.paralyzed or defender.sleep or defender.frozen):
         power*=2.
-        damages.appends("Power boosted by target's status condition!")
+        damages.append("Power boosted by target's status condition!")
+    #### fusion move fusion ####
+    if ('fusion-b' in note) and attacker.field.fusionf:
+        power*=2.
+        damages.append("The bolts are strengthened by the lingering flames!")
+    elif ('fusion-f' in note) and attacker.field.fusionb:
+        power*=2.
+        damages.append("The flames are strengthened by the lingering bolts!")
     ####weather ball#### doubles power and changes type
     if ('weatherball' in note) and (attacker.field.weather!='clear'):
         power*=2.
