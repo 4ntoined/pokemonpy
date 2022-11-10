@@ -789,4 +789,9 @@ I think it works. realized that close combat still has the def nerf even when th
 makes more sense to put stat stage changes in hit() so they dont run on immunities
 like crush claw which lowers defense shouldnt lower defense if the target is literally immune yeah i gotta fix that
 one more to go. ironically its the one I said I might do first of these last
+17:29- look. it looks like i did semi-invulnerable 2turns. of course I did it all at once, i did not run the code at all in between this
+timestamp and the last timestamp on this log, just kinda winged it and it looks like fly and dig and dive all work as intended
+i havent tested the other couple, and importantly i've yet to test thunder on flying, surf on diving etc.
+again, someone will handle that, im SURE. in the meanwhile, that's all the rest of my moves (for now)
+I will probably start working on the e4 infrastucture now. we could be playtesting the boss mode very soon actually
 

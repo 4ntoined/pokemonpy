@@ -35,7 +35,7 @@ moremoves=[
         ("Solar Beam",120,100,10,1,0,3,0,"The user focuses sunlight into a beam to attack!\nTwo-turn move, one-turn in harsh sunlight.","2turn solar"),
         ("Head Charge",120,100,15,0,1,0,0,"The user charges with its head and powerful guard hair!\nDoes 1/4 recoil damage.","recoil 1/4"),
         ("Focus Blast",120,70,5,1,0,6,0,"The user heightens its mental focus an unleashs its power\n10% chance to lower target's SpD. 1 stage.","stat targ,sa,-1,10"),
-        #("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
+        ("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
         ("Future Sight",120,100,5,1,0,10,0,"The user looks into the future and predicts an attack.","futuresight"),
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
@@ -63,6 +63,9 @@ moremoves=[
         ("Surf",90,100,15,1,0,2,0,"The user swamps everything around it with a giant wave!","null"), #hits during dive? if Im doing Shadow Sneak, fly and dive are on the table, in which case the likes of thunder and surf and earthquake also come into play
         ("Muddy Water",90,85,10,1,0,2,0,"The user attacks by shooting muddy water at the target!\nMay lower the target's accuracy.","stat targ,ac,-1,30"),
         ("Thousand Arrows",90,100,10,0,0,8,0,"The user creates arrows from the very ground and hurls them at the target.\nHits ungrounded targets and grounds them.","arrows"),
+        ("Phantom Force",90,100,10,0,1,13,0,"dedc","2turn shadowforce"),
+        ("Fly",90,95,15,0,1,9,0,"dedc","2turn flying"),
+        ("Bounce",85,85,5,0,1,9,0,"dedc","2turn flying para 30"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
         ("Secret Sword",85,100,10,1,0,6,0,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Dark Pulse",80,100,15,1,0,15,0,"The user sends malicious energy in a powerful wave. 20% chance to flinch.","flinch 20"),
@@ -75,6 +78,8 @@ moremoves=[
         ("Flash Cannon",80,100,10,1,0,16,0,"The user gathers all its light energy and releases it all at once at the target. May lower target's Sp.D 1 stage.","stat targ,sd,-1,10"),
         ("Psyshock",80,100,10,1,0,10,0,"The user materializes an odd psychic wave to attack.\nDamage is calculated with the user's SpA. and the target's Def.","psystrike"),
         ("Extreme Speed",80,100,5,0,1,0,+2,"The user charges at the target with blinding speed.\nThis move has +2 priority.","null"),
+        ("Dive",80,100,10,0,1,2,0,"The user dives.\nTwo-turn move.","2turn diving"),
+        ("Dig",80,100,10,0,1,8,0,"The user digs.\nTwo-turn move.","2turn digging"),
         ("Signal Beam",75,100,15,1,0,11,0,"The user attacks with an odd beam of light! 10% chance to confuse.","conf 10"),
         ("Crush Claw",75,95,10,0,1,0,0,"The user slashes the target with hard, sharp claws\n May lower Def. 1 stage.","stat targ,de,-1,50"), #at some point we'll track sound-based moves
         ("Brick Break",75,100,15,0,1,6,0,'The user attacks with a swift chop. This removes Light Screen and Reflect.','breakScreens'), #need to program light screen and reflect and aurora veil
@@ -106,6 +111,8 @@ moremoves=[
         ("Cut",50,95,30,0,1,0,0,"The use cuts the target with a scythe or claw!","null"),
         ("Metal Claw",50,95,35,0,1,16,0,"The user rakes the target with steel claws.\nMay raise the user's Atk. 1 stage.","stat self,at,1,10"),
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has increased +1 priority.","null"),
+        ("Gust",40,100,35,1,0,9,0,"desc","gust"),
+        ("Twister",40,100,20,1,0,14,0,"desc","gust flinch 20"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
         ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),

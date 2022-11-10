@@ -118,6 +118,10 @@ class mon:
         self.firstturnout=False
         self.curled=False
         self.aquaring=False
+        self.flying=False       #used fly or bounce dont know about sky drop rn
+        self.diving=False       #used dive
+        self.digging=False      #used dig
+        self.shadowing=False    #used shadow force, or phantom force
         self.rolling_out=0
     #save pokemon
     def save(self,filename='pypokemon.sav'):
@@ -237,6 +241,10 @@ class mon:
         self.rolling_out=0
         self.aquaring=False
         self.counter_damage = (0.0, "none")
+        self.flying=False
+        self.diving=False
+        self.digging=False
+        self.shadowing=False
     #fainting
     def faint(self):
         self.currenthp=0.
@@ -292,7 +300,7 @@ class mon:
     def stageChange(self,stat,level):
         #stat='at','de','sa','sd','sp'
         #level= 1,2,3 or -1,-2,-3
-        #i think that this would be a good place to use match/case, but that low priority and would break pre 3.10 pythons
+        #i think that this would be a good place to use match/case, but that's low priority and would break pre 3.10 pythons
         if stat=='at':
             maxd=(self.atstage==12 and level>0)
             mind=(self.atstage==0 and level<0)
@@ -537,6 +545,10 @@ class mon:
                 print(f"\n{self.name} is frozen and can't move!")
                 self.rolling_out = 0
                 self.charged=False
+                self.flying=False
+                self.digging=False
+                self.diving=False
+                self.shadowing=False
                 return #end move() user still frozen
         #asleep, can't move
         if self.sleep:
@@ -548,6 +560,10 @@ class mon:
                 print(f"\n{self.name} is fast asleep!")
                 self.rolling_out = 0
                 self.charged=False
+                self.flying=False
+                self.digging=False
+                self.diving=False
+                self.shadowing=False
                 return
         #paralysis prevents move execution
         if self.paralyzed:
@@ -555,6 +571,10 @@ class mon:
                 print(f"\n{self.name} is fully paralyzed!")
                 self.rolling_out = 0
                 self.charged=False
+                self.flying=False
+                self.digging=False
+                self.diving=False
+                self.shadowing=False
                 return
         #confusion prevents rest of move execution
         if self.confused:
@@ -571,14 +591,23 @@ class mon:
                     self.confusionDamage()
                     self.rolling_out = 0
                     self.charged=False
+                    self.flying=False
+                    self.digging=False
+                    self.diving=False
+                    self.shadowing=False
                     return
         #check if move needs to be charged
         if "2turn" in notas:
             if self.charged: #pokemon has charged the move already
                 self.charged=False #pokemon will release the move
+                self.flying=False #these can go now
+                self.digging=False
+                self.diving=False
+                self.shadowing=False
             else: #all of these will lead to a return, ending move() before anything else happens
                 if "solar" in notas:
                     print(f"\n{self.name} is taking in sunlight!")
+                    shortpause()
                     self.charged=True
                     if self.field.weather=="sunny": #if sun is out, continue to use the move
                         self.charged=False
@@ -586,21 +615,61 @@ class mon:
                         return
                 elif "skullbash" in notas:
                     print(f"\n{self.name} tucks its head in...")
+                    shortpause()
                     self.charged=True
                     self.stageChange("de",1)
                     return
                 elif "geomance" in notas:
                     print(f"\n{self.name} is absorbing energy!")
+                    shortpause()
                     self.charged=True
+                    return
+                elif 'flying' in notas:
+                    print(f"\n{self.name} flies up high!")
+                    self.charged = True
+                    self.flying=True
+                    shortpause()
+                    return
+                elif 'diving' in notas:
+                    print(f"\n{self.name} dives underwater!")
+                    self.charged = True
+                    self.diving=True
+                    shortpause()
+                    return
+                elif 'digging' in notas:
+                    print(f"\n{self.name} digs underground!")
+                    self.charged = True
+                    self.digging=True
+                    shortpause()
+                    return
+                elif 'shadowforce' in notas:
+                    print(f"\n{self.name} vanishes into the shadows!")
+                    self.charged = True
+                    self.shadowing=True
+                    shortpause()
                     return
                 #other labels for other moves and charging contexts
         print(f"\n{self.name} uses {moveI['name']}!")
         if moveIndex!=struggle:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
         shortpause()
-        ###accuracy check###
-        ## moves that don't miss
-        if "noMiss" in notas:
+        ###accuracy check##aa:accuracy#
+        ## target is in semi-invulnerable turn
+        #sky uppercut, twister
+        ## flying hit by thousand arrows, smack down, thunder, hurricane, gust
+        if opponent.flying and not (('thunder' in notas) or ('arrows' in notas) or ('gust' in notas)):
+            hitCheck=False
+        ## diving hit by surf and whirlpool
+        elif opponent.diving and not ('surf' in notas):
+            hitCheck=False
+        ## digging hit by earthquake, fissure, and magnitude
+        elif opponent.digging and not ('nerfGrassy' in notas):
+            hitCheck=False
+        ## those ghosts can't be stopped
+        elif opponent.shadowing:
+            hitCheck=False
+        ## target is not in semi-invulnerable turn
+        elif "noMiss" in notas:
             hitCheck=True
         ## moves bypass accuracy under certain conditions
         elif ('blizzard' in notas) and (self.field.weather=='hail'):
@@ -851,9 +920,11 @@ class mon:
         if effectiveness==0. and not ('arrows' in notes):
             print(f"{self.name} is immune!")
         else:
-            if ('arrows' in notes) and (not self.grounded):
+            if ('arrows' in notes) and (not self.grounded or self.flying): #will need to further generalize for smack down?
                 print(f"The arrows can reach {self.name}!")
                 self.grounded=True
+                self.flying=False
+                self.charged=False #canceling fly and bounce
                 self.field.grounding(self)
                 effectiveness=1.0
             print(f"\n{self.name} is hit!")
@@ -2374,6 +2445,19 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         if attacker.curled: #another boost if poke has used defense curl
             power*=2
         power *= 2** (float(attacker.rolling_out))
+    #### getting caught ####
+    #digging diving flying
+    if ('gust' in note) and defender.flying:
+        caught_bonus = 2.
+        damages.append(f"{defender.name} is struck in the sky!")
+    if ('surf' in note) and defender.diving:
+        caught_bonus = 2.
+        damages.append(f"{defender.name} is struck underwater!")
+    elif ('nerfGrassy' in note) and defender.digging:
+        caught_bonus = 2.
+        damages.append(f"{defender.name} is struck underground!")
+    else:
+        caught_bonus = 1.
     #### retaliate ####
     if 'retaliate' in note:
         if ( ((attacker.battlespot == 'red') and attacker.field.faintedA) or ((attacker.battlespot == 'blue') and attacker.field.faintedB) ):
@@ -2501,7 +2585,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     else:
         ####modifiers united####
         #print(tyype)
-        damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
+        damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf*caught_bonus
         ####damage calculation####
         ans= np.floor( ((((2.*level)/5. + 2.)*power*attack/defense)/50. + 2.)*damageModifier )
     return ans,tyype,damages
