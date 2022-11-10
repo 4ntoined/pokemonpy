@@ -774,3 +774,9 @@ and if I figure out this one, there's no reason we can't also have fly dig dive 
 with earthquake, surf, thunder/hurricane, etc. and that could be really fun. But even with that one...I don't wanna do it. like idk lol
 no I'm sure someone will come by and finish all of this soon. bless them
 
+10 nov 2022
+08:54- gonna try to work on future sight, wish me luck
+10:03- added future sight attributes to battlefield() class, and setting up a future sight in move()
+still need to reduce counters every turn and devise method of attack/damage dealing, may use separate move
+function, we'll see
+

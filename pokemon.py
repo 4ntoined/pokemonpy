@@ -7,7 +7,7 @@
 # ABILITIES *cough* // genders ugh
 # priority // fly/dig/dive/etc // baton pass // bide // trapping moves bind/whirlpool 
 # multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
-#
+# entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
 import copy
 import time as t
@@ -787,12 +787,35 @@ class mon:
                 return
             ##==========================    end of status moves    =======================================##
             #fake out fails if its the not pokemons first turn out
-            #print(notas)
-            #print(self.firstturnout)
-            #print('fakeout' in notas)
             if ('fakeout' in notas) and (not self.firstturnout):
                 print('The move fails!')
                 return
+            # catching use and set up of future sight
+            if ('futuresight' in notas):
+                # set up a future sight attack to be executed in 2 turns
+                # so my idea is that the counters will start at 3, be reduced by 1
+                #at the end of every turn. They should be at 0 at the right time, we'll
+                #do the check after the deduction 
+                if self.battlespot=='red':
+                    if self.field.futuresA > 0.: #user fails, fs already up
+                        print("The move fails!")
+                        shortpause()
+                        return "failed"
+                    else:
+                        self.field.futuresA = 3
+                        print(f"{self.name} foresaw an attack!")
+                        shortpause()
+                        return
+                elif self.battlespot=='blue':
+                    if self.field.futuresB > 0.: #cpu fails, fs already up
+                        print("The move fails!")
+                        shortpause()
+                        return "failed"
+                    else:
+                        self.field.futuresB = 3
+                        print(f"{self.name} foresaw an attack!")
+                        shortpause()
+                        return
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
             opponent.hit(self,ans,eff,notas,moveI['type'],comment)
             #stat changes
@@ -1888,7 +1911,7 @@ class battle:
                         print("The battlefield is misty!")
                         shortpause()
                     print("\n")
-                    #if nothing was set, will go from 0 to -1, and keeping going negative
+                    #if nothing was set, will go from 0 to -1, and keep going negative
                     #until someone sets a screen, at which point itll be set to 5, decrease from there
                     #to 0, which we will catch and call out
                     self.field.lightscACounter-=1
@@ -1898,12 +1921,9 @@ class battle:
                     self.field.veilACounter-=1
                     self.field.veilBCounter-=1
                     #are these screens still up?
-                    say = ("Your team's Light Screen fades away!","Their Light Screen fades away!",\
-                           "Your team's Reflect fades away!","Their Reflect fades away!", \
+                    say = ("Your team's Light Screen fades away...","Their Light Screen fades away...",\
+                           "Your team's Reflect fades away...","Their Reflect fades away...", \
                            "Your team's Aurora Veil fades...","Thier Aurora Veil fades...")
-                    #scr_flag = [self.field.lightscA,self.field.lightscB,self.field.reflectA,self.field.reflectB]
-                    #if self.field.lightscA
-                    
                     for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter, self.field.reflectACounter,self.field.reflectBCounter, self.field.veilACounter,self.field.veilBCounter))) :
                         #print([ee[1]])
                         if ee[1] == 0:
@@ -1960,17 +1980,21 @@ class field:
             self.terrainCounter=np.inf
         else:
             self.terrainCounter=5 #terrain only lasts 5 (or 8) turns, all the time
-        #A for Red B for Blue?
+        #A for Red
+        #entry hazards
         self.rocksA=False
         self.steelA=False
         self.stickyA=False
         self.spikesA=0 #up to 3
-        self.toxicA=0 #up to 2 
+        self.toxicA=0 #up to 2
+        #screens
         self.reflectACounter = 0
         self.lightscACounter = 0
         self.veilACounter = 0
+        #tailwind
         self.tailwindACounter = 0
-        # 
+        self.futuresA = 0 #set to 3, execute an attack at 0
+        #B for Blue?
         self.rocksB=False
         self.stickyB=False
         self.steelB=False
@@ -1980,6 +2004,7 @@ class field:
         self.lightscBCounter = 0
         self.veilBCounter = 0
         self.tailwindBCounter = 0
+        self.futuresB #realized I dont need to specify its a counter
         #self.reflectA=False
         #self.reflectB=False
         #self.lightscA=False
@@ -2053,7 +2078,7 @@ class field:
                         ans = float(matri[i[0]][j[0]])
                     pass
                 pass
-            return ans
+            return max((0.,ans)) #if counter value is negative, instead return 0.
     ### only the hazards on the ground
     def grounding(self,poke):
         #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
@@ -2178,7 +2203,6 @@ class field:
                 micropause()
                 print("\nThe move fails! Light Screen is already up!")
                 return "failed"
-            ## player puts up reflect
             elif (scr=='veil') and (self.veilACounter>0):
                 micropause()
                 print("\nThe move fails! Aurora Veil is active!")
@@ -2247,8 +2271,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         statNerf=statStages[attacker.sastage] #will be ignored if negative and crit
         statBoost=statStages[defender.sdstage] #ignored if positive and crit
         burn=1.
-        if ( max((0.,attacker.field.checkScreen(defender.battlespot, 'lightscreen'))) + max( (0., attacker.field.checkScreen(defender.battlespot,'veil')) )) > 0.:
-            screennerf = 0.5 #light screen protects the defending pokemon
+        if ( attacker.field.checkScreen(defender.battlespot, 'lightscreen') + attacker.field.checkScreen(defender.battlespot,'veil') ) > 0.:
+            screennerf = 0.5 #light screen or veil protects the defending pokemon
             screen_i = 1
         pass
     else:
@@ -2261,8 +2285,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             burn=0.5
         else:
             burn=1.
-        if ( max((0.,attacker.field.checkScreen(defender.battlespot, 'reflect'))) + max( (0., attacker.field.checkScreen(defender.battlespot,'veil')) )) > 0.:
-            screennerf = 0.5 #light screen protects the defending pokemon
+        if ( attacker.field.checkScreen(defender.battlespot, 'reflect') + attacker.field.checkScreen(defender.battlespot,'veil') ) > 0.:
+            screennerf = 0.5 #reflect or veil protects the defending pokemon
             screen_i = 0
     plaintiffTipe=attacker.tipe
     defendantTipe=defender.tipe
