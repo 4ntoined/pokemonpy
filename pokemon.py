@@ -2860,13 +2860,40 @@ while 1:
     #############################################   E4?   ###########################################################
     if userChoice=='4':
         ##### uhhhhh #####
-        #bug1 = userParty[0]
-        #print(bug1.field)
-        #bug1.chosen('user', indigo)
-        #bug1.field.bugging()
-        pearl = field(weath='hail',terra='electric')
-        battle1 = battle(userParty, trainerParty, pearl)
+        #e4 order will be Silver, Zinnia, Cynthia, N, largely because I said so
+        #silver's battlefield will be...? rain
+        gold = field(weath='rain') #Silvers battlefield
+        gold.shuffleweather(False, True)
+        silversParty=[] #gotta create somehow someway
+        battle1 = battle(userParty, silversParty, gold)
         battle1.startbattle()
+        #did the player win? gotta check for that lol
+        #ask to heal the players pokemon
+        #zinnia's battle
+        sapphire = field(weath='sandstorm',terra='electric')
+        #sapphire.shuffleweather(False,True)
+        battle2 = battle(userParty,zinniasP,sapphire)
+        battle2.startbattle()
+        #win check
+        #cynthias battle
+        diamond = field(weath='hail',terra='psychic')
+        battle3 = battle(userParty,cynthsP,diamond)
+        battle3.startbattle()
+        #N's battle
+        black = field(weath='sunny',terra='misty')
+        battle4 = battle(userParty, nsP, black)
+        battle4.startbattle()
+        #win
+        #champ
+        indigo = field(terra='grassy') #clear weather, why not
+        battle5 = battle(userParty, chP, indigo)
+        battle5.startbattle()
+        #if you won, you won, like it's over
+        print("You defeated the Elite Four and their Champion!")
+        shortpause()
+        print("Congratulations! Cheers to the new Champion!")
+        shortpause()
+        #hall of fame where we highlight the party that just won
         pass
     #### end of e4? mode ###
     #### Classic Battle #### aa:battlemode

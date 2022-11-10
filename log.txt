@@ -794,4 +794,7 @@ timestamp and the last timestamp on this log, just kinda winged it and it looks 
 i havent tested the other couple, and importantly i've yet to test thunder on flying, surf on diving etc.
 again, someone will handle that, im SURE. in the meanwhile, that's all the rest of my moves (for now)
 I will probably start working on the e4 infrastucture now. we could be playtesting the boss mode very soon actually
+18:45- set up the elite four within the pokemon.py code, I now need to actually create the parties and their movesets and link them to the
+variables i've already set up for them. also need to have startbattle() return the result of the battle...who wins
+and that's it
 
