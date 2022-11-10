@@ -784,4 +784,9 @@ not a separate move(), but maybe I will use damage() and hit() outside of the co
 12:34- uh fusion bolt and flare are here and tested and approved. 3 more to go
 13:24- can confirm that mirror coat works as expected, counter Im trusting works but didn't personally test
 2 to go
+15:34- i added retaliate and tried to test it but both of my opponents were ghost type and immune, so whatever
+I think it works. realized that close combat still has the def nerf even when the target is immune, i think thats wrong
+makes more sense to put stat stage changes in hit() so they dont run on immunities
+like crush claw which lowers defense shouldnt lower defense if the target is literally immune yeah i gotta fix that
+one more to go. ironically its the one I said I might do first of these last
 

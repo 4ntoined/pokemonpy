@@ -81,7 +81,7 @@ moremoves=[
         ("Air Slash",75,95,15,1,0,9,0,"The user attacks with a blade of air that slices the sky.\n30% chance to make the target flinch.","flinch 30"),
         #("Dizzy Punch",70,100,10,0,1,0,0,"","conf 20"), Why did dizzy punch get kicked out of the game :(
         ("Facade",70,100,20,0,1,0,0,"An attack that does double damage if the user is poisoned, burned, or paralyzed.","facade"),
-        #("Retaliate",70,100,5,0,1,0,0,"The user gets revenge for a fainted ally.\nDoubles in power if an ally fainted in the previous turn.","retaliate"),
+        ("Retaliate",70,100,5,0,1,0,0,"The user gets revenge for a fainted ally.\nDoubles in power if an ally fainted in the previous turn.","retaliate"),
         ("Headbutt",70,100,15,0,1,0,0,"The user sticks out its head and attacks!\n30% chance to flinch target.","flinch 30"),
         ("Night Slash",70,100,15,0,1,15,0,"The user sneaks in and slashes the target the instant it gets the opportunity\nHigh crit. ratio.","highCrit"),
         ("Shadow Claw",70,100,15,0,1,13,0,"The user materializes a sharp claw from the shadows and slashes at the target!\nHigh crit. ratio.","highCrit"),

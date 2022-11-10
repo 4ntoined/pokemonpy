@@ -1744,21 +1744,21 @@ class battle:
                     #user foresaw this attack
                     if self.field.futuresA == 0:
                         if tFaint:
-                            print("There's no target for the Future Sight Attack!")
+                            print("There's no target for the Future Sight attack!")
                             micropause()
                         else:
                             self.usr_mon.futureSight(self.cpu_mon)
                             if self.cpu_mon.fainted:
-                                uFaint=True
+                                tFaint=True
                     #cpu foresaw this attack
                     if self.field.futuresB == 0:
                         if uFaint:
-                            print("There's no target for the Future Sight Attack")
+                            print("There's no target for the Future Sight attack!")
                             micropause()
                         else:
                             self.cpu_mon.futureSight(self.usr_mon)
                             if self.usr_mon.fainted:
-                                tFaint=True
+                                uFaint=True
                             #
                     # I think that's all folks
                     #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
@@ -1819,6 +1819,7 @@ class battle:
                             break
                         else:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
+                            self.field.faintedA = True #if there was a faint, mark it on the field
                             while 1:
                                 print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
                                 for i in range(len(self.usrs)):
@@ -1888,6 +1889,8 @@ class battle:
                                         #anything other than y repeats the loop
                                     if bShifted:
                                         break
+                    else: #user's pokemon did not faint,
+                        self.field.faintedA=False
                     #oppo switch
                     if tFaint:
                         #check for TRAINER BLACKOUT
@@ -1898,6 +1901,7 @@ class battle:
                             shortpause()
                             break
                         else:
+                            self.field.faintedB=True
                             #put fainted one away
                             self.cpu_mon.withdraw()
                             self.cpus[trainerInd]=self.cpu_mon
@@ -1909,8 +1913,11 @@ class battle:
                             self.field.landing(self.cpu_mon)
                             print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
                             shortpause()
+                        #
+                    else:
+                        self.field.faintedB=False
                     #pokemon have been switched in
-                    print("")
+                    #print("")
                     #is weather still happening
                     self.field.weatherCounter-=1
                     if self.field.weather=='sunny':
@@ -1968,7 +1975,7 @@ class battle:
                     elif self.field.terrain=="misty":
                         print("The battlefield is misty!")
                         shortpause()
-                    print("\n")
+                    #print("")
                     #if nothing was set, will go from 0 to -1, and keep going negative
                     #until someone sets a screen, at which point itll be set to 5, decrease from there
                     #to 0, which we will catch and call out
@@ -2042,6 +2049,9 @@ class field:
         self.fusionb=False
         self.fusionf=False
         #A for Red
+        self.tailwindACounter = 0
+        self.futuresA = 0 #set to 3, execute an attack at 0
+        self.faintedA = False
         #entry hazards
         self.rocksA=False
         self.steelA=False
@@ -2052,10 +2062,11 @@ class field:
         self.reflectACounter = 0
         self.lightscACounter = 0
         self.veilACounter = 0
-        #tailwind
-        self.tailwindACounter = 0
-        self.futuresA = 0 #set to 3, execute an attack at 0
+        #others        
         #B for Blue?
+        self.tailwindBCounter = 0
+        self.futuresB = 0   #realized I dont need to specify its a counter
+        self.faintedB = False
         self.rocksB=False
         self.stickyB=False
         self.steelB=False
@@ -2064,8 +2075,6 @@ class field:
         self.reflectBCounter = 0
         self.lightscBCounter = 0
         self.veilBCounter = 0
-        self.tailwindBCounter = 0
-        self.futuresB = 0   #realized I dont need to specify its a counter
         #self.reflectA=False
         #self.reflectB=False
         #self.lightscA=False
@@ -2094,6 +2103,8 @@ class field:
         self.stickyB=False
         self.fusionf=False
         self.fusionb=False
+        self.faintedA=False
+        self.faintedB=False
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
         #self.reflectA=False
@@ -2352,17 +2363,22 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #### brick break removes screens before doing damage ####
     if 'breakScreens' in note:
         screennerf = 1.
-    #### rollout #### 
-    if 'rollout' in note: 
-        if attacker.curled: #another boost if poke has used defense curl
-            power*=2
-        power *= 2** (float(attacker.rolling_out))
     #### water spout ####
     if 'spout' in note:
         power = np.floor( 150.*attacker.currenthp/attacker.maxhp )
         if power<1.:
             power = 1.
         pass
+    #### rollout #### 
+    if 'rollout' in note: 
+        if attacker.curled: #another boost if poke has used defense curl
+            power*=2
+        power *= 2** (float(attacker.rolling_out))
+    #### retaliate ####
+    if 'retaliate' in note:
+        if ( ((attacker.battlespot == 'red') and attacker.field.faintedA) or ((attacker.battlespot == 'blue') and attacker.field.faintedB) ):
+            power*=2.
+            damages.append(f"{attacker.name} avenges its fallen ally!")
     #### facade ####
     if ('facade' in note) and (attacker.burned or attacker.poisoned or attacker.badlypoisoned or attacker.paralyzed):
         power*=2.
