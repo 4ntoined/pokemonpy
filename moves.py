@@ -36,7 +36,7 @@ moremoves=[
         ("Head Charge",120,100,15,0,1,0,0,"The user charges with its head and powerful guard hair!\nDoes 1/4 recoil damage.","recoil 1/4"),
         ("Focus Blast",120,70,5,1,0,6,0,"The user heightens its mental focus an unleashs its power\n10% chance to lower target's SpD. 1 stage.","stat targ,sa,-1,10"),
         #("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
-        #("Future Sight",120,100,5,1,0,10,0,,"The user looks into the future and predicts an attack.","futuresight"),
+        ("Future Sight",120,100,5,1,0,10,0,"The user looks into the future and predicts an attack.","futuresight"),
         ("Clanging Scales",110,100,5,1,0,14,0,"Scales go bang.","stat self,de,-1,100"),
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure!","null"),
@@ -179,6 +179,9 @@ mov['index'] = np.arange(0,len(mov), dtype=int)
 #find struggle
 ind=np.argwhere(mov["name"]=="Struggle")
 struggle=int(mov[ind]["index"])
+#find future sight
+ind2 = np.argwhere(mov["name"]=="Future Sight")
+futuresigh=int(mov[ind2]["index"])
 #save the table, especially for readability
 mov.tofile('movedex.txt', sep='\n')
 with open('movedex.txt', 'a') as ofile:

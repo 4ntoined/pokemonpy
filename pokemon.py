@@ -12,7 +12,7 @@
 import copy
 import time as t
 import numpy as np
-from moves import getMoveInfo,mov,struggle,natures
+from moves import getMoveInfo,mov,struggle,natures,futuresigh
 from pokedex import dex
 
 def micropause():
@@ -844,7 +844,7 @@ class mon:
         if effectiveness==0. and not ('arrows' in notes):
             print(f"{self.name} is immune!")
         else:
-            if ('arrows' in notes) and (self.grounded==False):
+            if ('arrows' in notes) and (not self.grounded):
                 print(f"The arrows can reach {self.name}!")
                 self.grounded=True
                 self.field.grounding(self)
@@ -982,11 +982,23 @@ class mon:
         if self.currenthp <= 0.:
             self.faint()
         #i don't hate it
+    #futureSightAttack
+    def futureSight(self,target):
+        global futuresight_i
+        global mov
+        notes = mov[futuresight_i]["notes"]
+        print(notes)
+        ans,eff,comment = damage(self,target,120,10,1,notes)
+        print(f"{target.name} took the Future Sight attack!")
+        shortpause()
+        target.hit(self,ans,eff,notes,10,comment)
+        return
+        #um
     #confusion
     def confusionDamage(self):
         dmg = (((( 2. * self.level ) / 5. + 2.) * 40. * self.bat / self.bde) / 50. + 2. ) * (rng.integers(85,101)*0.01)
         self.currenthp -= dmg
-        self.currenthpp = 100 * self.currenthp / self.maxhp
+        self.currenthpp = 100. * self.currenthp / self.maxhp
         print( f"{self.name} hurt itself in its confusion!" )
         micropause()
         if self.currenthp <= 0.:
@@ -1701,8 +1713,31 @@ class battle:
                         print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
                         shortpause()
                         break
-                    print("")
+                    #print("")
                     #damages for pokemon that made it through the turn
+                    ### future sight ###
+                    self.field.futuresA-=1
+                    self.field.futuresB-=1
+                    #user foresaw this attack
+                    if self.field.futuresA == 0:
+                        if tFaint:
+                            print("There's no target for the Future Sight Attack!")
+                            micropause()
+                        else:
+                            self.usr_mon.futureSight(self.cpu_mon)
+                            if self.cpu_mon.fainted:
+                                uFaint=True
+                    #cpu foresaw this attack
+                    if self.field.futuresB == 0:
+                        if uFaint:
+                            print("There's no target for the Future Sight Attack")
+                            micropause()
+                        else:
+                            self.cpu_mon.futureSight(self.usr_mon)
+                            if self.usr_mon.fainted:
+                                tFaint=True
+                            #
+                    # I think that's all folks
                     #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
                     #burns
                     if self.usr_mon.burned and (not uFaint):
@@ -2004,7 +2039,7 @@ class field:
         self.lightscBCounter = 0
         self.veilBCounter = 0
         self.tailwindBCounter = 0
-        self.futuresB #realized I dont need to specify its a counter
+        self.futuresB = 0   #realized I dont need to specify its a counter
         #self.reflectA=False
         #self.reflectB=False
         #self.lightscA=False
@@ -2021,10 +2056,8 @@ class field:
         #so maybe I'll make trick room global for now
         #like a week after I wrote this ^ out I decided the time is now to modularize battle so I can set up several battlefield
         #with different conditions so really just don't believe anything I say
-
     def bugging(self):
         print('activated')
-       
     def clearfield(self):
         self.weather='clear'
         self.terrain='none'
@@ -2052,9 +2085,11 @@ class field:
         self.lightscBCounter = 0
         self.veilACounter = 0
         self.tailwindACounter = 0
+        self.futuresA = 0
         self.veilBCounter = 0
         self.tailwindBCounter = 0
-        
+        self.futuresB = 0
+        #etc, etc
     def shuffleweather(self,wea=True,ter=True):
         global Weathers
         global Terrains
@@ -2067,7 +2102,6 @@ class field:
             self.terrainCounter=5
             print(f"\nBattlefield terrain is {self.terrain} now.")
         return
-
     def checkScreen(self,color,screen):
             #color = 'red' or 'blue', screen='reflect' or 'lightscreen' eventually 'veil'
             matri= ((self.reflectACounter, self.lightscACounter, self.veilACounter),(self.reflectBCounter, self.lightscBCounter,self.veilBCounter) )
@@ -2075,10 +2109,10 @@ class field:
             for i in list(enumerate(('red','blue'))):
                 for j in list(enumerate(('reflect','lightscreen','veil'))):
                     if (color == i[1]) and (screen == j[1]):
-                        ans = float(matri[i[0]][j[0]])
+                        ans = max( 0., float(matri[i[0]][j[0]]) ) #if counter value is negative, instead return 0.
                     pass
                 pass
-            return max((0.,ans)) #if counter value is negative, instead return 0.
+            return ans
     ### only the hazards on the ground
     def grounding(self,poke):
         #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
@@ -2563,6 +2597,7 @@ nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
 Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggleInd=struggle #move index of struggle
+futuresight_i = futuresigh
 mo=list(range(len(mov)))
 mo.remove(struggleInd) #get struggle out of pool of moves
 #indigo = field()

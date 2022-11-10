@@ -779,4 +779,6 @@ no I'm sure someone will come by and finish all of this soon. bless them
 10:03- added future sight attributes to battlefield() class, and setting up a future sight in move()
 still need to reduce counters every turn and devise method of attack/damage dealing, may use separate move
 function, we'll see
+not a separate move(), but maybe I will use damage() and hit() outside of the context of move(), which hardly happens
+11:34- everybody give it up for future sight. 4 more to go
 
