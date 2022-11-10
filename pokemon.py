@@ -100,24 +100,25 @@ class mon:
         self.battlespot = None #will be set to "red" or "blue" when sent out
         self.field = None #will be set equal to the battle() instance into which a pokemon is sent out?
         #battle statuses
-        self.sleep=False
-        self.sleepCounter=0
+        self.sleep=False        
         self.frozen=False
         self.burned=False
         self.paralyzed=False
         self.poisoned=False
         self.badlypoisoned=False
-        self.poisonCounter=0
         self.confused=False
+        self.sleepCounter=0
+        self.poisonCounter=0
         self.confusionCounter=0
+        #
+        self.counter_damage = (0.0, "none") #damage points taken, "phys" or "spec"
         self.flinched=False #might not necessarily need this? idk
         self.resting=False #for moves where pokemon need to recharge
         self.charged=False #when true, pokemon has a 2turn move ready to use
         self.firstturnout=False
-        self.rolling_out=0
         self.curled=False
         self.aquaring=False
-
+        self.rolling_out=0
     #save pokemon
     def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
@@ -235,7 +236,7 @@ class mon:
         self.curled=False
         self.rolling_out=0
         self.aquaring=False
-    
+        self.counter_damage = (0.0, "none")
     #fainting
     def faint(self):
         self.currenthp=0.
@@ -817,7 +818,12 @@ class mon:
                         shortpause()
                         return
             ans,eff,comment=damage(self,opponent,moveI['pwr'],moveI['type'],moveI['special?'],notas)
-            opponent.hit(self,ans,eff,notas,moveI['type'],comment)
+            if len(comment)>0: 
+                if comment[0] == "failed": #bad mirror coat or counter
+                    print("The move fails!")
+                    shortpause()
+                    return
+            opponent.hit(self,ans,eff,notas,moveIndex,comment)
             #stat changes
             if "stat" in notas:
                 statInfo=notas[1+int(np.argwhere(np.array(notas)=='stat'))]
@@ -840,7 +846,8 @@ class mon:
         #end of move
     #zz:movefunction
     #aa:hitfunction
-    def hit(self,attacker,damagepoints,effectiveness,notes,moveTipe,comments):
+    def hit(self,attacker,damagepoints,effectiveness,notes,move_index,comments):
+        moveTipe = mov[move_index]['type']
         if effectiveness==0. and not ('arrows' in notes):
             print(f"{self.name} is immune!")
         else:
@@ -910,6 +917,11 @@ class mon:
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
                 shortpause()
+                ### setting counter/mirror coat damage data info
+                if mov[move_index]['special?'] == 1:
+                    self.counter_damage = (damagepoints, "spec")
+                else:
+                    self.counter_damage = (damagepoints, "phys")
                 #status conditions
                 #statuses bro
                 statuses=[]  #hey, hear me out, what if we made a numpy array out of these strings, "para" "burn" etc., and used numpy tricks to do all
@@ -996,7 +1008,7 @@ class mon:
         ans,eff,comment = damage(self,target,120,10,1,notes)
         print(f"{target.name} took the Future Sight attack!")
         shortpause()
-        target.hit(self,ans,eff,notes,10,comment)
+        target.hit(self,ans,eff,notes,futuresight_i,comment)
         return
         #um
     #confusion
@@ -1694,6 +1706,9 @@ class battle:
                     #turn off fusion flags
                     self.field.fusionf = False
                     self.field.fusionb = False
+                    #empty counter variables
+                    self.usr_mon.counter_damage = (0.0, "none")
+                    self.cpu_mon.counter_damage = (0.0, "none")
                     #if poke didnt just switch in, first turn flag is turned off
                     if (not switching):
                         self.usr_mon.firstturnout=False
@@ -2460,11 +2475,19 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #check if the burn nerf survives (non-crit and non-facade)
     if burn<1.0:
         damages.append("The burn reduces damage...")
-    ####modifiers united####
-    #print(tyype)
-    damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
-    ####damage calculation####
-    ans=((((2*level)/5 + 2)*power*attack/defense)/50 + 2)*damageModifier
+    #circumvent normal damage calculation sometimes
+    if (('mirrorcoat' in note) and (attacker.counter_damage[1] == 'spec')) or (('counter' in note) and (attacker.counter_damage[1]=='phys')):
+        ans = np.floor(2.*attacker.counter_damage[0])
+        damages = []
+    elif (('mirrorcoat' in note) or ('counter' in note)):
+        ans = 0.0
+        damages = ["failed"]
+    else:
+        ####modifiers united####
+        #print(tyype)
+        damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf
+        ####damage calculation####
+        ans= np.floor( ((((2.*level)/5. + 2.)*power*attack/defense)/50. + 2.)*damageModifier )
     return ans,tyype,damages
 #zz:damagefunction
 #aa:functions

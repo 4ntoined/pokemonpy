@@ -110,8 +110,8 @@ moremoves=[
         ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),
         #counter and mirror coat,
-        #("Counter",1,100,20,0,1,6,-5,"Counter","counter"),
-        #("Mirror Coat",1,100,20,1,0,10,-5,"Special move counter","mirrorcoat"),
+        ("Counter",1,100,20,0,1,6,-5,"Counter","counter"),
+        ("Mirror Coat",1,100,20,1,0,10,-5,"Special move counter","mirrorcoat"),
         #status moves
          #weather moves
         ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
