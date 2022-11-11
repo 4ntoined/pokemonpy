@@ -797,4 +797,11 @@ I will probably start working on the e4 infrastucture now. we could be playtesti
 18:45- set up the elite four within the pokemon.py code, I now need to actually create the parties and their movesets and link them to the
 variables i've already set up for them. also need to have startbattle() return the result of the battle...who wins
 and that's it
+19:07- thought about it some and I think i will be assembling the elite four teams in a separate .py script
+but it will need to call on the base, pokemon.py for mon() and makeMon() and the like, and pokemon.py will have import
+stuff from e4_script.py in its header so I dont like it. im not absolutely sure that it'll break something but
+i definitely don't like it. so i think im going to take all the class and most functions from pokemon.py and put them in 
+a base_pokemon.py or pokemon_classes.py or something. pokemon.py will reference "base" for all the necessary classes and functions
+e4_script should be able to do the same thing as necessary, 'base' need not have any depedence on e4_script like pokemon.py has.
+so gonna move a lot of things around. really hope I don't break it
 

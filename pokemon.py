@@ -1283,6 +1283,7 @@ class battle:
         self.usr_mon = usr_party[0]
         self.cpu_mon = cpu_party[0]
         self.field = fields
+        self.user_won = False
 
     #check status of battle
     #this needs to go IN battle()
@@ -1805,6 +1806,7 @@ class battle:
                     if checkBlackout(self.cpus)[0]==0:
                         battleOver=True
                         print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
+                        self.user_won = True
                         shortpause()
                         break
                     #print("")
@@ -1969,6 +1971,7 @@ class battle:
                         if blk==0:
                             battleOver=True
                             print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
+                            self.user_won=True
                             shortpause()
                             break
                         else:
@@ -2090,7 +2093,7 @@ class battle:
         for i in self.usrs:
             i.withdraw()
         shortpause() #kills
-        return
+        return self.user_won
     ###end of battle block###
     
     def moreBattleFunctions(self):
@@ -2866,28 +2869,28 @@ while 1:
         gold.shuffleweather(False, True)
         silversParty=[] #gotta create somehow someway
         battle1 = battle(userParty, silversParty, gold)
-        battle1.startbattle()
+        resu1 = battle1.startbattle()
         #did the player win? gotta check for that lol
         #ask to heal the players pokemon
         #zinnia's battle
         sapphire = field(weath='sandstorm',terra='electric')
         #sapphire.shuffleweather(False,True)
         battle2 = battle(userParty,zinniasP,sapphire)
-        battle2.startbattle()
+        resu2 = battle2.startbattle()
         #win check
         #cynthias battle
         diamond = field(weath='hail',terra='psychic')
         battle3 = battle(userParty,cynthsP,diamond)
-        battle3.startbattle()
+        resu3 = battle3.startbattle()
         #N's battle
         black = field(weath='sunny',terra='misty')
         battle4 = battle(userParty, nsP, black)
-        battle4.startbattle()
+        resu4 = battle4.startbattle()
         #win
         #champ
         indigo = field(terra='grassy') #clear weather, why not
         battle5 = battle(userParty, chP, indigo)
-        battle5.startbattle()
+        resu5 = battle5.startbattle()
         #if you won, you won, like it's over
         print("You defeated the Elite Four and their Champion!")
         shortpause()

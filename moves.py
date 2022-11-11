@@ -41,7 +41,7 @@ moremoves=[
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure!","null"),
         ("Blizzard",110,70,5,1,0,5,0,"The user summons a howling blizzard to strike the target.\n10% chance to freeze.","frze 10 blizzard"), #doesn't miss in hail, need to program
-        ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked thunderbolt on the target to inflict damage!\n30% chance to paralyze.","para 30 thunder"),
+        ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked lightningbolt on the target to inflict damage!\n30% chance to paralyze.","para 30 thunder"),
         ("Hurricane",110,70,10,1,0,9,0,"The user wraps its target in a fierce wind from a furious storm!\n30% chance to confuse.","conf 30 thunder"),
         ("Earthquake",100,100,10,0,0,8,0,"The user causes a powerful earthquake!","nerfGrassy"), #one day we'll generalize moves having their power nerfed under certain conditions....not today tho
         ("Judgement",100,100,10,1,0,0,0,"The user pelts the battlefield with bolts of light from the sky!","null"),
