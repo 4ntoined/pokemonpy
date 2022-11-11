@@ -145,60 +145,77 @@ while 1:
         #resu1 = battle1.startbattle()
         resu1=True
         if (not resu1): #the user lost
-            #print("")
-            continue
-        print(f"\nNext up: {c2_name} awaits your challenge...")
-        shortpause()
-        hea_1 = elite4_healquit(userParty)
-        """
-        heal1 = input("\nWould you like me to heal your Pokemon?\n[y]es, [n]o: ")     
-        if heal1 == 'b' or heal1=='B':
             print("Leaving Indigo Plateau...")
             micropause()
             continue
-        elif heal1 == 'y' or heal1=='Y':
-            #heal all them
-            print("\n")
-            for i in userParty:
-                i.restore()
-            print("\nYour party is looking better than ever!!")
-            micropause()
-            print("\nHave a nice day! and have fun!")
-            shortpause()
-        """
+        print(f"\n{c2_name} awaits your challenge...")
+        shortpause()
+        hea_1 = elite4_healquit(userParty)
         if hea_1 =='quitted': continue
-       #anything else continues e4 without healing
+        #anything else continues e4 without healing
         #did the player win? gotta check for that lol
         #ask to heal the players pokemon
         #zinnia's battle
         zinniasP = c2_party
         sapphire = field(weath='sandstorm',terra='electric')
-        #sapphire.shuffleweather(False,True)
-        battle2 = battle(userParty,zinniasP,sapphire,cpu_name = c2_name)
-        resu2 = battle2.startbattle()
+        #battle2 = battle(userParty,zinniasP,sapphire,cpu_name = c2_name)
+        #resu2 = battle2.startbattle()
+        resu2=True
         #win check
+        if (not resu2): #the user lost
+            print("Leaving Indigo Plateau...")
+            micropause()
+            continue
+        print(f"\n{c3_name} awaits your challenge...")
+        shortpause()
+        hea_2 = elite4_healquit(userParty)
+        if hea_2 =='quitted': continue
         #cynthias battle
         cynthsP=c3_party
         diamond = field(weath='hail',terra='psychic')
-        battle3 = battle(userParty,cynthsP,diamond,cpu_name = c3_name)
-        resu3 = battle3.startbattle()
-        #N's battle
+        #battle3 = battle(userParty,cynthsP,diamond,cpu_name = c3_name)
+        #resu3 = battle3.startbattle()
+        resu3 = True
+        if (not resu3): #the user lost
+            print("Leaving Indigo Plateau...")
+            micropause()
+            continue
+        print(f"\n{c4_name} awaits your challenge...")
+        shortpause()
+        hea_3 = elite4_healquit(userParty)
+        if hea_3 =='quitted': continue
+       #N's battle
         nsP=c4_party
         black = field(weath='sunny',terra='misty')
-        battle4 = battle(userParty, nsP, black,cpu_name = c4_name)
-        resu4 = battle4.startbattle()
+        #battle4 = battle(userParty, nsP, black,cpu_name = c4_name)
+        #resu4 = battle4.startbattle()
+        resu4=True
         #win
+        if (not resu4): #the user lost
+            print("Leaving Indigo Plateau...")
+            micropause()
+            continue
+        print(f"\nThe Grand Champion awaits your challenge...")
+        shortpause()
+        hea_4 = elite4_healquit(userParty)
+        if hea_4 =='quitted': continue
         #champ
         chP=c5_party
         indigo = field(terra='grassy') #clear weather, why not
-        battle5 = battle(userParty, chP, indigo,cpu_name = c5_name)
-        resu5 = battle5.startbattle()
+        #battle5 = battle(userParty, chP, indigo,cpu_name = c5_name)
+        #resu5 = battle5.startbattle()
+        resu5=True
         #if you won, you won, like it's over
-        print("You defeated the Elite Four and their Champion!")
-        shortpause()
-        print("Congratulations! Cheers to the new Champion!")
-        shortpause()
-        #hall of fame where we highlight the party that just won
+        if not resu5:
+            print("Leaving Indigo Plateau...")
+            micropause()
+            continue
+        else:         
+            print("\nYou defeated the Elite Four and the Grand Champion!")
+            dramaticpause()
+            print("Congratulations! Cheers to the new Grand Champion! A true Pokemon Master!")
+            dramaticpause()
+            #hall of fame where we highlight the party that just won
         pass
     #### end of e4? mode ###
     #### Classic Battle #### aa:battlemode
