@@ -2693,6 +2693,21 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
+def elite4_healquit(poke_party):
+    heal1 = input("\nWould you like me to heal your Pokemon?\n[y]es, [n]o: ")     
+    if heal1 == 'b' or heal1=='B':
+        print("Leaving Indigo Plateau...")
+        micropause()
+        return "quitted"
+    elif heal1 == 'y' or heal1=='Y':
+        #heal all them
+        for i in poke_party:
+            i.restore()
+        print("\nYour party is looking better than ever!!")
+        shortpause()
+        return "healed"
+    else:
+        return "advance"
 def micropause():
     t.sleep(0.4)
     return

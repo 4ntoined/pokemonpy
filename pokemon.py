@@ -12,7 +12,7 @@
 import copy
 import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit
 from moves import getMoveInfo,mov,natures
 from dexpoke import dex
 from victoryroad import c1_name,c2_name,c3_name,c4_name,c5_name,c1_party,c2_party,c3_party,c4_party,c5_party
@@ -24,16 +24,8 @@ rng=np.random.default_rng()
 #user
 starter= makeRandom()
 ##### creating the trainer for classic mode #####
-rival= makeRandom(starter.level-1, 6)
-#makeMon( rng.integers( len(dex) ), starter.level-1 )
-rival2= makeRandom(starter.level+5, 6)
-#makeMon( rng.integers( len(dex) ), starter.level+5 )
-#bugs=rng.choice(mo,size=6,replace=False)
-#rival.knownMoves=list(bugs)
-#rival.PP=[mov[i]["pp"] for i in bugs]
-#boos=rng.choice(mo,size=6,replace=False)
-#rival2.knownMoves=list(boos)
-#rival2.PP=[mov[i]["pp"] for i in boos]
+rival= makeRandom(np.floor(starter.level*(0.96)), 6)
+rival2= makeRandom(np.floor(starter.level*1.07), 6)
 #stuff them into their parties
 userParty=[starter]
 trainerParty=[rival,rival2]
@@ -139,13 +131,43 @@ while 1:
     #############################################   E4?   ###########################################################
     if userChoice=='4':
         ##### uhhhhh #####
+        ni, ny = checkBlackout(userParty)
+        if ni==0:
+            print("\nYou can't battle without a healthy Pokemon!")
+            shortpause()
+            continue #go back to main without starting the battle
         #e4 order will be Silver, Zinnia, Cynthia, N, largely because I said so
         #silver's battlefield will be...? rain
         gold = field(weath='rain') #Silvers battlefield
         gold.shuffleweather(False, True)
         silversParty=c1_party #gotta create somehow someway
-        battle1 = battle(userParty, silversParty, gold, cpu_name = c1_name)
-        resu1 = battle1.startbattle()
+        #battle1 = battle(userParty, silversParty, gold, cpu_name = c1_name)
+        #resu1 = battle1.startbattle()
+        resu1=True
+        if (not resu1): #the user lost
+            #print("")
+            continue
+        print(f"\nNext up: {c2_name} awaits your challenge...")
+        shortpause()
+        hea_1 = elite4_healquit(userParty)
+        """
+        heal1 = input("\nWould you like me to heal your Pokemon?\n[y]es, [n]o: ")     
+        if heal1 == 'b' or heal1=='B':
+            print("Leaving Indigo Plateau...")
+            micropause()
+            continue
+        elif heal1 == 'y' or heal1=='Y':
+            #heal all them
+            print("\n")
+            for i in userParty:
+                i.restore()
+            print("\nYour party is looking better than ever!!")
+            micropause()
+            print("\nHave a nice day! and have fun!")
+            shortpause()
+        """
+        if hea_1 =='quitted': continue
+       #anything else continues e4 without healing
         #did the player win? gotta check for that lol
         #ask to heal the players pokemon
         #zinnia's battle

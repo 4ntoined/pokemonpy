@@ -31,8 +31,6 @@ def random_evs():
 def learn_sets(poke, sets):
     global mov
     #sets should be a list of str with names of moves to learn
-    print(sets[0])
-    print(np.argwhere(mov['name'] == sets[0]))
     poke.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
     poke.PP = [ mov['pp'][i] for i in poke.knownMoves]
     return
