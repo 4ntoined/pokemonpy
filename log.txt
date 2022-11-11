@@ -806,4 +806,5 @@ e4_script should be able to do the same thing as necessary, 'base' need not have
 so gonna move a lot of things around. really hope I don't break it
 20:46- okay i did it. battled. tried every option out of the main menu and everything was really smooth
 really nice stuff we got here. can't wait to delete all that code
+22:13- started e4 script, working on making the pokemon from first principles. we out here
 
