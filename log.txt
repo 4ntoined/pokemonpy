@@ -804,4 +804,6 @@ i definitely don't like it. so i think im going to take all the class and most f
 a base_pokemon.py or pokemon_classes.py or something. pokemon.py will reference "base" for all the necessary classes and functions
 e4_script should be able to do the same thing as necessary, 'base' need not have any depedence on e4_script like pokemon.py has.
 so gonna move a lot of things around. really hope I don't break it
+20:46- okay i did it. battled. tried every option out of the main menu and everything was really smooth
+really nice stuff we got here. can't wait to delete all that code
 

@@ -3,10 +3,7 @@
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-
 import numpy as np
-#from astropy import table as tbl
-
 def getMoveInfo(moveIndex):
     return mov[moveIndex]
 ## move name // power // accuracy // pp // phys/spec/status // contact? // type // priority // description // code-notes
@@ -193,13 +190,6 @@ futuresigh=int(mov[ind2]["index"])
 mov.tofile('movedex.txt', sep='\n')
 with open('movedex.txt', 'a') as ofile:
     ofile.write('\n')
-#with open('movedex2.dat','w') as ofile:
-#    ofile.write('index name pwr accu pp special? contact? type desc notes\n')
-#    for i in range(len(mov)):
-#        for j in range(len(mov[i])):
-#            file.write("{j}, ")
-
-#
 #Natures?
 #no idea the best way to store this data
 #okay got it
@@ -210,6 +200,8 @@ natures = [ ["Hardy","Lonely","Adamant","Naughty","Brave"], \
                    ["Calm","Gentle","Careful","Quirky","Sassy"], \
                        ["Timid","Hasty","Jolly","Naive","Serious"] ]
 natures = np.array(natures,dtype=object)
-
-
+if __name__ == "__main__":
+    np.save("movedex.npy",mov)
+else:
+    pass
 

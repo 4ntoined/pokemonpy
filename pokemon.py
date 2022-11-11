@@ -12,20 +12,13 @@
 import copy
 import time as t
 import numpy as np
-from moves import getMoveInfo,mov,struggle,natures,futuresigh
-from pokedex import dex
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause
+from moves import getMoveInfo,mov,natures
+from dexpoke import dex
 
-def micropause():
-    t.sleep(0.4)
-    return
-def shortpause():
-    t.sleep(0.9)
-    return
-def dramaticpause():
-    t.sleep(1.4)
-    return
 rng=np.random.default_rng()
 #aa:monclass
+"""
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
@@ -2675,14 +2668,6 @@ def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6):
     return dome
 #check party for non fainted pokemon
 def checkBlackout(party):
-    """
-    party : list of mon() objects
-        a party of pokemon
-    p : integer
-        number of nonfainted pokemon
-    alive : list of intgers
-        indeces of nonfainted pokemon
-    """
     p=0
     alive=[]
     for i in range(len(party)):
@@ -2744,6 +2729,7 @@ futuresight_i = futuresigh
 mo=list(range(len(mov)))
 mo.remove(struggleInd) #get struggle out of pool of moves
 #indigo = field()
+"""
 ############   give the player a starter  ###############
 #user
 starter= makeRandom()
