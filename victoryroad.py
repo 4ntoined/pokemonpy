@@ -3,7 +3,7 @@
 #let's go!
 import copy
 import numpy as np
-from base_pokemon import mon, makeMon, makeRandom
+from base_pokemon import mon, makeMon, makeRandom, mo
 from moves import mov,struggle
 from dexpoke import dex
 rng_wild=np.random.default_rng()
@@ -32,10 +32,16 @@ def learn_sets(poke, sets):
     global mov
     #sets should be a list of str with names of moves to learn
     poke.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
-    poke.PP = [ mov['pp'][i] for i in silver1.knownMoves]
+    poke.PP = [ mov['pp'][i] for i in poke.knownMoves]
     return
 def add_random_moves(poke, number=2):
     global mov,mo
+    for ii in poke.knownMoves:
+        mo.remove(ii) #remove known move from list of possible moves
+    new_moves = list(rng_wild.choice(mo, size=number))
+    new_pp = [ mov['pp'][i] for i in new_moves ]
+    poke.knownMoves += new_moves
+    poke.PP += new_pp
     return
 levil = 145
 c1_name = "Silver of Johto"
@@ -81,7 +87,12 @@ learn_sets(silver2,croba_set)
 learn_sets(silver3,typhl_set)
 learn_sets(silver4,lugia_set)
 #add 2 random to everyone
-
+#silver1.summary()
+add_random_moves(silver1,number=2)
+add_random_moves(silver2,number=2)
+add_random_moves(silver3,number=2)
+add_random_moves(silver4,number=2)
+#these pokemon are done
 #silver1.summary()
 #fill the party
 c1_party = [silver2, silver1, silver3, silver4]

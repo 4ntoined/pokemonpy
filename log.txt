@@ -808,4 +808,7 @@ so gonna move a lot of things around. really hope I don't break it
 really nice stuff we got here. can't wait to delete all that code
 22:13- started e4 script, working on making the pokemon from first principles. we out here
 23:15- just keep doing stuff, so much more to do though, really so close actually forreal
+23:41- right, I just need to program the rest of the movesets for the final 4 of the elite4+champ,
+the infrastructure for installing those movesets is all set up, the most difficult part now
+is putting all the movesets into tuples of strings of move names. nice!
 
