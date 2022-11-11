@@ -15,7 +15,7 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause
 from moves import getMoveInfo,mov,natures
 from dexpoke import dex
-
+from victoryroad import c1_name,c2_name,c3_name,c4_name,c5_name,c1_party,c2_party,c3_party,c4_party,c5_party
 rng=np.random.default_rng()
 #
 # YOOOOOOOOOOOO
@@ -143,29 +143,33 @@ while 1:
         #silver's battlefield will be...? rain
         gold = field(weath='rain') #Silvers battlefield
         gold.shuffleweather(False, True)
-        silversParty=[] #gotta create somehow someway
-        battle1 = battle(userParty, silversParty, gold)
+        silversParty=c1_party #gotta create somehow someway
+        battle1 = battle(userParty, silversParty, gold, cpu_name = c1_name)
         resu1 = battle1.startbattle()
         #did the player win? gotta check for that lol
         #ask to heal the players pokemon
         #zinnia's battle
+        zinniasP = c2_party
         sapphire = field(weath='sandstorm',terra='electric')
         #sapphire.shuffleweather(False,True)
-        battle2 = battle(userParty,zinniasP,sapphire)
+        battle2 = battle(userParty,zinniasP,sapphire,cpu_name = c2_name)
         resu2 = battle2.startbattle()
         #win check
         #cynthias battle
+        cynthsP=c3_party
         diamond = field(weath='hail',terra='psychic')
-        battle3 = battle(userParty,cynthsP,diamond)
+        battle3 = battle(userParty,cynthsP,diamond,cpu_name = c3_name)
         resu3 = battle3.startbattle()
         #N's battle
+        nsP=c4_party
         black = field(weath='sunny',terra='misty')
-        battle4 = battle(userParty, nsP, black)
+        battle4 = battle(userParty, nsP, black,cpu_name = c4_name)
         resu4 = battle4.startbattle()
         #win
         #champ
+        chP=c5_party
         indigo = field(terra='grassy') #clear weather, why not
-        battle5 = battle(userParty, chP, indigo)
+        battle5 = battle(userParty, chP, indigo,cpu_name = c5_name)
         resu5 = battle5.startbattle()
         #if you won, you won, like it's over
         print("You defeated the Elite Four and their Champion!")

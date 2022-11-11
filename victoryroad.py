@@ -31,17 +31,23 @@ def random_evs():
 def learn_sets(poke, sets):
     global mov
     #sets should be a list of str with names of moves to learn
+    print(sets[0])
+    print(np.argwhere(mov['name'] == sets[0]))
     poke.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
     poke.PP = [ mov['pp'][i] for i in poke.knownMoves]
     return
 def add_random_moves(poke, number=2):
     global mov,mo
+    mo2 = mo.copy()
     for ii in poke.knownMoves:
-        mo.remove(ii) #remove known move from list of possible moves
-    new_moves = list(rng_wild.choice(mo, size=number))
+        mo2.remove(ii) #remove known move from list of possible moves
+    new_moves = list(rng_wild.choice(mo2, size=number))
     new_pp = [ mov['pp'][i] for i in new_moves ]
     poke.knownMoves += new_moves
     poke.PP += new_pp
+    return
+def dothewholething():
+    #gonna put the stuff here so we dont run all of it on import 
     return
 levil = 145
 c1_name = "Silver of Johto"
@@ -55,10 +61,27 @@ croba_set = ("Air Cutter","Bite","Confuse Ray","Toxic")
 typhl_set = ("Infernal Parade","Flamethrower","Swift","Rollout")
 lugia_set = ("Aeroblast","Future Sight","Hydro Pump","Recover")
 #zinnia movesets
+salam_set = ("Dragon Claw","Fire Fang","Crunch","Thunder Fang")
+tyran_set = ("Dragon Claw","Crunch","Dragon Pulse","Stone Edge")
+goodr_set = ("Dragon Pulse","Muddy Water","Thunderbolt","Ice Beam")
+zygar_set = ("Core Enforcer","Thousand Arrows","Crunch","Zen Headbutt")
 #cynths movesets
+spiri_set = ("Dark Pulse","Psychic","Silver Wind","Ominous Wind")
+lucar_set = ("Aura Sphere","Dragon Pulse","Psychic","Earthquake")
+milot_set = ("Surf","Ice Beam","Mirror Coat","Aqua Ring")
+girat_set = ("Shadow Force","Dragon Claw","Earth Power","Aura Sphere")
 #N movesets
+zekro_set = ("Fusion Bolt","Zen Headbutt","Giga Impact","Light Screen")
+vanil_set = ("Blizzard","Hail","Flash Cannon","Frost Breath")
+arche_set = ("Stone Edge","Acrobatics","Dragon Claw","Crunch")
+zoroa_set = ("Flamethrower","Focus Blast","Night Slash","Retaliate")
 #champ movesets
-
+pikac_set = ("Volt Tackle","Iron Tail","Brick Break","Fake Out")
+venus_set = ("Leaf Storm","Sludge Bomb","Earthquake","Sleep Powder")
+chari_set = ("Fire Blast","Focus Blast","Air Slash","Dragon Pulse")
+blast_set = ("Water Spout","Hydro Pump","Blizzard","Focus Blast")
+#mew_set   = ("","","","")
+mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
 #silver, Weavile, crobat, h-typhlosion(register), lugia
 #c1_party = []
 silver1 = makeMon(460,level=levil+3,nacher=(0, 3)) #weavile
@@ -112,13 +135,20 @@ set_evs(zin3, tuple(random_evs()))
 set_evs(zin4, tuple(random_evs()))
 #
 #moves
-
+learn_sets(zin1, salam_set)
+learn_sets(zin2, tyran_set)
+learn_sets(zin3, goodr_set)
+learn_sets(zin4, zygar_set)
+add_random_moves(zin1, number=2)
+add_random_moves(zin2, number=2)
+add_random_moves(zin3, number=2)
+add_random_moves(zin4, number=2)
 #partyfill
 c2_party = [zin1,zin2,zin3,zin4]
 #cynthia, spiritomb 441, 447 lucario, milotic 349, giratina-origin(register) 911
 cyn1 = makeMon(441,level=levil+0,nacher=(2, 0)) #spirit
 cyn2 = makeMon(447,level=levil+3,nacher=(4, 3)) #luke
-cyn3 = makeMon(349,level=levil+3,nacher=(3, 0)) #nilo
+cyn3 = makeMon(349,level=levil+3,nacher=(3, 0)) #milo
 cyn4 = makeMon(911,level=levil+5,nacher=(4, 2)) #gira
 #evs ivs
 set_ivs(cyn1, (31,30,30,31,31,31))
@@ -131,7 +161,14 @@ set_evs(cyn3, tuple(random_evs()))
 set_evs(cyn4, tuple(random_evs()))
 #
 #moves
-
+learn_sets(cyn1, spiri_set)
+learn_sets(cyn2, lucar_set)
+learn_sets(cyn3, milot_set)
+learn_sets(cyn4, girat_set)
+add_random_moves(cyn1, number=2)
+add_random_moves(cyn2, number=2)
+add_random_moves(cyn3, number=2)
+add_random_moves(cyn4, number=2)
 #partyfill
 c3_party = [cyn1,cyn2,cyn3,cyn4]
 #N, 643 zekrom, 583 vanilluxe,566  archeops, zoroark 570 (no illusion :() 
@@ -150,7 +187,14 @@ set_evs(nnn3, tuple(random_evs()))
 set_evs(nnn4, tuple(random_evs()))
 #
 #moves
-
+learn_sets(nnn1, zekro_set)
+learn_sets(nnn2, vanil_set)
+learn_sets(nnn3, arche_set)
+learn_sets(nnn4, zoroa_set)
+add_random_moves(nnn1, number=2)
+add_random_moves(nnn2, number=2)
+add_random_moves(nnn3, number=2)
+add_random_moves(nnn4, number=2)
 #partyfill
 c4_party = [nnn1,nnn2,nnn3,nnn4]
 #Champ,2 venusaur, 24 pikachu, 5 charizard, 8 blastoise, 913 mega-mewtwo Y(register), mew 150
@@ -174,7 +218,17 @@ set_evs(grn4, tuple( random_evs() ))
 set_evs(grn5, tuple( random_evs() ))
 set_evs(grn6, tuple( random_evs() ))
 #movs
-
+learn_sets(grn1, venus_set)
+learn_sets(grn2, pikac_set)
+learn_sets(grn3, chari_set)
+learn_sets(grn4, blast_set)
+learn_sets(grn5, mewtw_set)
+add_random_moves(grn1, number=2)
+add_random_moves(grn2, number=2)
+add_random_moves(grn3, number=2)
+add_random_moves(grn4, number=2)
+add_random_moves(grn5, number=2)
+grn6.randomizeMoveset(numb=6) #mew gets entirely random moveset
 #partyfilling
 c5_party=[grn1,grn2,grn3,grn4,grn5,grn6]
 

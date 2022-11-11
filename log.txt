@@ -812,3 +812,8 @@ really nice stuff we got here. can't wait to delete all that code
 the infrastructure for installing those movesets is all set up, the most difficult part now
 is putting all the movesets into tuples of strings of move names. nice!
 
+11 nov 2022
+00:49- wow. finished the teams. connected e4 to pokemon.py. tested a little and it seems to work. I need to set the guidance
+between battles, checking for win, offering to heal before next battle, etc. but this is so hot so far
+really gagged
+
