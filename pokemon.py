@@ -15,7 +15,7 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit
 from moves import getMoveInfo,mov,natures
 from dexpoke import dex
-from victoryroad import c1_name,c2_name,c3_name,c4_name,c5_name,c1_party,c2_party,c3_party,c4_party,c5_party
+from victoryroad import make_teams
 rng=np.random.default_rng()
 #
 # YOOOOOOOOOOOO
@@ -131,92 +131,113 @@ while 1:
     #############################################   E4?   ###########################################################
     if userChoice=='4':
         ##### uhhhhh #####
+        #### can't play if all your pokemon are fainted ####
         ni, ny = checkBlackout(userParty)
         if ni==0:
             print("\nYou can't battle without a healthy Pokemon!")
             shortpause()
             continue #go back to main without starting the battle
+        ## going to recommend a party level 
+        print("\nYou can challenge the best trainers in the world.")
+        shortpause()
+        bigstuff = make_teams()
+        print(f"Recommended level: {bigstuff[4][1][5].level}")
+        aretheysure = input("Will you challenge the Elite 4?\n[y]es or [b]: ")
         #e4 order will be Silver, Zinnia, Cynthia, N, largely because I said so
-        #silver's battlefield will be...? rain
-        gold = field(weath='rain') #Silvers battlefield
-        gold.shuffleweather(False, True)
-        silversParty=c1_party #gotta create somehow someway
-        #battle1 = battle(userParty, silversParty, gold, cpu_name = c1_name)
-        #resu1 = battle1.startbattle()
-        resu1=True
-        if (not resu1): #the user lost
+        if aretheysure=='b' or aretheysure == 'B':
             print("Leaving Indigo Plateau...")
             micropause()
             continue
-        print(f"\n{c2_name} awaits your challenge...")
-        shortpause()
-        hea_1 = elite4_healquit(userParty)
-        if hea_1 =='quitted': continue
-        #anything else continues e4 without healing
-        #did the player win? gotta check for that lol
-        #ask to heal the players pokemon
-        #zinnia's battle
-        zinniasP = c2_party
-        sapphire = field(weath='sandstorm',terra='electric')
-        #battle2 = battle(userParty,zinniasP,sapphire,cpu_name = c2_name)
-        #resu2 = battle2.startbattle()
-        resu2=True
-        #win check
-        if (not resu2): #the user lost
-            print("Leaving Indigo Plateau...")
-            micropause()
+        if aretheysure=='y' or aretheysure=='Y':
+            sils_stuff = bigstuff[0]
+            zins_stuff = bigstuff[1]
+            cyns_stuff = bigstuff[2]
+            nnns_stuff = bigstuff[3]
+            chps_stuff = bigstuff[4]
+            #
+            gold = field(weath='rain') #Silvers battlefield
+            gold.shuffleweather(False, True)
+            sapphire = field(weath='sandstorm',terra='electric') #Zinnia
+            diamond = field(weath='hail',terra='psychic') #Cynthia
+            black = field(weath='sunny',terra='misty') #N
+            indigo = field(terra='grassy') #champ
+            #
+            silP= sils_stuff[1] 
+            zinP= zins_stuff[1]
+            cynP= cyns_stuff[1] 
+            nnnP= nnns_stuff[1]
+            chaP= chps_stuff[1]
+            #
+            battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
+            resu1 = battle1.startbattle()
+            resu1=True
+            if (not resu1): #the user lost
+                print("Leaving Indigo Plateau...")
+                micropause()
+                continue
+            print(f"\n{zins_stuff[0]} awaits your challenge...")
+            shortpause()
+            hea_1 = elite4_healquit(userParty)
+            if hea_1 =='quitted': continue
+            #zinnia's battle
+            battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
+            resu2 = battle2.startbattle()
+            resu2=True
+            #win check
+            if (not resu2): #the user lost
+                print("Leaving Indigo Plateau...")
+                micropause()
+                continue
+            print(f"\n{cyns_stuff[0]} awaits your challenge...")
+            shortpause()
+            hea_2 = elite4_healquit(userParty)
+            if hea_2 =='quitted': continue
+            #cynthias battle
+            battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
+            resu3 = battle3.startbattle()
+            resu3 = True
+            if (not resu3): #the user lost
+                print("Leaving Indigo Plateau...")
+                micropause()
+                continue
+            print(f"\n{nnns_stuff[0]} awaits your challenge...")
+            shortpause()
+            hea_3 = elite4_healquit(userParty)
+            if hea_3 =='quitted': continue
+            #N's battle
+            battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
+            resu4 = battle4.startbattle()
+            resu4=True
+            #win
+            if (not resu4): #the user lost
+                print("Leaving Indigo Plateau...")
+                micropause()
+                continue
+            print("\nThe Grand Champion awaits your challenge...")
+            shortpause()
+            hea_4 = elite4_healquit(userParty)
+            if hea_4 =='quitted': continue
+            #champ
+            battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
+            resu5 = battle5.startbattle()
+            resu5=True
+            #if you won, you won, like it's over
+            if not resu5:
+                print("Leaving Indigo Plateau...")
+                micropause()
+                continue
+            else:         
+                print("\nYou defeated the Elite Four and the Grand Champion!")
+                dramaticpause()
+                print("Congratulations! Cheers to the new Grand Champion! A true Pokemon Master!")
+                dramaticpause()
+                #hall of fame where we highlight the party that just won
+            pass
+        else:
+            #print("Leaving Indigo Plateau...")
+            #micropause()
             continue
-        print(f"\n{c3_name} awaits your challenge...")
-        shortpause()
-        hea_2 = elite4_healquit(userParty)
-        if hea_2 =='quitted': continue
-        #cynthias battle
-        cynthsP=c3_party
-        diamond = field(weath='hail',terra='psychic')
-        #battle3 = battle(userParty,cynthsP,diamond,cpu_name = c3_name)
-        #resu3 = battle3.startbattle()
-        resu3 = True
-        if (not resu3): #the user lost
-            print("Leaving Indigo Plateau...")
-            micropause()
-            continue
-        print(f"\n{c4_name} awaits your challenge...")
-        shortpause()
-        hea_3 = elite4_healquit(userParty)
-        if hea_3 =='quitted': continue
-       #N's battle
-        nsP=c4_party
-        black = field(weath='sunny',terra='misty')
-        #battle4 = battle(userParty, nsP, black,cpu_name = c4_name)
-        #resu4 = battle4.startbattle()
-        resu4=True
-        #win
-        if (not resu4): #the user lost
-            print("Leaving Indigo Plateau...")
-            micropause()
-            continue
-        print(f"\nThe Grand Champion awaits your challenge...")
-        shortpause()
-        hea_4 = elite4_healquit(userParty)
-        if hea_4 =='quitted': continue
-        #champ
-        chP=c5_party
-        indigo = field(terra='grassy') #clear weather, why not
-        #battle5 = battle(userParty, chP, indigo,cpu_name = c5_name)
-        #resu5 = battle5.startbattle()
-        resu5=True
-        #if you won, you won, like it's over
-        if not resu5:
-            print("Leaving Indigo Plateau...")
-            micropause()
-            continue
-        else:         
-            print("\nYou defeated the Elite Four and the Grand Champion!")
-            dramaticpause()
-            print("Congratulations! Cheers to the new Grand Champion! A true Pokemon Master!")
-            dramaticpause()
-            #hall of fame where we highlight the party that just won
-        pass
+#########################################
     #### end of e4? mode ###
     #### Classic Battle #### aa:battlemode
     if userChoice=="b" or userChoice=="B":

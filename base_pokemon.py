@@ -2190,11 +2190,11 @@ class field:
         if wea:
             self.weather=rng.choice(Weathers)
             self.weatherCounter=np.inf
-            print(f"\nBattlefield weather is {self.weather} now.")
+            #print(f"\nBattlefield weather is {self.weather} now.")
         if ter:
             self.terrain=rng.choice(Terrains)
             self.terrainCounter=5
-            print(f"\nBattlefield terrain is {self.terrain} now.")
+            #print(f"\nBattlefield terrain is {self.terrain} now.")
         return
     def checkScreen(self,color,screen):
             #color = 'red' or 'blue', screen='reflect' or 'lightscreen' eventually 'veil'
@@ -2694,7 +2694,7 @@ def moveInfo(moveCode):
     else:
         print("-The user does not make contact with the target.")
 def elite4_healquit(poke_party):
-    heal1 = input("\nWould you like me to heal your Pokemon?\n[y]es, [n]o: ")     
+    heal1 = input("Would you like me to heal your Pokemon?\n[y]es, [n]o: ")     
     if heal1 == 'b' or heal1=='B':
         print("Leaving Indigo Plateau...")
         micropause()

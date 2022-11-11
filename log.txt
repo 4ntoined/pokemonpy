@@ -820,4 +820,8 @@ really gagged
 victory state. im gonna make some changes to victoryroad.py so that we're not doing all the work on main
 from there...besides playtesting the e4 battles...the world is really my oyster. we're really at the end of the endgame, on the verge of
 post-release support
+12:42- i think this is the final-ish e4 commit, it all seems to work, and i've made it sleek and user-pretty
+i am thinking heavily about multi-party support and streamlining pokemon creation, this should make
+playtesting the e4 (actually going into those battles with several pokemon with a variety of moves)
+okay ttyl gossip girl
 
