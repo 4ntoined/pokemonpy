@@ -21,12 +21,13 @@ def random_evs():
     global rng_wild
     ii = 0
     evv = [0]
-    while ii < 6: #do 6 times
+    while ii < 5: #do 5 times
         #take random values [0,min(252,remaining ev allowance)]
-        limit = min(252,508-evv[ii])
+        limit = min(252,508-sum(evv))
         opts = np.arange(0,limit+1,4)
         evv.append(rng_wild.choice(opts))
         ii+=1
+    evv.append(508-sum(evv)) #for 6th recorded entry, take the remaining allowance
     return evv[1:]
 def learn_sets(poke, sets):
     global mov
@@ -150,9 +151,9 @@ cyn3 = makeMon(349,level=levil+3,nacher=(3, 0)) #milo
 cyn4 = makeMon(911,level=levil+5,nacher=(4, 2)) #gira
 #evs ivs
 set_ivs(cyn1, (31,30,30,31,31,31))
-set_ivs(cyn2, (30,31,30,31,30,31))
-set_ivs(cyn3, (31,30,31,30,31,30))
-set_ivs(cyn4, (31,31,30,31,30,30))
+set_ivs(cyn2, (30,31,30,31,31,31))
+set_ivs(cyn3, (31,30,31,31,31,30))
+set_ivs(cyn4, (31,31,30,31,30,31))
 set_evs(cyn1, tuple(random_evs()))
 set_evs(cyn2, tuple(random_evs()))
 set_evs(cyn3, tuple(random_evs()))
