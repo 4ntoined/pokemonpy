@@ -41,7 +41,11 @@ print("** Welcome to the Wonderful World of Pokemon Simulation! **")
 dramaticpause()
 #aa:mainmenu
 while 1:
-    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n:"
+    #going to consolidate nursery and dex selection
+    #move tutor and move deleter
+    #opponent set and battle setting set 
+    #reseting the party can get swallowed into expanded multi-party functions
+    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n: "
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain
@@ -49,6 +53,7 @@ while 1:
         print("\n------------ Set the Stage of Battle ------------\n-------------------------------------------------")
         micropause()
         while 1: #user input loop
+
             print("Current Battle conditions:")
             micropause()
             print(f"Weather: {emerald.weather}\nTerrain: {emerald.terrain}")
