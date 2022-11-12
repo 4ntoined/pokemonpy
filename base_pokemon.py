@@ -3,7 +3,7 @@
 #treat these lines of code with care
 #thank you
 import time as t
-import copy
+#import copy
 import numpy as np
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,getMoveInfo
@@ -55,6 +55,7 @@ class mon:
         ##=============================================================##
         self.name=named
         self.tipe=tipe
+        self.levitate = False
         if len(tipe)>1:
             self.dualType=True
         else:
@@ -1275,8 +1276,9 @@ class battle:
     #check status of battle
     #this needs to go IN battle()
     def checkBattle(self):
+        ## need to add hazards, flying, diving, digging, shadowing, grounded or ungrounded
         global typeStrings
-        print(f"\n****** {self.cpu_mon.name} ({self.cpu_name}) ******")
+        print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\")
         if self.cpu_mon.dualType:
                 print(f"{typeStrings[self.cpu_mon.tipe[0]]} // {typeStrings[self.cpu_mon.tipe[1]]}")
         else:
@@ -1334,16 +1336,18 @@ class battle:
                 print(statstrs[i]+f" +{blueStats[i]}")
             elif blueStats[i]<0:
                 print(statstrs[i]+f" {blueStats[i]}")
+        ####    other obscure pokemon conditions, semi-invul, curled up, ground unground ####
+        #####################################################################################
         ## is there a screen up
         walls = (self.field.reflectBCounter, self.field.lightscBCounter, self.field.veilBCounter)
-        #print(walls)
         prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===",f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
         for i in list(enumerate(walls)):
             if i[1]>0:
                 print(prii[i[0]])
             pass
+        ####       hazards for blue...          ####
         print("------------------------------------")
-        print(f"************ {self.usr_mon.name} (You) ************")
+        print(f"\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
         if self.usr_mon.dualType:
                 print(f"{typeStrings[self.usr_mon.tipe[0]]} // {typeStrings[self.usr_mon.tipe[1]]}")
         else:
@@ -1398,6 +1402,8 @@ class battle:
                 print(statstrs[i]+f" +{redStats[i]}")
             elif redStats[i]<0:
                 print(statstrs[i]+f" {redStats[i]}")
+        ####    other obscure pokemon conditions, semi-invul, curled up, ground unground ####
+        #####################################################################################
         ## is there a screen up
         halls = (self.field.reflectACounter, self.field.lightscACounter, self.field.veilACounter)
         drii = (f"\n=== Reflect Up : {self.field.reflectACounter} ===", f"\n=== Light Screen Up : {self.field.lightscACounter} ===",f"\n=== Aurora Veil Up : {self.field.veilACounter} ===")
@@ -1417,7 +1423,6 @@ class battle:
             weat="SANDSTORM"
         elif self.field.weather=="hail":
             weat="HAILING"
-        print(f"Weather : {weat}")
         if self.field.terrain=="none":
             terr="NONE"
         elif self.field.terrain=="grassy":
@@ -1428,6 +1433,7 @@ class battle:
             terr="PSYCHIC"
         elif self.field.terrain=="misty":
             terr="MISTY"
+        print(f"Weather : {weat}")
         print(f"Terrain : {terr}")
         print("\n___ End of battle status ___")
 

@@ -825,3 +825,12 @@ i am thinking heavily about multi-party support and streamlining pokemon creatio
 playtesting the e4 (actually going into those battles with several pokemon with a variety of moves)
 okay ttyl gossip girl
 
+12 nov 2022
+13:17- wanted to write it down somewhere that I need to do more testing with Fly-ing (having used the move Fly) pokemon
+being smacked down with thousand arrows (and eventually smack down) i think thousand arrows will work but idk about smack down eventually
+that goes into deeper and more visible grounded/ungrounded stuff. I'm thinking I might "add" "levitate" as the first "ability"
+this will really be a flag on the mon (does this pokemon "have" the "ability levitate") and work that flag into being immune to spikes
+and webs and ground-type moves and terrains, and being "smacked down" by arrows and smack down. essentially earn the immunities of the flying-type
+I think this makes everything more dynamic. that sometimes pokemon will randomly be ungrounded, and the smack down moves now suddenly have a secondary
+effect on more pokemon
+

@@ -33,7 +33,7 @@ trainerParty=[rival,rival2]
 opponentName="OPPONENT"
 #####################
 #load up a battlefield for classic mode
-emerald = field(rando=True)
+scarlet = field(rando=True)
 ######################
 print("\n... A Python game by Antoine ...")
 shortpause()
@@ -42,13 +42,13 @@ dramaticpause()
 #aa:mainmenu
 while 1:
     #going to consolidate nursery and dex selection
-    #move tutor and move deleter
+    #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
     mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n: "
     userChoice=input(mainmenu)
     ########################################################################################################
-    #user setting the weather and terrain
+    #user setting the weather and terrain for classic mode
     if userChoice=="s" or userChoice=="S":
         print("\n------------ Set the Stage of Battle ------------\n-------------------------------------------------")
         micropause()
@@ -56,7 +56,7 @@ while 1:
 
             print("Current Battle conditions:")
             micropause()
-            print(f"Weather: {emerald.weather}\nTerrain: {emerald.terrain}")
+            print(f"Weather: {scarlet.weather}\nTerrain: {scarlet.terrain}")
             print("\nOptions:\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually\n")
             setChoice=input("What [#] would you like to do?\nor [b]ack: ")
             #go back
@@ -64,17 +64,17 @@ while 1:
                 break
             #randomize both
             if setChoice=="1":
-                emerald.shuffleweather()
+                scarlet.shuffleweather()
                 print("Conditions have been randomized!")
                 micropause()
             #randomize weather
             if setChoice=="2":
-                emerald.shuffleweather(True,False)
+                scarlet.shuffleweather(True,False)
                 print("Weather has been randomized!")
                 micropause()
             #randomize terrain
             if setChoice=="3":
-                emerald.shuffleweather(False,True)
+                scarlet.shuffleweather(False,True)
                 print("Terrain has been randomized!")
                 micropause()
             #manual set
@@ -93,7 +93,7 @@ while 1:
                             if newWeath=="b" or newWeath=="B":
                                 break
                             try:
-                                emerald.weather=Weathers[int(newWeath)]
+                                scarlet.weather=Weathers[int(newWeath)]
                                 print("New weather set!")
                                 break
                             except IndexError:
@@ -110,7 +110,7 @@ while 1:
                             if newTerr=="b" or newTerr=="B":
                                 break
                             try:
-                                emerald.terrain=Terrains[int(newTerr)]
+                                scarlet.terrain=Terrains[int(newTerr)]
                                 print("New terrain set!")
                                 break
                             except IndexError:
@@ -133,10 +133,9 @@ while 1:
             shortpause() #kills
         #end of opponent set, back to main screen
 
-    #############################################   E4?   ###########################################################
+    ####  E4  ####
     if userChoice=='4':
-        ##### uhhhhh #####
-        #### can't play if all your pokemon are fainted ####
+        ## can't play if all your pokemon are fainted
         ni, ny = checkBlackout(userParty)
         if ni==0:
             print("\nYou can't battle without a healthy Pokemon!")
@@ -148,22 +147,22 @@ while 1:
         bigstuff = make_teams()
         print(f"Recommended level: {bigstuff[4][1][5].level}")
         aretheysure = input("Will you challenge the Elite 4?\n[y]es or [b]: ")
-        #e4 order will be Silver, Zinnia, Cynthia, N, largely because I said so
         if aretheysure=='b' or aretheysure == 'B':
             print("Leaving Indigo Plateau...")
             micropause()
             continue
         if aretheysure=='y' or aretheysure=='Y':
+            #e4 order will be S - Z - C - N largely because I said so
             sils_stuff = bigstuff[0]
             zins_stuff = bigstuff[1]
             cyns_stuff = bigstuff[2]
             nnns_stuff = bigstuff[3]
             chps_stuff = bigstuff[4]
             #
-            gold = field(weath='rain') #Silvers battlefield
+            gold = field(weath='rain') #S
             gold.shuffleweather(False, True)
-            sapphire = field(weath='sandstorm',terra='electric') #Zinnia
-            diamond = field(weath='hail',terra='psychic') #Cynthia
+            sapphire = field(weath='sandstorm',terra='electric') #Z
+            diamond = field(weath='hail',terra='psychic') #C
             black = field(weath='sunny',terra='misty') #N
             indigo = field(terra='grassy') #champ
             #
@@ -251,11 +250,10 @@ while 1:
             print("\nYou can't battle without a healthy Pokemon!")
             shortpause()
             continue #go back to main without starting the battle
-        classicbattle = battle(userParty, trainerParty, emerald)
+        classicbattle = battle(userParty, trainerParty, scarlet)
         classicbattle.startbattle()
         #then it should loop back to the main menu?
     ###end of battle block###
-        
     #### check party pokemon? aa:pokemonparty ####
     if userChoice=="p" or userChoice=="P":
         while 1:
