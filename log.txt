@@ -833,4 +833,6 @@ this will really be a flag on the mon (does this pokemon "have" the "ability lev
 and webs and ground-type moves and terrains, and being "smacked down" by arrows and smack down. essentially earn the immunities of the flying-type
 I think this makes everything more dynamic. that sometimes pokemon will randomly be ungrounded, and the smack down moves now suddenly have a secondary
 effect on more pokemon
+22:22- um, reorganizing the menu...i'm having to do a lot of lotta with the code, fixing old mistakes, and trying to refine everything so
+the user can navigate in a natural kinda way. it's so much work but its kinda fun I just wish it was easier/didnt take so long to do
 

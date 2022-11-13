@@ -18,10 +18,7 @@ from dexpoke import dex
 from victoryroad import make_teams
 rng=np.random.default_rng()
 #
-# YOOOOOOOOOOOO
-# it's all GONE.... the game is RIGHT there v
 ############   give the player a starter  ###############
-#user
 starter= makeRandom()
 ##### creating the trainer for classic mode #####
 rival= makeRandom(np.floor(starter.level*(0.96)), 6)
@@ -45,93 +42,111 @@ while 1:
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
-    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining\n[M]ove Tutor\nPokemon [C]enter\n[O]pponent Set\nBattle [S]etting\n[R]eset Party\n[L]oad\nMove D[E]leter\n: "
+    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining" + \
+        "\n[M]ove Tutor\nPokemon [C]enter\nBattle [S]etting\n[R]eset Party" + \
+        "\n[L]oad\nMove D[E]leter\n: "
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode
     if userChoice=="s" or userChoice=="S":
-        print("\n------------ Set the Stage of Battle ------------\n-------------------------------------------------")
-        micropause()
+        #hello
         while 1: #user input loop
-
-            print("Current Battle conditions:")
+            print("\n------------Classic Mode Settings------------")
             micropause()
-            print(f"Weather: {scarlet.weather}\nTerrain: {scarlet.terrain}")
-            print("\nOptions:\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually\n")
-            setChoice=input("What [#] would you like to do?\nor [b]ack: ")
-            #go back
-            if setChoice=="b" or setChoice=="B":
+            print("")
+            micropause()
+            #settings menu
+            print("[1] Set the conditions of battle\n[2] Set your opponent's party")
+            sat_choice = input("What [#] to do or [b]ack: ")
+            if sat_choice == 'b' or sat_choice == 'B':
                 break
-            #randomize both
-            if setChoice=="1":
-                scarlet.shuffleweather()
-                print("Conditions have been randomized!")
+            if sat_choice == '1': #battlefield conditions setting
+                print("\n------------ Set the Stage ------------\n-------------------------------------------------")
+                print("\nCurrent Battle conditions:")
                 micropause()
-            #randomize weather
-            if setChoice=="2":
-                scarlet.shuffleweather(True,False)
-                print("Weather has been randomized!")
-                micropause()
-            #randomize terrain
-            if setChoice=="3":
-                scarlet.shuffleweather(False,True)
-                print("Terrain has been randomized!")
-                micropause()
-            #manual set
-            if setChoice=="4":
-                while 1: #user input loop, weather or terrain
-                    conChoice=input("Set\n[1] Weather \n[2] Terrain\nor [b]ack: ")
-                    if conChoice=="b" or conChoice=="B":
-                        break
-                    #weather
-                    if conChoice=="1":
-                        while 1: #user input loop, whats the new terrain
-                            print("")
-                            for i in range(len(Weathers)):
-                                print(f"{i}\t{Weathers[i]}")
-                            newWeath=input("What should the new weather be?\n[#] or [b]ack: ")
-                            if newWeath=="b" or newWeath=="B":
-                                break
-                            try:
-                                scarlet.weather=Weathers[int(newWeath)]
-                                print("New weather set!")
-                                break
-                            except IndexError:
-                                print("*\n** Entry out of range **\n*")
-                            except ValueError:
-                                print("*\n** Not a valid entry **\n*")
-                    #weather
-                    if conChoice=="2":
-                        while 1: #user input loop, whats the new terrain
-                            print("")
-                            for i in range(len(Terrains)):
-                                print(f"{i}\t{Terrains[i]}")
-                            newTerr=input("What should the new terrain be?\n[#] or [b]ack: ")
-                            if newTerr=="b" or newTerr=="B":
-                                break
-                            try:
-                                scarlet.terrain=Terrains[int(newTerr)]
-                                print("New terrain set!")
-                                break
-                            except IndexError:
-                                print("*\n** Entry out of range **\n*")
-                            except ValueError:
-                                print("*\n** Not a valid entry **\n*")
-            #more options to change battle conditions
+                print(f"Weather: {scarlet.weather}\nTerrain: {scarlet.terrain}")
+                print("\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually")
+                setChoice=input("What [#] to do or [b]ack: ")
+                #go back
+                if setChoice=="b" or setChoice=="B":
+                    break
+                #randomize both
+                if setChoice=="1":
+                    scarlet.shuffleweather()
+                    print("Conditions have been randomized!")
+                    shortpause()
+                #randomize weather
+                if setChoice=="2":
+                    scarlet.shuffleweather(True,False)
+                    print("Weather has been randomized!")
+                    shortpause()
+                #randomize terrain
+                if setChoice=="3":
+                    scarlet.shuffleweather(False,True)
+                    print("Terrain has been randomized!")
+                    shortpause()
+                #manual set
+                if setChoice=="4":
+                    while 1: #user input loop, weather or terrain
+                        conChoice=input("Set\n[1] Weather \n[2] Terrain\nor [b]ack: ")
+                        if conChoice=="b" or conChoice=="B":
+                            break
+                        #weather
+                        if conChoice=="1":
+                            while 1: #user input loop, whats the new terrain
+                                print("")
+                                for i in range(len(Weathers)):
+                                    print(f"{i}\t{Weathers[i]}")
+                                newWeath=input("What should the new weather be?\n[#] or [b]ack: ")
+                                if newWeath=="b" or newWeath=="B":
+                                    break
+                                try:
+                                    scarlet.weather=Weathers[int(newWeath)]
+                                    print("New weather set!")
+                                    break
+                                except IndexError:
+                                    print("*\n** Entry out of range **\n*")
+                                except ValueError:
+                                    print("*\n** Not a valid entry **\n*")
+                        #weather
+                        elif conChoice=="2":
+                            while 1: #user input loop, whats the new terrain
+                                print("")
+                                for i in range(len(Terrains)):
+                                    print(f"{i}\t{Terrains[i]}")
+                                newTerr=input("What should the new terrain be?\n[#] or [b]ack: ")
+                                if newTerr=="b" or newTerr=="B":
+                                    break
+                                try:
+                                    scarlet.terrain=Terrains[int(newTerr)]
+                                    print("New terrain set!")
+                                    break
+                                except IndexError:
+                                    print("*\n** Entry out of range **\n*")
+                                except ValueError:
+                                    print("*\n** Not a valid entry **\n*")
+                #more options to change battle conditions
+            elif sat_choice == '2': ## another setting somewhere
+                print("\n________ Opponent Reset ________")
+                shortpause()
+                aceChoice=input("Set your current team as the battle opponent?\n[y] or [b]ack: ")
+                if aceChoice=='y' or aceChoice=="Y":
+                    trainerParty=copy.deepcopy(userParty)
+                    print("The Battle Opponent has a new Party! Good Luck!")
+                    shortpause() #kills
+                else:
+                    print("Leaving Opponent Reset...")
+                    shortpause() #kills
+                #end of opponent set, back to main screen
+            else:
+                #print("*like I'm hearing a ghost*: What was that?")
+                pass
+            # should be the end of the classic setting block
+        #
                                 
     ####Reseting the Opponent in Classic Battle function####
     if userChoice=='o' or userChoice=="O":
-        print("\n________ Opponent Reset ________")
-        shortpause()
-        aceChoice=input("Would you like to set your current team as the battle opponent?\n[y] or [b] to go back:")
-        if aceChoice=='y' or aceChoice=="Y":
-            trainerParty=copy.deepcopy(userParty)
-            print("The Battle Opponent has a new Party! Good Luck!")
-            shortpause() #kills
-        else:
-            print("Leaving Opponent Reset...")
-            shortpause() #kills
-        #end of opponent set, back to main screen
+        pass
 
     ####  E4  ####
     if userChoice=='4':
@@ -146,6 +161,7 @@ while 1:
         shortpause()
         bigstuff = make_teams()
         print(f"Recommended level: {bigstuff[4][1][5].level}")
+        shortpause()
         aretheysure = input("Will you challenge the Elite 4?\n[y]es or [b]: ")
         if aretheysure=='b' or aretheysure == 'B':
             print("Leaving Indigo Plateau...")
@@ -447,238 +463,246 @@ while 1:
     ###end of nursery block
     
     ####training####
-    if userChoice=='t':
-        print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
+    ## gonna rework this to include move tutor and move deleter
+    ## at the same time, gonna also rework the concept so that you choose a pokemon
+    ## and then choose from there wha tto do with them
+    if userChoice=='t' or userChoice=='T':
+        #print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
         while 1:
+            print("\n&&&&&&&&&&&& Training &&&&&&&&&&&&")
             #choose a pokemon
-            print("\n")
+            print("")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
             trainChoice=input("Which Pokemon will we train?:\n[#] or [b]ack: ")
-            
             #option to go back, from pokemon selection to main screen
-            if trainChoice=='b':
+            if trainChoice=='b' or trainChoice=='B':
                 break
-            #user input loop, making sure input is poke#
-            while 1:
-                try:
-                    pokeIndex=int(trainChoice)-1
-                    pokeTrain=userParty[pokeIndex]
-                    break #confirmed numbers are good, exit user loop
-                except:
-                    print("\n**Must enter a number of a Pokemon**")
-                    trainChoice=input("\nWhich Pokemon will we train?:\n[#]")
-                    #ends error catch for pokemon selection
-            print(f"\n**** {pokeTrain.name} ****")
-            superHyper=input("Manage [E]Vs or [I]Vs or [L]evels\n:") #anything other than options below will skip to the next loop of choose a pokemon
-            
-            #EVs
-            if superHyper=='e':
+            try:
+                pokeIndex=int(trainChoice)-1
+                pokeTrain=userParty[pokeIndex]
+                #break #confirmed numbers are good, exit user loop                
+            except ValueError:
+                #we need a number
+                print("\n** Enter a NUMBER **")
+                pass
+            except IndexError:
+                print("\n** Must enter the number of a Pokemon **")
+                #the pokemon does not exist
+                pass
+            else:
                 while 1:
-                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >510.:\n")
-                    #option to go back
-                    if evs=='b':
-                        break #throws us back to choose a pokemon
-                    else:
-                        evs=evs.split()
-                        try:
-                            eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
-                            #make sure values are legal
-                            if np.max(eves)<=252.:
-                                if np.sum(eves)<=510.:
-                                    pokeTrain.hpev=int(evs[0])
-                                    pokeTrain.atev=int(evs[1])
-                                    pokeTrain.deev=int(evs[2])
-                                    pokeTrain.saev=int(evs[3])
-                                    pokeTrain.sdev=int(evs[4])
-                                    pokeTrain.spev=int(evs[5])
-                                    pokeTrain.reStat()
-                                    t.sleep(1)
-                                    print("\nTraining...")
-                                    t.sleep(1)
-                                    print(f"\n{pokeTrain.name} finished Super Training and has new stats!")
-                                    break #ends ev training, sends back to choose a pokemon
-                                else:
-                                    print("\n**No more than 510 EVs**")
-                                    pass
-                                pass
-                            else:
-                                print("\n**No more than 252 EVs in any stat.**")
-                                pass
-                            pass
-                        except: #catch non-numbers, incomplete sets
-                            print("\n**Max EV is 252.**\n**Total EVs cannot sum more than 510.**\n**Input 6 numbers separated by spaces.**")    
-                        #if code is here, EV training while loop continues
-                    pass
-                #end of ev training loop
-            
-            #IVs        
-            if superHyper=='i':
-                while 1:
-                    ivs=input("Enter 6 numbers (0-31) all at once.:\n")
-                    #option to go back, from iv input to choose a pokemon
-                    if ivs=='b':
+                    print(f"\n******** Training {pokeTrain.name} ********")
+                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n[#] or [b]ack: ")
+                    if hypermoves == 'b' or hypermoves=='B': #superhyper
                         break
-                    else:
-                        ivs=ivs.split() #6 numbers into list of strings
-                        try:
-                            #make sure we have 6 numbers
-                            ives=np.array([int(ivs[0]),int(ivs[1]),int(ivs[2]),int(ivs[3]),int(ivs[4]),int(ivs[5])])
-                            if np.max(ives)<=31:
-                                pokeTrain.hpiv=int(ivs[0])
-                                pokeTrain.ativ=int(ivs[1])
-                                pokeTrain.deiv=int(ivs[2])
-                                pokeTrain.saiv=int(ivs[3])
-                                pokeTrain.sdiv=int(ivs[4])
-                                pokeTrain.spiv=int(ivs[5])
-                                pokeTrain.reStat()
-                                t.sleep(1)
-                                print("\nTraining...")
-                                t.sleep(1)
-                                print(f"{pokeTrain.name} finished Hyper Training and has new stats!")
-                                t.sleep(1)
-                                break #ends IV training, goes back to choose a pokemon
+                    #### super-hyper training #### aa:training
+                    if hypermoves == '1': 
+                        while 1: #i want to loop back here unless specifically broken
+                            superHyper=input("Manage [E]Vs or [I]Vs or [L]evels\nor [b]ack: ") #anything other than options below will skip to the next loop of choose a pokemon
+                            if superHyper=='b' or superHyper=='B':
+                                print("\nLeaving SuperHyper Training...")
+                                micropause()
+                                break
+                            #EVs
+                            if superHyper=='e':
+                                while 1:
+                                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >508.:\n")
+                                    #option to go back
+                                    if evs=='b':
+                                        break #throws us back to ev/iv/lvls
+                                    else:
+                                        evs=evs.split()
+                                        try:
+                                            eves=np.array([int(evs[0]),int(evs[1]),int(evs[2]),int(evs[3]),int(evs[4]),int(evs[5])])
+                                            #make sure values are legal
+                                            if np.max(eves)<=252. and np.min(eves)>=0:
+                                                if np.sum(eves)<=508.:
+                                                    pokeTrain.hpev=int(evs[0])
+                                                    pokeTrain.atev=int(evs[1])
+                                                    pokeTrain.deev=int(evs[2])
+                                                    pokeTrain.saev=int(evs[3])
+                                                    pokeTrain.sdev=int(evs[4])
+                                                    pokeTrain.spev=int(evs[5])
+                                                    pokeTrain.reStat()
+                                                    print("\nTraining...")
+                                                    shortpause()
+                                                    print(f"\n{pokeTrain.name} is all Supertrained!!")
+                                                    shortpause()
+                                                    break #ends ev training, back to evs
+                                                else:
+                                                    print("\n** No more than 508 EVs total. **")
+                                                    pass
+                                                pass
+                                            else:
+                                                print("\n** No more than 252 EVs in any stat. **\n** No negative EVs. **")
+                                                pass
+                                            pass
+                                        except: #catch non-numbers, incomplete sets
+                                            print("\n** Max EV is 252. **\n** Total EVs cannot sum >508. **\n** Input 6 numbers separated by spaces. **")    
+                                        #if code is here, EV training while loop continues
+                                    pass
+                                #end of ev training loop
+                            #IVs        
+                            elif superHyper=='i':
+                                while 1:
+                                    ivs=input("Enter 6 numbers (0-31) all at once.:\n")
+                                    #option to go back, from iv input to ev/iv/lvl
+                                    if ivs=='b':
+                                        break
+                                    else:
+                                        ivs=ivs.split() #6 numbers into list of strings
+                                        try:
+                                            #make sure we have 6 numbers
+                                            ives=np.array([int(ivs[0]),int(ivs[1]),int(ivs[2]),int(ivs[3]),int(ivs[4]),int(ivs[5])])
+                                            if np.max(ives)<=31 and np.min(ives)>=0:
+                                                pokeTrain.hpiv=int(ivs[0])
+                                                pokeTrain.ativ=int(ivs[1])
+                                                pokeTrain.deiv=int(ivs[2])
+                                                pokeTrain.saiv=int(ivs[3])
+                                                pokeTrain.sdiv=int(ivs[4])
+                                                pokeTrain.spiv=int(ivs[5])
+                                                pokeTrain.reStat()
+                                                print("\nTraining...")
+                                                shortpause()
+                                                print(f"{pokeTrain.name} is all Hypertrained!")
+                                                shortpause()
+                                                break #ends IV training, goes back to choose a pokemon
+                                            else:
+                                                print("\n** Maximum IV is 31 **\n** Minimum is 0 **")
+                                        except IndexError: #input couldn't fill 6-item array
+                                            print("\n** Enter !6! numbers separated by spaces **")
+                                        except ValueError: #we tried to make an int() out of something non-number
+                                            print("\n** Enter 6 !numbers! separated by spaces **")
+                                        #if we get here, an IV was more than 31, loops back to IV input
+                                    #end of iv input loop
+                                #end of IV training loop
+                            #level
+                            elif superHyper=='l':
+                                while 1:
+                                    levl=input(f"What level should {pokeTrain.name} be?\nor [b]ack: ")
+                                    if levl=='b' or levl=='B':
+                                        break
+                                    try:
+                                        levl = int(levl)
+                                        if levl>=1: #if input was a positive number
+                                            pokeTrain.level=levl #set pokemon's new level
+                                            pokeTrain.reStat() #recalcs stats
+                                            print("\nTraining...")
+                                            shortpause()
+                                            print(f"{pokeTrain.name} leveled up (or down)!")
+                                            shortpause()
+                                            break #back to levl/evs/ivs
+                                        else:
+                                            print("\n**Level must be at least 1**")
+                                    except:
+                                        print("\n**Enter a number greater than 0.**")
+                                    #end of level input while block
+                                #end of level training block
+                    #### move tutor #### aa:movelearning
+                    elif hypermoves == '2':
+                        print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
+##  HIII IT'S BROKEN RIGHT HERE BECAUSE I BIT OFF MORE THAT I CAN CHEW, MY EYES HURT, HERE'S A COMMIT WHILE I TAKE AN OREO BREAK
+                        if 'we live':
+                            learnChoice=input("Enter the number of a Pokemon\n[#], [m]ove info, or [b]ack: ")
+                            #go back
+                            if learnChoice=='b' or learnChoice=='B':
+                                print("Leaving Move Tutor...")
+                                shortpause() #kills
+                                break #go back to main screen
+                            if learnChoice=="m" or learnChoice=="M":
+                                #print all the moves
+                                print("\n------------ Pokemon Moves ------------")
+                                for i in range(len(mov)):
+                                    print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
+                                print("------------------------")
+                                while 1:
+                                    mpChoice=input("Which moves do you want to see?\n[#] or [b]ack: ")
+                                    if mpChoice=="b" or mpChoice=="B":
+                                        shortpause()
+                                        break
+                                    try:
+                                        movez=mpChoice.split() #pokemon movelist index (string)
+                                        movez=[int(i) for i in movez] #pokemon movelist indices (int)
+                                    except ValueError:
+                                        print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                    except IndexError:
+                                        print("\n** Use the indices to select moves to take a closer look at. **")
+                                    else:
+                                        for i in range(len(movez)):
+                                            print("")
+                                            moveInfo(movez[i])
+                                            micropause() #drama
+                                        pause=input("\nEnter anything to continue back to Pokemon summary...")
+                                        continue
                             else:
-                                print("\n**Maximum IV is 31**")
-                        except IndexError: #input couldn't fill 6-item array
-                            print("\n**Enter !6! numbers separated by spaces**")
-                        except ValueError: #we tried to make an int() out of something non-number
-                            print("\n**Enter 6 !numbers! separated by spaces**")
-                        #if we get here, an IV was more than 31, loops back to IV input
-                    #end of iv input loop
-                #end of IV training loop
-            
-            #level
-            if superHyper=='l':
-                while 1:
-                    try:
-                        levl=int(input(f"What level should {pokeTrain.name} be?: "))
-                        if levl>0.: #if input was a positive number
-                            pokeTrain.level=levl #set pokemon's new level
-                            pokeTrain.reStat() #recalcs stats
-                            print("\nTraining...")
-                            t.sleep(1)
-                            print(f"\n{pokeTrain.name} finished training and has new stats!")
-                            t.sleep(1)
-                            break #exits user input loop
-                        else:
-                            print("\n**Level must be at least 1**")
-                    except:
-                        print("\n**Enter a number greater than 0.**")
-                    #end of level input while block
-                #end of level training block
-                
-            pass #loops back to training screen
-        print("\nLeaving SuperHyper Training...")
-        t.sleep(1) #exiting training
+                                try:
+                                    learnChoice=int(learnChoice)
+                                    studentMon=userParty[learnChoice-1]
+                                    print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
+                                except ValueError:
+                                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
+                                except IndexError:
+                                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
+                                else:
+                                    #otherwise, print the moves, godspeed
+                                    print("\n------------ Pokemon Moves ------------")
+                                    for i in range(len(mov)):
+                                        print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
+                                    print("------------------------")
+                                    while 1: #input loop
+                                        chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
+                                        #go back to choose a pokemon
+                                        if chooseMove=='b' or chooseMove=='B':
+                                            break
+                                        if chooseMove.split()[0]=='random':
+                                            try:
+                                                n_moves = int(chooseMove.split()[1])
+                                            except ValueError:
+                                                print('\n**Bad Value**')
+                                            except IndexError:
+                                                print('\n**Bad Index**')
+                                            else:
+                                                studentMon.randomizeMoveset(n_moves)
+                                                break #randomized moves, go back to pokemon selecting loop
+                                        #extract and apply moves
+                                        try:
+                                            chooseMoves=chooseMove.split() #separate move indices into own strings
+                                            moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
+                                            incomplete=False
+                                            if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
+                                                if min(moveInts)>=0: #ward off negative numbers
+                                                    for i in moveInts:
+                                                        if i in studentMon.knownMoves:
+                                                            print(f"! {studentMon.name} already knows {getMoveInfo(i)['name']} !\n")
+                                                            incomplete=True
+                                                        else:
+                                                            studentMon.knownMoves.append(i)
+                                                            studentMon.PP.append(getMoveInfo(i)['pp'])
+                                                            print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
+                                                    if incomplete==False: #if there are no conflicts
+                                                        break #all moves added, breaks loop and goes back to choose a pokemon
+                                                    #otherwise, choose moves loop is restated
+                                                else: #failing brings you back to move selection
+                                                    print("** That's out of bounds.. **\n")
+                                            else: #failing brings you back to move selection
+                                                print("** That's out of bounds.. **\n")
+                                        except ValueError:
+                                            print("** Enter [#] corresponding to desired moves **\n")
+                                        except IndexError:
+                                            print("** Use move legend to add moves **\n")
+                                    #end of move selection while block, moves have been picked
+                            #choose a new pokemon
+                        #goes back to choose a pokemon
+                    ###end of move learner block####
+
+                        pass
+                    else:
+                        pass
+        #
     ###end of training block###
     #zz:training
-    #aa:movetutor
-    ####move learner####
-    if userChoice=='m':
-        print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
-        while 1: #choose a pokemon
-            print("\n******** Party Pokemon ********\n*******************************\n")
-            for i in range(len(userParty)):
-                if userParty[i].dualType:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                    thipe+=" // "
-                    thipe+=typeStrings[userParty[i].tipe[1]]
-                else:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-            print("*******************************\n")
-            learnChoice=input("Enter the number of a Pokemon\n[#], [m]ove info, or [b]ack: ")
-            #go back
-            if learnChoice=='b' or learnChoice=='B':
-                print("Leaving Move Tutor...")
-                shortpause() #kills
-                break #go back to main screen
-            if learnChoice=="m" or learnChoice=="M":
-                #print all the moves
-                print("\n------------ Pokemon Moves ------------")
-                for i in range(len(mov)):
-                    print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
-                print("------------------------")
-                while 1:
-                    mpChoice=input("Which moves do you want to see?\n[#] or [b]ack: ")
-                    if mpChoice=="b" or mpChoice=="B":
-                        shortpause()
-                        break
-                    try:
-                        movez=mpChoice.split() #pokemon movelist index (string)
-                        movez=[int(i) for i in movez] #pokemon movelist indices (int)
-                    except ValueError:
-                        print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
-                    except IndexError:
-                        print("\n** Use the indices to select moves to take a closer look at. **")
-                    else:
-                        for i in range(len(movez)):
-                            print("")
-                            moveInfo(movez[i])
-                            micropause() #drama
-                        pause=input("\nEnter anything to continue back to Pokemon summary...")
-                        continue
-            else:
-                try:
-                    learnChoice=int(learnChoice)
-                    studentMon=userParty[learnChoice-1]
-                    print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
-                except ValueError:
-                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
-                except IndexError:
-                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
-                else:
-                    #otherwise, print the moves, godspeed
-                    print("\n------------ Pokemon Moves ------------")
-                    for i in range(len(mov)):
-                        print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
-                    print("------------------------")
-                    while 1: #input loop
-                        chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
-                        #go back to choose a pokemon
-                        if chooseMove=='b' or chooseMove=='B':
-                            break
-                        if chooseMove.split()[0]=='random':
-                            try:
-                                n_moves = int(chooseMove.split()[1])
-                            except ValueError:
-                                print('\n**Bad Value**')
-                            except IndexError:
-                                print('\n**Bad Index**')
-                            else:
-                                studentMon.randomizeMoveset(n_moves)
-                                break #randomized moves, go back to pokemon selecting loop
-                        #extract and apply moves
-                        try:
-                            chooseMoves=chooseMove.split() #separate move indices into own strings
-                            moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
-                            incomplete=False
-                            if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
-                                if min(moveInts)>=0: #ward off negative numbers
-                                    for i in moveInts:
-                                        if i in studentMon.knownMoves:
-                                            print(f"! {studentMon.name} already knows {getMoveInfo(i)['name']} !\n")
-                                            incomplete=True
-                                        else:
-                                            studentMon.knownMoves.append(i)
-                                            studentMon.PP.append(getMoveInfo(i)['pp'])
-                                            print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
-                                    if incomplete==False: #if there are no conflicts
-                                        break #all moves added, breaks loop and goes back to choose a pokemon
-                                    #otherwise, choose moves loop is restated
-                                else: #failing brings you back to move selection
-                                    print("** That's out of bounds.. **\n")
-                            else: #failing brings you back to move selection
-                                print("** That's out of bounds.. **\n")
-                        except ValueError:
-                            print("** Enter [#] corresponding to desired moves **\n")
-                        except IndexError:
-                            print("** Use move legend to add moves **\n")
-                    #end of move selection while block, moves have been picked
-            #choose a new pokemon
-        #goes back to choose a pokemon
-    ###end of move learner block####
+
 
     ####make pokemon from pokedex (use preset stats)####
     if userChoice=='d':
