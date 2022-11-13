@@ -836,3 +836,8 @@ effect on more pokemon
 22:22- um, reorganizing the menu...i'm having to do a lot of lotta with the code, fixing old mistakes, and trying to refine everything so
 the user can navigate in a natural kinda way. it's so much work but its kinda fun I just wish it was easier/didnt take so long to do
 
+13 nov 2022
+11:55- i pulled move learning and deleting into super and hyper training, choose a pokemon and choose which
+of the 3 things to do with it. also considated opponent settings with battlefield conditions settings. its all pretty nice lots
+of slimming down and polishing up, will have to move onto pokemon creation next
+

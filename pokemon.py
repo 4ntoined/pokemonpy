@@ -601,28 +601,37 @@ while 1:
                                 #end of level training block
                     #### move tutor #### aa:movelearning
                     elif hypermoves == '2':
-                        print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
-##  HIII IT'S BROKEN RIGHT HERE BECAUSE I BIT OFF MORE THAT I CAN CHEW, MY EYES HURT, HERE'S A COMMIT WHILE I TAKE AN OREO BREAK
-                        if 'we live':
-                            learnChoice=input("Enter the number of a Pokemon\n[#], [m]ove info, or [b]ack: ")
+                        while 1:
+                            print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
+                            #print all the moves
+                            print("\n------------ Pokemon Moves ------------")
+                            for i in range(len(mov)):
+                                print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| " + \
+                                      f"{typeStrings[mov[i]['type']]}")
+                            print("---------------------------------------")
+                            micropause()
+                            #ask user what moves to learn
+                            learnChoice=input(f"What moves should {pokeTrain.name} learn?\n" + \
+                                "(Lead with 'i' to see move info.)\n(Use 'random n' to teach n random moves.)"+\
+                                "\n[#]'s or [b]ack: ")
                             #go back
                             if learnChoice=='b' or learnChoice=='B':
                                 print("Leaving Move Tutor...")
-                                shortpause() #kills
-                                break #go back to main screen
-                            if learnChoice=="m" or learnChoice=="M":
-                                #print all the moves
-                                print("\n------------ Pokemon Moves ------------")
-                                for i in range(len(mov)):
-                                    print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
-                                print("------------------------")
-                                while 1:
-                                    mpChoice=input("Which moves do you want to see?\n[#] or [b]ack: ")
-                                    if mpChoice=="b" or mpChoice=="B":
-                                        shortpause()
-                                        break
+                                shortpause()
+                                break #back to training-main
+                            moveslearning = learnChoice.split()
+                            mlcount = len(moveslearning)
+                            # for non-blank entries
+                            if mlcount >=1:
+                                #user wants to learn about the moves
+                                if moveslearning[0]=='i' or moveslearning[0]=='I':
+                                #while 1:
+                                    #mpChoice=input("Which moves do you want to see?\n[#] or [b]ack: ")
+                                    #if mpChoice=="b" or mpChoice=="B":
+                                    #    shortpause()
+                                    #    break
                                     try:
-                                        movez=mpChoice.split() #pokemon movelist index (string)
+                                        movez=moveslearning[1:] #pokemon movelist index (string)
                                         movez=[int(i) for i in movez] #pokemon movelist indices (int)
                                     except ValueError:
                                         print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
@@ -633,70 +642,163 @@ while 1:
                                             print("")
                                             moveInfo(movez[i])
                                             micropause() #drama
-                                        pause=input("\nEnter anything to continue back to Pokemon summary...")
-                                        continue
+                                        pause=input("\nEnter anything to continue... ")
+                                        #no break, loop back to moves tutor, NOT training
+                                #user wants random moves
+                                elif moveslearning[0]=='random':
+                                    try:
+                                        n_moves = int(moveslearning[1])
+                                    except ValueError:
+                                        print('\n** Bad Value **')
+                                    except IndexError: #what happens if user wants more 
+                                        print('\n** Bad Index **')
+                                    else:
+                                        pokeTrain.randomizeMoveset(n_moves)
+                                        break #randomized moves, go back to training menu
+                                    #don't need this, poke was already selected
+                                    #try:
+                                    #    learnChoice=int(learnChoice)
+                                    #    studentMon=userParty[learnChoice-1]
+                                    #    print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
+                                    #except ValueError:
+                                    #    print("** Enter a [#] corresponding to a Pokemon !!**\n")
+                                    #except IndexError:
+                                    #    print("** Enter a [#] corresponding to a Pokemon !!**\n")
+                                    #else:
+                                        #otherwise, print the moves, godspeed
+                                        #print("\n------------ Pokemon Moves ------------")
+                                        #for i in range(len(mov)):
+                                        #    print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
+                                        #print("------------------------")
+    #                                    while 1: #input loop
+    #                                       chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
+    #                                      #go back to choose a pokemon
+    #                                     if chooseMove=='b' or chooseMove=='B':
+    #                                        break
+                                            #extract and apply moves
+                            #i believe entering a blank here will just restart the entry loop?
                             else:
                                 try:
-                                    learnChoice=int(learnChoice)
-                                    studentMon=userParty[learnChoice-1]
-                                    print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
+                                    #chooseMoves=chooseMove.split() #separate move indices into own strings
+                                    moveInts=[int(i) for i in moveslearning] #(try to) convert strings to ints
+                                    incomplete=False
+                                    if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
+                                        if min(moveInts)>=0: #ward off negative numbers
+                                            print("")
+                                            for i in moveInts:
+                                                if i in pokeTrain.knownMoves:
+                                                    print(f"! {pokeTrain.name} already knows {getMoveInfo(i)['name']} !")
+                                                    #incomplete=True
+                                                else:
+                                                    pokeTrain.knownMoves.append(i)
+                                                    pokeTrain.PP.append(getMoveInfo(i)['pp'])
+                                                    print(f"{pokeTrain.name} learned {getMoveInfo(i)['name']}!")
+                                                    micropause()
+                                            break #moves addressed, get out of here
+                                            #if incomplete==False: #if there are no conflicts
+                                                #break #all moves added, breaks loop and goes back to choose a pokemon
+                                            #otherwise, choose moves loop is restated
+                                        else: #failing brings you back to move selection
+                                            print("** That's out of bounds.. **\n")
+                                    else: #failing brings you back to move selection
+                                        print("** That's out of bounds.. **\n")
                                 except ValueError:
-                                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
+                                    print("** Enter [#] corresponding to desired moves **\n")
                                 except IndexError:
-                                    print("** Enter a [#] corresponding to a Pokemon !!**\n")
-                                else:
-                                    #otherwise, print the moves, godspeed
-                                    print("\n------------ Pokemon Moves ------------")
-                                    for i in range(len(mov)):
-                                        print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
-                                    print("------------------------")
-                                    while 1: #input loop
-                                        chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
-                                        #go back to choose a pokemon
-                                        if chooseMove=='b' or chooseMove=='B':
-                                            break
-                                        if chooseMove.split()[0]=='random':
-                                            try:
-                                                n_moves = int(chooseMove.split()[1])
-                                            except ValueError:
-                                                print('\n**Bad Value**')
-                                            except IndexError:
-                                                print('\n**Bad Index**')
-                                            else:
-                                                studentMon.randomizeMoveset(n_moves)
-                                                break #randomized moves, go back to pokemon selecting loop
-                                        #extract and apply moves
-                                        try:
-                                            chooseMoves=chooseMove.split() #separate move indices into own strings
-                                            moveInts=[int(i) for i in chooseMoves] #(try to) convert strings to ints
-                                            incomplete=False
-                                            if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
-                                                if min(moveInts)>=0: #ward off negative numbers
-                                                    for i in moveInts:
-                                                        if i in studentMon.knownMoves:
-                                                            print(f"! {studentMon.name} already knows {getMoveInfo(i)['name']} !\n")
-                                                            incomplete=True
-                                                        else:
-                                                            studentMon.knownMoves.append(i)
-                                                            studentMon.PP.append(getMoveInfo(i)['pp'])
-                                                            print(f"{studentMon.name} learned {getMoveInfo(i)['name']}!")
-                                                    if incomplete==False: #if there are no conflicts
-                                                        break #all moves added, breaks loop and goes back to choose a pokemon
-                                                    #otherwise, choose moves loop is restated
-                                                else: #failing brings you back to move selection
-                                                    print("** That's out of bounds.. **\n")
-                                            else: #failing brings you back to move selection
-                                                print("** That's out of bounds.. **\n")
-                                        except ValueError:
-                                            print("** Enter [#] corresponding to desired moves **\n")
-                                        except IndexError:
-                                            print("** Use move legend to add moves **\n")
+                                    print("** Use move legend to add moves **\n")
                                     #end of move selection while block, moves have been picked
                             #choose a new pokemon
                         #goes back to choose a pokemon
                     ###end of move learner block####
-
-                        pass
+                    elif hypermoves == '3': #move deletions
+                        while 1: #user input loop
+                            print("\n******** Move Deleter ********")
+                            shortpause()
+                            pokeTrain.summary()
+                            mvChoice=input("Which moves should be deleted?\n[#] or [b]ack: ")
+                            mvC1 = len(mvChoice.split())
+                            print(mvC1)
+                            #go back
+                            if mvChoice=="b" or mvChoice=="B":
+                                break
+                            #display move info if you lead with I
+                            if mvC1 >= 1:
+                                print(mvChoice.split()[0])
+                                if mvChoice.split()[0]=='i' or mvChoice.split()[0]=='I':
+                                    try:
+                                        movez=mvChoice.split()[1:] #pokemon movelist index (string)
+                                        movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                        movea=[ pokeTrain.knownMoves[i] for i in movez]
+                                    except ValueError:
+                                        print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                    except IndexError:
+                                        print("\n** Use the indices to select moves to take a closer look at. **")
+                                    else:
+                                        for i in range(len(movez)):
+                                            print("")
+                                            moveInfo(movea[i])
+                                            micropause() #drama
+                                        pause=input("\nEnter anything to continue... ")
+                                        continue #after seeing move info loop back to deleter menu
+                                #else, move on
+                            #else, move on
+                            #if not back or looking for info we assume we got a list of numbers
+                            try:
+                                chooz=np.array([int(i)-1 for i in mvChoice.split()])
+                                print("")
+                                for i in range(len(chooz)):
+                                    if len(pokeTrain.knownMoves)==1: #catch players trying to dump whole moveset
+                                        micropause()
+                                        print("** Pokemon cannot forget its last move **")
+                                        break
+                                    if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
+                                        byeMove=pokeTrain.knownMoves.pop(chooz[i])
+                                        byePP = pokeTrain.PP.pop(chooz[i])
+                                        print(f"{pokeTrain.name} forgets {mov[byeMove]['name']}...")
+                                        micropause()
+                                    else:
+                                        removedIndices=np.count_nonzero(chooz[0:i]<chooz[i]) #how many selected indices that are *lower* than current one have already been removed
+                                        chooz[i]-=removedIndices
+                                        byeMove=pokeTrain.knownMoves.pop(chooz[i])
+                                        byePP = pokeTrain.PP.pop(chooz[i])
+                                        print(f"{pokeTrain.name} forgets {mov[byeMove]['name']}...")
+                                        micropause()
+                                print("Selected moves have been forgetten!")
+                                #shortpause() #kills
+                                break #back to training menu
+                            except ValueError:
+                                print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
+                            except IndexError:
+                                print("\n** Entry must correspond to Pokemon move! **")
+                    #                        
+                        #pokeTrain is all selected, show its moves
+                        #while 1: #user input loop
+                            #print("\n******** Party Pokemon ********\n*******************************\n")
+                            #for i in range(len(userParty)):
+                                #if userParty[i].dualType:
+                                #    thipe=typeStrings[userParty[i].tipe[0]]
+                                #    thipe+=" // "
+                                #    thipe+=typeStrings[userParty[i].tipe[1]]
+                                #else:
+                                #    thipe=typeStrings[userParty[i].tipe[0]]
+                                #print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
+                            #print("\n*******************************\n")
+                            
+                            """
+                            leteChoice=input("Select a Pokemon [#] to look at\nor [b]ack: ")
+                            #go back
+                            if leteChoice=="b" or leteChoice=="B":
+                                print("Leaving Move Deleter...")
+                                shortpause()
+                                break
+                            try:
+                                select=userParty[int(leteChoice)-1]
+                            except ValueError:
+                                print("\n** Enter [#] of a pokemon above! **")
+                            except IndexError:
+                                print("\n** Use the legend to enter [#] of a Pokemon! **")
+                            else: """
+                                
                     else:
                         pass
         #
@@ -880,67 +982,7 @@ while 1:
     
     #move deleting
     if userChoice=="e" or userChoice=="E":
-        print("\n******** Move Deleter ********")
-        shortpause()
-        print("\nHere you can get rid of unwanted moves.")
-        shortpause()
-        while 1: #user input loop
-            print("\n******** Party Pokemon ********\n*******************************\n")
-            for i in range(len(userParty)):
-                if userParty[i].dualType:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                    thipe+=" // "
-                    thipe+=typeStrings[userParty[i].tipe[1]]
-                else:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-            print("\n*******************************\n")
-            leteChoice=input("Select a Pokemon [#] to look at\nor [b]ack: ")
-            #go back
-            if leteChoice=="b" or leteChoice=="B":
-                print("Leaving Move Deleter...")
-                shortpause()
-                break
-            try:
-                select=userParty[int(leteChoice)-1]
-            except ValueError:
-                print("\n** Enter [#] of a pokemon above! **")
-            except IndexError:
-                print("\n** Use the legend to enter [#] of a Pokemon! **")
-            else:
-                while 1: #user input loop
-                    select.summary()
-                    mvChoice=input("Which moves should be deleted?\n[#] or [b]ack: ")
-                    if mvChoice=="b" or mvChoice=="B":
-                        shortpause()
-                        break
-                    try:
-                        chooz=np.array([int(i)-1 for i in mvChoice.split()])
-                        for i in range(len(chooz)):
-                            if len(select.knownMoves)==1: #catch players trying to dump whole moveset
-                                micropause()
-                                print("** Pokemon cannot forget its last move **")
-                                break
-                            if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
-                                byeMove=select.knownMoves.pop(chooz[i])
-                                byePP = select.PP.pop(chooz[i])
-                                micropause()
-                                print(f"{select.name} forgets {mov[byeMove]['name']}...")
-                            else:
-                                removedIndices=np.count_nonzero(chooz[0:i]<chooz[i]) #how many selected indices that are *lower* than current one have already been removed
-                                chooz[i]-=removedIndices
-                                byeMove=select.knownMoves.pop(chooz[i])
-                                byePP = select.PP.pop(chooz[i])
-                                micropause()
-                                print(f"{select.name} forgets {mov[byeMove]['name']}...")
-                        print("Selected moves have been forgetten!")
-                        shortpause() #kills
-                        break
-                    except ValueError:
-                        print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
-                    except IndexError:
-                        print("\n** Entry must correspond to Pokemon move! **")
-            #
+        pass
     ####what's the next spot?####
 
     #end of game, loops back to main screen

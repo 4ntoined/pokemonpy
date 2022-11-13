@@ -1584,11 +1584,12 @@ class battle:
                                 print(f"{self.usr_mon.name} can only Struggle!")
                                 fighting=True
                                 moveDex=struggle_i
+                                shortpause()
                                 break
                             userFight=input(f"What move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
                             #go back
                             infom = userFight.split()
-                            if userFight=='b':
+                            if userFight=='b' or userFight=='B':
                                 break
                             elif len(infom)>1:
                                 if userFight.split()[0]=="i" or userFight.split()[0]=="I":
@@ -1597,7 +1598,7 @@ class battle:
                                         movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
                                         movez=[self.usr_mon.knownMoves[i] for i in movez] #pokemon move movedex index
                                     except ValueError:
-                                        print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                        print("\n** Entry must be a [#] or list of [#]'s, separated by spaces! **")
                                     except IndexError:
                                         print("\n** Use the indices to select moves to take a closer look at. **")
                                     else:
