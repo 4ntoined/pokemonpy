@@ -841,3 +841,13 @@ the user can navigate in a natural kinda way. it's so much work but its kinda fu
 of the 3 things to do with it. also considated opponent settings with battlefield conditions settings. its all pretty nice lots
 of slimming down and polishing up, will have to move onto pokemon creation next
 
+14 nov 2022
+10:41- semi-invuls + hazards are broken, maybe other things. the root of the problem is that in my code, all moves are used by one pokemon
+and target the opposing pokemon. in actual pokemon, moves may target one pokemon or many, allies or foes, the user, or even no pokemon in
+particular. the latter is the case of the hazards, where the opposing pokemon is not the target but instead the opponent's side of the battlefield
+is the target. so idt hazards have any reason to miss even when the opponent is semi-invul, same should go for the screens, and again, maybe other things
+i haven't looked at the specifics. so that needs to be fixed. I think ill specify when a move doesnt have/need a particular target to hit, and that flag
+will trump semi-invul pokemon dodging attacks.
+so there's (1) that (2) pokemon creation consolidation (weirdly fun to say) (3) multiparty (eventually) and (4) rigourously(sp?) playtesting the e4
+and then that's game bro, we out here sis
+
