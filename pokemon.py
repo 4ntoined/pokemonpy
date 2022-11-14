@@ -13,7 +13,7 @@ import copy
 import time as t
 import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit
-from moves import getMoveInfo,mov,natures
+from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams
 rng=np.random.default_rng()
@@ -282,7 +282,7 @@ while 1:
                 else:
                     thipe=typeStrings[userParty[i].tipe[0]]
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-            print("\n*******************************\n")
+            print("\n*******************************")
             partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
             #go back to main screen
             if partyChoice=='b' or partyChoice=="B":
@@ -360,6 +360,7 @@ while 1:
                     #judge
                     if sumChoice=="j" or sumChoice=="J":
                         selMon.appraise()
+                        pause=input("Enter anything to continue...")
             #end of while block
         print("Going back to main screen...")
         t.sleep(1)
@@ -485,15 +486,17 @@ while 1:
             except ValueError:
                 #we need a number
                 print("\n** Enter a NUMBER **")
+                micropause()
                 pass
             except IndexError:
                 print("\n** Must enter the number of a Pokemon **")
+                micropause()
                 #the pokemon does not exist
                 pass
             else:
                 while 1:
                     print(f"\n******** Training {pokeTrain.name} ********")
-                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n[#] or [b]ack: ")
+                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n[#] or [b]ack\n: ")
                     if hypermoves == 'b' or hypermoves=='B': #superhyper
                         break
                     #### super-hyper training #### aa:training
@@ -622,7 +625,7 @@ while 1:
                             moveslearning = learnChoice.split()
                             mlcount = len(moveslearning)
                             # for non-blank entries
-                            if mlcount >=1:
+                            if mlcount > 0:
                                 #user wants to learn about the moves
                                 if moveslearning[0]=='i' or moveslearning[0]=='I':
                                 #while 1:
@@ -676,37 +679,37 @@ while 1:
     #                                     if chooseMove=='b' or chooseMove=='B':
     #                                        break
                                             #extract and apply moves
-                            #i believe entering a blank here will just restart the entry loop?
-                            else:
-                                try:
-                                    #chooseMoves=chooseMove.split() #separate move indices into own strings
-                                    moveInts=[int(i) for i in moveslearning] #(try to) convert strings to ints
-                                    incomplete=False
-                                    if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
-                                        if min(moveInts)>=0: #ward off negative numbers
-                                            print("")
-                                            for i in moveInts:
-                                                if i in pokeTrain.knownMoves:
-                                                    print(f"! {pokeTrain.name} already knows {getMoveInfo(i)['name']} !")
-                                                    #incomplete=True
-                                                else:
-                                                    pokeTrain.knownMoves.append(i)
-                                                    pokeTrain.PP.append(getMoveInfo(i)['pp'])
-                                                    print(f"{pokeTrain.name} learned {getMoveInfo(i)['name']}!")
-                                                    micropause()
-                                            break #moves addressed, get out of here
-                                            #if incomplete==False: #if there are no conflicts
-                                                #break #all moves added, breaks loop and goes back to choose a pokemon
-                                            #otherwise, choose moves loop is restated
+                                #i believe entering a blank here will just restart the entry loop?
+                                else:
+                                    try:
+                                        #chooseMoves=chooseMove.split() #separate move indices into own strings
+                                        moveInts=[int(i) for i in moveslearning] #(try to) convert strings to ints
+                                        incomplete=False
+                                        if max(moveInts)<len(mov): #make sure all indices have an entry in the movedex
+                                            if min(moveInts)>=0: #ward off negative numbers
+                                                print("")
+                                                for i in moveInts:
+                                                    if i in pokeTrain.knownMoves:
+                                                        print(f"! {pokeTrain.name} already knows {getMoveInfo(i)['name']} !")
+                                                        #incomplete=True
+                                                    else:
+                                                        pokeTrain.knownMoves.append(i)
+                                                        pokeTrain.PP.append(getMoveInfo(i)['pp'])
+                                                        print(f"{pokeTrain.name} learned {getMoveInfo(i)['name']}!")
+                                                        micropause()
+                                                break #moves addressed, get out of here
+                                                #if incomplete==False: #if there are no conflicts
+                                                    #break #all moves added, breaks loop and goes back to choose a pokemon
+                                                #otherwise, choose moves loop is restated
+                                            else: #failing brings you back to move selection
+                                                print("** That's out of bounds.. **\n")
                                         else: #failing brings you back to move selection
                                             print("** That's out of bounds.. **\n")
-                                    else: #failing brings you back to move selection
-                                        print("** That's out of bounds.. **\n")
-                                except ValueError:
-                                    print("** Enter [#] corresponding to desired moves **\n")
-                                except IndexError:
-                                    print("** Use move legend to add moves **\n")
-                                    #end of move selection while block, moves have been picked
+                                    except ValueError:
+                                        print("** Enter [#] corresponding to desired moves **\n")
+                                    except IndexError:
+                                        print("** Use move legend to add moves **\n")
+                                        #end of move selection while block, moves have been picked
                             #choose a new pokemon
                         #goes back to choose a pokemon
                     ###end of move learner block####
@@ -799,6 +802,10 @@ while 1:
                                 print("\n** Use the legend to enter [#] of a Pokemon! **")
                             else: """
                                 
+                    elif hypermoves == '4': #renaming pokemon
+                        pass
+                    elif hypermoves == '5': #re-naturing pokemon
+                        pass
                     else:
                         pass
         #

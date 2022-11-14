@@ -106,11 +106,11 @@ moremoves=[
         ("Weather Ball",50,100,10,1,0,0,0,"The user harnesses the power of the weather to attack!\nChanges type and doubles power in non-clear weather.","weatherball"),
         ("Cut",50,95,30,0,1,0,0,"The use cuts the target with a scythe or claw!","null"),
         ("Metal Claw",50,95,35,0,1,16,0,"The user rakes the target with steel claws.\nMay raise the user's Atk. 1 stage.","stat self,at,1,10"),
-        ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has increased +1 priority.","null"),
+        ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nThis move has +1 priority.","null"),
         ("Gust",40,100,35,1,0,9,0,"desc","gust"),
         ("Twister",40,100,20,1,0,14,0,"desc","gust flinch 20"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack.","null"),
-        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\nIncresed +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
+        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch.\nOnly works on the first turn after the user enters battle.\This move has +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),
         #counter and mirror coat,
         ("Counter",1,100,20,0,1,6,-5,"Counter","counter"),

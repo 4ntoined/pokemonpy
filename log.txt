@@ -850,4 +850,5 @@ i haven't looked at the specifics. so that needs to be fixed. I think ill specif
 will trump semi-invul pokemon dodging attacks.
 so there's (1) that (2) pokemon creation consolidation (weirdly fun to say) (3) multiparty (eventually) and (4) rigourously(sp?) playtesting the e4
 and then that's game bro, we out here sis
+18:09- move tutor was broken but i fixed it
 
