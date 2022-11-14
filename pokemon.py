@@ -47,7 +47,7 @@ while 1:
         "\n[L]oad\nMove D[E]leter\n: "
     userChoice=input(mainmenu)
     ########################################################################################################
-    #user setting the weather and terrain for classic mode
+    #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":
         #hello
         while 1: #user input loop
@@ -142,13 +142,8 @@ while 1:
                 #print("*like I'm hearing a ghost*: What was that?")
                 pass
             # should be the end of the classic setting block
-        #
-                                
-    ####Reseting the Opponent in Classic Battle function####
-    if userChoice=='o' or userChoice=="O":
-        pass
-
-    ####  E4  ####
+        #zz:classicsettings
+    ####  E4  #### aa:elite4mode
     if userChoice=='4':
         ## can't play if all your pokemon are fainted
         ni, ny = checkBlackout(userParty)
@@ -257,8 +252,7 @@ while 1:
             #print("Leaving Indigo Plateau...")
             #micropause()
             continue
-#########################################
-    #### end of e4? mode ###
+    ### end of e4? mode ### zz:elite4mode
     #### Classic Battle #### aa:battlemode
     if userChoice=="b" or userChoice=="B":
         ni, ny = checkBlackout(userParty)
@@ -269,11 +263,11 @@ while 1:
         classicbattle = battle(userParty, trainerParty, scarlet)
         classicbattle.startbattle()
         #then it should loop back to the main menu?
-    ###end of battle block###
+    ###end of battle block### zz:battlemode
     #### check party pokemon? aa:pokemonparty ####
     if userChoice=="p" or userChoice=="P":
         while 1:
-            print("\n******** Party Pokemon ********\n*******************************\n")
+            print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
             for i in range(len(userParty)):
                 if userParty[i].dualType:
                     thipe=typeStrings[userParty[i].tipe[0]]
@@ -293,9 +287,9 @@ while 1:
                 pokeInd=int(partyChoice)-1
                 selMon=userParty[pokeInd]
             except ValueError:
-                print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                print("\n! Enter the number corresponding to a Pokemon !\nor [b] to go back")
             except IndexError:
-                print("\nEnter the number corresponding to a Pokemon!\nor [b] to go back")
+                print("\n! Enter the number corresponding to a Pokemon !\nor [b] to go back")
             else:
                 while 1:
                     selMon.summary()
@@ -365,14 +359,13 @@ while 1:
         print("Going back to main screen...")
         t.sleep(1)
         #end of party pokemon
-    ###end of party display block###
-
+    ###end of party display block###zz:pokemonparty
     ####pokemon aa:nursery####
     if userChoice=='n' or userChoice=='N':
         print("\n____ Welcome to the Pokemon Nursery! ____")
-        t.sleep(1)
+        shortpause()
         print("Here, you can create Pokemon from scratch!")
-        t.sleep(1)
+        shortpause()
         ####nursery loop####
         while 1:
             nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n:")
@@ -401,7 +394,7 @@ while 1:
                     newTipe=input(f"Use the legend above to give {newName} a type or two: ")
                     try:
                         newTipe=[int(i) for i in newTipe.split()]
-                        if max(newTipe)<=18: #no types above 18
+                        if max(newTipe)<=18: #no types above 17
                             if min(newTipe)>=0: #no types below 0
                                 break #input valid, exit type input loop
                             else:
@@ -459,16 +452,20 @@ while 1:
                 t.sleep(1)
                 userParty.append(newMon)
                 print("Take good care of them!")
+            elif nurseChoice == 'd' or nurseChoice == 'D':
+                #do the dex selection
+                pass
+            else: #other choices in the nursery main
+                pass
             pass #loops back to start of nursery
         pass #loops back to start of game
-    ###end of nursery block
+    ###end of nursery block #zz:nursery
     
     ####training####
     ## gonna rework this to include move tutor and move deleter
     ## at the same time, gonna also rework the concept so that you choose a pokemon
     ## and then choose from there wha tto do with them
     if userChoice=='t' or userChoice=='T':
-        #print("\n********SuperHyper Training********\nYou can add EVs and IVs to your Pokemon!")
         while 1:
             print("\n&&&&&&&&&&&& Training &&&&&&&&&&&&")
             #choose a pokemon

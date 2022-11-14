@@ -13,9 +13,9 @@ rng = np.random.default_rng()
 class mon:
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
         #print("its a pokemon!")
-        self.level=level
+        self.level=int(level)
         self.nature = nature
-        self.nature_str = natures[nature[0],nature[1]]
+        self.nature_str = natures[int(nature[0]),int(nature[1])]
         self.null_nature = False
         if self.nature[0] == self.nature[1]:
             self.null_nature = True
@@ -1278,7 +1278,7 @@ class battle:
     def checkBattle(self):
         ## need to add hazards, flying, diving, digging, shadowing, grounded or ungrounded
         global typeStrings
-        print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\")
+        print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\\\\\\\\\\\\\")
         if self.cpu_mon.dualType:
                 print(f"{typeStrings[self.cpu_mon.tipe[0]]} // {typeStrings[self.cpu_mon.tipe[1]]}")
         else:
@@ -1347,7 +1347,7 @@ class battle:
             pass
         ####       hazards for blue...          ####
         print("------------------------------------")
-        print(f"\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
+        print(f"\\\\\\\\\\\\\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
         if self.usr_mon.dualType:
                 print(f"{typeStrings[self.usr_mon.tipe[0]]} // {typeStrings[self.usr_mon.tipe[1]]}")
         else:
@@ -1436,7 +1436,6 @@ class battle:
         print(f"Weather : {weat}")
         print(f"Terrain : {terr}")
         print("\n___ End of battle status ___")
-
 
     def startbattle(self):
         ####Battle starts####
