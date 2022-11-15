@@ -38,4 +38,7 @@ moretype=[
         ]
 dtip = np.dtype( [('type','U12'),('index','i4') ] )
 types=np.array(moretype,dtype=dtip)
-
+if __name__ == '__main__':
+    np.save('saved_dexpoke.npy', dex)
+else:
+    pass

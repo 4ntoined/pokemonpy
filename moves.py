@@ -200,7 +200,7 @@ natures = [ ["Hardy","Lonely","Adamant","Naughty","Brave"], \
                        ["Timid","Hasty","Jolly","Naive","Serious"] ]
 natures = np.array(natures,dtype=object)
 if __name__ == "__main__":
-    np.save("movedex.npy",mov)
+    np.save("saved_movedex.npy",mov)
 else:
     pass
 

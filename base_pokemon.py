@@ -165,12 +165,42 @@ class mon:
             line+=f" {i}"
         f.write(line+"\n")
         f.close()
-    #place moveset with random moves
+    #replace moveset with random moves
     def randomizeMoveset(self,numb=6):
         global mov,mo
         ranMoves = rng.choice(mo,size=numb,replace=False)
         self.knownMoves = list(ranMoves)
         self.PP=[mov[i]["pp"] for i in ranMoves]
+        return
+    #set ivs, from given values
+    def set_ivs(self, vals):
+        #vals is list or tuple of 6
+        self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
+        self.reStat()
+        return
+    #set evs, from given values
+    def set_evs(self, vals):
+        #vals is list or tuple of 6
+        self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev = vals
+        self.reStat()
+        return
+    #apply a moveset given with a list of names of moves
+    def learn_sets(self, sets):
+        global mov
+        #sets should be a list of str with names of moves to learn
+        self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
+        self.PP = [ mov['pp'][i] for i in self.knownMoves]
+        return
+    #add number *new* moves to mon's moveset
+    def add_random_moves(self, number=2):
+        global mov,mo,rng
+        mo2 = mo.copy()
+        for ii in self.knownMoves:
+            mo2.remove(ii) #remove known move from list of possible moves
+        new_moves = list(rng.choice(mo2, size=number))
+        new_pp = [ mov['pp'][i] for i in new_moves ]
+        self.knownMoves += new_moves
+        self.PP += new_pp
         return
     #recalculate stats
     def reStat(self):
@@ -182,7 +212,6 @@ class mon:
         self.speed=stats(self.level,self.spb,self.spiv,self.spev,self.nature_multipliers[4])
         self.currenthp=self.maxhp
         self.currenthpp=100.
-    
     #sending a pokemon out
     def chosen(self, trainer, fields):
         self.field=fields
@@ -191,7 +220,6 @@ class mon:
             self.battlespot = "red"
         elif trainer == "cpu":
             self.battlespot = "blue"
-    
     ####things to reset upon being withdrawn
     def withdraw(self):
         #reset stat stages
@@ -245,7 +273,6 @@ class mon:
         self.badlypoisoned=False
         print(f"\n{self.name} faints!")
         shortpause()
-    
     #back to full health!
     def restore(self):
         self.currenthp=self.maxhp
@@ -260,7 +287,6 @@ class mon:
         self.sleep=False
         self.sleepCounter=0
         self.frozen=False
-        
     ####things to call/recall when a pokemon is battling
     def inBattle(self):
         global statStages
@@ -2714,6 +2740,18 @@ def elite4_healquit(poke_party):
         return "healed"
     else:
         return "advance"
+#for printing all this info to screen
+def print_dex():
+    global dex
+    #pokemon have "names", stats and types 
+    for i in dex:
+        if i['type2'] == 20: #single typed
+            tipe = f"[{typeStrings[i['type1']]}]"
+        else:
+            tipe = f"[{typeStrings[i['type1']]}/{typeStrings[i['type2']]}]"
+        print(f"{i['index']}:{i['name']} " + tipe + f" | [{i['hp']}]  [{i['at']}]  [{i['de']}]  "+\
+              f"[{i['sa']}]  [{i['sd']}]  [{i['sp']}]")
+    return
 def micropause():
     t.sleep(0.4)
     return

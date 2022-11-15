@@ -10,9 +10,9 @@
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
 import copy
-import time as t
+#import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams
@@ -357,7 +357,7 @@ while 1:
                         pause=input("Enter anything to continue...")
             #end of while block
         print("Going back to main screen...")
-        t.sleep(1)
+        shortpause()
         #end of party pokemon
     ###end of party display block###zz:pokemonparty
     ####pokemon aa:nursery####
@@ -368,17 +368,17 @@ while 1:
         shortpause()
         ####nursery loop####
         while 1:
-            nurseChoice=input("What do you want to do?\nNew [P]okemon!!\n[B]ack\n:")
+            nurseChoice=input("What do you want to do?\n[1] Create a Pokemon!!\n[2] Choose from the Pokedex\n[#] or [b]ack: ")
             if nurseChoice=='b' or nurseChoice=='B':
                 break #exits nursery loop
             ####new pokemon####
-            if nurseChoice=='p':
+            if nurseChoice=='1':
                 newName=input("Would you like to give your Pokemon a name?: ")
                 print(f"Let's get {newName} some STATS")
                 while 1: #stat input loop
                     statS=input("Enter 6 stats [1-255]\n[HP] [ATK] [DEF] [SPA] [SPD] [SPE]\n")
                     try:
-                        stat=[int(float(i)) for i in statS.split(" ")]
+                        stat=[int(float(i)) for i in statS.split()]
                         if len(stat)!=6:
                             print("\n!! Enter all 6 stats at once !!")
                             continue
@@ -389,7 +389,9 @@ while 1:
                     except ValueError:
                         print("\n** Stats must be numbers **")
                 ##type choice##
-                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************")
+                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric"+ \
+                      "\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock"+ \
+                          "\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************")
                 while 1: #type input loop
                     newTipe=input(f"Use the legend above to give {newName} a type or two: ")
                     try:
@@ -405,7 +407,7 @@ while 1:
                         print("\n** Use the legend above and enter a number (or 2 separated with a space) **")
                 ##level input##
                 while 1: #level input loop
-                    lvlS=input(f"What level should {newName} be? 1-100: ")
+                    lvlS=input(f"What level should {newName} be? (min. 1): ")
                     try:
                         lvlS=int(lvlS)
                         if lvlS>=1:
@@ -416,7 +418,7 @@ while 1:
                         print("\n** Enter a number! **")
                 ##oh boy nature input###
                 while 1:
-                    print("Attack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
+                    print("\n~~~~~~~~~~\nAttack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
                     nachup = input(f"What should be {newName}'s boosted stat: ")
                     try:
                         nachup = int(nachup)
@@ -424,13 +426,13 @@ while 1:
                             break #stat good
                         else:
                             print("\n!! Enter a number between 0 and 4 !!")
-                            t.sleep(.3)
+                            micropause()
                     except ValueError:
                         print("\n!! Enter a number !!")
-                        t.sleep(.3)
+                        micropause()
                     ##okay if all goes well the code should progress here and we need to ask for hindered nature
                 while 1:
-                    print("\n~~~~~~~~~~\nAttack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
+                    #print("\n~~~~~~~~~~\nAttack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
                     nachdo = input(f"What should be {newName}'s nerfed stat: ")
                     try:
                         nachdo = int(nachdo)
@@ -438,10 +440,10 @@ while 1:
                             break #stat is good, break input loop
                         else:
                             print("\n!! Enter a number between 0 and 4 !!")
-                            t.sleep(.3)
+                            micropause()
                     except ValueError:
                         print("\n!! Enter a number !!")
-                        t.sleep(.3)
+                        micropause()
                 nacher = (nachup, nachdo)
                 ##make the pokemon!##
                 if len(newTipe)==1:
@@ -449,11 +451,49 @@ while 1:
                 if len(newTipe)>1:
                     newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
                 print(f"\n{newName} is born!")
-                t.sleep(1)
+                shortpause()
                 userParty.append(newMon)
                 print("Take good care of them!")
-            elif nurseChoice == 'd' or nurseChoice == 'D':
+                #zz:customMons
+            ##pokedex selection aa:pokedex
+            elif nurseChoice == '2':
                 #do the dex selection
+                printdex= input("Would you like to see the Pokedex?\n[y]es, [n]o, or [b]ack: ")
+                if printdex=='b' or printdex=='B':
+                    continue
+                elif printdex=='y' or printdex=='Y':
+                    print("\n*****************************\n******** The Pokedex ********\n*****************************\n")
+                    print_dex()
+                    shortpause()
+                while 1:
+                    pokeChoice=input("Which Pokemon would you like to add to your team?\n[#]'s or [b]ack: ")
+                    if pokeChoice=='b' or pokeChoice=='B':
+                        print("Leaving Pokedex...")
+                        shortpause() #kills
+                        break
+                    try:
+                        pokeChoices=pokeChoice.split()
+                        pokInts=[int(i) for i in pokeChoices]
+                        if max(pokInts)<len(dex):
+                            if min(pokInts)>=0:
+                                print("")
+                                for i in pokInts:
+                                    newbie=makeMon(i,userParty[0].level)
+                                    print(f"{newbie.name} is born and added to your party!")
+                                    userParty.append(newbie)
+                                    micropause()
+                                    #print(f"{newbie.name} has been added to your party!")
+                                    #shortpause()
+                                shortpause()
+                                break #when done adding mons, get out of here
+                            else: #failing brings you back to new pokemon loop
+                                print("\n** That's out of bounds... **")
+                        else: #new pokemon loop
+                            print("\n** That's out of bounds... **")
+                    except ValueError:
+                        print("\n** Try again **")
+                    except IndexError:
+                        print("\n** That's out of bounds... **")
                 pass
             else: #other choices in the nursery main
                 pass
@@ -467,7 +507,7 @@ while 1:
     ## and then choose from there wha tto do with them
     if userChoice=='t' or userChoice=='T':
         while 1:
-            print("\n&&&&&&&&&&&& Training &&&&&&&&&&&&")
+            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n&&&&&&&&&&&  Training  &&&&&&&&&&&\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
             #choose a pokemon
             print("")
             for i in range(len(userParty)):
@@ -599,7 +639,7 @@ while 1:
                                         print("\n**Enter a number greater than 0.**")
                                     #end of level input while block
                                 #end of level training block
-                    #### move tutor #### aa:movelearning
+                    #### move tutor #### aa:movetutor
                     elif hypermoves == '2':
                         while 1:
                             print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
@@ -655,28 +695,6 @@ while 1:
                                     else:
                                         pokeTrain.randomizeMoveset(n_moves)
                                         break #randomized moves, go back to training menu
-                                    #don't need this, poke was already selected
-                                    #try:
-                                    #    learnChoice=int(learnChoice)
-                                    #    studentMon=userParty[learnChoice-1]
-                                    #    print(f"{studentMon.name} is ready to learn...") #confirmation readout, user choice intiated a pokemon
-                                    #except ValueError:
-                                    #    print("** Enter a [#] corresponding to a Pokemon !!**\n")
-                                    #except IndexError:
-                                    #    print("** Enter a [#] corresponding to a Pokemon !!**\n")
-                                    #else:
-                                        #otherwise, print the moves, godspeed
-                                        #print("\n------------ Pokemon Moves ------------")
-                                        #for i in range(len(mov)):
-                                        #    print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| {typeStrings[mov[i]['type']]}")
-                                        #print("------------------------")
-    #                                    while 1: #input loop
-    #                                       chooseMove=input(f"Which moves should {studentMon.name} learn?\n[#] separated by spaces: ")
-    #                                      #go back to choose a pokemon
-    #                                     if chooseMove=='b' or chooseMove=='B':
-    #                                        break
-                                            #extract and apply moves
-                                #i believe entering a blank here will just restart the entry loop?
                                 else:
                                     try:
                                         #chooseMoves=chooseMove.split() #separate move indices into own strings
@@ -710,6 +728,7 @@ while 1:
                             #choose a new pokemon
                         #goes back to choose a pokemon
                     ###end of move learner block####
+                    #### move deletion #### aa:movedelete
                     elif hypermoves == '3': #move deletions
                         while 1: #user input loop
                             print("\n******** Move Deleter ********")
@@ -770,35 +789,7 @@ while 1:
                                 print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
                             except IndexError:
                                 print("\n** Entry must correspond to Pokemon move! **")
-                    #                        
-                        #pokeTrain is all selected, show its moves
-                        #while 1: #user input loop
-                            #print("\n******** Party Pokemon ********\n*******************************\n")
-                            #for i in range(len(userParty)):
-                                #if userParty[i].dualType:
-                                #    thipe=typeStrings[userParty[i].tipe[0]]
-                                #    thipe+=" // "
-                                #    thipe+=typeStrings[userParty[i].tipe[1]]
-                                #else:
-                                #    thipe=typeStrings[userParty[i].tipe[0]]
-                                #print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-                            #print("\n*******************************\n")
-                            
-                            """
-                            leteChoice=input("Select a Pokemon [#] to look at\nor [b]ack: ")
-                            #go back
-                            if leteChoice=="b" or leteChoice=="B":
-                                print("Leaving Move Deleter...")
-                                shortpause()
-                                break
-                            try:
-                                select=userParty[int(leteChoice)-1]
-                            except ValueError:
-                                print("\n** Enter [#] of a pokemon above! **")
-                            except IndexError:
-                                print("\n** Use the legend to enter [#] of a Pokemon! **")
-                            else: """
-                                
+                        ###zz:movedelete
                     elif hypermoves == '4': #renaming pokemon
                         pass
                     elif hypermoves == '5': #re-naturing pokemon
@@ -809,11 +800,10 @@ while 1:
     ###end of training block###
     #zz:training
 
-
     ####make pokemon from pokedex (use preset stats)####
     if userChoice=='d':
         print("\n*****************************\n******** The Pokedex ********\n*****************************\n\n")
-        t.sleep(1)
+        shortpause()
         while 1: #choose new pokemon loop
             print(dex)
             pokeChoice=input("Which pokemon would you like to add to your team?\n[#] or [b]ack: ")
@@ -833,10 +823,10 @@ while 1:
                         for i in pokInts:
                             newbie=makeMon(i,userParty[0].level)
                             print(f"{newbie.name} is born!")
-                            t.sleep(1)
+                            shortpause()
                             userParty.append(newbie)
                             print(f"{newbie.name} has been added to your party!")
-                            t.sleep(1)
+                            shortpause()
                             print("Take good care of them!")
                     else: #failing brings you back to new pokemon loop
                         print("** That's out of bounds... **\n")
@@ -867,9 +857,9 @@ while 1:
                 for i in newMons:
                     userParty.append(i)
                     print(f"{i.name} has joined your party!")
-                    t.sleep(1)
+                    shortpause()
                 print("Finished loading Pokemon!\n")
-                t.sleep(1)
+                shortpause()
             else:
                 try:
                     newMons=loadMon(saveChoice)
@@ -881,9 +871,9 @@ while 1:
                     for i in newMons:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")
-                        t.sleep(1)
+                        shortpause()
                     print("Finished loading Pokemon!\n")
-                    t.sleep(1)
+                    shortpause()
                     #loop back to load a save
                 #
             #loop back to load a save
@@ -895,7 +885,7 @@ while 1:
         print("\n******** Welcome to the Pokemon Center ********\n")
         shortpause()
         print("We can heal your Pokemon to full health!")
-        t.sleep(1)
+        shortpause()
         while 1:
             cenChoice=input("[y] to restore your party or [b]ack\n: ")
 
