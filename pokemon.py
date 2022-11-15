@@ -40,7 +40,7 @@ scarlet = field(rando=True)
 ######################
 print("\n... A Python game by Antoine ...")
 shortpause()
-print("** Welcome to the Wonderful World of Pokemon Simulation! **")
+print("** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
 #aa:mainmenu
 while 1:
@@ -48,8 +48,8 @@ while 1:
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
-    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining" + \
-        "\nPokemon [C]enter\nBattle [S]etting\n[R]eset Party" + \
+    mainmenu = "\n[P]okémon\n[B]attle!\n[N]ursery\n[T]raining" + \
+        "\nPokémon [C]enter\nBattle [S]etting\n[R]eset Party" + \
         "\n[L]oad\nWhat to do: "
     userChoice=input(mainmenu)
     ########################################################################################################
@@ -154,7 +154,7 @@ while 1:
         ## can't play if all your pokemon are fainted
         ni, ny = checkBlackout(userParty)
         if ni==0:
-            print("\nYou can't battle without a healthy Pokemon!")
+            print("\nYou can't battle without a healthy Pokémon!")
             shortpause()
             continue #go back to main without starting the battle
         ## going to recommend a party level 
@@ -190,7 +190,7 @@ while 1:
             chaP= chps_stuff[1]
             #
             battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
-            resu1 = battle1.startbattle()
+            resu1 = battle1.startbattle(e4=True)
             resu1=True
             if (not resu1): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -202,7 +202,7 @@ while 1:
             if hea_1 =='quitted': continue
             #zinnia's battle
             battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
-            resu2 = battle2.startbattle()
+            resu2 = battle2.startbattle(e4=True)
             resu2=True
             #win check
             if (not resu2): #the user lost
@@ -215,7 +215,7 @@ while 1:
             if hea_2 =='quitted': continue
             #cynthias battle
             battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
-            resu3 = battle3.startbattle()
+            resu3 = battle3.startbattle(e4=True)
             resu3 = True
             if (not resu3): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -227,7 +227,7 @@ while 1:
             if hea_3 =='quitted': continue
             #N's battle
             battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
-            resu4 = battle4.startbattle()
+            resu4 = battle4.startbattle(e4=True)
             resu4=True
             #win
             if (not resu4): #the user lost
@@ -240,7 +240,7 @@ while 1:
             if hea_4 =='quitted': continue
             #champ
             battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
-            resu5 = battle5.startbattle()
+            resu5 = battle5.startbattle(e4=True)
             resu5=True
             #if you won, you won, like it's over
             if not resu5:
@@ -250,7 +250,7 @@ while 1:
             else:         
                 print("\nYou defeated the Elite Four and the Grand Champion!")
                 dramaticpause()
-                print("Congratulations! Cheers to the new Grand Champion! A true Pokemon Master!")
+                print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
                 #hall of fame where we highlight the party that just won
             pass
@@ -263,7 +263,7 @@ while 1:
     if userChoice=="b" or userChoice=="B":
         ni, ny = checkBlackout(userParty)
         if ni==0:
-            print("\nYou can't battle without a healthy Pokemon!")
+            print("\nYou can't battle without a healthy Pokémon!")
             shortpause()
             continue #go back to main without starting the battle
         classicbattle = battle(userParty, trainerParty, scarlet)
@@ -273,7 +273,8 @@ while 1:
     #### check party pokemon? aa:pokemonparty ####
     if userChoice=="p" or userChoice=="P":
         while 1:
-            print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
+            """
+            print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
             for i in range(len(userParty)):
                 if userParty[i].dualType:
                     thipe=typeStrings[userParty[i].tipe[0]]
@@ -281,9 +282,9 @@ while 1:
                     thipe+=typeStrings[userParty[i].tipe[1]]
                 else:
                     thipe=typeStrings[userParty[i].tipe[0]]
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
-            print("\n*******************************")
-            partyChoice=input("Enter a number to see a Pokemon's summary...\n[#] or [b]ack: ")
+                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")"""
+            print_party(userParty)
+            partyChoice=input("Enter a number to see a Pokémon's summary...\n[#] or [b]ack: ")
             #go back to main screen
             if partyChoice=='b' or partyChoice=="B":
                 print("Leaving Party screen...")
@@ -293,9 +294,9 @@ while 1:
                 pokeInd=int(partyChoice)-1
                 selMon=userParty[pokeInd]
             except ValueError:
-                print("\n! Enter the number corresponding to a Pokemon !\nor [b] to go back")
+                print("\n! Enter the number corresponding to a Pokémon !\nor [b] to go back")
             except IndexError:
-                print("\n! Enter the number corresponding to a Pokemon !\nor [b] to go back")
+                print("\n! Enter the number corresponding to a Pokémon !\nor [b] to go back")
             else:
                 while 1:
                     selMon.summary()
@@ -355,7 +356,7 @@ while 1:
                                     moveInfo(movez[i])
                                     micropause() #drama
                                 #we got all the move info out?, go back to pokemon?
-                                pause=input("\nEnter anything to continue back to Pokemon summary...")
+                                pause=input("\nEnter anything to continue back to Pokémon summary...")
                                 break
                     #judge
                     if sumChoice=="j" or sumChoice=="J":
@@ -368,18 +369,18 @@ while 1:
     ###end of party display block###zz:pokemonparty
     ####pokemon aa:nursery####
     if userChoice=='n' or userChoice=='N':
-        print("\n____ Welcome to the Pokemon Nursery! ____")
+        print("\n____ Welcome to the Pokémon Nursery! ____")
         shortpause()
-        print("Here, you can create Pokemon from scratch!")
+        print("Here, you can create Pokémon from scratch!")
         shortpause()
         ####nursery loop####
         while 1:
-            nurseChoice=input("What do you want to do?\n[1] Create a Pokemon!!\n[2] Choose from the Pokedex\n[#] or [b]ack: ")
+            nurseChoice=input("What do you want to do?\n[1] Create a Pokémon!!\n[2] Choose from the Pokedex\n[#] or [b]ack: ")
             if nurseChoice=='b' or nurseChoice=='B':
                 break #exits nursery loop
             ####new pokemon####
             if nurseChoice=='1':
-                newName=input("Would you like to give your Pokemon a name?: ")
+                newName=input("Would you like to give your Pokémon a name?: ")
                 print(f"Let's get {newName} some STATS")
                 while 1: #stat input loop
                     statS=input("Enter 6 stats [1-255]\n[HP] [ATK] [DEF] [SPA] [SPD] [SPE]\n")
@@ -395,7 +396,7 @@ while 1:
                     except ValueError:
                         print("\n** Stats must be numbers **")
                 ##type choice##
-                print("****************\nPokemon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric"+ \
+                print("****************\nPokémon Types:\n0 Normal\n1 Fire\n2 Water\n3 Grass\n4 Electric"+ \
                       "\n5 Ice\n6 Fighting\n7 Poison\n8 Ground\n9 Flying\n10 Psychic\n11 Bug\n12 Rock"+ \
                           "\n13 Ghost\n14 Dragon\n15 Dark\n16 Steel\n17 Fairy\n****************")
                 while 1: #type input loop
@@ -472,7 +473,7 @@ while 1:
                     print_dex()
                     shortpause()
                 while 1:
-                    pokeChoice=input("Which Pokemon would you like to add to your team?\n[#]'s or [b]ack: ")
+                    pokeChoice=input("Which Pokémon would you like to add to your team?\n[#]'s or [b]ack: ")
                     if pokeChoice=='b' or pokeChoice=='B':
                         print("Leaving Pokedex...")
                         shortpause() #kills
@@ -517,7 +518,7 @@ while 1:
             print("")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
-            trainChoice=input("Which Pokemon will we train?:\n[#] or [b]ack: ")
+            trainChoice=input("Which Pokémon will we train?:\n[#] or [b]ack: ")
             #option to go back, from pokemon selection to main screen
             if trainChoice=='b' or trainChoice=='B':
                 break
@@ -531,7 +532,7 @@ while 1:
                 micropause()
                 pass
             except IndexError:
-                print("\n** Must enter the number of a Pokemon **")
+                print("\n** Must enter the number of a Pokémon **")
                 micropause()
                 #the pokemon does not exist
                 pass
@@ -647,9 +648,9 @@ while 1:
                     #### move tutor #### aa:movetutor
                     elif hypermoves == '2':
                         while 1:
-                            print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokemon new moves!\n")
+                            print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokémon new moves!\n")
                             #print all the moves
-                            print("\n------------ Pokemon Moves ------------")
+                            print("\n------------ Pokémon Moves ------------")
                             for i in range(len(mov)):
                                 print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| " + \
                                       f"{typeStrings[mov[i]['type']]}")
@@ -773,7 +774,7 @@ while 1:
                                 for i in range(len(chooz)):
                                     if len(pokeTrain.knownMoves)==1: #catch players trying to dump whole moveset
                                         micropause()
-                                        print("** Pokemon cannot forget its last move **")
+                                        print("** Pokémon cannot forget its last move **")
                                         break
                                     if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
                                         byeMove=pokeTrain.knownMoves.pop(chooz[i])
@@ -793,7 +794,7 @@ while 1:
                             except ValueError:
                                 print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
                             except IndexError:
-                                print("\n** Entry must correspond to Pokemon move! **")
+                                print("\n** Entry must correspond to a Pokémon move! **")
                         ###zz:movedelete
                     elif hypermoves == '4': #renaming pokemon
                         pass
@@ -806,12 +807,12 @@ while 1:
     #zz:training    
     ####Loading pokemon
     if userChoice=='l':
-        print("******** Load Pokemon ********\n\nYou can load previously saved pokemon!\n")
+        print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
         while 1: #savefile input loop
             saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
             #go back
             if saveChoice=='b' or saveChoice=='b':
-                print("Leaving Load Pokemon..")
+                print("Leaving Load Pokémon..")
                 shortpause()
                 break
             if saveChoice=="":
@@ -824,7 +825,7 @@ while 1:
                     userParty.append(i)
                     print(f"{i.name} has joined your party!")
                     shortpause()
-                print("Finished loading Pokemon!\n")
+                print("Finished loading Pokémon!\n")
                 shortpause()
             else:
                 try:
@@ -838,7 +839,7 @@ while 1:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")
                         shortpause()
-                    print("Finished loading Pokemon!\n")
+                    print("Finished loading Pokémon!\n")
                     shortpause()
                     #loop back to load a save
                 #
@@ -847,9 +848,9 @@ while 1:
     ###end of load save block###
     ####pokemon center#### let's heal em up
     if userChoice=="c":
-        print("\n******** Welcome to the Pokemon Center ********\n")
+        print("\n******** Welcome to the Pokémon Center ********\n")
         shortpause()
-        print("We can heal your Pokemon to full health!")
+        print("We can heal your Pokémon to full health!")
         shortpause()
         while 1:
             cenChoice=input("[y] to restore your party or [b]ack\n: ")
@@ -874,11 +875,11 @@ while 1:
     ### multi-party support?
     if userChoice=='r':
         print("\n******** Party Reset ********")
-        print("\nYou can remove individual Pokemon from your party...")
+        print("\nYou can remove individual Pokémon from your party...")
         print("Or you can reset your team to just the starter (Bulbasaur for now)")
         shortpause()
         while 1: #input loop only to catch players leaving individual pokemon removal
-            resChoice=input("What would you like to do?\n[C]hoose Pokemon, [R]eset team, [3] Parties \nor [b]ack: ")
+            resChoice=input("What would you like to do?\n[C]hoose Pokémon, [R]eset team, [3] Parties \nor [b]ack: ")
             if resChoice=="b" or resChoice=="B":
                 print("Leaving Party Reset...")
                 shortpause() #kills
@@ -898,7 +899,7 @@ while 1:
                 #user input loop
                 while 1:
                     #display current party
-                    print("\n******** Party Pokemon ********\n*******************************\n")
+                    print("\n******** Party Pokémon ********\n*******************************\n")
                     for i in range(len(userParty)):
                         if userParty[i].dualType:
                             thipe=typeStrings[userParty[i].tipe[0]]
@@ -908,7 +909,7 @@ while 1:
                             thipe=typeStrings[userParty[i].tipe[0]]
                         print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")
                     print("\n*******************************\n")
-                    remChoice=input("Which Pokemon to remove?\n[#] or [b]ack: ")
+                    remChoice=input("Which Pokémon to remove?\n[#] or [b]ack: ")
                     
                     if remChoice==("b" or "B"):
                         print("Going back...")
@@ -918,7 +919,7 @@ while 1:
                         choices=np.array([int(i)-1 for i in remChoice.split()])
                         for i in range(len(choices)):
                             if len(userParty)==1: #catch players trying to dump whole party
-                                print("!! Cannot remove last Pokemon from Party !!")
+                                print("!! Cannot remove last Pokémon from Party !!")
                                 break
                             if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
                                 byeMon=userParty.pop(choices[i])
@@ -928,13 +929,13 @@ while 1:
                                 choices[i]-=removedIndices
                                 byeMon=userParty.pop(choices[i])
                                 print(f"{byeMon.name} has been released to the wild...")
-                        print("Selected Pokemon have been released!")
+                        print("Selected Pokémon have been released!")
                         shortpause() #kills
                         break
                     except ValueError:
                         print("\n!! Entry must be number or list of numbers separated by spaces !!")
                     except IndexError:
-                        print("\n!! Entry must correspond to Party Pokemon !!")
+                        print("\n!! Entry must correspond to Party Pokémon !!")
             elif resChoice=="3":
                 #list player's parties, create new parties, equip saved parties to replace player's current party
                 #print current parties (whatever the heck that's gonna look like)
@@ -962,7 +963,7 @@ while 1:
                         equi="none"
                         #input loop for number of pokemon to include in the party
                         while 1:
-                            partmons = input("Fill with how many random Pokemon: ")
+                            partmons = input("Fill with how many random Pokémon: ")
                             try:
                                 num = int(float(partmons)) #number of new pokemon
                                 if num>=0: #if 0 or more
@@ -1005,11 +1006,21 @@ while 1:
                         else:
                             while 1:
                                 #show the party
-                                print_party(party_i)
-                                #ask for options
-                                megaChoice = input("[e]quip, [a]dd a Pokemon, [c]opy, [#], [b]ack\n:")
+                                if len(party_i) == 0: print("====================\nThis party is empty.\n====================")
+                                else: print_party(party_i, party_name, True)
+                                if equiped==party_name: print("~This is your equipped party.~") #this is the equipped party
+                                #ask for options, 
+                                megaChoice = input("[e]quip, [c]opy, [a]dd/[r]emove Pokémon, [d]elete, [r]eset, [#], [b]ack\n: ")
                                 if megaChoice=='b' or megaChoice=='B': break
-                                if megaChoice=='e' or megaChoice=='E':
+                                if megaChoice=='e' or megaChoice=='E': #equipping the party
+                                    if equiped==party_name: #if this party is already equipped
+                                        print(f"\n!! {party_name} is already equipped !!")
+                                        micropause()
+                                        continue #back to party options
+                                    if len(party_i) < 1: #if this party has zero or fewer Pokemon
+                                        print("\n!! You cannot equip an empty party !!")
+                                        micropause()
+                                        continue #back to party options
                                     userParty=party_i
                                     equiped=party_name
                                     print(f"\nYou equipped {party_name}.")
@@ -1018,26 +1029,32 @@ while 1:
                                 elif megaChoice=='a' or megaChoice=='A':
                                     #list pokemon from userParty and copy them into
                                     #this party, party_i
-                                    while 1:
+                                    while 1: #input loop for choosing pokemon, break when pokemon are added
                                         print_party(userParty)
-                                        gigChoice = input("Which Pokemon to add?\n[#]'s or [b]ack: ")
+                                        gigChoice = input("Which Pokémon to add?\n[#]'s or [b]ack: ")
                                         if gigChoice=='b' or gigChoice=='B': break
-                                        try: #number of a pokemon in userParty, 1-indexed
-                                            pokis_i = [int(float(i)) for i in gigChoice.split()] #the indeces chosen
-                                            pokis = [userParty[i-1] for i in pokis_i] # the pokemon selected
-                                        except ValueError:
-                                            print("\n** Try Again **")
-                                            pass
-                                        except IndexError:
-                                            print("\n** Try Again **")
-                                            pass
+                                        if gigChoice=='all' or gigChoice=='All' or gigChoice=='ALL':
+                                            pokis = userParty
+                                            break
                                         else:
-                                            #take the selection, make a copy of each and add to selected party
-                                            for i in pokis:
-                                                party_i.append(copy.deepcopy(i))
-                                                print(f"{i.name} joined {party_name}!")
-                                            shortpause()
-                                            #think that's it, loop back
+                                            try: #number of a pokemon in userParty, 1-indexed
+                                                pokis_i = [int(float(i)-1) for i in gigChoice.split()] #the indeces chosen
+                                                pokis = [userParty[i] for i in pokis_i] # the pokemon selected
+                                            except ValueError:
+                                                print("\n** Try Again **")
+                                                micropause()
+                                                pass
+                                            except IndexError:
+                                                print("\n** Try Again **")
+                                                micropause()
+                                                pass
+                                            else: #if all goes well, break the add pokemon input
+                                                break
+                                    #take the selection, make a copy of each and add to selected party
+                                    for i in pokis:
+                                        party_i.append(copy.deepcopy(i))
+                                        print(f"{i.name} joined {party_name}!")
+                                    shortpause()
                                     pass
                                 elif megaChoice=='c' or megaChoice=='C':
                                     #ask for a name for the copied party
@@ -1046,7 +1063,19 @@ while 1:
                                     part_copy = copy.deepcopy(party_i)
                                     players_parties.append((part_copy,coppy))
                                     print("\nCopied!")
+                                    micropause()
                                     #loop back mans
+                                elif megaChoice=='d' or megaChoice=='D': #deleting this party
+                                    #make sure this isnt the equipped party    
+                                    #ask if user is sure
+                                    #if so, delete it
+                                    pass
+                                elif megaChoice=='r' or megaChoice=='R': #emptying this party
+                                    #make sure this isnt the equipped party
+                                    #ask if the user is sure
+                                    #if so, remove all the pokemon from party_i
+                                    #if this was the equipped party
+                                    pass
                                 else: #trying some numbers
                                     #sigh, this is show pokemon summary right? okay whatever
                                     try:

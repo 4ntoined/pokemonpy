@@ -863,3 +863,11 @@ not copy pokemon from their currently equipped party from the parties menu, like
 a while ago i had the idea of importing the e4 teams as teams that the player can use, now that parties are up we can look into that
 otherwise, I have to fix semi-invuls. okay goodnight
 
+15 nov 2022-
+9:03- some fixes for multi-party, safeguards against equipping empties or already equips, battle specifies that *player* challenges oppponent
+for e4, where classic battle is inspired by trainer encounters, where they challenge you, what else
+new print party function, it says the name of the party instead of just "party pokemon" in party management
+probably other things. going to do removing individual pokemon, wiping a party, and deleting the party
+also finally got around to Pok-e-accent-mon opposed to Pokemon, unfortunately it looks like txt does not support the character
+or maybe its just vim doesn't like it. that's whatever, we move
+

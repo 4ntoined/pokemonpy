@@ -1464,9 +1464,10 @@ class battle:
         print(f"Terrain : {terr}")
         print("\n___ End of battle status ___")
 
-    def startbattle(self):
+    def startbattle(self, e4=False):
         ####Battle starts####
-        print(f"\n{self.cpu_name} has challenged you to a Pokemon Battle!")
+        if e4: print(f"\nYou challenge {self.cpu_name} to a Pokémon Battle!")
+        else: print(f"\n{self.cpu_name} challenges you to a Pokémon Battle!")
         dramaticpause()
         #userMon=self.usrs[0]
         #self.cpu_mon=self.cpus[0]
@@ -1532,11 +1533,11 @@ class battle:
                     #### go party pokemon ####
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
-                            print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
+                            print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
                             ## show the player's pokemon
                             for i in range(len(self.usrs)):
                                 print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
-                            partyChoice=input("Select a Pokemon...\n[#] or [b] to go back: ")
+                            partyChoice=input("Select a Pokémon...\n[#] or [b] to go back: ")
                             if partyChoice=='b' or partyChoice=="B":
                                 break #goes back to user turn loop from pokemon selection
                             try:
@@ -1544,9 +1545,9 @@ class battle:
                                 nuserInd=int(partyChoice)-1
                                 select.battleSummary()
                             except ValueError: #will print warning, and restart the party loop without seeing a pokemon
-                                print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
+                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
                             except IndexError:
-                                print("\nEnter the [#] corresponding to a Pokemon!\nor [b]ack")
+                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
                             else:
                                 ### looking at a pokemon in the party ###
                                 while 1: 
@@ -1579,7 +1580,7 @@ class battle:
                                                     micropause()
                                                 #we got all the move info out?, go back to pokemon?
                                                 #pause the code for reading purposes
-                                                input("\nEnter anything to go back to Pokemon summary...")
+                                                input("\nEnter anything to go back to Pokémon summary...")
                                                 break #bacl to pokemon summary
                                             #move info contents
                                         #
@@ -1587,7 +1588,7 @@ class battle:
                                     if pChoice=="s" or pChoice=="S":
                                         #keep fainted pokemon off the field
                                         if select.fainted:
-                                            print("\n** Cannot switch in fainted Pokemon! **")
+                                            print("\n** Cannot switch in fainted Pokémon! **")
                                             break #back to party
                                         if nuserInd==userInd:
                                             print(f"\n** {select.name} is already in battle! **")
@@ -1818,7 +1819,7 @@ class battle:
                     #check for USER BLACKOUT
                     if checkBlackout(self.usrs)[0]==0:
                         battleOver=True
-                        print("\nYou're out of usable Pokemon!")
+                        print("\nYou're out of usable Pokémon!")
                         shortpause()
                         print("You blacked out!")
                         shortpause()
@@ -1826,7 +1827,7 @@ class battle:
                     #check for TRAINER BLACKOUT
                     if checkBlackout(self.cpus)[0]==0:
                         battleOver=True
-                        print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
+                        print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
                         self.user_won = True
                         shortpause()
                         break
@@ -1906,7 +1907,7 @@ class battle:
                         #check for USER BLACKOUT
                         if checkBlackout(self.usrs)[0]==0:
                             battleOver=True
-                            print("\nYou're out of usable Pokemon!")
+                            print("\nYou're out of usable Pokémon!")
                             shortpause()
                             print("You blacked out!")
                             shortpause()
@@ -1915,18 +1916,18 @@ class battle:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             self.field.faintedA = True #if there was a faint, mark it on the field
                             while 1:
-                                print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
+                                print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
                                 for i in range(len(self.usrs)):
                                     print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
-                                newPoke=input("Select a Pokemon for battle...\n[#]: ")
+                                newPoke=input("Select a Pokémon for battle...\n[#]: ")
                                 try:
                                     nuserInd=int(newPoke)-1
                                     select=self.usrs[nuserInd]
                                     select.battleSummary()
                                 except ValueError:
-                                    print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
+                                    print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
                                 except IndexError:
-                                    print("\n** Enter a [#] corresponding to a Pokemon!\nor [b]ack **")
+                                    print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
                                 else:
                                     while 1: #another user input loop to loop at a pokemon
                                         sChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
@@ -1960,7 +1961,7 @@ class battle:
                                         if sChoice=='s' or sChoice=="S":
                                             #keep fainted pokemon off the field
                                             if select.fainted:
-                                                print("** Cannot switch in fainted Pokemon! **")
+                                                print("** Cannot switch in fainted Pokémon! **")
                                                 break
                                             if nuserInd==userInd:
                                                 print("** {select.name} is already in battle! **")
@@ -1991,7 +1992,7 @@ class battle:
                         blk,blkList=checkBlackout(self.cpus)
                         if blk==0:
                             battleOver=True
-                            print(f"\n{self.cpu_name} is out of usable pokemon!\nYou win!")
+                            print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
                             self.user_won=True
                             shortpause()
                             break
@@ -2371,16 +2372,16 @@ class field:
             elif scr=='reflect':
                 self.reflectACounter=5
                 micropause()
-                print("\nThe Pokemon's side is protected by Reflect!")
+                print("\nThe Pokémon's side is protected by Reflect!")
             ## player puts up light screen
             elif scr=='lightscreen':
                 self.lightscACounter=5
                 micropause()
-                print("\nThe Pokemon's side is protected by Light Screen!")
+                print("\nThe Pokémon's side is protected by Light Screen!")
             elif scr=='veil':
                 micropause()
                 self.veilACounter=5
-                print("\nThe Pokemon's side is protected by a mystical veil!")
+                print("\nThe Pokémon's side is protected by a mystical veil!")
             pass
         elif side=='blue':
             ## reflect is already up for cpu
@@ -2402,16 +2403,16 @@ class field:
             elif scr=='reflect':
                 self.reflectBCounter=5
                 micropause()
-                print("\nThe Pokemon's side is protected by Reflect!")
+                print("\nThe Pokémon's side is protected by Reflect!")
             ## cpu puts up light screen
             elif scr=='lightscreen':
                 self.lightscBCounter=5
                 micropause()
-                print("\nThe Pokemon's side is protected by Light Screen!")
+                print("\nThe Pokémon's side is protected by Light Screen!")
             elif scr=='veil':
                 self.veilBCounter=5
                 micropause()
-                print("\nThe Pokemon's side is protected by a mystical veil!")
+                print("\nThe Pokémon's side is protected by a mystical veil!")
             pass
     #more functions of field
 ##zz:fieldclass
@@ -2733,9 +2734,14 @@ def makeParty(numb=0):
         new_mon = makeRandom()
         pokemon_party.append(new_mon)
     return pokemon_party
-def print_party(parti):
+def print_party(parti, named='namo', menu=False):
+    #namo: name of the party, string
+    #menu: True if viewing fom the party menu, false if viewing from main
     global typeStrings
-    print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
+    if menu:
+        print(f"\n////////////////////////////////\n//////// {named} /////////\n////////////////////////////////")
+    else:
+        print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
     for i in range(len(parti)):
         if parti[i].dualType:
             thipe=typeStrings[parti[i].tipe[0]]
@@ -2747,7 +2753,7 @@ def print_party(parti):
     print("\n*******************************")
     return
 def elite4_healquit(poke_party):
-    heal1 = input("Would you like me to heal your Pokemon?\n[y]es, [n]o: ")     
+    heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o: ")     
     if heal1 == 'b' or heal1=='B':
         print("Leaving Indigo Plateau...")
         micropause()
