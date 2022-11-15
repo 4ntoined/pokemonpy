@@ -270,7 +270,7 @@ while 1:
         classicbattle.startbattle()
         #then it should loop back to the main menu?
     ###end of battle block### zz:battlemode
-    #### check party pokemon? aa:pokemonparty ####
+    #### check party pokemon? aa:party ####
     if userChoice=="p" or userChoice=="P":
         while 1:
             """
@@ -872,7 +872,7 @@ while 1:
                 shortpause()
                 break #back to main screen    
     ####resetting user Party to Bulbasaur
-    ### multi-party support?
+    ### multi-party support? #aa:multiparty
     if userChoice=='X' or userChoice=='x':
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
@@ -949,7 +949,7 @@ while 1:
                         else: print_party(party_i, party_name, True)
                         if equipp: print("~This is your equipped party.~") #this is the equipped party
                         #ask for options, 
-                        megaChoice = input("[e]quip, [c]opy, [a]dd/[r]emove Pokémon, [d]elete, e[m]pty, [#], [b]ack\n: ")
+                        megaChoice = input("[e]quip, [c]opy, [a]dd/[r]emove Pokémon, [d]elete, e[m]pty, [s]ave, [#], [b]ack\n: ")
                         if megaChoice=='b' or megaChoice=='B': break
                         if megaChoice=='e' or megaChoice=='E': #equipping the party
                             if equipp: #if this party is already equipped
@@ -965,6 +965,17 @@ while 1:
                             print(f"\nYou equipped {party_name}.")
                             shortpause()
                             #loops back to party options
+                        elif megaChoice=='s' or megaChoice=='S':
+                            #ask for file save name or default
+                            #save every pokemon in the party to the file
+                            savewhere=input("Where to save the party: ")
+                            for i in party_i:
+                                if savewhere=='': savewhere='pypokemon.sav'
+                                i.save(savewhere)
+                                print(f"Saved {i.name} to {savewhere}")
+                                micropause()
+                            pass
+                            #back to party options
                         elif megaChoice=='a' or megaChoice=='A':
                             #list pokemon from userParty and copy them into
                             #this party, party_i
