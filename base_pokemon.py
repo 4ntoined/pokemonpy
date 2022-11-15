@@ -616,6 +616,9 @@ class mon:
             if self.charged: #pokemon has charged the move already
                 self.charged=False #pokemon will release the move
                 self.flying=False #these can go now
+                #reground non-flying types (and one day levitates and magnet rises and telekineses)
+                if not (9 in self.tipe): self.grounded=True
+                else: self.grounded=False
                 self.digging=False
                 self.diving=False
                 self.shadowing=False
@@ -643,6 +646,7 @@ class mon:
                     print(f"\n{self.name} flies up high!")
                     self.charged = True
                     self.flying=True
+                    self.grounded=False
                     shortpause()
                     return
                 elif 'diving' in notas:
