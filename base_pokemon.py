@@ -2733,6 +2733,19 @@ def makeParty(numb=0):
         new_mon = makeRandom()
         pokemon_party.append(new_mon)
     return pokemon_party
+def print_party(parti):
+    global typeStrings
+    print("\n////////////////////////////////\n//////// Party Pokemon /////////\n////////////////////////////////")
+    for i in range(len(parti)):
+        if parti[i].dualType:
+            thipe=typeStrings[parti[i].tipe[0]]
+            thipe+=" // "
+            thipe+=typeStrings[parti[i].tipe[1]]
+        else:
+            thipe=typeStrings[parti[i].tipe[0]]
+        print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
+    print("\n*******************************")
+    return
 def elite4_healquit(poke_party):
     heal1 = input("Would you like me to heal your Pokemon?\n[y]es, [n]o: ")     
     if heal1 == 'b' or heal1=='B':

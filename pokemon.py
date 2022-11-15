@@ -12,7 +12,7 @@
 import copy
 #import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex, print_party
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams
@@ -33,6 +33,7 @@ opponentName="OPPONENT"
 #this list will hold tuples of pokemon parties and the name of those parties
 players_parties.append((starterParty, "starter"))
 userParty=starterParty
+equiped = "starter"
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
@@ -877,7 +878,7 @@ while 1:
         print("Or you can reset your team to just the starter (Bulbasaur for now)")
         shortpause()
         while 1: #input loop only to catch players leaving individual pokemon removal
-            resChoice=input("What would you like to do?\n[C]hoose Pokemon, [R]eset team, or [b]ack: ")
+            resChoice=input("What would you like to do?\n[C]hoose Pokemon, [R]eset team, [3] Parties \nor [b]ack: ")
             if resChoice=="b" or resChoice=="B":
                 print("Leaving Party Reset...")
                 shortpause() #kills
@@ -942,6 +943,8 @@ while 1:
                     print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]")
                     for i in range(len(players_parties)):
                         print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
+                    print(f"Equipped: {equiped}")
+                    #equipd = np.argwhere(players_parties[:,1]=="")
                     partiesChoice = input("[S]tart a new party\n[#] see party\nor [b]ack: ") 
                     if partiesChoice == "b" or partiesChoice == "B":
                         break
@@ -979,7 +982,9 @@ while 1:
                                  break #leave the input loop for num of pokes
                         players_parties.append((new_party,partname))
                         if len(new_party)>=1: equi = input("Would you like to equip this party?\n[y] or [n]:")
-                        if equi=='y' or equi=="Y": userParty = new_party
+                        if equi=='y' or equi=="Y":
+                            userParty = new_party
+                            equiped = partname
                         pass
                     elif 1: #some condition? for looking at a party, should just be an integer
                         #see the pokemon in the party, give and take options for that party
@@ -991,12 +996,70 @@ while 1:
                             #index and value are good, we move to print the pokemon and ask options
                             #sigh... need to make pokemon party display a function
                             #be right back
+                            #hey                            
                             pass
                         except ValueError:
                             pass
                         except IndexError:
                             pass
                         else:
+                            while 1:
+                                #show the party
+                                print_party(party_i)
+                                #ask for options
+                                megaChoice = input("[e]quip, [a]dd a Pokemon, [c]opy, [#], [b]ack\n:")
+                                if megaChoice=='b' or megaChoice=='B': break
+                                if megaChoice=='e' or megaChoice=='E':
+                                    userParty=party_i
+                                    equiped=party_name
+                                    print(f"\nYou equipped {party_name}.")
+                                    shortpause()
+                                    #loops back to party options
+                                elif megaChoice=='a' or megaChoice=='A':
+                                    #list pokemon from userParty and copy them into
+                                    #this party, party_i
+                                    while 1:
+                                        print_party(userParty)
+                                        gigChoice = input("Which Pokemon to add?\n[#]'s or [b]ack: ")
+                                        if gigChoice=='b' or gigChoice=='B': break
+                                        try: #number of a pokemon in userParty, 1-indexed
+                                            pokis_i = [int(float(i)) for i in gigChoice.split()] #the indeces chosen
+                                            pokis = [userParty[i-1] for i in pokis_i] # the pokemon selected
+                                        except ValueError:
+                                            print("\n** Try Again **")
+                                            pass
+                                        except IndexError:
+                                            print("\n** Try Again **")
+                                            pass
+                                        else:
+                                            #take the selection, make a copy of each and add to selected party
+                                            for i in pokis:
+                                                party_i.append(copy.deepcopy(i))
+                                                print(f"{i.name} joined {party_name}!")
+                                            shortpause()
+                                            #think that's it, loop back
+                                    pass
+                                elif megaChoice=='c' or megaChoice=='C':
+                                    #ask for a name for the copied party
+                                    #copy the party with the new name
+                                    coppy = input("Name the copy: ")
+                                    part_copy = copy.deepcopy(party_i)
+                                    players_parties.append((part_copy,coppy))
+                                    print("\nCopied!")
+                                    #loop back mans
+                                else: #trying some numbers
+                                    #sigh, this is show pokemon summary right? okay whatever
+                                    try:
+                                        pass
+                                    except ValueError:
+                                        print("\n** Try Again **")
+                                        pass
+                                    except IndexError:
+                                        print("\n** Try Again **")
+                                        pass
+                                    else:
+                                        pass
+                                    pass
                             pass
                         
                         pass

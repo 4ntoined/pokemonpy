@@ -854,4 +854,12 @@ and then that's game bro, we out here sis
 20:10- i think im done with pokemon creation consolidating, for some reason i feel like i forgot something but i can't think of what that's about
 22:39- having lots of fun just writing lots of blocks of code, multi-party support is progressing nicely, going to make pokemon party display a little function
 since there are so many parties now. as always hope this stuff works. hey vsauce, michael here 
+23:54- multiparty stuff is here and mostly works, ive gotten a lot of pokemon recently with precisely level 131 and
+that seems wrong, so i'll have to check that out. but the player can have an arbitrary number of parties, equip one of them
+at will, create new ones with none, one, or any arbitrary number of random pokemon in them, copy them (and their contents)
+and add pokemon from you current party in them, these means that you can add a pokemon already in your party, to your party
+again. it seems broken at first glance, but its essentially just an easier way to copy pokemon, and one can very easily just
+not copy pokemon from their currently equipped party from the parties menu, like just don't do that
+a while ago i had the idea of importing the e4 teams as teams that the player can use, now that parties are up we can look into that
+otherwise, I have to fix semi-invuls. okay goodnight
 
