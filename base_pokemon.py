@@ -6,13 +6,14 @@ import time as t
 #import copy
 import numpy as np
 from dexpoke import dex
-from moves import mov,natures,struggle,futuresigh,getMoveInfo
+from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 #classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats, 
 rng = np.random.default_rng()
 #aa:monclass
 class mon:
-    def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0])): #add natures
+    def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),random_move=True): #add natures
         #print("its a pokemon!")
+        global mo
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -56,17 +57,17 @@ class mon:
         self.name=named
         self.tipe=tipe
         self.levitate = False
-        if len(tipe)>1:
-            self.dualType=True
-        else:
-            self.dualType=False
+        #pokemon has 2 types
+        if len(tipe)>1: self.dualType=True
+        #pokemon is singly-typed
+        else: self.dualType=False
         self.fainted=False
-        self.knownMoves=[19]
+        self.knownMoves=[tackle_i]
         self.PP=[35]
-        if 9 in self.tipe: #flying types aren't grounded
-            self.grounded=False
-        else:
-            self.grounded=True
+        #instead of tackle, start the pokemon with any single move
+        if random_move: self.randomizeMoveset(1)
+        if 9 in self.tipe: self.grounded=False #flying types aren't grounded
+        else: self.grounded=True
         #battle stat stages
         self.atstage=6 #0 (at -6) to 6 (at 0) to 12 (at +6?)
         self.destage=6
@@ -2725,6 +2726,13 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
+def makeParty(numb=0):
+    #numb : integer number of random pokemon to initialize the party
+    pokemon_party=[]
+    for i in range(numb):
+        new_mon = makeRandom()
+        pokemon_party.append(new_mon)
+    return pokemon_party
 def elite4_healquit(poke_party):
     heal1 = input("Would you like me to heal your Pokemon?\n[y]es, [n]o: ")     
     if heal1 == 'b' or heal1=='B':
@@ -2792,6 +2800,7 @@ Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggle_i=struggle #move index of struggle
 futuresight_i = futuresigh
+tackle_i = tackl
 mo=list(range(len(mov)))
 mo.remove(struggle_i) #get struggle out of pool of moves
 if __name__ == "__main__":

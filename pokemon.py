@@ -12,7 +12,7 @@
 import copy
 #import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams
@@ -20,14 +20,19 @@ rng=np.random.default_rng()
 #
 ############   give the player a starter  ###############
 starter= makeRandom()
+players_parties = []
 ##### creating the trainer for classic mode #####
 rival= makeRandom(np.floor(starter.level*(0.96)), 6)
 rival2= makeRandom(np.floor(starter.level*1.07), 6)
 #stuff them into their parties
-userParty=[starter]
+starterParty = [starter]
 trainerParty=[rival,rival2]
 #
 opponentName="OPPONENT"
+#### setting up the player's parties ####
+#this list will hold tuples of pokemon parties and the name of those parties
+players_parties.append((starterParty, "starter"))
+userParty=starterParty
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
@@ -42,9 +47,9 @@ while 1:
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
-    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[D]ex Selection\n[T]raining" + \
-        "\n[M]ove Tutor\nPokemon [C]enter\nBattle [S]etting\n[R]eset Party" + \
-        "\n[L]oad\nMove D[E]leter\n: "
+    mainmenu = "\n[P]okemon\n[B]attle!\n[N]ursery\n[T]raining" + \
+        "\nPokemon [C]enter\nBattle [S]etting\n[R]eset Party" + \
+        "\n[L]oad\nWhat to do: "
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings
@@ -500,7 +505,6 @@ while 1:
             pass #loops back to start of nursery
         pass #loops back to start of game
     ###end of nursery block #zz:nursery
-    
     ####training####
     ## gonna rework this to include move tutor and move deleter
     ## at the same time, gonna also rework the concept so that you choose a pokemon
@@ -798,46 +802,7 @@ while 1:
                         pass
         #
     ###end of training block###
-    #zz:training
-
-    ####make pokemon from pokedex (use preset stats)####
-    if userChoice=='d':
-        print("\n*****************************\n******** The Pokedex ********\n*****************************\n\n")
-        shortpause()
-        while 1: #choose new pokemon loop
-            print(dex)
-            pokeChoice=input("Which pokemon would you like to add to your team?\n[#] or [b]ack: ")
-            if pokeChoice=='b':
-                print("Leaving Pokedex...")
-                shortpause() #kills
-                break
-            if pokeChoice=='B':
-                print("Leaving Pokedex...")
-                shortpause() #kills
-                break
-            try:
-                pokeChoices=pokeChoice.split()
-                pokInts=[int(i) for i in pokeChoices]
-                if max(pokInts)<len(dex):
-                    if min(pokInts)>=0:
-                        for i in pokInts:
-                            newbie=makeMon(i,userParty[0].level)
-                            print(f"{newbie.name} is born!")
-                            shortpause()
-                            userParty.append(newbie)
-                            print(f"{newbie.name} has been added to your party!")
-                            shortpause()
-                            print("Take good care of them!")
-                    else: #failing brings you back to new pokemon loop
-                        print("** That's out of bounds... **\n")
-                else: #new pokemon loop
-                    print("** That's out of bounds... **\n")
-            except ValueError:
-                print("** Try again **\n")
-            except IndexError:
-                print("** That's out of bounds... **\n")
-    ###end of making preset pokemon
-    
+    #zz:training    
     ####Loading pokemon
     if userChoice=='l':
         print("******** Load Pokemon ********\n\nYou can load previously saved pokemon!\n")
@@ -879,7 +844,6 @@ while 1:
             #loop back to load a save
         #done loading save
     ###end of load save block###
-    
     ####pokemon center#### let's heal em up
     if userChoice=="c":
         print("\n******** Welcome to the Pokemon Center ********\n")
@@ -904,25 +868,22 @@ while 1:
                 shortpause()
                 print("\nHave a nice day! and have fun!")
                 shortpause()
-                break #back to main screen
-    
+                break #back to main screen    
     ####resetting user Party to Bulbasaur
+    ### multi-party support?
     if userChoice=='r':
         print("\n******** Party Reset ********")
-        shortpause()
         print("\nYou can remove individual Pokemon from your party...")
-        micropause()
         print("Or you can reset your team to just the starter (Bulbasaur for now)")
         shortpause()
         while 1: #input loop only to catch players leaving individual pokemon removal
             resChoice=input("What would you like to do?\n[C]hoose Pokemon, [R]eset team, or [b]ack: ")
-            
-            if resChoice==("b" or "B"):
+            if resChoice=="b" or resChoice=="B":
                 print("Leaving Party Reset...")
                 shortpause() #kills
-                break
-                
-            if resChoice==("r" or "R"):
+                break                
+            #resetting current party to bulba
+            if resChoice=="r" or resChoice=="R":
                 userParty.clear()
                 starter=makeMon(0)
                 userParty.append(starter)
@@ -931,7 +892,7 @@ while 1:
                 print("Leaving Party Reset...")
                 shortpause() #kills
                 break
-            
+            #removing individual pokemon
             if resChoice==("c" or "C"):
                 #user input loop
                 while 1:
@@ -973,10 +934,78 @@ while 1:
                         print("\n!! Entry must be number or list of numbers separated by spaces !!")
                     except IndexError:
                         print("\n!! Entry must correspond to Party Pokemon !!")
-    
-    #move deleting
-    if userChoice=="e" or userChoice=="E":
-        pass
+            elif resChoice=="3":
+                #list player's parties, create new parties, equip saved parties to replace player's current party
+                #print current parties (whatever the heck that's gonna look like)
+                while 1:
+                    #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
+                    print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]")
+                    for i in range(len(players_parties)):
+                        print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
+                    partiesChoice = input("[S]tart a new party\n[#] see party\nor [b]ack: ") 
+                    if partiesChoice == "b" or partiesChoice == "B":
+                        break
+                    if partiesChoice == "s" or partiesChoice=="S":
+                        #make a new party, a list
+                        #ask player to name the party, for id purposes
+                        #ask them if they want to equip it?
+                        #that's it, no? do we allow empty parties? idw impose a pokemon onto
+                        #every new party, only for the player to have to get rid of it if they
+                        #don't want it around. like its creating unnecessary work
+                        #but i am worried that an empty active party will somewhere break the code
+                        #and I really dont wanna have to go through the exercise of fixing it in that case
+                        #maybe we'll add a safeguard that you can't equip an empty party
+                        partname = input("Name the party: ")
+                        equi="none"
+                        #input loop for number of pokemon to include in the party
+                        while 1:
+                            partmons = input("Fill with how many random Pokemon: ")
+                            try:
+                                num = int(float(partmons)) #number of new pokemon
+                                if num>=0: #if 0 or more
+                                    #run the else block
+                                    pass
+                                else:
+                                    print("\n!! 0 or more !!")
+                                    micropause()
+                                    continue #don't run the else block, reloop to input
+                            except ValueError:
+                                print("\n** Bad Value **")
+                                pass
+                            else:
+                                 new_party = makeParty(num) #making the party
+                                 print("\nYou started a new party!")
+                                 shortpause()
+                                 break #leave the input loop for num of pokes
+                        players_parties.append((new_party,partname))
+                        if len(new_party)>=1: equi = input("Would you like to equip this party?\n[y] or [n]:")
+                        if equi=='y' or equi=="Y": userParty = new_party
+                        pass
+                    elif 1: #some condition? for looking at a party, should just be an integer
+                        #see the pokemon in the party, give and take options for that party
+                        #equipping, copying, adding a pokemon
+                        try: #parties choice is maybe a number
+                            part_n = int(float(partiesChoice)-1)
+                            party_i, party_name = players_parties[part_n]
+                            # we have the party in question and its name loaded up
+                            #index and value are good, we move to print the pokemon and ask options
+                            #sigh... need to make pokemon party display a function
+                            #be right back
+                            pass
+                        except ValueError:
+                            pass
+                        except IndexError:
+                            pass
+                        else:
+                            pass
+                        
+                        pass
+                    else: #?
+                        pass
+                    #
+                pass
+            else:
+                pass
     ####what's the next spot?####
 
     #end of game, loops back to main screen

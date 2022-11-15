@@ -852,4 +852,6 @@ so there's (1) that (2) pokemon creation consolidation (weirdly fun to say) (3) 
 and then that's game bro, we out here sis
 18:09- move tutor was broken but i fixed it
 20:10- i think im done with pokemon creation consolidating, for some reason i feel like i forgot something but i can't think of what that's about
+22:39- having lots of fun just writing lots of blocks of code, multi-party support is progressing nicely, going to make pokemon party display a little function
+since there are so many parties now. as always hope this stuff works. hey vsauce, michael here 
 

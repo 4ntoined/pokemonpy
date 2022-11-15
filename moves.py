@@ -185,6 +185,7 @@ struggle=int(mov[ind]["index"])
 #find future sight
 ind2 = np.argwhere(mov["name"]=="Future Sight")
 futuresigh=int(mov[ind2]["index"])
+tackl = int(mov[int(np.argwhere(mov["name"]=="Tackle"))]["index"])
 #save the table, especially for readability
 mov.tofile('movedex.txt', sep='\n')
 with open('movedex.txt', 'a') as ofile:
