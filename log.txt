@@ -876,4 +876,5 @@ sword, so thats an issue. it hit as expected, not v. eff. on hoppip, so its a we
 otherwise enjoy multi-parties. they are just a little broken bc the code uses user-given names of parties to id the equipped one
 but theres nothing stopping multiple parties from having the same name. will need to give every party a tag/index when it is intialized
 and used that to track equipped party. again, later.
+12:25- believe i fixed the issue with semi-invuls w/ the new noTarg tag, don't feel like testing it
 

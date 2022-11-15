@@ -669,10 +669,12 @@ class mon:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
         shortpause()
         ###accuracy check##aa:accuracy#
+        if noTarg in notas: #move can execute independent of whats up with the opponent
+            hitCheck=True
         ## target is in semi-invulnerable turn
         #sky uppercut, twister
         ## flying hit by thousand arrows, smack down, thunder, hurricane, gust
-        if opponent.flying and not (('thunder' in notas) or ('arrows' in notas) or ('gust' in notas)):
+        elif opponent.flying and not (('thunder' in notas) or ('arrows' in notas) or ('gust' in notas)):
             hitCheck=False
         ## diving hit by surf and whirlpool
         elif opponent.diving and not ('surf' in notas):

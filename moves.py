@@ -117,36 +117,40 @@ moremoves=[
         ("Mirror Coat",1,100,20,1,0,10,-5,"Special move counter","mirrorcoat"),
         #status moves
          #weather moves
-        ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss"),
-        ("Rain Dance",0,100,5,2,0,2,0,"The user disrupts the air pressure and causes rain!","rain noMiss"),
-        ("Sandstorm",0,100,5,2,0,12,0,"The user calls on the local sands to whip up a sandstorm!","sand noMiss"),
-        ("Hail",0,100,5,2,0,5,0,"The user summons a cloudy cold front and creates a hailstorm!","hail noMiss"),
+        ("Sunny Day",0,100,5,2,0,1,0,"The user calls on the Sun and causes harsh sunlight!","sun noMiss noTarg"),
+        ("Rain Dance",0,100,5,2,0,2,0,"The user disrupts the air pressure and causes rain!","rain noMiss noTarg"),
+        ("Sandstorm",0,100,5,2,0,12,0,"The user calls on the local sands to whip up a sandstorm!","sand noMiss noTarg"),
+        ("Hail",0,100,5,2,0,5,0,"The user summons a cloudy cold front and creates a hailstorm!","hail noMiss noTarg"),
          #terrain moves
-        ("Electric Terrain",0,100,10,2,0,4,0,"The user electrifies the battlefield! Electric-type moves get a 30% boost.","electric noMiss"),
-        ("Grassy Terrain",0,100,10,2,0,3,0,"The user covers the battlefield with grass! Grass-type moves get a 30% boost.","grassy noMiss"),
-        ("Misty Terrain",0,100,10,2,0,17,0,"The user covers the battlefield in mist! Dragon-type moves get a 50% nerf.","misty noMiss"),
-        ("Psychic Terrain",0,100,10,2,0,10,0,"The user makes the battlefield weird! Psychic-type moves get a 30% boost.","psychic noMiss"),
+        ("Electric Terrain",0,100,10,2,0,4,0,"The user electrifies the battlefield! Electric-type moves get a 30% boost.","electric noMiss noTarg"),
+        ("Grassy Terrain",0,100,10,2,0,3,0,"The user covers the battlefield with grass! Grass-type moves get a 30% boost.","grassy noMiss noTarg"),
+        ("Misty Terrain",0,100,10,2,0,17,0,"The user covers the battlefield in mist! Dragon-type moves get a 50% nerf.","misty noMiss noTarg"),
+        ("Psychic Terrain",0,100,10,2,0,10,0,"The user makes the battlefield weird! Psychic-type moves get a 30% boost.","psychic noMiss noTarg"),
          #entry hazards
-        ("Spikes",0,100,20,2,0,8,0,"The user spreads spikes on the opponent's side of the field!\nStack up to 3 times!","noMiss spikes"),
-        ("Toxic Spikes",0,100,20,2,0,7,0,"The user sends out toxic barbs on the target's side of the field!\nPokemon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk"),
-        ("Stealth Rocks",0,100,20,2,0,12,0,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks"),
-        ("Sticky Web",0,100,20,2,0,11,0,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky"),
+        ("Spikes",0,100,20,2,0,8,0,"The user spreads spikes on the opponent's side of the field!\nStack up to 3 times!","noMiss spikes noTarg"),
+        ("Toxic Spikes",0,100,20,2,0,7,0,"The user sends out toxic barbs on the target's side of the field!\nPokemon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk noTarg"),
+        ("Stealth Rocks",0,100,20,2,0,12,0,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks noTarg"),
+        ("Sticky Web",0,100,20,2,0,11,0,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky noTarg"),
          #reflect, lightscreen
-        ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss"),
-        ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss"),
-        ("Aurora Veil",0,100,20,2,0,5,0,"that veil","veil needHail"),
+        ("Reflect",0,100,20,2,0,10,0,"The user creates a wall of light that reduces damage from physical attacks for 5 turns!","reflect noMiss noTarg"),
+        ("Light Screen",0,100,20,2,0,10,0,"he user creates a wall of light that reduces damage from special attacks for 5 turns!","lightscreen noMiss noTarg"),
+        ("Aurora Veil",0,100,20,2,0,5,0,"that veil","veil needHail noTarg"),
+         #healing
+        ("Recover",0,100,10,2,0,0,0,"The user regenerates cells to heal itself by half its max HP.","heals recover noMiss noTarg"),
+        ("Synthesis",0,100,5,2,0,3,0,"The user takes in sunlight to restore HP.\nRestores more HP in harsh sunlight, less in non-sunny, non-clear weather.","heals synthesis noMiss noTarg"),
+        ("Aqua Ring",0,100,20,2,0,2,0,"The user envelops itself with a veil of healing waters.","aquaring noMiss noTarg"),
          #stat(istic) changes
-        ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss"),
-        ("Defense Curl",0,100,40,2,0,0,0,"The user curls up to hide its weak spots!\nRaises Def. 1 stage.","stat self,de,1 noMiss curled"),
-        ("Swords Dance",0,100,20,2,0,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss"),
-        ("Nasty Plot",0,100,20,2,0,15,0,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss"),
-        ("Amnesia",0,100,20,2,0,10,0,"The user empties its mind and forgets its concerns.\nBoosts SpD. 2 stages.","stat self,sd,2 noMiss"),
-        ("Dragon Dance",0,100,20,2,0,14,0,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss"),
-        ("Growth",0,100,20,2,0,0,0,"The user's body grows all at once!\nBoosts Atk. and Sp.A 1 stage each. Two each in harsh sunlight.","stat self,at:sa,1:1 noMiss growth"),
-        ("Geomancy",0,100,10,2,0,17,0,"The user absorbs energy from its surroundings to power up!\nBoosts Sp.A Sp.D Spe. 2 stages each.\nTwo-turn move.","stat self,sa:sd:sp,2:2:2 noMiss 2turn geomance"),
+        ("Harden",0,100,40,2,0,0,0,"The user stiffens the muscles in its body!\nRaises Def. 1 stage.","stat self,de,1 noMiss noTarg"),
+        ("Defense Curl",0,100,40,2,0,0,0,"The user curls up to hide its weak spots!\nRaises Def. 1 stage.","stat self,de,1 noMiss curled noTarg"),
+        ("Swords Dance",0,100,20,2,0,0,0,"Boosts Atk. 2 stages.","stat self,at,2 noMiss noTarg"),
+        ("Nasty Plot",0,100,20,2,0,15,0,"Boosts SpA. 2 stages.","stat self,sa,2 noMiss noTarg"),
+        ("Amnesia",0,100,20,2,0,10,0,"The user empties its mind and forgets its concerns.\nBoosts SpD. 2 stages.","stat self,sd,2 noMiss noTarg"),
+        ("Dragon Dance",0,100,20,2,0,14,0,"Boosts Atk. and Sp. 1 stage each.","stat self,at:sp,1:1 noMiss noTarg"),
+        ("Growth",0,100,20,2,0,0,0,"The user's body grows all at once!\nBoosts Atk. and Sp.A 1 stage each. Two each in harsh sunlight.","stat self,at:sa,1:1 noMiss growth noTarg"),
+        ("Geomancy",0,100,10,2,0,17,0,"The user absorbs energy from its surroundings to power up!\nBoosts Sp.A Sp.D Spe. 2 stages each.\nTwo-turn move.","stat self,sa:sd:sp,2:2:2 noMiss 2turn geomance noTarg"),
+        ("Double Team",0,100,15,2,0,0,0,"The user moves so quick it creates afterimages.\nRaises evasiveness 1 stage.","stat self,ev,1 noMiss noTarg"),
         ("Confide",0,100,20,2,0,0,0,"The user tells the target a (quite inappropriate) secret.\nIt lowers the target's Sp.A 1 stage.","stat targ,sa,-1 noMiss"),
         ("String Shot",0,95,40,2,0,11,0,"The user spins silk to bind the target! Lowers target's Spd. 1 stage.","stat targ,sp,-1"),
-        ("Double Team",0,100,15,2,0,0,0,"The user moves so quick it creates afterimages.\nRaises evasiveness 1 stage.","stat self,ev,1 noMiss"),
         ("Growl",0,100,40,2,0,0,0,"The user growls cutely.\nIt lowers the target's Atk. 1 stage.","stat targ,at,-1"),
         ("Metal Sound",0,85,40,2,0,16,0,"The user creates horrible metal-scraping sounds to unnerve the target.\nLowers target's Sp.D 2 stages.","stat targ,sd,-2"), #sound-based, soundproof ability is immune,
          #stat(us) conditions
@@ -155,10 +159,6 @@ moremoves=[
         ("Poison Powder",0,75,35,2,0,7,0,"The user creates a powder to poison the target!","pois 100 typeImmune grass"),
         ("Toxic",0,90,10,2,0,7,0,"The user badly poisons the target!","badPois 100 noMissPoisons"), #doesn't miss if used by a poison-type
         ("Confuse Ray",0,100,10,2,0,13,0,"The user lets loose a sinister beam that causes confusion!","conf 100"),
-         #healing
-        ("Recover",0,100,10,2,0,0,0,"The user regenerates cells to heal itself by half its max HP.","heals recover noMiss"),
-        ("Synthesis",0,100,5,2,0,3,0,"The user takes in sunlight to restore HP.\nRestores more HP in harsh sunlight, less in non-sunny, non-clear weather.","heals synthesis noMiss"),
-        ("Aqua Ring",0,100,20,2,0,2,0,"The user envelops itself with a veil of healing waters.","aquaring noMiss"),
         #to do: max moves! terrain pulse
         ("Struggle",50,100,1,0,1,18,0,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]
