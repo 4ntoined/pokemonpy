@@ -870,4 +870,5 @@ new print party function, it says the name of the party instead of just "party p
 probably other things. going to do removing individual pokemon, wiping a party, and deleting the party
 also finally got around to Pok-e-accent-mon opposed to Pokemon, unfortunately it looks like txt does not support the character
 or maybe its just vim doesn't like it. that's whatever, we move
+10:51- all that and I still have to do pokemon summary...
 
