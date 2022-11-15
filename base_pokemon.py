@@ -669,7 +669,7 @@ class mon:
             self.PP[int(np.argwhere(np.array(self.knownMoves)==moveIndex))]-=1 #deduct PP for move usage
         shortpause()
         ###accuracy check##aa:accuracy#
-        if noTarg in notas: #move can execute independent of whats up with the opponent
+        if "noTarg" in notas: #move can execute independent of whats up with the opponent
             hitCheck=True
         ## target is in semi-invulnerable turn
         #sky uppercut, twister
