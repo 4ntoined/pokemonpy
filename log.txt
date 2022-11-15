@@ -871,4 +871,9 @@ probably other things. going to do removing individual pokemon, wiping a party, 
 also finally got around to Pok-e-accent-mon opposed to Pokemon, unfortunately it looks like txt does not support the character
 or maybe its just vim doesn't like it. that's whatever, we move
 10:51- all that and I still have to do pokemon summary...
+11:22- okay I think Im done now. for some reason normal-type silvally was not being hit super-effectively by the fighting-type secret
+sword, so thats an issue. it hit as expected, not v. eff. on hoppip, so its a weird bug I'll have to look into later
+otherwise enjoy multi-parties. they are just a little broken bc the code uses user-given names of parties to id the equipped one
+but theres nothing stopping multiple parties from having the same name. will need to give every party a tag/index when it is intialized
+and used that to track equipped party. again, later.
 
