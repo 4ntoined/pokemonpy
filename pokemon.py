@@ -15,11 +15,12 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex, print_party
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
-from victoryroad import make_teams
+from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
 ############   give the player a starter  ###############
 starter= makeRandom()
+starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
 rival= makeRandom(np.floor(starter.level*(0.96)), 6)
@@ -1111,6 +1112,7 @@ while 1:
                                 print(f"\n{party_name} has been emptied!")
                                 if equipp: #if this party is equipped, populate it automatically
                                     bayleef = makeMon(0,nacher=(int(rng.choice((0,1,2,3,4))),int(rng.choice((0,1,2,3,4)))))
+                                    bayleef.set_evs(tuple(random_evs()))
                                     party_i.append(bayleef)
                                 sizep=len(party_i)
                                 #micropause()
