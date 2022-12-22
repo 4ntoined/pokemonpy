@@ -1733,13 +1733,16 @@ class battle:
                             trainStruggle=True
                         pass
                     #### speed and priority check ####
-                    prior_check = (getMoveInfo(moveDex)['priority'], getMoveInfo(tmovedex)['priority'])
+                    if fighting and (not trainerShift):
+                        prior_check = (getMoveInfo(moveDex)['priority'], getMoveInfo(tmovedex)['priority'])
+                    else:
+                        prior_check = (0,0)
                     if prior_check[0] == prior_check[1]:
                         #set boolean to true if user has higher effective speed stat
                         userFast=self.usr_mon.bsp>=self.cpu_mon.bsp
-                    elif prior_check[0] > prior_check[1]:
+                    elif prior_check[0] > prior_check[1]:   #user has advanced priority
                         userFast=True
-                    else:
+                    else:                                   #user has decreased priority
                         userFast=False
                     ##USER FASTER##
                     if userFast:
