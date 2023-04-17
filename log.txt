@@ -878,3 +878,12 @@ but theres nothing stopping multiple parties from having the same name. will nee
 and used that to track equipped party. again, later.
 12:25- believe i fixed the issue with semi-invuls w/ the new noTarg tag, don't feel like testing it
 
+17 apr 2023-
+10:57- easy things im gonna try to do
+[]no more auto victory for e4 []putting e4 on main menu []parties id'd by indeces not string names
+then we'll go from there
+ideally i'd like to do a lot more testing around screens and semi-invul moves and noTarg/selfTarg
+for as much as I'd like to be able to reveal bug-free and avoid embarrasment/fiasco, 1, not realistic
+and 2, perfection is the enemy of the good! we gotta drop babeyyyyy
+
+

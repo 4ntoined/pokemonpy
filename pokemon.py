@@ -29,7 +29,7 @@ rival2= makeRandom(np.floor(starter.level*1.07), 6)
 starterParty = [starter]
 trainerParty=[rival,rival2]
 #
-opponentName="OPPONENT"
+opponentName="RIVAL"
 #### setting up the player's parties ####
 #this list will hold tuples of pokemon parties and the name of those parties
 players_parties.append((starterParty, "starter"))
@@ -39,7 +39,7 @@ equiped = "starter"
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 ######################
-print("\n... A Python game by Antoine ...")
+print("\n... A Python game by Adarius ...")
 shortpause()
 print("** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
@@ -49,7 +49,7 @@ while 1:
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
-    mainmenu = "\n[P]okémon\n[B]attle!\n[T]raining\n[N]ursery" + \
+    mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
         "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
         "\n[L]oad\nWhat to do: "
     userChoice=input(mainmenu)
@@ -192,7 +192,7 @@ while 1:
             #
             battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
             resu1 = battle1.startbattle(e4=True)
-            resu1=True
+            #resu1=True
             if (not resu1): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -204,7 +204,7 @@ while 1:
             #zinnia's battle
             battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
             resu2 = battle2.startbattle(e4=True)
-            resu2=True
+            #resu2=True
             #win check
             if (not resu2): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -217,7 +217,7 @@ while 1:
             #cynthias battle
             battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
             resu3 = battle3.startbattle(e4=True)
-            resu3 = True
+            #resu3 = True
             if (not resu3): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -229,7 +229,7 @@ while 1:
             #N's battle
             battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
             resu4 = battle4.startbattle(e4=True)
-            resu4=True
+            #resu4=True
             #win
             if (not resu4): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -242,7 +242,7 @@ while 1:
             #champ
             battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
             resu5 = battle5.startbattle(e4=True)
-            resu5=True
+            #resu5=True
             #if you won, you won, like it's over
             if not resu5:
                 print("Leaving Indigo Plateau...")
@@ -847,8 +847,8 @@ while 1:
             #loop back to load a save
         #done loading save
     ###end of load save block###
-    ####pokemon center#### let's heal em up
-    if userChoice=="c":
+    ####pokemon center#### aa:center aa:healing let's heal em up
+    if userChoice=="c" or userChoice=="C":
         print("\n******** Welcome to the Pokémon Center ********\n")
         shortpause()
         print("We can heal your Pokémon to full health!")
