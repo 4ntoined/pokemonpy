@@ -885,5 +885,7 @@ then we'll go from there
 ideally i'd like to do a lot more testing around screens and semi-invul moves and noTarg/selfTarg
 for as much as I'd like to be able to reveal bug-free and avoid embarrasment/fiasco, 1, not realistic
 and 2, perfection is the enemy of the good! we gotta drop babeyyyyy
+12:20- first 2 things were extrememly quickly done, last 1 took like... so long
+anyway tested and all does nice
 
 

@@ -31,10 +31,11 @@ trainerParty=[rival,rival2]
 #
 opponentName="RIVAL"
 #### setting up the player's parties ####
-#this list will hold tuples of pokemon parties and the name of those parties
-players_parties.append((starterParty, "starter"))
+#this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
+players_parties.append((starterParty, "starter", 0))
 userParty=starterParty
-equiped = "starter"
+equiped = 0
+party_count = 1 #keeping track of parties as they are created for indexing purposes
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
@@ -877,10 +878,11 @@ while 1:
     if userChoice=='X' or userChoice=='x':
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
+            equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
             print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]\n")
             for i in range(len(players_parties)):
                 print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
-            print(f"Equipped: {equiped}\n")
+            print(f"Equipped: {players_parties[equii][1]}\n")
             #equipd = np.argwhere(players_parties[:,1]=="")
             partiesChoice = input("[S]tart a new party\n[#] see party\nor [b]ack: ") 
             if partiesChoice == "b" or partiesChoice == "B":
@@ -917,18 +919,20 @@ while 1:
                          print("\nYou started a new party!")
                          shortpause()
                          break #leave the input loop for num of pokes
-                players_parties.append((new_party,partname))
+                players_parties.append((new_party,partname,party_count))
+                party_count += 1
                 if len(new_party)>=1: equi = input("Would you like to equip this party?\n[y] or [n]: ")
                 if equi=='y' or equi=="Y":
                     userParty = new_party
-                    equiped = partname
+                    equiped = players_parties[-1][2]
                 pass
             elif 1: #some condition? for looking at a party, should just be an integer
                 #see the pokemon in the party, give and take options for that party
                 #equipping, copying, adding a pokemon
+                party_count += 1
                 try: #parties choice is maybe a number
                     part_n = int(float(partiesChoice)-1)
-                    party_i, party_name = players_parties[part_n]
+                    party_i, party_name, party_dex = players_parties[part_n]
                     # we have the party in question and its name loaded up
                     #index and value are good, we move to print the pokemon and ask options
                     #sigh... need to make pokemon party display a function
@@ -942,7 +946,7 @@ while 1:
                 else:
                     while 1:
                         #show the party
-                        equipp = equiped==party_name #boolean carrying when selected party is equipped
+                        equipp = equiped==party_dex #boolean carrying when selected party is equipped
                         sizep = len(party_i)
                         if sizep == 0:
                             print(f"\n--- {party_name} ---")
@@ -962,7 +966,7 @@ while 1:
                                 micropause()
                                 continue #back to party options
                             userParty=party_i
-                            equiped=party_name
+                            equiped=party_dex
                             print(f"\nYou equipped {party_name}.")
                             shortpause()
                             #loops back to party options
@@ -1012,7 +1016,8 @@ while 1:
                             #copy the party with the new name
                             coppy = input("Name the copy: ")
                             part_copy = copy.deepcopy(party_i)
-                            players_parties.append((part_copy,coppy))
+                            players_parties.append((part_copy,coppy,party_count))
+                            party_count += 1
                             print("\nCopied!")
                             micropause()
                             #loop back mans
