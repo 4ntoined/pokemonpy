@@ -962,4 +962,6 @@ what's next?
 15:14- not that anyone asked for it but running victory_road.py as main now
 creates the e4 teams and saves them as .npy in a directory of your choice
 these mons come with a special bornpath tag that references their e4 origin
+15:56- added a little overwrite alert for .npy files, .txts automatically append,
+so no harm no foul, I don't think .npy files work quite as easily
 

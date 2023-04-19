@@ -9,6 +9,7 @@
 # multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
+import os
 import copy
 #import time as t
 import numpy as np
@@ -41,7 +42,7 @@ players_parties.append((starterParty, "starter", 0))
 userParty=starterParty
 equiped = 0
 party_count = 1 #keeping track of parties as they are created for indexing purposes
-hallfame_count = 1
+hallfame_count = 0
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
@@ -337,11 +338,27 @@ while 1:
                                 shortpause() #kills
                                 continue
                             else:
+                                overwrite=False
                                 try: #gonna look for numpy extensions
                                     if savename[-4:] == '.npy':
-                                        selMon.savenpy(savename)
-                                    else:
-                                        selMon.save(savename)
+                                        if os.path.exists(savename): #.npy file already exists
+                                            print('File already exists.')
+                                            micropause()
+                                            overw = input('Overwrite this file?\n[y]es or [n]o: ')
+                                            if overw == 'y' or overw == 'Y' or overw == 'yes':
+                                                #good to go
+                                                overwrite=True
+                                                print('Overwriting...')
+                                                micropause()
+                                            else:
+                                                #don't overwrite, ask for name of savefile again
+                                                print('Scrubbed...')
+                                                micropause()
+                                                continue
+                                        else: pass
+                                        selMon.savenpy(savename,overwrite=overwrite)
+                                    #not a .npy, save the txt way
+                                    else: selMon.save(savename)
                                 except ValueError:
                                     #print('val error')
                                     pass
@@ -874,9 +891,7 @@ while 1:
             else:
                 if saveChoice=="": saveChoice='pypokemon.sav'
                 try:
-                    if saveChoice[-4:]=='.npy':
-                        print('made')
-                        newMons=loadMonNpy(saveChoice)
+                    if saveChoice[-4:]=='.npy': newMons=loadMonNpy(saveChoice)
                     else: newMons=loadMon(saveChoice)
                 except OSError:
                     print(f"! That filename wasn't found !**\nno reason why this should run")
@@ -1018,13 +1033,30 @@ while 1:
                             shortpause()
                             #loops back to party options
                         elif megaChoice=='s' or megaChoice=='S':
+                            while 1: #savefile name input loop
                             #ask for file save name or default
                             #save every pokemon in the party to the file
-                            savewhere=input("Where to save the party: ")
-                            if savewhere=='': savewhere='pypokemon.sav'
-                            saveParty(savewhere,party_i)
-                            micropause()
-                            pass
+                                overwrite=False
+                                savewhere=input("Where to save the party, [b]ack: ")
+                                if savewhere=='b' or savewhere=='B': break
+                                if savewhere=='': savewhere='pypokemon.sav'
+                                if os.path.exists(savewhere):
+                                    print('File already exists!')
+                                    micropause()
+                                    overw = input('Overwrite this file?\n[y]es or [n]o: ')
+                                    if overw=='y' or overw=='Y' or overw=="yes":
+                                        overwrite=True
+                                        print('Overwriting...')
+                                        micropause()
+                                    else:
+                                        #try again
+                                        print('Scrubbed...')
+                                        micropause()
+                                        continue
+                                else: pass
+                                saveParty(savewhere,party_i,overwrite=overwrite)
+                                micropause()
+                                break
                             #back to party options
                         elif megaChoice=='a' or megaChoice=='A':
                             #list pokemon from userParty and copy them into
