@@ -922,4 +922,15 @@ and how? heavily influenced by the real deals
 for the moment for testing purposes
 hall of fame works, gonna commit and then maybe do some stuff one pokemon
 timestamps, just for funsies
+22:46- thinking the pokemon save function will have to develop beyond mere txt files
+and many into numpy arrays, i really only absolutely need this for the new borntime
+thing
+anyway its mostly done it's really cool
+23:03- fixed some bugs tweaked some settings and pokemon record when and how they're born now
+for now its only when theyre a starter and when theyre popped in the nursery,
+still need to account for copying from the parties menu and being gifted a rando
+after emptying the party, though now that i think about it we might as well just
+call that a starter, so there, dont think there's any other way to obtain a mons
+alright next up i will do that, and then prob overhaul pokemon saving
+peace, hugs, kisses,
 

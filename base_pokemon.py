@@ -11,9 +11,14 @@ from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 rng = np.random.default_rng()
 #aa:monclass
 class mon:
-    def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),random_move=True): #add natures
+    def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
+        debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),\
+        random_move=True,how_created='nursery')\
+        : #add natures
         #print("its a pokemon!")
         global mo
+        self.timeborn = t.gmtime(t.time())
+        self.bornpath = how_created
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -1252,6 +1257,16 @@ class mon:
         print(f"Sp.D: \t{format(self.spdef,'.2f')}")
         print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
+        print("##############################################")
+        #met conditions
+        borndays = t.asctime(self.timeborn).split()
+        print(f"This Pokemon was initialized on\n=== {borndays[0]} "+\
+                f"{borndays[2]+' '+borndays[1]+' '+borndays[4]+' @ '+borndays[3]} UTC")
+        if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
+        elif self.bornpath == 'copied':print("=== It was copied from another Pokemon!")
+        elif self.bornpath == 'starter':print("=== It was your starter Pokemon!")
+        elif self.bornpath == 'gifted':print("=== It was gifted to you!")
+        else: print("=== It appeared mysteriously...")
         print("##############################################")
         
     def battleSummary(self):
@@ -2639,7 +2654,7 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
         matchup2=1.0
     return matchup1*matchup2
 #create a pokemon from the pokedex
-def makeMon(pokedexNumber,level=1,nacher = (0,0)):
+def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
     Hp=dex[pokedexNumber]['hp']
     At=dex[pokedexNumber]['at']
     De=dex[pokedexNumber]['de']
@@ -2650,9 +2665,13 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0)):
     tipe1=dex[pokedexNumber]['type1']
     tipe2=dex[pokedexNumber]['type2']
     if dex[pokedexNumber]['type2']==20: #single-typed mon
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1]))
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1]), how_created=how_created)
     else: #dual-typed
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,tipe=np.array([tipe1,tipe2]))
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1,tipe2]),how_created=how_created)
 #load pokemon
 def loadMon(savefile):
     try:
@@ -2695,9 +2714,10 @@ def loadMon(savefile):
     except IndexError:
         print("!! The save file is corrupted !!")
         return [0]
-def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6):
+def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6,how_created='nursery'):
     global mov,mo
-    dome = makeMon( rng.integers( len(dex) ), level, (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))))
+    dome = makeMon( rng.integers( len(dex) ), level, \
+        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
     ranMoves = rng.choice(mo,size=numMoves,replace=False)
     dome.knownMoves = list(ranMoves)
     dome.PP=[mov[i]["pp"] for i in ranMoves]

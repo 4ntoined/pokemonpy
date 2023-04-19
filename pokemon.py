@@ -23,7 +23,7 @@ rng=np.random.default_rng()
 #
 ############   give the player a starter  ###############
 starterlevel = 150
-starter= makeRandom(level=starterlevel)
+starter= makeRandom(level=starterlevel,how_created='starter')
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -58,6 +58,7 @@ while 1:
     mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
         "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
         "\n[L]oad\nWhat to do: "
+    if hallfame_count > 0: print(f"Hall of Fame entries: {hallfame_count:0>2}")
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings
@@ -469,9 +470,13 @@ while 1:
                 nacher = (nachup, nachdo)
                 ##make the pokemon!##
                 if len(newTipe)==1:
-                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],\
+                    debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],\
+                    tipe=np.array(newTipe),how_created='nursery')
                 if len(newTipe)>1:
-                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],\
+                    debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],\
+                    tipe=np.array([newTipe[0],newTipe[1]]),how_created='nursery')
                 print(f"\n{newName} is born!")
                 shortpause()
                 userParty.append(newMon)
@@ -500,7 +505,7 @@ while 1:
                             if min(pokInts)>=0:
                                 print("")
                                 for i in pokInts:
-                                    newbie=makeMon(i,userParty[0].level)
+                                    newbie=makeMon(i,userParty[0].level,how_created='nursery')
                                     print(f"{newbie.name} is born and added to your party!")
                                     userParty.append(newbie)
                                     micropause()
