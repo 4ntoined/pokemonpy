@@ -24,8 +24,8 @@ rng=np.random.default_rng()
 #
 dash24 = '--------------------'
 ############   give the player a starter  ###############
-starterlevel = 150
-starter= makeRandom(level=starterlevel,how_created='starter')
+#starterlevel = int(rng.normal(loc=100,scale=30))
+starter= makeRandom(how_created='starter')
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -857,7 +857,7 @@ while 1:
     ###end of training block###
     #zz:training    
     ####Loading pokemon aa:loadpokemon
-    if userChoice=='l':
+    if userChoice=='l' or userChoice=='L':
         print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
         while 1: #savefile input loop
             saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
@@ -961,8 +961,8 @@ while 1:
                 equi="none"
                 #input loop for number of pokemon to include in the party
                 while 1:
-                    partmons = input("Fill with how many random Pokémon: ")
-                    levelz = input("Level: ")
+                    partmons = input("Fill with how many random Pokémon: ") or '0'
+                    levelz = input("Level: ") or userParty[0].level
                     try:
                         num = int(float(partmons)) #number of new pokemon
                         lv = int(float(levelz)) #level of the pokemon
