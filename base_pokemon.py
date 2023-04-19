@@ -1306,8 +1306,9 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'copied':print("=== It was cloned from another Pokemon!")
         elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
-        elif self.bornpath == 'random':print("=== It was randomized by boxes!")
+        elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
+        elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
         print("##############################################")
         
