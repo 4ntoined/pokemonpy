@@ -933,4 +933,6 @@ after emptying the party, though now that i think about it we might as well just
 call that a starter, so there, dont think there's any other way to obtain a mons
 alright next up i will do that, and then prob overhaul pokemon saving
 peace, hugs, kisses,
+Just remembered you can randomly create an arbitrary number of mons with the boxes menu,
+So I'm thinking about a "randomized" tag
 
