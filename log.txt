@@ -890,4 +890,67 @@ anyway tested and all does nice
 15:17- playing around with git branches to procrastinate
 15:35- anotha one
 
+18 apr 2023-
+20:39-  umm playing the elite four and some notes:
+text that enemy sends out mon after being fainted should pop up
+before the pokemon is 'set' on the 'field' and all field-related
+status effects are applied
+thats one, two: confusion damage should show amount of health that was lost
+three! field effects should be reflected in the status menu during battle,
+don't think i ever did that and i was definitely supposed to
+4- more time after reporting that pokemon is confused when it goes
+to move
+5- pause after player tries to switch in a fainted pokemon after having
+to switch in bc a pokemon fainted!, and probably also after a voluntary
+switch in as well
+6- capital F to choose fight as well as 'f'
+wanted to beat the whole thing for purposes but lost to silver
+7- grounded status should show in status menu
+8- replace hail mechanics with snow mechanics from gen 9 lol
+"The hail stops" with no punctuation lol
+9- frost breath should be a guaranteed crit. currently it is not
+10- pause after reporting type immunity
+11- my suicune just took burn damage, fainted, and then took hail damage
+and fainted again!
+12- accent-e in base_pokemon script especially battle()
+21:50- okay i won the elite four, still very cool
+gonna do a hall of fame thing where we ask to save the players
+party as a .sav file to commemorate(sp?)
+also while im thinking about it I wanna record when a pokemon is created
+and how? heavily influenced by the real deals
+22:09- think im done with hall of fame, i turned the cheese e4 back on
+for the moment for testing purposes
+hall of fame works, gonna commit and then maybe do some stuff one pokemon
+timestamps, just for funsies
+22:46- thinking the pokemon save function will have to develop beyond mere txt files
+and many into numpy arrays, i really only absolutely need this for the new borntime
+thing
+anyway its mostly done it's really cool
+23:03- fixed some bugs tweaked some settings and pokemon record when and how they're born now
+for now its only when theyre a starter and when theyre popped in the nursery,
+still need to account for copying from the parties menu and being gifted a rando
+after emptying the party, though now that i think about it we might as well just
+call that a starter, so there, dont think there's any other way to obtain a mons
+alright next up i will do that, and then prob overhaul pokemon saving
+peace, hugs, kisses,
+Just remembered you can randomly create an arbitrary number of mons with the boxes menu,
+So I'm thinking about a "randomized" tag
+
+19 apr 2023
+01:01- im so random. i overhauled saving and loading like i floated before
+the first ever pokemon saved in a timestamped format is a MEW, like literally
+gagged over it. including it in the repo for posterity
+the loading side is currently hidden in-game so i could test it
+without throwing the current baby and bathwater out
+but it should be pretty easy to redirect entirely
+more interesting is expanding the new save format to multiple pokes 
+like we had before with the txt file .savs
+extremely nice
+10:08- soo i realized that we dont *need* numpy arrays to save timestamp data,
+thats really just an integer of seconds since a defined reference point
+so i fixed the .txt saving and loading to account for timedata,
+also we save timezone data as well, a little location tracking for you
+mew is probably corrupted now, but thats fine, we'll live, i can fake the data to
+correctness
+10:22- fixed mew's save
 

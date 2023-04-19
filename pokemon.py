@@ -12,14 +12,18 @@
 import copy
 #import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex, print_party
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
+    makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
+    shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
+    print_party, loadMonNpy, saveParty
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
 ############   give the player a starter  ###############
-starter= makeRandom()
+starterlevel = 150
+starter= makeRandom(level=starterlevel,how_created='starter')
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -36,11 +40,12 @@ players_parties.append((starterParty, "starter", 0))
 userParty=starterParty
 equiped = 0
 party_count = 1 #keeping track of parties as they are created for indexing purposes
+hallfame_count = 0
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 ######################
-print("\n... A Python game by Adarius ...")
+print("\n... Created by Adarius ...")
 shortpause()
 print("** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
@@ -53,6 +58,7 @@ while 1:
     mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
         "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
         "\n[L]oad\nWhat to do: "
+    if hallfame_count > 0: print(f"Hall of Fame entries: {hallfame_count:0>2}")
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings
@@ -193,7 +199,7 @@ while 1:
             #
             battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
             resu1 = battle1.startbattle(e4=True)
-            #resu1=True
+            resu1=True
             if (not resu1): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -205,7 +211,7 @@ while 1:
             #zinnia's battle
             battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
             resu2 = battle2.startbattle(e4=True)
-            #resu2=True
+            resu2=True
             #win check
             if (not resu2): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -218,7 +224,7 @@ while 1:
             #cynthias battle
             battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
             resu3 = battle3.startbattle(e4=True)
-            #resu3 = True
+            resu3 = True
             if (not resu3): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -230,7 +236,7 @@ while 1:
             #N's battle
             battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
             resu4 = battle4.startbattle(e4=True)
-            #resu4=True
+            resu4=True
             #win
             if (not resu4): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -243,18 +249,26 @@ while 1:
             #champ
             battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
             resu5 = battle5.startbattle(e4=True)
-            #resu5=True
+            resu5=True
             #if you won, you won, like it's over
             if not resu5:
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
             else:         
+                hallfame_count += 1
                 print("\nYou defeated the Elite Four and the Grand Champion!")
                 dramaticpause()
                 print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
-                #hall of fame where we highlight the party that just won
+                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or no: ")
+                if hallfame == "y" or hallfame == "Y":
+                    #save the party
+                    savehere = f'halloffame_{hallfame_count:0>2}.sav'
+                    for i in userParty: i.save(savehere)
+                    print(f"Party saved at {savehere}.")
+                    micropause()
+                pass
             pass
         else:
             #print("Leaving Indigo Plateau...")
@@ -320,10 +334,21 @@ while 1:
                                 shortpause() #kills
                                 continue
                             else:
-                                selMon.save(savename)
-                                print(f"{selMon.name} was saved to the file!\n")
-                                shortpause() #kills
-                                continue
+                                try: #gonna look for numpy extensions
+                                    if savename[-4:] == '.npy':
+                                        selMon.savenpy(savename)
+                                    else:
+                                        selMon.save(savename)
+                                except ValueError:
+                                    #print('val error')
+                                    pass
+                                except IndexError:
+                                    #print('index error')
+                                    pass
+                                else:
+                                    print(f"{selMon.name} was saved to the file!\n")
+                                    shortpause() #kills
+                                    continue
                         #
                     #set first
                     if sumChoice=='f':
@@ -456,9 +481,13 @@ while 1:
                 nacher = (nachup, nachdo)
                 ##make the pokemon!##
                 if len(newTipe)==1:
-                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array(newTipe))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],\
+                    debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],\
+                    tipe=np.array(newTipe),how_created='nursery')
                 if len(newTipe)>1:
-                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],tipe=np.array([newTipe[0],newTipe[1]]))
+                    newMon=mon(lvlS,newName,nature=nacher,hpbase=stat[0],atbase=stat[1],\
+                    debase=stat[2],sabase=stat[3],sdbase=stat[4],spbase=stat[5],\
+                    tipe=np.array([newTipe[0],newTipe[1]]),how_created='nursery')
                 print(f"\n{newName} is born!")
                 shortpause()
                 userParty.append(newMon)
@@ -487,7 +516,7 @@ while 1:
                             if min(pokInts)>=0:
                                 print("")
                                 for i in pokInts:
-                                    newbie=makeMon(i,userParty[0].level)
+                                    newbie=makeMon(i,userParty[0].level,how_created='nursery')
                                     print(f"{newbie.name} is born and added to your party!")
                                     userParty.append(newbie)
                                     micropause()
@@ -807,7 +836,7 @@ while 1:
         #
     ###end of training block###
     #zz:training    
-    ####Loading pokemon
+    ####Loading pokemon aa:loadpokemon
     if userChoice=='l':
         print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
         while 1: #savefile input loop
@@ -817,7 +846,16 @@ while 1:
                 print("Leaving Load Pokémon..")
                 shortpause()
                 break
-            if saveChoice=="":
+            elif saveChoice=='7':
+                print('dev insights')
+                her = loadMon2('newmew.npy')
+                if her == 'messed up':
+                    print("try again")
+                    shortpause()
+                else:
+                    userParty.append(her)
+                    shortpause()
+            elif saveChoice=="":
                 newMons=loadMon("pypokemon.sav")
                 if newMons[0]==0: #if error in loading data, ask for savefile again
                     print("\n!! Something is wrong with this savefile !!")
@@ -831,9 +869,12 @@ while 1:
                 shortpause()
             else:
                 try:
-                    newMons=loadMon(saveChoice)
-                except IndexError:
-                    print("! That filename wasn't found !**\nno reason why this should run")
+                    if saveChoice[-4:]=='.npy':
+                        print('made')
+                        newMons=loadMonNpy(saveChoice)
+                    else: newMons=loadMon(saveChoice)
+                except OSError:
+                    print(f"! That filename wasn't found !**\nno reason why this should run")
                 else:
                     if newMons[0]==0: #error in loading data
                         continue
@@ -902,9 +943,11 @@ while 1:
                 #input loop for number of pokemon to include in the party
                 while 1:
                     partmons = input("Fill with how many random Pokémon: ")
+                    levelz = input("Level: ")
                     try:
                         num = int(float(partmons)) #number of new pokemon
-                        if num>=0: #if 0 or more
+                        lv = int(float(levelz)) #level of the pokemon
+                        if num>=0 and lv>=0: #if 0 or more
                             #run the else block
                             pass
                         else:
@@ -915,7 +958,7 @@ while 1:
                         print("\n** Bad Value **")
                         pass
                     else:
-                         new_party = makeParty(num) #making the party
+                         new_party = makeParty(num,level=lv) #making the party
                          print("\nYou started a new party!")
                          shortpause()
                          break #leave the input loop for num of pokes
@@ -974,11 +1017,9 @@ while 1:
                             #ask for file save name or default
                             #save every pokemon in the party to the file
                             savewhere=input("Where to save the party: ")
-                            for i in party_i:
-                                if savewhere=='': savewhere='pypokemon.sav'
-                                i.save(savewhere)
-                                print(f"Saved {i.name} to {savewhere}")
-                                micropause()
+                            if savewhere=='': savewhere='pypokemon.sav'
+                            saveParty(savewhere,party_i)
+                            micropause()
                             pass
                             #back to party options
                         elif megaChoice=='a' or megaChoice=='A':
@@ -1008,6 +1049,7 @@ while 1:
                             #take the selection, make a copy of each and add to selected party
                             for i in pokis:
                                 party_i.append(copy.deepcopy(i))
+                                party_i[-1].bornpath='copied'
                                 print(f"{i.name} joined {party_name}!")
                             shortpause()
                             pass
@@ -1016,6 +1058,7 @@ while 1:
                             #copy the party with the new name
                             coppy = input("Name the copy: ")
                             part_copy = copy.deepcopy(party_i)
+                            for poke in part_copy: poke.bornpath='copied'
                             players_parties.append((part_copy,coppy,party_count))
                             party_count += 1
                             print("\nCopied!")
@@ -1116,7 +1159,7 @@ while 1:
                                 #userParty.append(starter)
                                 print(f"\n{party_name} has been emptied!")
                                 if equipp: #if this party is equipped, populate it automatically
-                                    bayleef = makeMon(0,nacher=(int(rng.choice((0,1,2,3,4))),int(rng.choice((0,1,2,3,4)))))
+                                    bayleef = makeMon(0,nacher=(int(rng.choice((0,1,2,3,4))),int(rng.choice((0,1,2,3,4)))),how_created='starter')
                                     bayleef.set_evs(tuple(random_evs()))
                                     party_i.append(bayleef)
                                 sizep=len(party_i)
