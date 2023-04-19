@@ -936,3 +936,14 @@ peace, hugs, kisses,
 Just remembered you can randomly create an arbitrary number of mons with the boxes menu,
 So I'm thinking about a "randomized" tag
 
+19 apr 2023
+01:01- im so random. i overhauled saving and loading like i floated before
+the first ever pokemon saved in a timestamped format is a MEW, like literally
+gagged over it. including it in the repo for posterity
+the loading side is currently hidden in-game so i could test it
+without throwing the current baby and bathwater out
+but it should be pretty easy to redirect entirely
+more interesting is expanding the new save format to multiple pokes 
+like we had before with the txt file .savs
+extremely nice
+

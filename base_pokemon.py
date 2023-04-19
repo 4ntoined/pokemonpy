@@ -116,6 +116,22 @@ class mon:
         self.rolling_out=0
     #save pokemon
     def save(self,filename='pypokemon.sav'):
+        #level(int),name(str),nature(list,int,complex),evs,ivs(list,int),timeborn(timestruct),
+        #bornpath(str),type(list,int),knownmove(list,int),base stats(list,int),
+        #think thats it
+        #order is name,level,nature,type,base_stats,evs,ivs,borntime,bornpath,knownmoves
+        natur = complex(self.nature[0],self.nature[1])
+        poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
+        #evsivsbase
+        poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
+        poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
+        poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
+        #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
+        poke_bir = [self.timeborn, self.bornpath]
+        poke_moves = [self.knownMoves]
+        poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
+        poke_array = np.array(poke_tuple,dtype=object)
+        np.save('pokesave.npy',poke_array)
         f=open(filename,'a')
         name=self.name
         lvl=self.level
@@ -2673,6 +2689,37 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
         debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
         tipe=np.array([tipe1,tipe2]),how_created=how_created)
 #load pokemon
+def loadMon2(savefile):
+    global mov
+    #name, level, nature, tipe, base,ev,iv,bornt,bornp,moves?
+    #will need to populate pp, otherstuff prob as well
+    cheers=False
+    try:
+        poke_arr = np.load(savefile,allow_pickle=True)
+    except FileNotFoundError:
+        print('File not found.')
+        micropause()
+    except ValueError:
+        micropause()
+    except OSError:
+        micropause()
+    else:
+        oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
+        atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
+        spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
+        #to set moves,pp,evs,ivs,birthtime
+        oldie.timeborn=poke_arr[22]
+        oldie.knownMoves = poke_arr[24]
+        oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
+        oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
+            poke_arr[10:16]
+        oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
+            poke_arr[16:22]
+        print(f'Loaded {oldie.name}!')
+        cheers = True
+    if cheers: return oldie
+    else: return 'messed up'
+
 def loadMon(savefile):
     try:
         dat=np.loadtxt(savefile,delimiter=",",dtype='U140')

@@ -15,7 +15,7 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party
+    print_party, loadMon2
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -825,7 +825,7 @@ while 1:
         #
     ###end of training block###
     #zz:training    
-    ####Loading pokemon
+    ####Loading pokemon aa:loadpokemon
     if userChoice=='l':
         print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
         while 1: #savefile input loop
@@ -835,7 +835,16 @@ while 1:
                 print("Leaving Load Pokémon..")
                 shortpause()
                 break
-            if saveChoice=="":
+            if saveChoice=='7':
+                print('dev insights')
+                her = loadMon2('pokesave.npy')
+                if her == 'messed up':
+                    print("try again")
+                    shortpause()
+                else:
+                    userParty.append(her)
+                    shortpause()
+            elif saveChoice=="":
                 newMons=loadMon("pypokemon.sav")
                 if newMons[0]==0: #if error in loading data, ask for savefile again
                     print("\n!! Something is wrong with this savefile !!")
