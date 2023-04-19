@@ -15,12 +15,13 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty
+    print_party, loadMonNpy, saveParty, dashborder
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
+dash24 = '--------------------'
 ############   give the player a starter  ###############
 starterlevel = 150
 starter= makeRandom(level=starterlevel,how_created='starter')
@@ -40,7 +41,7 @@ players_parties.append((starterParty, "starter", 0))
 userParty=starterParty
 equiped = 0
 party_count = 1 #keeping track of parties as they are created for indexing purposes
-hallfame_count = 0
+hallfame_count = 1
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
@@ -58,7 +59,10 @@ while 1:
     mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
         "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
         "\n[L]oad\nWhat to do: "
-    if hallfame_count > 0: print(f"Hall of Fame entries: {hallfame_count:0>2}")
+    if hallfame_count > 0:
+        bord = dashborder(24)
+        print(f"\nHall of Fame entries: {hallfame_count:0>2}",end='')
+        print('\n'+bord,end='')
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings
@@ -261,12 +265,11 @@ while 1:
                 dramaticpause()
                 print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
-                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or no: ")
+                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or [n]o: ")
                 if hallfame == "y" or hallfame == "Y":
                     #save the party
-                    savehere = f'halloffame_{hallfame_count:0>2}.sav'
-                    for i in userParty: i.save(savehere)
-                    print(f"Party saved at {savehere}.")
+                    savehere = f'halloffame_{hallfame_count:0>2}.npy'
+                    saveParty(savehere,userParty)
                     micropause()
                 pass
             pass
@@ -855,19 +858,21 @@ while 1:
                 else:
                     userParty.append(her)
                     shortpause()
-            elif saveChoice=="":
-                newMons=loadMon("pypokemon.sav")
-                if newMons[0]==0: #if error in loading data, ask for savefile again
-                    print("\n!! Something is wrong with this savefile !!")
-                    continue
-                #add all the pokemon to the party
-                for i in newMons:
-                    userParty.append(i)
-                    print(f"{i.name} has joined your party!")
-                    shortpause()
-                print("Finished loading Pokémon!\n")
-                shortpause()
+
+            #elif saveChoice=="":
+            #    newMons=loadMon("pypokemon.sav")
+            #    if newMons[0]==0: #if error in loading data, ask for savefile again
+            #        print("\n!! Something is wrong with this savefile !!")
+            #        continue
+            #    #add all the pokemon to the party
+            #    for i in newMons:
+            #        userParty.append(i)
+            #        print(f"{i.name} has joined your party!")
+            #        shortpause()
+            #    print("Finished loading Pokémon!\n")
+            #    shortpause()
             else:
+                if saveChoice=="": saveChoice='pypokemon.sav'
                 try:
                     if saveChoice[-4:]=='.npy':
                         print('made')
@@ -881,7 +886,6 @@ while 1:
                     for i in newMons:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")
-                        shortpause()
                     print("Finished loading Pokémon!\n")
                     shortpause()
                     #loop back to load a save
@@ -1049,7 +1053,7 @@ while 1:
                             #take the selection, make a copy of each and add to selected party
                             for i in pokis:
                                 party_i.append(copy.deepcopy(i))
-                                party_i[-1].bornpath='copied'
+                                party_i[-1].set_born(how_created='copied')
                                 print(f"{i.name} joined {party_name}!")
                             shortpause()
                             pass
@@ -1058,7 +1062,7 @@ while 1:
                             #copy the party with the new name
                             coppy = input("Name the copy: ")
                             part_copy = copy.deepcopy(party_i)
-                            for poke in part_copy: poke.bornpath='copied'
+                            for poke in part_copy: poke.set_born(how_created='copied')
                             players_parties.append((part_copy,coppy,party_count))
                             party_count += 1
                             print("\nCopied!")

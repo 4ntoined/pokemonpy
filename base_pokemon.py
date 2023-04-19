@@ -117,6 +117,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.digging=False      #used dig
         self.shadowing=False    #used shadow force, or phantom force
         self.rolling_out=0
+    #tweaking birthcircumstances, mostly for when we copy mons
+    def set_born(self,how_created=''):
+        self.timebornLOCAL = t.localtime(t.time())
+        self.bornplace = self.timebornLOCAL.tm_zone
+        self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
+        if how_created: self.bornpath = how_created
+        return
     #save pokemon
     def savenpy(self,filename='pypokemon',party=False):
         poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
@@ -1293,7 +1300,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print(f"=== In the {self.bornplace} timezone.")
         #birth circumstance
         if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
-        elif self.bornpath == 'copied':print("=== It was copied from another Pokemon!")
+        elif self.bornpath == 'copied':print("=== It was cloned from another Pokemon!")
         elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by boxes!")
@@ -2919,6 +2926,21 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.4)
     return
+def dashborder(num=24):
+    blank = ''
+    for i in range(num):
+        blank+='-'
+    return blank
+def hashborder(num=24):
+    blank = ''
+    for i in range(num):
+        blank+='#'
+    return blank
+def genborder(num=24,char='=')
+    star = ''
+    for i in range(num):
+        blank+=char
+    return blank
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,

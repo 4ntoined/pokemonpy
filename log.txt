@@ -953,4 +953,9 @@ also we save timezone data as well, a little location tracking for you
 mew is probably corrupted now, but thats fine, we'll live, i can fake the data to
 correctness
 10:22- fixed mew's save
+14:39- mostly small edits I believe, working on normalizing line borders i.e.
+#####################################################################
+etc. also fixed a little bug where pokemon recorded when they were initialized via copy
+but didnt update intialization time, led to new mon() function: set_born
+what's next?
 
