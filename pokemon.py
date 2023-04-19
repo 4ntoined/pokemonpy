@@ -837,7 +837,7 @@ while 1:
                 break
             if saveChoice=='7':
                 print('dev insights')
-                her = loadMon2('montwo.npy')
+                her = loadMon2('newmew.npy')
                 if her == 'messed up':
                     print("try again")
                     shortpause()
