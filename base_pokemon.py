@@ -118,14 +118,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.shadowing=False    #used shadow force, or phantom force
         self.rolling_out=0
     #save pokemon
-    def save(self,filename='pypokemon'):
-        #level(int),name(str),nature(list,int,complex),evs,ivs(list,int),timeborn(timestruct),
-        #bornpath(str),type(list,int),knownmove(list,int),base stats(list,int),
-        #think thats it
-        #order is name,level,nature,type,base_stats,evs,ivs,borntime,bornpath,bornplace,knownmoves
-        natur = complex(self.nature[0],self.nature[1])
+    def savenpy(self,filename='pypokemon',party=False):
         poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
-        #evsivsbase
         poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
         poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
         poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
@@ -133,10 +127,17 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         poke_bir = [self.timeborn, self.bornpath, self.bornplace]
         poke_moves = [self.knownMoves]
         poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
-        poke_array = np.array(poke_tuple,dtype=object)
-        np.save(filename+'.npy',poke_array)
+        if party:
+            ans = poke_tuple
+        else:
+            poke_array = np.array(poke_tuple,dtype=object)
+            if filename[-4:] != '.npy': filename = str(filename)+'.npy'
+            np.save(filename,poke_array)
+            ans = 'saved'
+        return ans
 
-        f=open(filename+'.sav','a')
+    def save(self,filename='pypokemon.sav'):
+        f=open(filename,'a')
         name=self.name
         lvl=self.level
         #pokemon base stats
@@ -2702,14 +2703,37 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
         return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
         debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
         tipe=np.array([tipe1,tipe2]),how_created=how_created)
+def saveParty(savefile,pokeparty):
+    try:
+        if savefile[-4:]=='.npy':
+            #do numpy method
+            savepack = []
+            for i in pokeparty:
+                saveline = i.savenpy(filename='file',party=True)
+                savepack.append(saveline)
+            save_arr = np.array(savepack, dtype=object)
+            if savefile[-4:]!='.npy': savefile = str(savefile)+'.npy'
+            np.save(savefile,save_arr)
+        else:
+            #do txt method
+            for i in pokeparty: i.save(filename=savefile)
+    except ValueError:
+        print("val error")
+        pass
+    else:
+        print(f"Saved to {savefile}.")
+        pass
+    return
 #load pokemon
-def loadMon2(savefile):
+def loadMonNpy(savefile):
     global mov
     #name, level, nature, tipe, base,ev,iv,bornt,bornp,moves?
     #will need to populate pp, otherstuff prob as well
     cheers=False
     try:
-        poke_arr = np.load(savefile,allow_pickle=True)
+        poke_arrr = np.load(savefile,allow_pickle=True)
+        poke_arrr = poke_arrr.reshape((-1,26))
+        n_poke = poke_arrr.shape[0]
     except FileNotFoundError:
         print('File not found.')
         micropause()
@@ -2720,28 +2744,34 @@ def loadMon2(savefile):
         print('Error loading file')
         micropause()
     else:
-        try:
-            oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
-            atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
-            spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
-            #to set moves,pp,evs,ivs,birthtime
-            oldie.timeborn=poke_arr[22]
-            oldie.bornplace=poke_arr[24]
-            oldie.knownMoves = poke_arr[25]
-            oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
-            oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
-                poke_arr[10:16]
-            oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
-                poke_arr[16:22]
-        except ValueError:
-            print('Value error/Data corrupted')
-        except IndexError:
-            print('Index error/Data corrupted')
-        else:
-            print(f'Loaded {oldie.name}!')
-            cheers = True
-    if cheers: return oldie
-    else: return 'messed up'
+        takehome = []
+        for i in range(n_poke):
+            #print(poke_arr)
+            poke_arr = poke_arrr[i,:].copy()
+            try:
+                oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
+                atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
+                spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
+                #to set moves,pp,evs,ivs,birthtime
+                oldie.timeborn=poke_arr[22]
+                oldie.bornplace=poke_arr[24]
+                oldie.knownMoves = poke_arr[25]
+                oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
+                oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
+                    poke_arr[10:16]
+                oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
+                    poke_arr[16:22]
+            except ValueError:
+                print('Value error/Data corrupted')
+            except IndexError:
+                print('Index error/Data corrupted')
+            else:
+                print(f'Loaded {oldie.name}!')
+                takehome.append(oldie)
+            pass             
+        cheers = True
+    if not cheers: takehome=[0]
+    return takehome
 
 def loadMon(savefile):
     try:

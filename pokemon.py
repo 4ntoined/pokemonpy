@@ -15,7 +15,7 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMon2
+    print_party, loadMonNpy, saveParty
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -334,10 +334,21 @@ while 1:
                                 shortpause() #kills
                                 continue
                             else:
-                                selMon.save(savename)
-                                print(f"{selMon.name} was saved to the file!\n")
-                                shortpause() #kills
-                                continue
+                                try: #gonna look for numpy extensions
+                                    if savename[-4:] == '.npy':
+                                        selMon.savenpy(savename)
+                                    else:
+                                        selMon.save(savename)
+                                except ValueError:
+                                    #print('val error')
+                                    pass
+                                except IndexError:
+                                    #print('index error')
+                                    pass
+                                else:
+                                    print(f"{selMon.name} was saved to the file!\n")
+                                    shortpause() #kills
+                                    continue
                         #
                     #set first
                     if sumChoice=='f':
@@ -835,7 +846,7 @@ while 1:
                 print("Leaving Load Pokémon..")
                 shortpause()
                 break
-            if saveChoice=='7':
+            elif saveChoice=='7':
                 print('dev insights')
                 her = loadMon2('newmew.npy')
                 if her == 'messed up':
@@ -858,9 +869,12 @@ while 1:
                 shortpause()
             else:
                 try:
-                    newMons=loadMon(saveChoice)
-                except IndexError:
-                    print("! That filename wasn't found !**\nno reason why this should run")
+                    if saveChoice[-4:]=='.npy':
+                        print('made')
+                        newMons=loadMonNpy(saveChoice)
+                    else: newMons=loadMon(saveChoice)
+                except OSError:
+                    print(f"! That filename wasn't found !**\nno reason why this should run")
                 else:
                     if newMons[0]==0: #error in loading data
                         continue
@@ -1004,10 +1018,8 @@ while 1:
                             #save every pokemon in the party to the file
                             savewhere=input("Where to save the party: ")
                             if savewhere=='': savewhere='pypokemon.sav'
-                            for i in party_i:
-                                i.save(savewhere)
-                                print(f"Saved {i.name} to {savewhere}")
-                                #micropause()
+                            saveParty(savewhere,party_i)
+                            micropause()
                             pass
                             #back to party options
                         elif megaChoice=='a' or megaChoice=='A':
