@@ -1304,6 +1304,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by boxes!")
+        elif self.bornpath == 'elite':print("=== It was trained by an elite!")
         else: print("=== It appeared mysteriously...")
         print("##############################################")
         
@@ -2936,7 +2937,7 @@ def hashborder(num=24):
     for i in range(num):
         blank+='#'
     return blank
-def genborder(num=24,char='=')
+def genborder(num=24,char='='):
     star = ''
     for i in range(num):
         blank+=char

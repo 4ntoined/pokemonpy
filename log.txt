@@ -958,4 +958,8 @@ correctness
 etc. also fixed a little bug where pokemon recorded when they were initialized via copy
 but didnt update intialization time, led to new mon() function: set_born
 what's next?
+14:45- gotta let users rename pokemon lol
+15:14- not that anyone asked for it but running victory_road.py as main now
+creates the e4 teams and saves them as .npy in a directory of your choice
+these mons come with a special bornpath tag that references their e4 origin
 
