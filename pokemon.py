@@ -12,14 +12,18 @@
 import copy
 #import time as t
 import numpy as np
-from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon, makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, shortpause, dramaticpause, micropause, elite4_healquit, print_dex, print_party
+from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
+    makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
+    shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
+    print_party
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
 ############   give the player a starter  ###############
-starter= makeRandom()
+starterlevel = 150
+starter= makeRandom(level=starterlevel)
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -36,11 +40,12 @@ players_parties.append((starterParty, "starter", 0))
 userParty=starterParty
 equiped = 0
 party_count = 1 #keeping track of parties as they are created for indexing purposes
+hallfame_count = 0
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 ######################
-print("\n... A Python game by Adarius ...")
+print("\n... Created by Adarius ...")
 shortpause()
 print("** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
@@ -193,7 +198,7 @@ while 1:
             #
             battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
             resu1 = battle1.startbattle(e4=True)
-            #resu1=True
+            resu1=True
             if (not resu1): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -205,7 +210,7 @@ while 1:
             #zinnia's battle
             battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
             resu2 = battle2.startbattle(e4=True)
-            #resu2=True
+            resu2=True
             #win check
             if (not resu2): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -218,7 +223,7 @@ while 1:
             #cynthias battle
             battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
             resu3 = battle3.startbattle(e4=True)
-            #resu3 = True
+            resu3 = True
             if (not resu3): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -230,7 +235,7 @@ while 1:
             #N's battle
             battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
             resu4 = battle4.startbattle(e4=True)
-            #resu4=True
+            resu4=True
             #win
             if (not resu4): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -243,18 +248,26 @@ while 1:
             #champ
             battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
             resu5 = battle5.startbattle(e4=True)
-            #resu5=True
+            resu5=True
             #if you won, you won, like it's over
             if not resu5:
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
             else:         
+                hallfame_count += 1
                 print("\nYou defeated the Elite Four and the Grand Champion!")
                 dramaticpause()
                 print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
-                #hall of fame where we highlight the party that just won
+                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or no: ")
+                if hallfame == "y" or hallfame == "Y":
+                    #save the party
+                    savehere = f'halloffame_{hallfame_count:0>2}.sav'
+                    for i in userParty: i.save(savehere)
+                    print(f"Party saved at {savehere}.")
+                    micropause()
+                pass
             pass
         else:
             #print("Leaving Indigo Plateau...")
@@ -902,9 +915,11 @@ while 1:
                 #input loop for number of pokemon to include in the party
                 while 1:
                     partmons = input("Fill with how many random Pokémon: ")
+                    levelz = input("Level: ")
                     try:
                         num = int(float(partmons)) #number of new pokemon
-                        if num>=0: #if 0 or more
+                        lv = int(float(levelz)) #level of the pokemon
+                        if num>=0 and lv>=0: #if 0 or more
                             #run the else block
                             pass
                         else:
@@ -915,7 +930,7 @@ while 1:
                         print("\n** Bad Value **")
                         pass
                     else:
-                         new_party = makeParty(num) #making the party
+                         new_party = makeParty(num,level=lv) #making the party
                          print("\nYou started a new party!")
                          shortpause()
                          break #leave the input loop for num of pokes
@@ -974,11 +989,11 @@ while 1:
                             #ask for file save name or default
                             #save every pokemon in the party to the file
                             savewhere=input("Where to save the party: ")
+                            if savewhere=='': savewhere='pypokemon.sav'
                             for i in party_i:
-                                if savewhere=='': savewhere='pypokemon.sav'
                                 i.save(savewhere)
                                 print(f"Saved {i.name} to {savewhere}")
-                                micropause()
+                                #micropause()
                             pass
                             #back to party options
                         elif megaChoice=='a' or megaChoice=='A':

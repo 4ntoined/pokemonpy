@@ -2736,11 +2736,11 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
-def makeParty(numb=0):
+def makeParty(numb=0,level=100):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
     for i in range(numb):
-        new_mon = makeRandom()
+        new_mon = makeRandom(level=level)
         pokemon_party.append(new_mon)
     return pokemon_party
 def print_party(parti, named='namo', menu=False):
