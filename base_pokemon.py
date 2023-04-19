@@ -3,6 +3,7 @@
 #treat these lines of code with care
 #thank you
 import time as t
+import calendar as cal
 #import copy
 import numpy as np
 from dexpoke import dex
@@ -10,14 +11,16 @@ from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 #classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats, 
 rng = np.random.default_rng()
 #aa:monclass
-class mon:
+class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
         debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),\
         random_move=True,how_created='nursery')\
         : #add natures
-        #print("its a pokemon!")
         global mo
-        self.timeborn = t.gmtime(t.time())
+        #birth details
+        self.timebornLOCAL = t.localtime(t.time())
+        self.bornplace = self.timebornLOCAL.tm_zone
+        self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
         self.bornpath = how_created
         self.level=int(level)
         self.nature = nature
@@ -115,11 +118,11 @@ class mon:
         self.shadowing=False    #used shadow force, or phantom force
         self.rolling_out=0
     #save pokemon
-    def save(self,filename='pypokemon.sav'):
+    def save(self,filename='pypokemon'):
         #level(int),name(str),nature(list,int,complex),evs,ivs(list,int),timeborn(timestruct),
         #bornpath(str),type(list,int),knownmove(list,int),base stats(list,int),
         #think thats it
-        #order is name,level,nature,type,base_stats,evs,ivs,borntime,bornpath,knownmoves
+        #order is name,level,nature,type,base_stats,evs,ivs,borntime,bornpath,bornplace,knownmoves
         natur = complex(self.nature[0],self.nature[1])
         poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
         #evsivsbase
@@ -127,12 +130,13 @@ class mon:
         poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
         poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
         #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-        poke_bir = [self.timeborn, self.bornpath]
+        poke_bir = [self.timeborn, self.bornpath, self.bornplace]
         poke_moves = [self.knownMoves]
         poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
         poke_array = np.array(poke_tuple,dtype=object)
-        np.save('pokesave.npy',poke_array)
-        f=open(filename,'a')
+        np.save(filename+'.npy',poke_array)
+
+        f=open(filename+'.sav','a')
         name=self.name
         lvl=self.level
         #pokemon base stats
@@ -185,6 +189,8 @@ class mon:
         line+=","
         for i in mvs:
             line+=f" {i}"
+        line+=','
+        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace}"
         f.write(line+"\n")
         f.close()
     #replace moveset with random moves
@@ -1275,13 +1281,21 @@ class mon:
         self.showMoves()
         print("##############################################")
         #met conditions
-        borndays = t.asctime(self.timeborn).split()
-        print(f"This Pokemon was initialized on\n=== {borndays[0]} "+\
-                f"{borndays[2]+' '+borndays[1]+' '+borndays[4]+' @ '+borndays[3]} UTC")
+        #birthday
+        #borndays = t.asctime(self.timeborn).split()
+        borndays = t.strftime("%a %d %b %Y,%H:%M:%S",self.timeborn).split(',')
+        #print(f"This Pokemon was initialized on\n=== {borndays[0]} "+\
+        #        f"{borndays[2]+' '+borndays[1]+' '+borndays[4]+' @ '+borndays[3]} UTC")
+        print(f"This Pokemon was initialized on\n=== {borndays[0]} @ "+\
+                f"{borndays[1]} UTC")
+        #birthplace
+        print(f"=== In the {self.bornplace} timezone.")
+        #birth circumstance
         if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
         elif self.bornpath == 'copied':print("=== It was copied from another Pokemon!")
-        elif self.bornpath == 'starter':print("=== It was your starter Pokemon!")
+        elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
+        elif self.bornpath == 'random':print("=== It was randomized by boxes!")
         else: print("=== It appeared mysteriously...")
         print("##############################################")
         
@@ -2700,23 +2714,32 @@ def loadMon2(savefile):
         print('File not found.')
         micropause()
     except ValueError:
+        print('Error loading file')
         micropause()
     except OSError:
+        print('Error loading file')
         micropause()
     else:
-        oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
-        atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
-        spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
-        #to set moves,pp,evs,ivs,birthtime
-        oldie.timeborn=poke_arr[22]
-        oldie.knownMoves = poke_arr[24]
-        oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
-        oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
-            poke_arr[10:16]
-        oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
-            poke_arr[16:22]
-        print(f'Loaded {oldie.name}!')
-        cheers = True
+        try:
+            oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
+            atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
+            spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
+            #to set moves,pp,evs,ivs,birthtime
+            oldie.timeborn=poke_arr[22]
+            oldie.bornplace=poke_arr[24]
+            oldie.knownMoves = poke_arr[25]
+            oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
+            oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
+                poke_arr[10:16]
+            oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
+                poke_arr[16:22]
+        except ValueError:
+            print('Value error/Data corrupted')
+        except IndexError:
+            print('Index error/Data corrupted')
+        else:
+            print(f'Loaded {oldie.name}!')
+            cheers = True
     if cheers: return oldie
     else: return 'messed up'
 
@@ -2742,7 +2765,9 @@ def loadMon(savefile):
             if max(typ)>18 or min(typ)<0: #invalid types
                 return [0]
             nacher = np.array([int(iv) for iv in i[6].split()])
-            newP=mon(int(i[1]),i[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ)
+            newP=mon(int(i[1]),i[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=i[9])
+            newP.timeborn = t.gmtime(int(float(i[8])))
+            newP.bornplace = i[10]
             newP.knownMoves=[int(iiiii) for iiiii in i[7].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
@@ -2807,7 +2832,7 @@ def makeParty(numb=0,level=100):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
     for i in range(numb):
-        new_mon = makeRandom(level=level)
+        new_mon = makeRandom(level=level,how_created='random')
         pokemon_party.append(new_mon)
     return pokemon_party
 def print_party(parti, named='namo', menu=False):

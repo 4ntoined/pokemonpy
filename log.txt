@@ -946,4 +946,10 @@ but it should be pretty easy to redirect entirely
 more interesting is expanding the new save format to multiple pokes 
 like we had before with the txt file .savs
 extremely nice
+10:08- soo i realized that we dont *need* numpy arrays to save timestamp data,
+thats really just an integer of seconds since a defined reference point
+so i fixed the .txt saving and loading to account for timedata,
+also we save timezone data as well, a little location tracking for you
+mew is probably corrupted now, but thats fine, we'll live, i can fake the data to
+correctness
 

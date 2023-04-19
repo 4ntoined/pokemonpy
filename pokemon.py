@@ -837,7 +837,7 @@ while 1:
                 break
             if saveChoice=='7':
                 print('dev insights')
-                her = loadMon2('pokesave.npy')
+                her = loadMon2('montwo.npy')
                 if her == 'messed up':
                     print("try again")
                     shortpause()
@@ -1037,6 +1037,7 @@ while 1:
                             #take the selection, make a copy of each and add to selected party
                             for i in pokis:
                                 party_i.append(copy.deepcopy(i))
+                                party_i[-1].bornpath='copied'
                                 print(f"{i.name} joined {party_name}!")
                             shortpause()
                             pass
@@ -1045,6 +1046,7 @@ while 1:
                             #copy the party with the new name
                             coppy = input("Name the copy: ")
                             part_copy = copy.deepcopy(party_i)
+                            for poke in part_copy: poke.bornpath='copied'
                             players_parties.append((part_copy,coppy,party_count))
                             party_count += 1
                             print("\nCopied!")
@@ -1145,7 +1147,7 @@ while 1:
                                 #userParty.append(starter)
                                 print(f"\n{party_name} has been emptied!")
                                 if equipp: #if this party is equipped, populate it automatically
-                                    bayleef = makeMon(0,nacher=(int(rng.choice((0,1,2,3,4))),int(rng.choice((0,1,2,3,4)))))
+                                    bayleef = makeMon(0,nacher=(int(rng.choice((0,1,2,3,4))),int(rng.choice((0,1,2,3,4)))),how_created='starter')
                                     bayleef.set_evs(tuple(random_evs()))
                                     party_i.append(bayleef)
                                 sizep=len(party_i)
