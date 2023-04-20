@@ -1,4 +1,19 @@
-#Antoine
+#
+"""
+Copyright (C) 2023 Adarius
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 #this script will use base_pokemon, moves, and dexpoke, to create 5 specific pokemon parties for pokemon.py
 #let's go!
 import os
@@ -234,6 +249,10 @@ mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
 #c1_party = []
 
 if __name__ == "__main__":
+    print('\nCopyright (C) 2023 Adarius')
+    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+            'This is free software, and you are welcome to\n'+\
+            'redistribute it under certain conditions.\n')
     savehere = input('directory to save: ') or 'elite_four_teams'
     if not os.path.exists(savehere):
         os.makedirs(savehere)

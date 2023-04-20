@@ -1,5 +1,19 @@
-#Antoine
 #Pokemon x Python
+"""
+Copyright (C) 2023 Adarius
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
@@ -46,10 +60,14 @@ hallfame_count = 0
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
-######################
-print("\n... Created by Adarius ...")
-shortpause()
-print("** Welcome to the Wonderful World of Pokémon Simulation! **")
+#####################
+print('\nCopyright (C) 2023 Adarius')
+print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+        'This is free software, and you are welcome to\n'+\
+        'redistribute it under certain conditions.')
+#print("\n... Created by Adarius ...")
+dramaticpause()
+print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
 #aa:mainmenu
 while 1:
