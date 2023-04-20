@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 import time as t
 import calendar as cal
+import hashlib
 #import copy
 import numpy as np
 from dexpoke import dex
@@ -37,6 +38,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.bornplace = self.timebornLOCAL.tm_zone
         self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
         self.bornpath = how_created
+        #memories?
+        self.hallfamecount = 0
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -137,6 +140,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.timebornLOCAL = t.localtime(t.time())
         self.bornplace = self.timebornLOCAL.tm_zone
         self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
+        self.hallfamecount = 0
         if how_created: self.bornpath = how_created
         return
     #save pokemon
@@ -149,9 +153,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
             poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
             poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
             #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-            poke_bir = [self.timeborn, self.bornpath, self.bornplace]
+            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]
             poke_moves = [self.knownMoves]
-            poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
+            poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
+            #gen hash
+            coder = hashlib.new("md5")
+            coder.update( str(poke_list).encode('UTF-8') )
+            poke_tuple = tuple( poke_list + [coder.hexdigest()] )
             if party:
                 ans = poke_tuple
             else:
@@ -215,7 +223,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         for i in mvs:
             line+=f" {i}"
         line+=','
-        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace}"
+        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount}"
+        #gen hash
+        coder = hashlib.new('md5')
+        coder.update(line.encode('UTF-8'))
+        line+=f'|{coder.hexdigest()}'
         f.write(line+"\n")
         f.close()
     #replace moveset with random moves
@@ -1322,6 +1334,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
+        elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
         print("##############################################")
@@ -2763,7 +2776,7 @@ def loadMonNpy(savefile):
     cheers=False
     try:
         poke_arrr = np.load(savefile,allow_pickle=True)
-        poke_arrr = poke_arrr.reshape((-1,26))
+        poke_arrr = poke_arrr.reshape((-1,28))
         n_poke = poke_arrr.shape[0]
     except FileNotFoundError:
         print('File not found.')
@@ -2780,20 +2793,32 @@ def loadMonNpy(savefile):
             #print(poke_arr)
             poke_arr = poke_arrr[i,:].copy()
             try:
+                poke_line = list( poke_arr[0:-1] )
+                poke_hass = poke_arr[-1]
+                coder=hashlib.new('md5')
+                coder.update(str(poke_line).encode('UTF-8'))
+                hass = coder.hexdigest()
                 oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
                 atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
                 spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
                 #to set moves,pp,evs,ivs,birthtime
-                oldie.timeborn=poke_arr[22]
-                oldie.bornplace=poke_arr[24]
-                oldie.knownMoves = poke_arr[25]
+                oldie.knownMoves = poke_arr[26]
                 oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
                 oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
                     poke_arr[10:16]
                 oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
                     poke_arr[16:22]
-            except ValueError:
-                print('Value error/Data corrupted')
+                tampered=False
+                if hass != poke_hass:
+                    tampered=True
+                    oldie.set_born(how_created='tampered')
+                else:
+                    oldie.timeborn=poke_arr[22]
+                    oldie.bornplace=poke_arr[24]
+                    oldie.hallfamecount=poke_arr[25]
+                pass
+            #except ValueError:
+            #    print('Value error/Data corrupted')
             except IndexError:
                 print('Index error/Data corrupted')
             else:
@@ -2806,33 +2831,44 @@ def loadMonNpy(savefile):
 
 def loadMon(savefile):
     try:
-        dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+        dat2 = np.loadtxt(savefile,delimiter='|',dtype='U256')
+        dat2 = dat2.reshape((-1,2))
+        hashes = dat2[:,1] #1 dim, size = n_pokemon
+        #dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+        dat = dat2[:,0] #1 or 2 dim, if 2-dim: first one is num pokes, elsewi
         loadPokes=[]
-        if type(dat[0])==np.str_: #only the case if there's only 1 pokemon
-            dat=dat.reshape((1,-1)) #to treat this pokemon like any other line in a list of saved pokemon
-        for i in dat:
-            if int(i[1])<=0: #invalid levels
-                return [0]
-            baseI=[int(ii) for ii in i[2].split()]
-            if min(baseI)<=0:
-                return [0]
-            ivz=[int(ii) for ii in i[3].split()]
-            if min(ivz)<0: #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
-                return [0]
-            evz=[int(iii) for iii in i[4].split()]
-            if min(evz)<0: #same with evs, no positive limits
-                return [0]
-            typ=np.array([int(iiii) for iiii in i[5].split()])
-            if max(typ)>18 or min(typ)<0: #invalid types
-                return [0]
-            nacher = np.array([int(iv) for iv in i[6].split()])
-            newP=mon(int(i[1]),i[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=i[9])
-            newP.timeborn = t.gmtime(int(float(i[8])))
-            newP.bornplace = i[10]
-            newP.knownMoves=[int(iiiii) for iiiii in i[7].split()]
+        #if type(dat[0])==np.str_: dat=dat.reshape((1,-1)) #only the case if there's only 1 pokemon #to treat this pokemon like any other line in a list of saved pokemon
+        #for i in dat:
+        for i in range(len(dat)):
+            #hash check business
+            tampered=False
+            coder = hashlib.new('md5')
+            coder.update(dat[i].encode('UTF-8'))
+            if coder.hexdigest() != hashes[i]: tampered=True
+            line = dat[i].split(',')
+            #no non-postive levels
+            if int(line[1])<=0: return [0]  
+            baseI=[int(ii) for ii in line[2].split()]
+            #no non-positive base stats
+            if min(baseI)<=0: return [0]
+            ivz=[int(ii) for ii in line[3].split()]
+            if min(ivz)<0: return [0] #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
+            evz=[int(iii) for iii in line[4].split()]
+            if min(evz)<0: return [0] #same with evs, no positive limits
+            typ=np.array([int(iiii) for iiii in line[5].split()])
+            if max(typ)>18 or min(typ)<0: return [0]  #invalid types
+            nacher = np.array([int(iv) for iv in line[6].split()])
+            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=line[9])
+            if tampered:
+                newP.set_born(how_created='tampered')
+            else:
+                newP.timeborn = t.gmtime(int(float(line[8])))
+                newP.bornplace = line[10]
+                newP.hallfamecount = line[11]
+            newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-            newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
+            newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")

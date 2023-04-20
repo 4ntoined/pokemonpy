@@ -968,3 +968,11 @@ so no harm no foul, I don't think .npy files work quite as easily
 an elite4 defeating team, it would require tweaking the save files and load procedures
 AGAIN, so i'm gonna put that on the back burner and think about it for bit
 
+20 apr 2023
+09:42- happy holidays
+had an idea for verifying whether or not save files have been tampered with
+so naturally im gonna spend way too long looking into it instead of making
+material improvements to the running and presentation of the game
+11:20- did it. currently works for only .txt save files, working on numpys still
+11:31- fixed it!
+
