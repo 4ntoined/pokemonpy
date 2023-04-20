@@ -953,4 +953,18 @@ also we save timezone data as well, a little location tracking for you
 mew is probably corrupted now, but thats fine, we'll live, i can fake the data to
 correctness
 10:22- fixed mew's save
+14:39- mostly small edits I believe, working on normalizing line borders i.e.
+#####################################################################
+etc. also fixed a little bug where pokemon recorded when they were initialized via copy
+but didnt update intialization time, led to new mon() function: set_born
+what's next?
+14:45- gotta let users rename pokemon lol
+15:14- not that anyone asked for it but running victory_road.py as main now
+creates the e4 teams and saves them as .npy in a directory of your choice
+these mons come with a special bornpath tag that references their e4 origin
+15:56- added a little overwrite alert for .npy files, .txts automatically append,
+so no harm no foul, I don't think .npy files work quite as easily
+17:38- thinking of adding hall of fame counter for pokemon, tracking when theyre a part of
+an elite4 defeating team, it would require tweaking the save files and load procedures
+AGAIN, so i'm gonna put that on the back burner and think about it for bit
 

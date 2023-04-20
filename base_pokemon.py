@@ -1,7 +1,22 @@
-#Antoine
 #the basic classes and functions of the pokemon code
+""" legal stuff
+Copyright (C) 2023 Adarius
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 #treat these lines of code with care
 #thank you
+import os
 import time as t
 import calendar as cal
 #import copy
@@ -117,25 +132,34 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.digging=False      #used dig
         self.shadowing=False    #used shadow force, or phantom force
         self.rolling_out=0
+    #tweaking birthcircumstances, mostly for when we copy mons
+    def set_born(self,how_created=''):
+        self.timebornLOCAL = t.localtime(t.time())
+        self.bornplace = self.timebornLOCAL.tm_zone
+        self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
+        if how_created: self.bornpath = how_created
+        return
     #save pokemon
-    def savenpy(self,filename='pypokemon',party=False):
-        poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
-        poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
-        poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
-        poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
-        #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-        poke_bir = [self.timeborn, self.bornpath, self.bornplace]
-        poke_moves = [self.knownMoves]
-        poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
-        if party:
-            ans = poke_tuple
+    def savenpy(self,filename='pypokemon',party=False,overwrite=False):
+        if os.path.exists(filename) and not overwrite:
+            ans = 'file exists'
         else:
-            poke_array = np.array(poke_tuple,dtype=object)
-            if filename[-4:] != '.npy': filename = str(filename)+'.npy'
-            np.save(filename,poke_array)
-            ans = 'saved'
+            poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
+            poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
+            poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
+            poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
+            #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
+            poke_bir = [self.timeborn, self.bornpath, self.bornplace]
+            poke_moves = [self.knownMoves]
+            poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
+            if party:
+                ans = poke_tuple
+            else:
+                poke_array = np.array(poke_tuple,dtype=object)
+                #if filename[-4:] != '.npy': filename = str(filename)+'.npy'
+                np.save(filename,poke_array)
+                ans = 'saved'
         return ans
-
     def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
         name=self.name
@@ -1293,10 +1317,12 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print(f"=== In the {self.bornplace} timezone.")
         #birth circumstance
         if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
-        elif self.bornpath == 'copied':print("=== It was copied from another Pokemon!")
+        elif self.bornpath == 'copied':print("=== It was cloned from another Pokemon!")
         elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
-        elif self.bornpath == 'random':print("=== It was randomized by boxes!")
+        elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
+        elif self.bornpath == 'elite':print("=== It was trained by an elite!")
+        elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
         print("##############################################")
         
@@ -2703,26 +2729,31 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
         return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
         debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
         tipe=np.array([tipe1,tipe2]),how_created=how_created)
-def saveParty(savefile,pokeparty):
-    try:
-        if savefile[-4:]=='.npy':
-            #do numpy method
-            savepack = []
-            for i in pokeparty:
-                saveline = i.savenpy(filename='file',party=True)
-                savepack.append(saveline)
-            save_arr = np.array(savepack, dtype=object)
-            if savefile[-4:]!='.npy': savefile = str(savefile)+'.npy'
-            np.save(savefile,save_arr)
-        else:
-            #do txt method
-            for i in pokeparty: i.save(filename=savefile)
-    except ValueError:
-        print("val error")
-        pass
+def saveParty(savefile,pokeparty,overwrite=False):
+    if os.path.exists(savefile) and not overwrite:
+        #do not save
+        print('File exists and no overwrite.')
     else:
-        print(f"Saved to {savefile}.")
-        pass
+        try:
+            if savefile[-4:]=='.npy':
+                #do numpy method
+                savepack = []
+                for i in pokeparty:
+                    saveline = i.savenpy(filename='file',party=True,overwrite=overwrite)
+                    savepack.append(saveline)
+                
+                save_arr = np.array(savepack, dtype=object)
+                if savefile[-4:]!='.npy': savefile = str(savefile)+'.npy'
+                np.save(savefile,save_arr)
+            else:
+                #do txt method
+                for i in pokeparty: i.save(filename=savefile)
+        except ValueError:
+            print("val error")
+            pass
+        else:
+            print(f"Saved to {savefile}.")
+            pass
     return
 #load pokemon
 def loadMonNpy(savefile):
@@ -2919,6 +2950,21 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.4)
     return
+def dashborder(num=24):
+    blank = ''
+    for i in range(num):
+        blank+='-'
+    return blank
+def hashborder(num=24):
+    blank = ''
+    for i in range(num):
+        blank+='#'
+    return blank
+def genborder(num=24,char='='):
+    star = ''
+    for i in range(num):
+        blank+=char
+    return blank
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,

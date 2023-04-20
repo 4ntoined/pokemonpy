@@ -1,5 +1,19 @@
-#Antoine
 #Pokemon x Python
+"""
+Copyright (C) 2023 Adarius
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
@@ -9,21 +23,23 @@
 # multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
+import os
 import copy
 #import time as t
 import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty
+    print_party, loadMonNpy, saveParty, dashborder
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
+dash24 = '--------------------'
 ############   give the player a starter  ###############
-starterlevel = 150
-starter= makeRandom(level=starterlevel,how_created='starter')
+#starterlevel = int(rng.normal(loc=100,scale=30))
+starter= makeRandom(how_created='starter')
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -44,10 +60,14 @@ hallfame_count = 0
 #####################
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
-######################
-print("\n... Created by Adarius ...")
-shortpause()
-print("** Welcome to the Wonderful World of Pokémon Simulation! **")
+#####################
+print('\nCopyright (C) 2023 Adarius')
+print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+        'This is free software, and you are welcome to\n'+\
+        'redistribute it under certain conditions.')
+#print("\n... Created by Adarius ...")
+dramaticpause()
+print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
 #aa:mainmenu
 while 1:
@@ -58,7 +78,10 @@ while 1:
     mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
         "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
         "\n[L]oad\nWhat to do: "
-    if hallfame_count > 0: print(f"Hall of Fame entries: {hallfame_count:0>2}")
+    if hallfame_count > 0:
+        bord = dashborder(24)
+        print(f"\nHall of Fame entries: {hallfame_count:0>2}",end='')
+        print('\n'+bord,end='')
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings
@@ -261,12 +284,11 @@ while 1:
                 dramaticpause()
                 print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
-                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or no: ")
+                hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or [n]o: ")
                 if hallfame == "y" or hallfame == "Y":
                     #save the party
-                    savehere = f'halloffame_{hallfame_count:0>2}.sav'
-                    for i in userParty: i.save(savehere)
-                    print(f"Party saved at {savehere}.")
+                    savehere = f'halloffame_{hallfame_count:0>2}.npy'
+                    saveParty(savehere,userParty)
                     micropause()
                 pass
             pass
@@ -334,11 +356,27 @@ while 1:
                                 shortpause() #kills
                                 continue
                             else:
+                                overwrite=False
                                 try: #gonna look for numpy extensions
                                     if savename[-4:] == '.npy':
-                                        selMon.savenpy(savename)
-                                    else:
-                                        selMon.save(savename)
+                                        if os.path.exists(savename): #.npy file already exists
+                                            print('File already exists.')
+                                            micropause()
+                                            overw = input('Overwrite this file?\n[y]es or [n]o: ')
+                                            if overw == 'y' or overw == 'Y' or overw == 'yes':
+                                                #good to go
+                                                overwrite=True
+                                                print('Overwriting...')
+                                                micropause()
+                                            else:
+                                                #don't overwrite, ask for name of savefile again
+                                                print('Scrubbed...')
+                                                micropause()
+                                                continue
+                                        else: pass
+                                        selMon.savenpy(savename,overwrite=overwrite)
+                                    #not a .npy, save the txt way
+                                    else: selMon.save(savename)
                                 except ValueError:
                                     #print('val error')
                                     pass
@@ -837,7 +875,7 @@ while 1:
     ###end of training block###
     #zz:training    
     ####Loading pokemon aa:loadpokemon
-    if userChoice=='l':
+    if userChoice=='l' or userChoice=='L':
         print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
         while 1: #savefile input loop
             saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
@@ -855,23 +893,23 @@ while 1:
                 else:
                     userParty.append(her)
                     shortpause()
-            elif saveChoice=="":
-                newMons=loadMon("pypokemon.sav")
-                if newMons[0]==0: #if error in loading data, ask for savefile again
-                    print("\n!! Something is wrong with this savefile !!")
-                    continue
-                #add all the pokemon to the party
-                for i in newMons:
-                    userParty.append(i)
-                    print(f"{i.name} has joined your party!")
-                    shortpause()
-                print("Finished loading Pokémon!\n")
-                shortpause()
+
+            #elif saveChoice=="":
+            #    newMons=loadMon("pypokemon.sav")
+            #    if newMons[0]==0: #if error in loading data, ask for savefile again
+            #        print("\n!! Something is wrong with this savefile !!")
+            #        continue
+            #    #add all the pokemon to the party
+            #    for i in newMons:
+            #        userParty.append(i)
+            #        print(f"{i.name} has joined your party!")
+            #        shortpause()
+            #    print("Finished loading Pokémon!\n")
+            #    shortpause()
             else:
+                if saveChoice=="": saveChoice='pypokemon.sav'
                 try:
-                    if saveChoice[-4:]=='.npy':
-                        print('made')
-                        newMons=loadMonNpy(saveChoice)
+                    if saveChoice[-4:]=='.npy': newMons=loadMonNpy(saveChoice)
                     else: newMons=loadMon(saveChoice)
                 except OSError:
                     print(f"! That filename wasn't found !**\nno reason why this should run")
@@ -881,7 +919,6 @@ while 1:
                     for i in newMons:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")
-                        shortpause()
                     print("Finished loading Pokémon!\n")
                     shortpause()
                     #loop back to load a save
@@ -942,8 +979,8 @@ while 1:
                 equi="none"
                 #input loop for number of pokemon to include in the party
                 while 1:
-                    partmons = input("Fill with how many random Pokémon: ")
-                    levelz = input("Level: ")
+                    partmons = input("Fill with how many random Pokémon: ") or '0'
+                    levelz = input("Level: ") or userParty[0].level
                     try:
                         num = int(float(partmons)) #number of new pokemon
                         lv = int(float(levelz)) #level of the pokemon
@@ -1014,13 +1051,30 @@ while 1:
                             shortpause()
                             #loops back to party options
                         elif megaChoice=='s' or megaChoice=='S':
+                            while 1: #savefile name input loop
                             #ask for file save name or default
                             #save every pokemon in the party to the file
-                            savewhere=input("Where to save the party: ")
-                            if savewhere=='': savewhere='pypokemon.sav'
-                            saveParty(savewhere,party_i)
-                            micropause()
-                            pass
+                                overwrite=False
+                                savewhere=input("Where to save the party, [b]ack: ")
+                                if savewhere=='b' or savewhere=='B': break
+                                if savewhere=='': savewhere='pypokemon.sav'
+                                if os.path.exists(savewhere):
+                                    print('File already exists!')
+                                    micropause()
+                                    overw = input('Overwrite this file?\n[y]es or [n]o: ')
+                                    if overw=='y' or overw=='Y' or overw=="yes":
+                                        overwrite=True
+                                        print('Overwriting...')
+                                        micropause()
+                                    else:
+                                        #try again
+                                        print('Scrubbed...')
+                                        micropause()
+                                        continue
+                                else: pass
+                                saveParty(savewhere,party_i,overwrite=overwrite)
+                                micropause()
+                                break
                             #back to party options
                         elif megaChoice=='a' or megaChoice=='A':
                             #list pokemon from userParty and copy them into
@@ -1049,7 +1103,7 @@ while 1:
                             #take the selection, make a copy of each and add to selected party
                             for i in pokis:
                                 party_i.append(copy.deepcopy(i))
-                                party_i[-1].bornpath='copied'
+                                party_i[-1].set_born(how_created='copied')
                                 print(f"{i.name} joined {party_name}!")
                             shortpause()
                             pass
@@ -1058,7 +1112,7 @@ while 1:
                             #copy the party with the new name
                             coppy = input("Name the copy: ")
                             part_copy = copy.deepcopy(party_i)
-                            for poke in part_copy: poke.bornpath='copied'
+                            for poke in part_copy: poke.set_born(how_created='copied')
                             players_parties.append((part_copy,coppy,party_count))
                             party_count += 1
                             print("\nCopied!")

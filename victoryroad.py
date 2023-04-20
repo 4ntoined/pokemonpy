@@ -1,9 +1,25 @@
-#Antoine
+#
+"""
+Copyright (C) 2023 Adarius
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <https://www.gnu.org/licenses/>.
+"""
 #this script will use base_pokemon, moves, and dexpoke, to create 5 specific pokemon parties for pokemon.py
 #let's go!
+import os
 import copy
 import numpy as np
-from base_pokemon import mon, makeMon, makeRandom, mo
+from base_pokemon import mon, makeMon, makeRandom, mo, saveParty
 from moves import mov,struggle
 from dexpoke import dex
 rng_wild=np.random.default_rng()
@@ -48,10 +64,10 @@ def add_random_moves(poke, number=2):
 def make_teams():
     global c1_name,c2_name,c3_name,c4_name,c5_name
     #gonna put the stuff here so we dont run all of it on import 
-    silver1 = makeMon(460,level=levil+3,nacher=(0, 3)) #weavile
-    silver2 = makeMon(168,level=levil+0,nacher=(4, 0)) #crobat
-    silver3 = makeMon(914,level=levil+3,nacher=(2, 4)) #typhlosion
-    silver4 = makeMon(248,level=levil+5,nacher=(2, 1)) #lugia
+    silver1 = makeMon(460,level=levil+3,nacher=(0, 3),how_created='elite') #weavile
+    silver2 = makeMon(168,level=levil+0,nacher=(4, 0),how_created='elite') #crobat
+    silver3 = makeMon(914,level=levil+3,nacher=(2, 4),how_created='elite') #typhlosion
+    silver4 = makeMon(248,level=levil+5,nacher=(2, 1),how_created='elite') #lugia
     #set evs and ivs
     #silver1.summary()
     set_ivs(silver1, (31,31,30,31,30,30))
@@ -84,10 +100,10 @@ def make_teams():
     #fill the party
     c1_party = [silver2, silver1, silver3, silver4]
     #zinnia, salamence, tyrantrum, goodra, zygarde-complete(need to register in dex)
-    zin1 = makeMon(916,level=levil+3,nacher=(4, 1)) #salamence-m
-    zin2 = makeMon(696,level=levil+3,nacher=(1, 3)) #tyran
-    zin3 = makeMon(705,level=levil+0,nacher=(3, 1)) #goo
-    zin4 = makeMon(910,level=levil+5,nacher=(1, 1)) #zy
+    zin1 = makeMon(916,level=levil+3,nacher=(4, 1),how_created='elite') #salamence-m
+    zin2 = makeMon(696,level=levil+3,nacher=(1, 3),how_created='elite') #tyran
+    zin3 = makeMon(705,level=levil+0,nacher=(3, 1),how_created='elite') #goo
+    zin4 = makeMon(910,level=levil+5,nacher=(1, 1),how_created='elite') #zy
     #evs ivs
     set_ivs(zin1, (30,31,30,31,30,31))
     set_ivs(zin2, (30,30,31,30,31,31))
@@ -110,10 +126,10 @@ def make_teams():
     #partyfill
     c2_party = [zin1,zin2,zin3,zin4]
     #cynthia, spiritomb 441, 447 lucario, milotic 349, giratina-origin(register) 911
-    cyn1 = makeMon(441,level=levil+0,nacher=(2, 0)) #spirit
-    cyn2 = makeMon(915,level=levil+3,nacher=(4, 3)) #luke-mega?
-    cyn3 = makeMon(349,level=levil+3,nacher=(3, 0)) #milo
-    cyn4 = makeMon(911,level=levil+5,nacher=(4, 2)) #gira
+    cyn1 = makeMon(441,level=levil+0,nacher=(2, 0),how_created='elite') #spirit
+    cyn2 = makeMon(915,level=levil+3,nacher=(4, 3),how_created='elite') #luke-mega?
+    cyn3 = makeMon(349,level=levil+3,nacher=(3, 0),how_created='elite') #milo
+    cyn4 = makeMon(911,level=levil+5,nacher=(4, 2),how_created='elite') #gira
     #evs ivs
     set_ivs(cyn1, (31,30,30,31,31,31))
     set_ivs(cyn2, (30,31,30,31,31,31))
@@ -136,10 +152,10 @@ def make_teams():
     #partyfill
     c3_party = [cyn1,cyn2,cyn3,cyn4]
     #N, 643 zekrom, 583 vanilluxe,566  archeops, zoroark 570 (no illusion :() 
-    nnn1 = makeMon(918,level=levil+8,nacher=(2, 0)) #zekrom-kyurem
-    nnn2 = makeMon(583,level=levil+3,nacher=(4, 3)) #vanill
-    nnn3 = makeMon(566,level=levil+5,nacher=(3, 0)) #arch
-    nnn4 = makeMon(570,level=levil+5,nacher=(4, 2)) #zoro
+    nnn1 = makeMon(918,level=levil+8,nacher=(2, 0),how_created='elite') #zekrom-kyurem
+    nnn2 = makeMon(583,level=levil+3,nacher=(4, 3),how_created='elite') #vanill
+    nnn3 = makeMon(566,level=levil+5,nacher=(3, 0),how_created='elite') #arch
+    nnn4 = makeMon(570,level=levil+5,nacher=(4, 2),how_created='elite') #zoro
     #evs ivs
     set_ivs(nnn1, (30,31,31,31,30,0))
     set_ivs(nnn2, (30,31,30,31,31,31))
@@ -162,12 +178,12 @@ def make_teams():
     #partyfill
     c4_party = [nnn1,nnn2,nnn3,nnn4]
     #Champ,2 venusaur, 24 pikachu, 5 charizard, 8 blastoise, 913 mega-mewtwo Y(register), mew 150
-    grn1 = makeMon(2,level=levil+4,nacher=(4, 0)) #venu
-    grn2 = makeMon(24,level=levil+8,nacher=(4, 3)) #pika
-    grn3 = makeMon(5,level=levil+4,nacher=(3, 3)) #char
-    grn4 = makeMon(8,level=levil+4,nacher=(1, 2)) #blas
-    grn5 = makeMon(913,level=levil+9,nacher=(3, 0)) #mew2
-    grn6 = makeMon(150,level=levil+10,nacher=(0, 0)) #mew
+    grn1 = makeMon(2,level=levil+4,nacher=(4, 0),how_created='elite') #venu
+    grn2 = makeMon(24,level=levil+8,nacher=(4, 3),how_created='elite') #pika
+    grn3 = makeMon(5,level=levil+4,nacher=(3, 3),how_created='elite') #char
+    grn4 = makeMon(8,level=levil+4,nacher=(1, 2),how_created='elite') #blas
+    grn5 = makeMon(913,level=levil+9,nacher=(3, 0),how_created='elite') #mew2
+    grn6 = makeMon(150,level=levil+10,nacher=(0, 0),how_created='elite') #mew
     #evs ivs
     set_ivs(grn1, (31,30,31,31,31,31) )
     set_ivs(grn2, (30,31,31,31,31,31) )
@@ -233,6 +249,15 @@ mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
 #c1_party = []
 
 if __name__ == "__main__":
-    pass
+    print('\nCopyright (C) 2023 Adarius')
+    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+            'This is free software, and you are welcome to\n'+\
+            'redistribute it under certain conditions.\n')
+    savehere = input('directory to save: ') or 'elite_four_teams'
+    if not os.path.exists(savehere):
+        os.makedirs(savehere)
+    bigg = make_teams()
+    #t1,t2,t3,t4,t5 = bigg
+    for i in range(5): saveParty(savehere +f'/elite_{i+1:0>1}.npy',bigg[i][1])
 else:
     pass

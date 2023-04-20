@@ -1,0 +1,14 @@
+Pokemonpy credits:
+Pokemon concept:
+This software is inspired by the video games of the Pokemon franchise. Copyright Nintendo
+
+Developers:
+Adarius
+
+Dependencies:
+Python :: Copyright © 2001-2023 Python Software Foundation; All Rights Reserved
+Numpy :: Copyright (c) 2005-2022, NumPy Developers. All rights reserved.
+Bulbapedia-Web-Scraper :: Copyright 2019, github user ryanluuwas, https://github.com/ryanluuwas/Bulbapedia-Web-Scraper
+
+SEE LICENSES folder for more...
+
