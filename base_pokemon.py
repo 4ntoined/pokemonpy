@@ -1337,6 +1337,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
+        if self.hallfamecount == 1: print("It has defeated the Elite Four 1 time.")
+        elif self.hallfamecount >= 2: print(f"It has defeated the Elite Four {self.hallfamecount} times.")
         print("##############################################")
         
     def battleSummary(self):

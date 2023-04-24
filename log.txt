@@ -976,3 +976,7 @@ material improvements to the running and presentation of the game
 11:20- did it. currently works for only .txt save files, working on numpys still
 11:31- fixed it!
 
+24 apr 2023-
+08:21- think im presenting hall of fame win count now in poke summary but i
+didnt check to make sure it works someone else go do that
+
