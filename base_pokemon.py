@@ -2771,6 +2771,46 @@ def saveParty(savefile,pokeparty,overwrite=False):
             pass
     return
 #load pokemon
+def loadShowdown(savefile):
+    #pre open file commands
+    #open that file mans
+    with open(savefile,"r") as fil: lines = [i for i in fil]
+    pokes = []
+    this_poke = []
+    for i in range(len(lines)):
+        if lines[i]!='\n': this_poke.append( lines[i] )
+        if lines[i]=='\n':
+            pokes.append( this_poke )
+            this_poke = []
+        pass
+    npokes = len(pokes)
+    # pre indiv. pokemon loop stuff
+    for i in range(npokes):
+        poke = pokes[i]
+        for i in range(len(poke)):
+            detail = poke[i]
+            if False:
+                pass
+            elif i == 0:
+                #set pokemon, so base stats and typing
+                details = detail.split(' ')
+            elif detail[:4] == 'EVs:':
+                #do ev stuff
+            elif detail[:4] == 'IVs:':
+                #do iv stuff
+            elif 'Nature' in detail:
+                #set the nature
+            elif detail[:8] == 'Ability:':
+                #set the ability, waaaay down the line
+                pass
+            elif detail[:2] == '- ':
+                #set moves
+            #anything else?
+            #need to set conditions for when some lines are plainly not provided
+            #set birthtime, birthplace, birthpath='showdown'
+
+            
+    return
 def loadMonNpy(savefile):
     global mov
     #name, level, nature, tipe, base,ev,iv,bornt,bornp,moves?
@@ -2861,8 +2901,7 @@ def loadMon(savefile):
             if max(typ)>18 or min(typ)<0: return [0]  #invalid types
             nacher = np.array([int(iv) for iv in line[6].split()])
             newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=line[9])
-            if tampered:
-                newP.set_born(how_created='tampered')
+            if tampered: newP.set_born(how_created='tampered')
             else:
                 newP.timeborn = t.gmtime(int(float(line[8])))
                 newP.bornplace = line[10]

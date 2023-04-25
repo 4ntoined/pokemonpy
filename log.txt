@@ -979,4 +979,10 @@ material improvements to the running and presentation of the game
 24 apr 2023-
 08:21- think im presenting hall of fame win count now in poke summary but i
 didnt check to make sure it works someone else go do that
+17:11- bored, so i think im going to try to see if i can make pokemon showdown
+saves to work, will update later (or maybe not)
+
+25 apr 2023-
+12:05- progress with showdown saves! still completely unfinished but I think
+I can see the finish line, gonna commit
 
