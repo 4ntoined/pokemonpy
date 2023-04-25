@@ -2794,8 +2794,38 @@ def loadShowdown(savefile):
             elif i == 0:
                 #set pokemon, so base stats and typing
                 details = detail.split(' ')
+                item = np.argwhere( np.array(details, dtype='U64') == '@')
+                #no item, so no split
+                if len(item) == 0: namez = details
+                #split
+                else: namez = details[:int(item)]
+                name_type = -1
+                nicked = '' #carries pokemon nickname, stays empty if not named
+                if len(namez) == 3: #nickname, species, gender
+                    #name_type = 
+                    #work it out
+                    spec = namez[1]
+                    nicked = namez[0]
+                    gender = namez[2][1,-1]
+                elif len(namez) == 2: #nickname, genderless species | species, gender
+                    #work it out
+                    #gendered
+                    if namez[1] == '(F)' or namez[1] == '(M)':
+                        spec = namez[0]
+                        gender = namez[1][1,-1]
+                    else: #genderless
+                        nicked = namez[0]
+                        spec = namez[1][1,-1] #removing the parentheses around species name
+                        gender = 'none'
+                elif len(namez) == 1: #genderless species
+                    #work it out
+                    spec = namez[0]
+                    gender = 'none'
+                #spec, nicked, gender
             elif detail[:4] == 'EVs:':
                 #do ev stuff
+            elif detail[:6] == 'Level:':
+                #set level
             elif detail[:4] == 'IVs:':
                 #do iv stuff
             elif 'Nature' in detail:
@@ -2805,6 +2835,7 @@ def loadShowdown(savefile):
                 pass
             elif detail[:2] == '- ':
                 #set moves
+            newmon = mon()
             #anything else?
             #need to set conditions for when some lines are plainly not provided
             #set birthtime, birthplace, birthpath='showdown'
