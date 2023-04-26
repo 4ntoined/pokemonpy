@@ -1334,6 +1334,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
+        elif self.bornpath == 'showdown':print("=== It was made in Pokemon Showdown!")
         elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
@@ -2787,6 +2788,11 @@ def loadShowdown(savefile):
     # pre indiv. pokemon loop stuff
     for i in range(npokes):
         poke = pokes[i]
+        lvl = ''
+        nature = ''
+        moves = ''
+        evs = ['','','','','','']
+        ivs = ['','','','','','']
         for i in range(len(poke)):
             detail = poke[i]
             if False:
@@ -2804,7 +2810,7 @@ def loadShowdown(savefile):
                 if len(namez) == 3: #nickname, species, gender
                     #name_type = 
                     #work it out
-                    spec = namez[1]
+                    spec = namez[1][1,-1]
                     nicked = namez[0]
                     gender = namez[2][1,-1]
                 elif len(namez) == 2: #nickname, genderless species | species, gender
@@ -2817,17 +2823,23 @@ def loadShowdown(savefile):
                         nicked = namez[0]
                         spec = namez[1][1,-1] #removing the parentheses around species name
                         gender = 'none'
-                elif len(namez) == 1: #genderless species
+                elif len(namez) == 1: #genderless species or gender not specified
                     #work it out
                     spec = namez[0]
                     gender = 'none'
                 #spec, nicked, gender
+                #turn spec into base stats and typing
             elif detail[:4] == 'EVs:':
                 #do ev stuff
-            elif detail[:6] == 'Level:':
-                #set level
+                evs_l = detail[5:]
+                evs_l = 
             elif detail[:4] == 'IVs:':
                 #do iv stuff
+                ivs_l = detail[5:]
+            elif detail[:6] == 'Level:':
+                #set level
+                lvl = detail[7:]
+                lvl = int(float(lvl))
             elif 'Nature' in detail:
                 #set the nature
             elif detail[:8] == 'Ability:':
@@ -2835,10 +2847,20 @@ def loadShowdown(savefile):
                 pass
             elif detail[:2] == '- ':
                 #set moves
-            newmon = mon()
+            if not nature: nature = (4,4)
+            if not lvl: lvl = 100
+            if not moves: moves = [tackle_i]
+            if not nicked: namer = spec
+            else: namer = nicked
+            eevs = np.where( np.array(evs,dtype=object)=='', 0, evs )
+            iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs )
+            #missing_evs = np.argwhere( np.array(evs,dtype=object)=='' )
+            #lvl =
+            newmon = mon(lvl,namer,nature=nature,hpbase=,atbase=,debase=, \
+                sabase=,sdbase=,spbase=,tipe=tiping,how_created='showdown')
             #anything else?
             #need to set conditions for when some lines are plainly not provided
-            #set birthtime, birthplace, birthpath='showdown'
+            #set moves
 
             
     return
