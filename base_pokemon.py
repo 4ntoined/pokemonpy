@@ -2832,7 +2832,7 @@ def loadShowdown(savefile):
             elif detail[:4] == 'EVs:':
                 #do ev stuff
                 evs_l = detail[5:]
-                evs_l = 
+                evs_l =  
             elif detail[:4] == 'IVs:':
                 #do iv stuff
                 ivs_l = detail[5:]
