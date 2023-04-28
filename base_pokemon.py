@@ -2774,10 +2774,11 @@ def saveParty(savefile,pokeparty,overwrite=False):
 #load pokemon
 def loadShowdown(savefile):
     #pre open file commands
+    stat_dict = dict([ ('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5) ])
     #open that file mans
     with open(savefile,"r") as fil: lines = [i for i in fil]
-    pokes = []
-    this_poke = []
+    pokes = []          #store data of all the pokemon
+    this_poke = []      #store data of an indiv pokemon
     for i in range(len(lines)):
         if lines[i]!='\n': this_poke.append( lines[i] )
         if lines[i]=='\n':
@@ -2832,7 +2833,8 @@ def loadShowdown(savefile):
             elif detail[:4] == 'EVs:':
                 #do ev stuff
                 evs_l = detail[5:]
-                evs_l =  
+                evs_l = evs_l.split(' / ')
+
             elif detail[:4] == 'IVs:':
                 #do iv stuff
                 ivs_l = detail[5:]

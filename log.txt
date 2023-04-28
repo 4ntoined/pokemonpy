@@ -987,3 +987,8 @@ saves to work, will update later (or maybe not)
 I can see the finish line, gonna commit
 12:54- more progress, so much work though
 
+28 apr 2023-
+15:43- a little stuck with reading ev data, without introducing another for loop
+so i might have to bite the bullet in that regard but i really dont want to
+anyway gotta go do things so heres a half hearted commit
+
