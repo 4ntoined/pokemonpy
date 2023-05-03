@@ -251,8 +251,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
-        global mov
         #sets should be a list of str with names of moves to learn
+        global mov
         self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
         self.PP = [ mov['pp'][i] for i in self.knownMoves]
         return
@@ -2774,8 +2774,10 @@ def saveParty(savefile,pokeparty,overwrite=False):
 #load pokemon
 def loadShowdown(savefile):
     #pre open file commands
-    stat_dict = dict([ ('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5) ])
+    #stat_dict = dict([ ('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5) ])
     #open that file mans
+    global natures, dex
+    loadparty = []
     with open(savefile,"r") as fil: lines = [i for i in fil]
     pokes = []          #store data of all the pokemon
     this_poke = []      #store data of an indiv pokemon
@@ -2785,13 +2787,14 @@ def loadShowdown(savefile):
             pokes.append( this_poke )
             this_poke = []
         pass
-    npokes = len(pokes)
+    #print(pokes)
+    npokes = len(pokes) - 1
     # pre indiv. pokemon loop stuff
-    for i in range(npokes):
-        poke = pokes[i]
+    for j in range(npokes):
+        poke = pokes[j]
         lvl = ''
         nature = ''
-        moves = ''
+        moves = []
         evs = ['','','','','','']
         ivs = ['','','','','','']
         for i in range(len(poke)):
@@ -2800,29 +2803,31 @@ def loadShowdown(savefile):
                 pass
             elif i == 0:
                 #set pokemon, so base stats and typing
-                details = detail.split(' ')
+                detail_ = detail.split('  \n')[0]
+                details = detail_.split(' ')
                 item = np.argwhere( np.array(details, dtype='U64') == '@')
                 #no item, so no split
                 if len(item) == 0: namez = details
                 #split
                 else: namez = details[:int(item)]
-                name_type = -1
+                #name_type = -1
                 nicked = '' #carries pokemon nickname, stays empty if not named
                 if len(namez) == 3: #nickname, species, gender
                     #name_type = 
                     #work it out
-                    spec = namez[1][1,-1]
+                    #print(namez)
+                    spec = namez[1][1:-1]
                     nicked = namez[0]
-                    gender = namez[2][1,-1]
+                    gender = namez[2][1:-1]
                 elif len(namez) == 2: #nickname, genderless species | species, gender
                     #work it out
                     #gendered
                     if namez[1] == '(F)' or namez[1] == '(M)':
                         spec = namez[0]
-                        gender = namez[1][1,-1]
+                        gender = namez[1][1:-1]
                     else: #genderless
                         nicked = namez[0]
-                        spec = namez[1][1,-1] #removing the parentheses around species name
+                        spec = namez[1][1:-1] #removing the parentheses around species name
                         gender = 'none'
                 elif len(namez) == 1: #genderless species or gender not specified
                     #work it out
@@ -2830,42 +2835,64 @@ def loadShowdown(savefile):
                     gender = 'none'
                 #spec, nicked, gender
                 #turn spec into base stats and typing
+                pokei = int( np.argwhere( dex['name'] == spec) )
             elif detail[:4] == 'EVs:':
                 #do ev stuff
                 evs_l = detail[5:]
-                evs_l = evs_l.split(' / ')
-
+                #evs_l = evs_l.split(' / ')
+                evs = readEvIv(evs_l) #list of strings of stats, empty string where no data
             elif detail[:4] == 'IVs:':
                 #do iv stuff
                 ivs_l = detail[5:]
+                ivs = readEvIv(ivs_l) #list of strings of stats, empty string where no data
             elif detail[:6] == 'Level:':
                 #set level
                 lvl = detail[7:]
                 lvl = int(float(lvl))
             elif 'Nature' in detail:
                 #set the nature
+                #read in the Nature, turn it into tuple of up-stat and down-stat
+                natur = detail.split(' ')[0]
+                natur_i = np.squeeze( np.argwhere( natures == natur ))
+                nature = (natur_i[0],natur_i[1])
+                pass
             elif detail[:8] == 'Ability:':
                 #set the ability, waaaay down the line
                 pass
             elif detail[:2] == '- ':
                 #set moves
-            if not nature: nature = (4,4)
-            if not lvl: lvl = 100
-            if not moves: moves = [tackle_i]
-            if not nicked: namer = spec
-            else: namer = nicked
-            eevs = np.where( np.array(evs,dtype=object)=='', 0, evs )
-            iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs )
-            #missing_evs = np.argwhere( np.array(evs,dtype=object)=='' )
-            #lvl =
-            newmon = mon(lvl,namer,nature=nature,hpbase=,atbase=,debase=, \
-                sabase=,sdbase=,spbase=,tipe=tiping,how_created='showdown')
-            #anything else?
-            #need to set conditions for when some lines are plainly not provided
-            #set moves
-
-            
-    return
+                #create list of strings with move names
+                movename = detail[2:].split('  \n')[0]
+                if movename in mov['name']: moves.append( movename )
+                pass
+            elif detail[:6] == 'Shiny:':
+                #good for you!
+                pass
+            else:
+                print("Don't know how to interpret this line #", i, "poke #", j )
+                pass
+        #all poke details have been read, assembly
+        if not nature: nature = (4,4)
+        if not lvl: lvl = 100
+        if not moves: moves = ["Tackle"]
+        if not nicked: namer = spec
+        else: namer = nicked
+        eevs = np.where( np.array(evs,dtype=object)=='', 0, evs ).astype(int)
+        iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs ).astype(int)
+        #missing_evs = np.argwhere( np.array(evs,dtype=object)=='' )
+        #lvl =
+        newmon = makeMon(pokei,level=lvl,nacher=nature,how_created='showdown')
+        #set name, moves, evs, ivs
+        newmon.name = namer
+        newmon.set_evs(eevs)
+        newmon.set_ivs(iivs)
+        newmon.learn_sets( moves )
+        #newmon = mon(lvl,namer,nature=nature,hpbase=1,atbase=1,debase=1, \
+        #    sabase=1,sdbase=1,spbase=1,tipe=tiping,how_created='showdown')
+        #anything else?
+        loadparty.append(newmon)
+        pass
+    return loadparty
 def loadMonNpy(savefile):
     global mov
     #name, level, nature, tipe, base,ev,iv,bornt,bornp,moves?
@@ -3073,6 +3100,17 @@ def print_dex():
         print(f"{i['index']}:{i['name']} " + tipe + f" | [{i['hp']}]  [{i['at']}]  [{i['de']}]  "+\
               f"[{i['sa']}]  [{i['sd']}]  [{i['sp']}]")
     return
+def readEvIv(dato):
+    #dato - string of "/"-separated stats
+    global stats_dict
+    empt = ['','','','','','']
+    stas = ['HP','Atk','Def','SpA','SpD','Spe']
+    dato = dato.split(' / ')
+    for i in range(len(dato)):
+        if dato[i].split(' ')[1] in stas:
+            empt[ stats_dict[ dato[i].split(' ')[1]] ] = dato[i].split(' ')[0]
+        pass
+    return empt
 def micropause():
     t.sleep(0.4)
     return
@@ -3124,6 +3162,7 @@ statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
+stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
 Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggle_i=struggle #move index of struggle

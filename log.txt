@@ -992,3 +992,15 @@ I can see the finish line, gonna commit
 so i might have to bite the bullet in that regard but i really dont want to
 anyway gotta go do things so heres a half hearted commit
 
+3 may 2023-
+16:14- look its early, but i think i am mostly over the hill with showdown saves
+i played with the loading function in the notebook, completely outside the normal context
+of the game and it looks good, natures, moves, typing stats (ivs, evs, hard to tell about base)
+all came through. looks like i loaded an extra copy of the last mon so Im gonna have to
+see what thats about. otherwise i need to put loadShowdown somewhere in the main game
+shoutout to the 1001st line of the log, i have really been out here huh
+16:26- fixed the extra poke bug!
+i also need to put the whole of the loadShowdown() code in a try block, 
+(or more rigorously, cutting the thing up into several try blocks)
+because there are a lot of places to break the goings on
+
