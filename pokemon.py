@@ -36,7 +36,7 @@ from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
-dash24 = '--------------------'
+dash24 = dashborder(24)
 ############   give the player a starter  ###############
 #starterlevel = int(rng.normal(loc=100,scale=30))
 starter= makeRandom(how_created='starter')
