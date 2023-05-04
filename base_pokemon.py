@@ -19,6 +19,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 import time as t
 import calendar as cal
+import hashlib
 #import copy
 import numpy as np
 from dexpoke import dex
@@ -37,6 +38,10 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.bornplace = self.timebornLOCAL.tm_zone
         self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
         self.bornpath = how_created
+        #memories?
+        self.hallfamecount = 0
+        #level, nature, evs, ivs, base stats, gender
+        self.gender = rng.choice(('N','F','M'), size=1)
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -137,6 +142,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.timebornLOCAL = t.localtime(t.time())
         self.bornplace = self.timebornLOCAL.tm_zone
         self.timeborn = t.gmtime(t.mktime(self.timebornLOCAL))
+        self.hallfamecount = 0
         if how_created: self.bornpath = how_created
         return
     #save pokemon
@@ -149,9 +155,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
             poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
             poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
             #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-            poke_bir = [self.timeborn, self.bornpath, self.bornplace]
+            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]
             poke_moves = [self.knownMoves]
-            poke_tuple = tuple( poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves )
+            poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
+            #gen hash
+            coder = hashlib.new("md5")
+            coder.update( str(poke_list).encode('UTF-8') )
+            poke_tuple = tuple( poke_list + [coder.hexdigest()] )
             if party:
                 ans = poke_tuple
             else:
@@ -215,7 +225,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         for i in mvs:
             line+=f" {i}"
         line+=','
-        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace}"
+        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount}"
+        #gen hash
+        coder = hashlib.new('md5')
+        coder.update(line.encode('UTF-8'))
+        line+=f'|{coder.hexdigest()}'
         f.write(line+"\n")
         f.close()
     #replace moveset with random moves
@@ -228,21 +242,40 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     #set ivs, from given values
     def set_ivs(self, vals):
         #vals is list or tuple of 6
+        try:
+            self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
+        except IndexError:
+            print('Index error/Mismatched set')
+        except ValueError:
+            print('Value error/Numbers!')
+        else:
+            self.reStat()
         self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
         self.reStat()
         return
     #set evs, from given values
-    def set_evs(self, vals):
+    def set_evs(self, vals, ivs=False):
         #vals is list or tuple of 6
-        self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev = vals
-        self.reStat()
+        try:
+            if ivs: self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
+            else: self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev = vals
+        except IndexError:
+            print('Index error/Mismatched set')
+        except ValueError:
+            print('Value error/Numbers!')
+        else:
+            self.reStat()
         return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
-        global mov
         #sets should be a list of str with names of moves to learn
-        self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
-        self.PP = [ mov['pp'][i] for i in self.knownMoves]
+        global mov
+        try:
+            self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
+        except ValueError:
+            print('Value error/No match for move?')
+        else:
+            self.PP = [ mov['pp'][i] for i in self.knownMoves]
         return
     #add number *new* moves to mon's moveset
     def add_random_moves(self, number=2):
@@ -1289,10 +1322,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def summary(self):
         global typeStrings, nature_stat_str
         print(f"\n############ {self.name} ############")
+        #gender_dict = dict([(),(),()])
         if self.dualType:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
         else:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
         if self.null_nature == False:
             print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
         else:
@@ -1322,8 +1356,12 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
+        elif self.bornpath == 'showdown':print("=== It was made in Pokemon Showdown!")
+        elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
+        if self.hallfamecount == 1: print("It has defeated the Elite Four 1 time.")
+        elif self.hallfamecount >= 2: print(f"It has defeated the Elite Four {self.hallfamecount} times.")
         print("##############################################")
         
     def battleSummary(self):
@@ -1357,12 +1395,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def appraise(self):
         ez=[self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
         iz=[self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
+        bz = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
         st=["HP  :","Atk :","Def :","Sp.A:","Sp.D:","Spe :"]
         print(f"\n############ {self.name} ############")
-        print("\n     \tIV\tEV")
+        print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
-            print(f"{st[i]}\t{iz[i]}\t{ez[i]}")
-        print("------------------------")
+            print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
+        genborder(num=40,char='-')
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
@@ -2756,6 +2795,158 @@ def saveParty(savefile,pokeparty,overwrite=False):
             pass
     return
 #load pokemon
+def loadShowdown(savefile):
+    #pre open file commands
+    global natures, dex
+    loadparty = []
+    #open that file mans
+    try:
+        with open(savefile,"r") as fil: lines = [i for i in fil]
+    except FileNotFoundError:
+        print('!! Where is the save file?? !!')
+        return ['bonk']
+    except TypeError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    except OSError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    except NameError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    #
+    pokes = []          #store data of all the pokemon
+    this_poke = []      #store data of an indiv pokemon
+    for i in range(len(lines)):
+        if lines[i]!='\n': this_poke.append( lines[i] )
+        if lines[i]=='\n':
+            pokes.append( this_poke )
+            this_poke = []
+        pass
+    #
+    npokes = len(pokes) - 1
+    # pre indiv. pokemon loop stuff
+    for j in range(npokes):
+        poke = pokes[j]
+        lvl = ''
+        nature = ''
+        moves = []
+        evs = ['','','','','','']
+        ivs = ['','','','','',''] #these forementioned lines dont need to be try-ed right?
+        for i in range(len(poke)):
+            detail = poke[i]
+            if False:
+                pass
+            elif i == 0:
+                #set pokemon, so base stats and typing
+                detail_ = detail.split('  \n')[0]
+                details = detail_.split(' ')
+                item = np.argwhere( np.array(details, dtype='U64') == '@')
+                if len(item) == 0: namez = details   #no item, so no split
+                else: namez = details[:int(item)]    #split
+                lnamez = len(namez)
+                nicked = '' #carries pokemon nickname, stays empty if not named
+                try:
+                    if lnamez == 3: #nickname, species, gender
+                        #work it out
+                        spec = namez[1][1:-1]
+                        nicked = namez[0]
+                        gender = namez[2][1:-1]
+                    elif lnamez == 2: #nickname, genderless species | species, gender
+                        #work it out
+                        #gendered
+                        if namez[1] == '(F)' or namez[1] == '(M)':
+                            spec = namez[0]
+                            gender = namez[1][1:-1]
+                        else: #genderless
+                            nicked = namez[0]
+                            spec = namez[1][1:-1] #removing the parentheses around species name
+                            gender = 'none'
+                    elif lnamez == 1: #genderless species or gender not specified
+                        #work it out
+                        spec = namez[0]
+                        gender = 'none'
+                    else:
+                        #idk, possibly a pokemon with a 2+-word name, or the entire line is blank so len=0
+                        spec = 'Bulbasaur'
+                        nicked = 'Corrupted Bulbasaur'
+                        gender = 'none'
+                except IndexError:
+                    print('!! Something shifted in the name line !!')
+                    spec = 'Bulbasaur'
+                    nicked = 'Corrupted Bulbasaur'
+                    gender = 'none'
+                pokeii = np.argwhere( dex['name'] == spec) #might come back empty!
+                if len(pokeii) == 1: pokei = int( pokeii )
+                else: pokei = 0
+            elif detail[:4] == 'EVs:':
+                #do ev stuff
+                try: evs_l = detail[5:] #MIGHT BREAK, index error
+                except IndexError: print('!! Messed up EV line !!')
+                evs = readEvIv(evs_l) #list of strings of stats, empty string where no data
+                if evs[0] == 'bonk': evs = [252,252,4,0,0,0]
+                #this above function probably needs its own try block, just to be cool
+            elif detail[:4] == 'IVs:':
+                #do iv stuff
+                try: ivs_l = detail[5:] #MIGHT BREAK
+                except IndexError: print('!! Messed up IV line !!')
+                ivs = readEvIv(ivs_l)                               #list of strings of stats, empty string where no data
+                if ivs[0] == 'bonk': ivs = [31,31,31,31,31,31]
+            elif detail[:6] == 'Level:':
+                #set level
+                try:
+                    lvl = detail[7:] #MIGHT BREAK
+                    lvl = int(float(lvl)) #MIGHT BREAK, value error, if this is non numbers
+                except IndexError: print('!! Weird level line !!')
+                except ValueError: print('!! Non-number level? !!')
+            elif 'Nature' in detail:
+                #read in the Nature, turn it into tuple of up-stat and down-stat
+                natur = detail.split(' ')[0]
+                natur_i = np.squeeze( np.argwhere( natures == natur ))
+                try: nature = (natur_i[0],natur_i[1]) #MIGHT BREAK, INDEX error if theres no match in the above line
+                except IndexError: print('\n!! Bad nature !!')
+            elif detail[:8] == 'Ability:':
+                #set the ability, waaaay down the line
+                pass
+            elif detail[:2] == '- ':
+                #create list of strings with move names
+                movename = detail[2:].split('  \n')[0]
+                if movename in mov['name']: moves.append( movename )
+            elif detail[:6] == 'Shiny:':
+                #good for you!
+                pass
+            else: print("Don't know how to interpret this line #", i+1, "poke #", j+1 )
+        #all poke details have been read, assembly
+        if not nature: nature = (4,4)
+        if not lvl: lvl = 100
+        if not moves: moves = ["Tackle"]
+        if not nicked: namer = spec
+        else: namer = nicked
+        try:
+            eevs = np.where( np.array(evs,dtype=object)=='', 0, evs ).astype(int) #BREAKs if the evs is letters?, value error
+        except ValueError:
+            print('!! Messed up EVS !!')
+            eevs = [252, 252, 4, 0, 0, 0]
+        try:
+            iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs ).astype(int)
+        except ValueError:
+            print('!! Messed up IVS !!')
+            iivs = [31,31,31,31,31,31]
+        #who's? that? pokemon!
+        newmon = makeMon(pokei,level=lvl,nacher=nature,how_created='showdown')
+        #set name, moves, evs, ivs
+        newmon.name = namer
+        newmon.set_evs(eevs)                        #proofed! should make sure these are error-proofed
+        newmon.set_ivs(iivs)                        #proofed!
+        newmon.learn_sets( moves )                  #proofed!
+        if gender == 'none': newmon.gender = 'N'
+        else: newmon.gender = gender
+        #newmon = mon(lvl,namer,nature=nature,hpbase=1,atbase=1,debase=1, \
+        #    sabase=1,sdbase=1,spbase=1,tipe=tiping,how_created='showdown')
+        #anything else?
+        loadparty.append(newmon)
+        pass
+    return loadparty
 def loadMonNpy(savefile):
     global mov
     #name, level, nature, tipe, base,ev,iv,bornt,bornp,moves?
@@ -2763,7 +2954,7 @@ def loadMonNpy(savefile):
     cheers=False
     try:
         poke_arrr = np.load(savefile,allow_pickle=True)
-        poke_arrr = poke_arrr.reshape((-1,26))
+        poke_arrr = poke_arrr.reshape((-1,28))
         n_poke = poke_arrr.shape[0]
     except FileNotFoundError:
         print('File not found.')
@@ -2780,20 +2971,32 @@ def loadMonNpy(savefile):
             #print(poke_arr)
             poke_arr = poke_arrr[i,:].copy()
             try:
+                poke_line = list( poke_arr[0:-1] )
+                poke_hass = poke_arr[-1]
+                coder=hashlib.new('md5')
+                coder.update(str(poke_line).encode('UTF-8'))
+                hass = coder.hexdigest()
                 oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
                 atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
                 spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
                 #to set moves,pp,evs,ivs,birthtime
-                oldie.timeborn=poke_arr[22]
-                oldie.bornplace=poke_arr[24]
-                oldie.knownMoves = poke_arr[25]
+                oldie.knownMoves = poke_arr[26]
                 oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
                 oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
                     poke_arr[10:16]
                 oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
                     poke_arr[16:22]
-            except ValueError:
-                print('Value error/Data corrupted')
+                tampered=False
+                if hass != poke_hass:
+                    tampered=True
+                    oldie.set_born(how_created='tampered')
+                else:
+                    oldie.timeborn=poke_arr[22]
+                    oldie.bornplace=poke_arr[24]
+                    oldie.hallfamecount=poke_arr[25]
+                pass
+            #except ValueError:
+            #    print('Value error/Data corrupted')
             except IndexError:
                 print('Index error/Data corrupted')
             else:
@@ -2806,33 +3009,43 @@ def loadMonNpy(savefile):
 
 def loadMon(savefile):
     try:
-        dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+        dat2 = np.loadtxt(savefile,delimiter='|',dtype='U256')
+        dat2 = dat2.reshape((-1,2))
+        hashes = dat2[:,1] #1 dim, size = n_pokemon
+        #dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
+        dat = dat2[:,0] #1 or 2 dim, if 2-dim: first one is num pokes, elsewi
         loadPokes=[]
-        if type(dat[0])==np.str_: #only the case if there's only 1 pokemon
-            dat=dat.reshape((1,-1)) #to treat this pokemon like any other line in a list of saved pokemon
-        for i in dat:
-            if int(i[1])<=0: #invalid levels
-                return [0]
-            baseI=[int(ii) for ii in i[2].split()]
-            if min(baseI)<=0:
-                return [0]
-            ivz=[int(ii) for ii in i[3].split()]
-            if min(ivz)<0: #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
-                return [0]
-            evz=[int(iii) for iii in i[4].split()]
-            if min(evz)<0: #same with evs, no positive limits
-                return [0]
-            typ=np.array([int(iiii) for iiii in i[5].split()])
-            if max(typ)>18 or min(typ)<0: #invalid types
-                return [0]
-            nacher = np.array([int(iv) for iv in i[6].split()])
-            newP=mon(int(i[1]),i[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=i[9])
-            newP.timeborn = t.gmtime(int(float(i[8])))
-            newP.bornplace = i[10]
-            newP.knownMoves=[int(iiiii) for iiiii in i[7].split()]
+        #if type(dat[0])==np.str_: dat=dat.reshape((1,-1)) #only the case if there's only 1 pokemon #to treat this pokemon like any other line in a list of saved pokemon
+        #for i in dat:
+        for i in range(len(dat)):
+            #hash check business
+            tampered=False
+            coder = hashlib.new('md5')
+            coder.update(dat[i].encode('UTF-8'))
+            if coder.hexdigest() != hashes[i]: tampered=True
+            line = dat[i].split(',')
+            #no non-postive levels
+            if int(line[1])<=0: return [0]  
+            baseI=[int(ii) for ii in line[2].split()]
+            #no non-positive base stats
+            if min(baseI)<=0: return [0]
+            ivz=[int(ii) for ii in line[3].split()]
+            if min(ivz)<0: return [0] #i guess im going to allow ivs beyond 31 via save files, go nuts, negatives are a big no though
+            evz=[int(iii) for iii in line[4].split()]
+            if min(evz)<0: return [0] #same with evs, no positive limits
+            typ=np.array([int(iiii) for iiii in line[5].split()])
+            if max(typ)>18 or min(typ)<0: return [0]  #invalid types
+            nacher = np.array([int(iv) for iv in line[6].split()])
+            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=line[9])
+            if tampered: newP.set_born(how_created='tampered')
+            else:
+                newP.timeborn = t.gmtime(int(float(line[8])))
+                newP.bornplace = line[10]
+                newP.hallfamecount = line[11]
+            newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
-            newP.PP=[getMoveInfo(i)['pp'] for i in newP.knownMoves]
+            newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
             print(f"Loaded {newP.name}!")
@@ -2846,6 +3059,9 @@ def loadMon(savefile):
         return [0]
     except IndexError:
         print("!! The save file is corrupted !!")
+        return [0]
+    except ValueError:
+        print("!! This file is all over the place !!")
         return [0]
 def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6,how_created='nursery'):
     global mov,mo
@@ -2941,6 +3157,23 @@ def print_dex():
         print(f"{i['index']}:{i['name']} " + tipe + f" | [{i['hp']}]  [{i['at']}]  [{i['de']}]  "+\
               f"[{i['sa']}]  [{i['sd']}]  [{i['sp']}]")
     return
+def readEvIv(dato):
+    #dato - string of "/"-separated stats
+    global stats_dict
+    empt = ['','','','','','']
+    stas = ['HP','Atk','Def','SpA','SpD','Spe']
+    try:
+        dato = dato.split(' / ')
+        for i in range(len(dato)):
+            if dato[i].split(' ')[1] in stas: empt[ stats_dict[ dato[i].split(' ')[1]] ] = dato[i].split(' ')[0]
+    except IndexError:
+        print('Bonked/index/spacing issue?')
+        return ['bonk']
+    except ValueError:
+        print('Bonked/value/non-string input?')
+        return ['bonk']
+    else:
+        return empt
 def micropause():
     t.sleep(0.4)
     return
@@ -2963,8 +3196,8 @@ def hashborder(num=24):
 def genborder(num=24,char='='):
     star = ''
     for i in range(num):
-        blank+=char
-    return blank
+        star+=char
+    return star
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
@@ -2992,6 +3225,7 @@ statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
+stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
 Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggle_i=struggle #move index of struggle

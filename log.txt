@@ -968,3 +968,55 @@ so no harm no foul, I don't think .npy files work quite as easily
 an elite4 defeating team, it would require tweaking the save files and load procedures
 AGAIN, so i'm gonna put that on the back burner and think about it for bit
 
+20 apr 2023
+09:42- happy holidays
+had an idea for verifying whether or not save files have been tampered with
+so naturally im gonna spend way too long looking into it instead of making
+material improvements to the running and presentation of the game
+11:20- did it. currently works for only .txt save files, working on numpys still
+11:31- fixed it!
+
+24 apr 2023-
+08:21- think im presenting hall of fame win count now in poke summary but i
+didnt check to make sure it works someone else go do that
+17:11- bored, so i think im going to try to see if i can make pokemon showdown
+saves to work, will update later (or maybe not)
+
+25 apr 2023-
+12:05- progress with showdown saves! still completely unfinished but I think
+I can see the finish line, gonna commit
+12:54- more progress, so much work though
+
+28 apr 2023-
+15:43- a little stuck with reading ev data, without introducing another for loop
+so i might have to bite the bullet in that regard but i really dont want to
+anyway gotta go do things so heres a half hearted commit
+
+3 may 2023-
+16:14- look its early, but i think i am mostly over the hill with showdown saves
+i played with the loading function in the notebook, completely outside the normal context
+of the game and it looks good, natures, moves, typing stats (ivs, evs, hard to tell about base)
+all came through. looks like i loaded an extra copy of the last mon so Im gonna have to
+see what thats about. otherwise i need to put loadShowdown somewhere in the main game
+shoutout to the 1001st line of the log, i have really been out here huh
+16:26- fixed the extra poke bug!
+i also need to put the whole of the loadShowdown() code in a try block, 
+(or more rigorously, cutting the thing up into several try blocks)
+because there are a lot of places to break the goings on
+21:03- show base stats in mon.appraisal()!
+fine tuning and error proofing loadShowdown()!
+23:12- i am done cleaning up the function, i can load up show2 with no breaking
+everything works as expected including the failsafe bulbasaur
+i havent tested deliberatly broken saves, as the code should also be able
+to deal with those without breaking and return the corrupted bulba
+but i havent tested for that yet
+so thats nice, still no functionalities in game
+23:37- pokemon have genders now but only if you load through showdown
+you can load in saves from showdown now! just lead with 'showdown' in the load menu
+and follow with the save file i.e. "showdown myshowdown.sav", pretty cool...
+actually
+okay you can lead with "showdown" or "sd" now, youre welcome
+what else, base stats show in appraisal now (good since pokemon names
+mean nothing toward stats in this arrangement)
+genders need to go into savefile structure which is annoying but alas
+
