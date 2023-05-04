@@ -1003,4 +1003,20 @@ shoutout to the 1001st line of the log, i have really been out here huh
 i also need to put the whole of the loadShowdown() code in a try block, 
 (or more rigorously, cutting the thing up into several try blocks)
 because there are a lot of places to break the goings on
+21:03- show base stats in mon.appraisal()!
+fine tuning and error proofing loadShowdown()!
+23:12- i am done cleaning up the function, i can load up show2 with no breaking
+everything works as expected including the failsafe bulbasaur
+i havent tested deliberatly broken saves, as the code should also be able
+to deal with those without breaking and return the corrupted bulba
+but i havent tested for that yet
+so thats nice, still no functionalities in game
+23:37- pokemon have genders now but only if you load through showdown
+you can load in saves from showdown now! just lead with 'showdown' in the load menu
+and follow with the save file i.e. "showdown myshowdown.sav", pretty cool...
+actually
+okay you can lead with "showdown" or "sd" now, youre welcome
+what else, base stats show in appraisal now (good since pokemon names
+mean nothing toward stats in this arrangement)
+genders need to go into savefile structure which is annoying but alas
 

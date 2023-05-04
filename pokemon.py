@@ -30,7 +30,7 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty, dashborder
+    print_party, loadMonNpy, saveParty, dashborder, loadShowdown
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -876,10 +876,13 @@ while 1:
     #zz:training    
     ####Loading pokemon aa:loadpokemon
     if userChoice=='l' or userChoice=='L':
-        print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!\n")
+        print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!")
+        print("(use 'showdown' or 'sd' to load a Pokemon Showdown team. I.e. 'sd team.sav')")
         while 1: #savefile input loop
-            saveChoice=input("What save file to load?\n[blank] entry to use default or [b]ack\n: ")
+            shortpause()
+            saveChoice=input("\nWhat save file to load?\n[blank] entry to use default or [b]ack\n: ")
             #go back
+            showdown_yes = saveChoice.split(' ')
             if saveChoice=='b' or saveChoice=='b':
                 print("Leaving Load Pokémon..")
                 shortpause()
@@ -889,11 +892,22 @@ while 1:
                 her = loadMon2('newmew.npy')
                 if her == 'messed up':
                     print("try again")
-                    shortpause()
+                    #shortpause()
                 else:
                     userParty.append(her)
-                    shortpause()
-
+                    #shortpause()
+            elif ( showdown_yes[0] == 'showdown' or showdown_yes[0] == 'sd' ) and len(showdown_yes) > 1 :
+                newbies = loadShowdown( saveChoice.split(' ')[1] )
+                #except IndexError:
+                #    #input was 'showdown', quietly continue to try to open that file
+                #    pass
+                #else:
+                if newbies[0] == 'bonk': continue
+                for i in newbies:
+                    userParty.append(i)
+                    print(f"{i.name} joined your party!")
+                #shortpause()
+                pass
             #elif saveChoice=="":
             #    newMons=loadMon("pypokemon.sav")
             #    if newMons[0]==0: #if error in loading data, ask for savefile again
@@ -920,7 +934,7 @@ while 1:
                         userParty.append(i)
                         print(f"{i.name} has joined your party!")
                     print("Finished loading Pokémon!\n")
-                    shortpause()
+                    #shortpause()
                     #loop back to load a save
                 #
             #loop back to load a save

@@ -40,6 +40,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         self.bornpath = how_created
         #memories?
         self.hallfamecount = 0
+        #level, nature, evs, ivs, base stats, gender
+        self.gender = rng.choice(('N','F','M'), size=1)
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -240,21 +242,40 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     #set ivs, from given values
     def set_ivs(self, vals):
         #vals is list or tuple of 6
+        try:
+            self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
+        except IndexError:
+            print('Index error/Mismatched set')
+        except ValueError:
+            print('Value error/Numbers!')
+        else:
+            self.reStat()
         self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
         self.reStat()
         return
     #set evs, from given values
-    def set_evs(self, vals):
+    def set_evs(self, vals, ivs=False):
         #vals is list or tuple of 6
-        self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev = vals
-        self.reStat()
+        try:
+            if ivs: self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv = vals
+            else: self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev = vals
+        except IndexError:
+            print('Index error/Mismatched set')
+        except ValueError:
+            print('Value error/Numbers!')
+        else:
+            self.reStat()
         return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
         #sets should be a list of str with names of moves to learn
         global mov
-        self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
-        self.PP = [ mov['pp'][i] for i in self.knownMoves]
+        try:
+            self.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
+        except ValueError:
+            print('Value error/No match for move?')
+        else:
+            self.PP = [ mov['pp'][i] for i in self.knownMoves]
         return
     #add number *new* moves to mon's moveset
     def add_random_moves(self, number=2):
@@ -1301,10 +1322,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def summary(self):
         global typeStrings, nature_stat_str
         print(f"\n############ {self.name} ############")
+        #gender_dict = dict([(),(),()])
         if self.dualType:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
         else:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]}")
+            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
         if self.null_nature == False:
             print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
         else:
@@ -1373,12 +1395,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def appraise(self):
         ez=[self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
         iz=[self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
+        bz = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
         st=["HP  :","Atk :","Def :","Sp.A:","Sp.D:","Spe :"]
         print(f"\n############ {self.name} ############")
-        print("\n     \tIV\tEV")
+        print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
-            print(f"{st[i]}\t{iz[i]}\t{ez[i]}")
-        print("------------------------")
+            print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
+        genborder(num=40,char='-')
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
@@ -2774,11 +2797,24 @@ def saveParty(savefile,pokeparty,overwrite=False):
 #load pokemon
 def loadShowdown(savefile):
     #pre open file commands
-    #stat_dict = dict([ ('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5) ])
-    #open that file mans
     global natures, dex
     loadparty = []
-    with open(savefile,"r") as fil: lines = [i for i in fil]
+    #open that file mans
+    try:
+        with open(savefile,"r") as fil: lines = [i for i in fil]
+    except FileNotFoundError:
+        print('!! Where is the save file?? !!')
+        return ['bonk']
+    except TypeError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    except OSError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    except NameError:
+        print(' !! savefile input is string !!')
+        return ['bonk']
+    #
     pokes = []          #store data of all the pokemon
     this_poke = []      #store data of an indiv pokemon
     for i in range(len(lines)):
@@ -2787,7 +2823,7 @@ def loadShowdown(savefile):
             pokes.append( this_poke )
             this_poke = []
         pass
-    #print(pokes)
+    #
     npokes = len(pokes) - 1
     # pre indiv. pokemon loop stuff
     for j in range(npokes):
@@ -2796,7 +2832,7 @@ def loadShowdown(savefile):
         nature = ''
         moves = []
         evs = ['','','','','','']
-        ivs = ['','','','','','']
+        ivs = ['','','','','',''] #these forementioned lines dont need to be try-ed right?
         for i in range(len(poke)):
             detail = poke[i]
             if False:
@@ -2806,87 +2842,105 @@ def loadShowdown(savefile):
                 detail_ = detail.split('  \n')[0]
                 details = detail_.split(' ')
                 item = np.argwhere( np.array(details, dtype='U64') == '@')
-                #no item, so no split
-                if len(item) == 0: namez = details
-                #split
-                else: namez = details[:int(item)]
-                #name_type = -1
+                if len(item) == 0: namez = details   #no item, so no split
+                else: namez = details[:int(item)]    #split
+                lnamez = len(namez)
                 nicked = '' #carries pokemon nickname, stays empty if not named
-                if len(namez) == 3: #nickname, species, gender
-                    #name_type = 
-                    #work it out
-                    #print(namez)
-                    spec = namez[1][1:-1]
-                    nicked = namez[0]
-                    gender = namez[2][1:-1]
-                elif len(namez) == 2: #nickname, genderless species | species, gender
-                    #work it out
-                    #gendered
-                    if namez[1] == '(F)' or namez[1] == '(M)':
-                        spec = namez[0]
-                        gender = namez[1][1:-1]
-                    else: #genderless
+                try:
+                    if lnamez == 3: #nickname, species, gender
+                        #work it out
+                        spec = namez[1][1:-1]
                         nicked = namez[0]
-                        spec = namez[1][1:-1] #removing the parentheses around species name
+                        gender = namez[2][1:-1]
+                    elif lnamez == 2: #nickname, genderless species | species, gender
+                        #work it out
+                        #gendered
+                        if namez[1] == '(F)' or namez[1] == '(M)':
+                            spec = namez[0]
+                            gender = namez[1][1:-1]
+                        else: #genderless
+                            nicked = namez[0]
+                            spec = namez[1][1:-1] #removing the parentheses around species name
+                            gender = 'none'
+                    elif lnamez == 1: #genderless species or gender not specified
+                        #work it out
+                        spec = namez[0]
                         gender = 'none'
-                elif len(namez) == 1: #genderless species or gender not specified
-                    #work it out
-                    spec = namez[0]
+                    else:
+                        #idk, possibly a pokemon with a 2+-word name, or the entire line is blank so len=0
+                        spec = 'Bulbasaur'
+                        nicked = 'Corrupted Bulbasaur'
+                        gender = 'none'
+                except IndexError:
+                    print('!! Something shifted in the name line !!')
+                    spec = 'Bulbasaur'
+                    nicked = 'Corrupted Bulbasaur'
                     gender = 'none'
-                #spec, nicked, gender
-                #turn spec into base stats and typing
-                pokei = int( np.argwhere( dex['name'] == spec) )
+                pokeii = np.argwhere( dex['name'] == spec) #might come back empty!
+                if len(pokeii) == 1: pokei = int( pokeii )
+                else: pokei = 0
             elif detail[:4] == 'EVs:':
                 #do ev stuff
-                evs_l = detail[5:]
-                #evs_l = evs_l.split(' / ')
+                try: evs_l = detail[5:] #MIGHT BREAK, index error
+                except IndexError: print('!! Messed up EV line !!')
                 evs = readEvIv(evs_l) #list of strings of stats, empty string where no data
+                if evs[0] == 'bonk': evs = [252,252,4,0,0,0]
+                #this above function probably needs its own try block, just to be cool
             elif detail[:4] == 'IVs:':
                 #do iv stuff
-                ivs_l = detail[5:]
-                ivs = readEvIv(ivs_l) #list of strings of stats, empty string where no data
+                try: ivs_l = detail[5:] #MIGHT BREAK
+                except IndexError: print('!! Messed up IV line !!')
+                ivs = readEvIv(ivs_l)                               #list of strings of stats, empty string where no data
+                if ivs[0] == 'bonk': ivs = [31,31,31,31,31,31]
             elif detail[:6] == 'Level:':
                 #set level
-                lvl = detail[7:]
-                lvl = int(float(lvl))
+                try:
+                    lvl = detail[7:] #MIGHT BREAK
+                    lvl = int(float(lvl)) #MIGHT BREAK, value error, if this is non numbers
+                except IndexError: print('!! Weird level line !!')
+                except ValueError: print('!! Non-number level? !!')
             elif 'Nature' in detail:
-                #set the nature
                 #read in the Nature, turn it into tuple of up-stat and down-stat
                 natur = detail.split(' ')[0]
                 natur_i = np.squeeze( np.argwhere( natures == natur ))
-                nature = (natur_i[0],natur_i[1])
-                pass
+                try: nature = (natur_i[0],natur_i[1]) #MIGHT BREAK, INDEX error if theres no match in the above line
+                except IndexError: print('\n!! Bad nature !!')
             elif detail[:8] == 'Ability:':
                 #set the ability, waaaay down the line
                 pass
             elif detail[:2] == '- ':
-                #set moves
                 #create list of strings with move names
                 movename = detail[2:].split('  \n')[0]
                 if movename in mov['name']: moves.append( movename )
-                pass
             elif detail[:6] == 'Shiny:':
                 #good for you!
                 pass
-            else:
-                print("Don't know how to interpret this line #", i, "poke #", j )
-                pass
+            else: print("Don't know how to interpret this line #", i+1, "poke #", j+1 )
         #all poke details have been read, assembly
         if not nature: nature = (4,4)
         if not lvl: lvl = 100
         if not moves: moves = ["Tackle"]
         if not nicked: namer = spec
         else: namer = nicked
-        eevs = np.where( np.array(evs,dtype=object)=='', 0, evs ).astype(int)
-        iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs ).astype(int)
-        #missing_evs = np.argwhere( np.array(evs,dtype=object)=='' )
-        #lvl =
+        try:
+            eevs = np.where( np.array(evs,dtype=object)=='', 0, evs ).astype(int) #BREAKs if the evs is letters?, value error
+        except ValueError:
+            print('!! Messed up EVS !!')
+            eevs = [252, 252, 4, 0, 0, 0]
+        try:
+            iivs = np.where( np.array(ivs,dtype=object)=='', 31, ivs ).astype(int)
+        except ValueError:
+            print('!! Messed up IVS !!')
+            iivs = [31,31,31,31,31,31]
+        #who's? that? pokemon!
         newmon = makeMon(pokei,level=lvl,nacher=nature,how_created='showdown')
         #set name, moves, evs, ivs
         newmon.name = namer
-        newmon.set_evs(eevs)
-        newmon.set_ivs(iivs)
-        newmon.learn_sets( moves )
+        newmon.set_evs(eevs)                        #proofed! should make sure these are error-proofed
+        newmon.set_ivs(iivs)                        #proofed!
+        newmon.learn_sets( moves )                  #proofed!
+        if gender == 'none': newmon.gender = 'N'
+        else: newmon.gender = gender
         #newmon = mon(lvl,namer,nature=nature,hpbase=1,atbase=1,debase=1, \
         #    sabase=1,sdbase=1,spbase=1,tipe=tiping,how_created='showdown')
         #anything else?
@@ -3006,6 +3060,9 @@ def loadMon(savefile):
     except IndexError:
         print("!! The save file is corrupted !!")
         return [0]
+    except ValueError:
+        print("!! This file is all over the place !!")
+        return [0]
 def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6,how_created='nursery'):
     global mov,mo
     dome = makeMon( rng.integers( len(dex) ), level, \
@@ -3105,12 +3162,18 @@ def readEvIv(dato):
     global stats_dict
     empt = ['','','','','','']
     stas = ['HP','Atk','Def','SpA','SpD','Spe']
-    dato = dato.split(' / ')
-    for i in range(len(dato)):
-        if dato[i].split(' ')[1] in stas:
-            empt[ stats_dict[ dato[i].split(' ')[1]] ] = dato[i].split(' ')[0]
-        pass
-    return empt
+    try:
+        dato = dato.split(' / ')
+        for i in range(len(dato)):
+            if dato[i].split(' ')[1] in stas: empt[ stats_dict[ dato[i].split(' ')[1]] ] = dato[i].split(' ')[0]
+    except IndexError:
+        print('Bonked/index/spacing issue?')
+        return ['bonk']
+    except ValueError:
+        print('Bonked/value/non-string input?')
+        return ['bonk']
+    else:
+        return empt
 def micropause():
     t.sleep(0.4)
     return
@@ -3133,8 +3196,8 @@ def hashborder(num=24):
 def genborder(num=24,char='='):
     star = ''
     for i in range(num):
-        blank+=char
-    return blank
+        star+=char
+    return star
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
