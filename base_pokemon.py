@@ -25,7 +25,6 @@ import numpy as np
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 #classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats, 
-rng = np.random.default_rng()
 #aa:monclass
 class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
@@ -3198,6 +3197,7 @@ def genborder(num=24,char='='):
     for i in range(num):
         star+=char
     return star
+rng = np.random.default_rng()
 codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
