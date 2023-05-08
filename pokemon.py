@@ -30,16 +30,17 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty, dashborder, loadShowdown
+    print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 rng=np.random.default_rng()
 #
 dash24 = dashborder(24)
+randomLevel = int(rng.normal(loc=100,scale=30))
 ############   give the player a starter  ###############
 #starterlevel = int(rng.normal(loc=100,scale=30))
-starter= makeRandom(how_created='starter')
+starter= makeRandom(level=randomLevel,how_created='starter')
 starter.set_evs(tuple(random_evs()))
 players_parties = []
 ##### creating the trainer for classic mode #####
@@ -49,6 +50,7 @@ rival2= makeRandom(np.floor(starter.level*1.07), 6)
 starterParty = [starter]
 trainerParty=[rival,rival2]
 #
+username='You'
 opponentName="RIVAL"
 #### setting up the player's parties ####
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
@@ -61,10 +63,7 @@ hallfame_count = 0
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 #####################
-print('\nCopyright (C) 2023 Adarius')
-print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
-        'This is free software, and you are welcome to\n'+\
-        'redistribute it under certain conditions.')
+copyrigh()
 #print("\n... Created by Adarius ...")
 dramaticpause()
 print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
@@ -304,7 +303,7 @@ while 1:
             print("\nYou can't battle without a healthy Pokémon!")
             shortpause()
             continue #go back to main without starting the battle
-        classicbattle = battle(userParty, trainerParty, scarlet)
+        classicbattle = battle(userParty, trainerParty, scarlet, usr_name=username, cpu_name=opponentName)
         classicbattle.startbattle()
         #then it should loop back to the main menu?
     ###end of battle block### zz:battlemode

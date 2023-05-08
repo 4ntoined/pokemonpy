@@ -40,7 +40,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         #memories?
         self.hallfamecount = 0
         #level, nature, evs, ivs, base stats, gender
-        self.gender = rng.choice(('N','F','M'), size=1)
+        self.gender = rng.choice(('N','F','M'), size=1)[0]
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
@@ -1718,7 +1718,7 @@ class battle:
                         #end of party pokemon block
                         #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
                     #fight
-                    if userMove=='f':                    
+                    if userMove=='f' or userMove=='F':                    
                         #fighting options
                         while 1: #move input loop
                             for i in range(len(self.usr_mon.knownMoves)):
@@ -3035,12 +3035,14 @@ def loadMon(savefile):
             typ=np.array([int(iiii) for iiii in line[5].split()])
             if max(typ)>18 or min(typ)<0: return [0]  #invalid types
             nacher = np.array([int(iv) for iv in line[6].split()])
-            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=line[9])
+            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],\
+                    atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],\
+                    spbase=baseI[5],tipe=typ,how_created=line[9])
             if tampered: newP.set_born(how_created='tampered')
             else:
                 newP.timeborn = t.gmtime(int(float(line[8])))
                 newP.bornplace = line[10]
-                newP.hallfamecount = line[11]
+                newP.hallfamecount = int(float(line[11]))
             newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
             newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
             newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
@@ -3062,7 +3064,7 @@ def loadMon(savefile):
     except ValueError:
         print("!! This file is all over the place !!")
         return [0]
-def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6,how_created='nursery'):
+def makeRandom(level=100,numMoves=6,how_created='nursery'):
     global mov,mo
     dome = makeMon( rng.integers( len(dex) ), level, \
         (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
@@ -3104,7 +3106,7 @@ def moveInfo(moveCode):
         print("-The user makes contact with the target.")
     else:
         print("-The user does not make contact with the target.")
-def makeParty(numb=0,level=100):
+def makeParty(numb=1,level=100):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
     for i in range(numb):
@@ -3173,6 +3175,12 @@ def readEvIv(dato):
         return ['bonk']
     else:
         return empt
+def copyrigh():
+    print('\nCopyright (C) 2023 Adarius')
+    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+        'This is free software, and you are welcome to\n'+\
+        'redistribute it under certain conditions.')
+    return
 def micropause():
     t.sleep(0.4)
     return
