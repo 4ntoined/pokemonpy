@@ -23,50 +23,75 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
-import os
-import copy
-#import time as t
+import os, copy, sys, getopt, argparse
 import numpy as np
+import base_pokemon
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
     print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
-    magic_text, genborder, game_width
+    magic_text, genborder#, game_width
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
-#some oddball variables to calculate once and never again
+#set up the rng
 rng=np.random.default_rng()
-#game_width = 16
+#parse arguments
+n_args = len(sys.argv)-1
+if n_args: #there are arguments
+    parser = argparse.ArgumentParser(description='Play Pokemon!')
+    parser.add_argument('-w','--width',action='store',default=64,type=int,\
+            required=False, dest='gamewidth', \
+            help='set the width of banners and headings, recommended: 64')
+    parser.add_argument( '-n','--name',action='store',default='',type=str,\
+            required=False, help='write your name'\
+            )
+    parser.add_argument('-p','--npoke',action='store',default=1,type=int,
+            required=False,help='number of starter Pokemon'\
+            )
+    #parser.add_argument()
+    argos = parser.parse_args( sys.argv[1:] )
+    #width_arg = int(float(sys.argv[1]))
+    #print(argos.gamewidth)
+    base_pokemon.game_width = argos.gamewidth
+    if argos.name:
+        username=argos.name
+        username_set = True
+    else:
+        username='You'
+        username_set=False
+    nstart=argos.npoke
+else:
+    username_set=False
+    username='You'
+    nstart=1
+#some oddball variables to calculate once and never again
+game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
-#dash24 = dashborder(24)
-randomLevel = int(rng.normal(loc=100,scale=30))
 ##aa:mainmenu
 mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
     "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
     "\n[L]oad\nWhat to do: "
 ############   give the player a starter  ###############
-#starterlevel = int(rng.normal(loc=100,scale=30))
-starter= makeRandom(level=randomLevel,how_created='starter')
-starter.set_evs(tuple(random_evs()))
+starterParty=[]
+for i in range(nstart):
+    randomLevel = int(rng.normal(loc=100,scale=30))
+    starter= makeRandom(level=randomLevel,how_created='starter')
+    starter.set_evs(tuple(random_evs()))
+    starterParty.append( starter )
 players_parties = []
-##### creating the trainer for classic mode #####
-rival= makeRandom(np.floor(starter.level*(0.96)), 6)
-rival2= makeRandom(np.floor(starter.level*1.07), 6)
-#stuff them into their parties
-starterParty = [starter]
-trainerParty=[rival,rival2]
-#
-username='You'
-opponentName="RIVAL"
-#### setting up the player's parties ####
-#this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 players_parties.append((starterParty, "starter", 0))
+#this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 userParty=starterParty
 equiped = 0
 party_count = 1 #keeping track of parties as they are created for indexing purposes
 hallfame_count = 0
 #####################
+##### creating the trainer for classic mode #####
+rival= makeRandom(np.floor(starter.level*(0.96)), 6)
+rival2= makeRandom(np.floor(starter.level*1.07), 6)
+trainerParty=[rival,rival2]
+opponentName="RIVAL"
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 #####################
@@ -80,9 +105,11 @@ while 1:
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
     if hallfame_count > 0:
-        bord = dashborder(game_width)
-        print(f"\nHall of Fame entries: {hallfame_count:0>2}",end='')
-        print('\n'+bord,end='')
+        bord = genborder(num=game_width, cha='-')
+        nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
+        if username_set:    print(f"\n{nameline}\nHall of Fame entries: {hallfame_count:0>2}")
+        else:               print(f"\nHall of Fame entries: {hallfame_count:0>2}")
+        print(bord,end='')
     #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################

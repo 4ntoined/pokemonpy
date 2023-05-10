@@ -1416,7 +1416,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
-        print(genborder(num=64,cha='-'))
+        print(genborder(num=game_width,cha='-'))
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
