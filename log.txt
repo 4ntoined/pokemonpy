@@ -1024,4 +1024,6 @@ genders need to go into savefile structure which is annoying but alas
 10:22- wanted to leave a note that Mr. Mime/Rime, Mime Jr. and Type: Null will
 break the showdown save loader, so i might have to tweak that to account those names
 21:18- i moved some stuff around, remade the elite5, doing fun things with menu crafting
+22:06- training menu, party menu, boxes menu, pokemon summaries are all looking really good
+and at very little cost
 

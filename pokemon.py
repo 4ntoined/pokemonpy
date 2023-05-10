@@ -30,7 +30,8 @@ import numpy as np
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh
+    print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
+    magic_text, genborder
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -581,7 +582,9 @@ while 1:
     ## and then choose from there wha tto do with them
     if userChoice=='t' or userChoice=='T':
         while 1:
-            print("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&\n&&&&&&&&&&&  Training  &&&&&&&&&&&\n&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&")
+            trai = magic_text(txt='Training',long=64,spacing='  ',cha='&')
+            ful = genborder(num=64,cha='&')
+            print(f"{ful}\n{trai}\n{ful}")
             #choose a pokemon
             print("")
             for i in range(len(userParty)):
@@ -970,7 +973,10 @@ while 1:
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
             equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
-            print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]\n")
+            line2 = magic_text(long=64,cha='[',cha2=']',txt='Your Parties',spacing='  ')
+            line1 = genborder(cha='[',num=32) + genborder(cha=']',num=32)
+            #print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]\n")
+            print(line1+'\n'+line2+'\n'+line1)
             for i in range(len(players_parties)):
                 print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
             print(f"Equipped: {players_parties[equii][1]}\n")

@@ -1320,16 +1320,22 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         
     def summary(self):
         global typeStrings, nature_stat_str
-        print(f"\n############ {self.name} ############")
-        #gender_dict = dict([(),(),()])
-        if self.dualType:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
-        else:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
-        if self.null_nature == False:
-            print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
-        else:
-            print(f"Nature : {self.nature_str} | Up - None, Down - None")
+        dec= 64
+        #namesize = len(self.name)
+        #oddname = namesize % 2 == 1
+        #hashnumL= ( dec_length-namesize-4 ) // 2
+        #if oddname: hashnumR = hashnumL+1
+        #else: hashnumR = hashnumL
+        fullhash = genborder(num=dec,cha='#')
+        #sidehashL = genborder(num=hashnumL,cha='#')
+        #sidehashR = genborder(num=hashnumR,cha='#')
+        #print(f"\n{sidehashL}  {self.name}  {sidehashR}")
+        line1 = magic_text(long=dec,cha='#',spacing='  ',txt=self.name)
+        print(line1)
+        if self.dualType:               print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
+        else:                           print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
+        if self.null_nature == False:   print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
+        else:                           print(f"Nature : {self.nature_str} | Up - None, Down - None")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.attack,'.2f')}")
         print(f"Def : \t{format(self.defense,'.2f')}")
@@ -1337,13 +1343,10 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print(f"Sp.D: \t{format(self.spdef,'.2f')}")
         print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
-        print("##############################################")
+        print(fullhash)
         #met conditions
         #birthday
-        #borndays = t.asctime(self.timeborn).split()
         borndays = t.strftime("%a %d %b %Y,%H:%M:%S",self.timeborn).split(',')
-        #print(f"This Pokemon was initialized on\n=== {borndays[0]} "+\
-        #        f"{borndays[2]+' '+borndays[1]+' '+borndays[4]+' @ '+borndays[3]} UTC")
         print(f"This Pokemon was initialized on\n=== {borndays[0]} @ "+\
                 f"{borndays[1]} UTC")
         #birthplace
@@ -1361,7 +1364,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         else: print("=== It appeared mysteriously...")
         if self.hallfamecount == 1: print("It has defeated the Elite Four 1 time.")
         elif self.hallfamecount >= 2: print(f"It has defeated the Elite Four {self.hallfamecount} times.")
-        print("##############################################")
+        print(fullhash)
         
     def battleSummary(self):
         global typeStrings,nature_stat_str
@@ -1386,7 +1389,17 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     
     def showMoves(self):
         global typeStrings,mov
-        print(f"############ {self.name}'s Moves #############")
+        dec = 64
+        #siz = len(f'  {self.name}ss Moves  ')
+        #oddd = siz % 2 == 1
+        #sidL = (dec - siz) // 2
+        #if oddd: sidR = sidL +1
+        #else: sidR = sidL
+        #hashL  =genborder(num=sidL,cha='#')
+        #hashR  =genborder(num=sidR,cha='#')
+        #print(f"{hashL}  {self.name}'s Moves  {hashR}")
+        line1 = magic_text(long=dec,cha='#',txt=f"{self.name}'s Moves",spacing='  ')
+        print(line1)
         for i in range(len(self.knownMoves)):
             print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
         return
@@ -3219,6 +3232,18 @@ def genborder(num=24,cha='='):
     for i in range(num):
         star+=cha
     return star
+def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
+    if not cha2: cha2 = cha
+    summ = long-len(txt)-len(spacing) * 2
+    od = summ % 2 == 1
+    sidel = summ // 2
+    if od: sider = sidel + 1
+    else: sider = sidel
+    border_l = genborder(num=sidel,cha=cha)
+    border_r = genborder(num=sider,cha=cha2)
+    ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
+    return ans
+
 def codexer():
     codex=np.ones((19,19),dtype=float)
     codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
