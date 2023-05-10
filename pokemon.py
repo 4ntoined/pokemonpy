@@ -31,13 +31,15 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
     print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
-    magic_text, genborder
+    magic_text, genborder, game_width
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
+#some oddball variables to calculate once and never again
 rng=np.random.default_rng()
-#
-dash24 = dashborder(24)
+#game_width = 16
+oddw = game_width % 2 == 1
+#dash24 = dashborder(24)
 randomLevel = int(rng.normal(loc=100,scale=30))
 ##aa:mainmenu
 mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
@@ -78,7 +80,7 @@ while 1:
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
     if hallfame_count > 0:
-        bord = dashborder(24)
+        bord = dashborder(game_width)
         print(f"\nHall of Fame entries: {hallfame_count:0>2}",end='')
         print('\n'+bord,end='')
     #aa:mainmenu
@@ -322,7 +324,7 @@ while 1:
                     thipe=typeStrings[userParty[i].tipe[0]]
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")"""
             print_party(userParty)
-            partyChoice=input("Enter a number to see a Pokémon's summary...\n[#] or [b]ack: ")
+            partyChoice=input("\nEnter a number to see a Pokémon's summary.\n[#] or [b]ack: ")
             #go back to main screen
             if partyChoice=='b' or partyChoice=="B":
                 print("Leaving Party screen...")
@@ -338,7 +340,9 @@ while 1:
             else:
                 while 1:
                     selMon.summary()
-                    sumChoice=input(f"What to do with {selMon.name}?\nset [f]irst, see [m]oves, [s]ave, [j]udge or [b]ack: ")
+                    ##aa:summarychoices
+                    sumChoice=input(f"\nWhat to do with {selMon.name}?" + \
+                            "\nset [f]irst, see [m]oves, [s]ave, [j]udge or [b]ack: ")
                     #go back to pokemon selection
                     if sumChoice=='b' or sumChoice=="B":
                         shortpause()
@@ -389,9 +393,10 @@ while 1:
                                     continue
                         #
                     #set first
-                    if sumChoice=='f':
+                    if sumChoice=='f' or sumChoice=='F':
                         if pokeInd==0:
                             print(f"{selMon.name} is already first!")
+                            shortpause()
                             continue
                         moving=userParty.pop(pokeInd)
                         userParty.insert(0,moving)
@@ -402,7 +407,7 @@ while 1:
                     if sumChoice=="m" or sumChoice=="M":
                         while 1: #user input loop
                             selMon.showMoves()
-                            movChoice=input("Which move to look at?\n[#] or [b]ack: ")
+                            movChoice=input("\nWhich move to look at?\n[#] or [b]ack: ")
                             if movChoice=="b" or movChoice=="B":
                                 #leave move info selection, back to what to do w pokemon
                                 break
@@ -411,10 +416,8 @@ while 1:
                                 movez=movChoice.split() #pokemon movelist index (string)
                                 movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
                                 movez=[selMon.knownMoves[i] for i in movez] #pokemon move movedex index
-                            except ValueError:
-                                print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
-                            except IndexError:
-                                print("\n** Use the indices to select moves to take a closer look at. **")
+                            except ValueError: print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                            except IndexError: print("\n** Use the indices to select moves to take a closer look at. **")
                             else:
                                 for i in range(len(movez)):
                                     print("")
@@ -428,8 +431,9 @@ while 1:
                         selMon.appraise()
                         pause=input("Enter anything to continue...")
             #end of while block
-        print("Going back to main screen...")
-        shortpause()
+        #print("Going back to main screen...")
+        #shortpause()
+        pass
         #end of party pokemon
     ###end of party display block###zz:pokemonparty
     ####pokemon aa:nursery####
@@ -582,8 +586,8 @@ while 1:
     ## and then choose from there wha tto do with them
     if userChoice=='t' or userChoice=='T':
         while 1:
-            trai = magic_text(txt='Training',long=64,spacing='  ',cha='&')
-            ful = genborder(num=64,cha='&')
+            trai = magic_text(txt='Training',long=game_width,spacing='  ',cha='&')
+            ful = genborder(num=game_width,cha='&')
             print(f"{ful}\n{trai}\n{ful}")
             #choose a pokemon
             print("")
@@ -973,8 +977,10 @@ while 1:
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
             equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
-            line2 = magic_text(long=64,cha='[',cha2=']',txt='Your Parties',spacing='  ')
-            line1 = genborder(cha='[',num=32) + genborder(cha=']',num=32)
+            if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
+            else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
+            line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
+            
             #print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]\n")
             print(line1+'\n'+line2+'\n'+line1)
             for i in range(len(players_parties)):

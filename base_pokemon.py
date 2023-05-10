@@ -24,13 +24,12 @@ import hashlib
 import numpy as np
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
-#classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats, 
-#aa:monclass
-class mon: #open up sypder and rename these from hpbase to hbp, etc.
+#classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats
+class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc.
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
         debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),\
-        random_move=True,how_created='nursery')\
-        : #add natures
+        random_move=True,how_created='nursery'\
+        ): #add natures
         global mo
         #birth details
         self.timebornLOCAL = t.localtime(t.time())
@@ -1319,19 +1318,19 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
     def summary(self):
-        global typeStrings, nature_stat_str
-        dec= 64
+        global typeStrings, nature_stat_str, game_width
+        dec = game_width
         #namesize = len(self.name)
         #oddname = namesize % 2 == 1
         #hashnumL= ( dec_length-namesize-4 ) // 2
         #if oddname: hashnumR = hashnumL+1
         #else: hashnumR = hashnumL
-        fullhash = genborder(num=dec,cha='#')
         #sidehashL = genborder(num=hashnumL,cha='#')
         #sidehashR = genborder(num=hashnumR,cha='#')
         #print(f"\n{sidehashL}  {self.name}  {sidehashR}")
+        fullhash = genborder(num=dec,cha='#')
         line1 = magic_text(long=dec,cha='#',spacing='  ',txt=self.name)
-        print(line1)
+        print('\n'+line1)
         if self.dualType:               print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
         else:                           print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
         if self.null_nature == False:   print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
@@ -1388,8 +1387,8 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print("##############################################")
     
     def showMoves(self):
-        global typeStrings,mov
-        dec = 64
+        global typeStrings,mov,game_width
+        dec = game_width
         #siz = len(f'  {self.name}ss Moves  ')
         #oddd = siz % 2 == 1
         #sidL = (dec - siz) // 2
@@ -1399,9 +1398,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         #hashR  =genborder(num=sidR,cha='#')
         #print(f"{hashL}  {self.name}'s Moves  {hashR}")
         line1 = magic_text(long=dec,cha='#',txt=f"{self.name}'s Moves",spacing='  ')
-        print(line1)
+        print('\n'+line1)
         for i in range(len(self.knownMoves)):
-            print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
+            print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}"+ \
+                    f"\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}"+ \
+                    f"\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
         return
     #show evs and ivs
     def appraise(self):
@@ -1409,11 +1410,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         iz=[self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
         bz = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
         st=["HP  :","Atk :","Def :","Sp.A:","Sp.D:","Spe :"]
-        print(f"\n############ {self.name} ############")
+        dec = game_width
+        line1 = magic_text(long=dec,spacing='  ',txt=f"{self.name}'s Stats",cha='#')
+        print('\n'+line1)
         print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
-        genborder(num=40,cha='-')
+        print(genborder(num=64,cha='-'))
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
@@ -3136,18 +3139,19 @@ def print_party(parti, named='namo', menu=False):
         print("This party is empty.")
         return
     else:
-        decor_length = 64
+        dec = game_width
         if not menu: named='Party Pokemon'
-        namesize = len(named)
-        oddname = namesize % 2 == 1
-        numsideslashL = ( decor_length - namesize - 2 ) //  2 #for 7-letter starter 32-9=23 // 2 = 11. then {11}{1}{7}{1}{11} = 24+7 = 31.
-        if oddname: numsideslashR = numsideslashL+1
-        else: numsideslashR = numsideslashL
-        slashes_full= genborder(num=decor_length,cha='/')
-        sideslashesL = genborder(num=numsideslashL,cha='/')
-        sideslashesR = genborder(num=numsideslashR,cha='/')
-        if menu: print(f"\n{slashes_full}\n{sideslashesL} {named} {sideslashesR}\n{slashes_full}")
-        else: print(f"\n{slashes_full}\n{sideslashesL} Party Pokémon {sideslashesR}\n{slashes_full}")
+        #namesize = len(named)
+        #oddname = namesize % 2 == 1
+        #numsideslashL = ( decor_length - namesize - 2 ) //  2 #for 7-letter starter 32-9=23 // 2 = 11. then {11}{1}{7}{1}{11} = 24+7 = 31.
+        #if oddname: numsideslashR = numsideslashL+1
+        #else: numsideslashR = numsideslashL
+        slashes_full= genborder(num=dec,cha='/')
+        #sideslashesL = genborder(num=numsideslashL,cha='/')
+        #sideslashesR = genborder(num=numsideslashR,cha='/')
+        line1 = magic_text(txt=named,spacing=' ',cha='/',long=dec)
+        print(f"\n{slashes_full}\n{line1}\n{slashes_full}")
+        #else: print(f"\n{slashes_full}\n{sideslashesL} Party Pokémon {sideslashesR}\n{slashes_full}")
         for i in range(len(parti)):
             if parti[i].dualType:
                 thipe=typeStrings[parti[i].tipe[0]]
@@ -3156,7 +3160,7 @@ def print_party(parti, named='namo', menu=False):
             else:
                 thipe=typeStrings[parti[i].tipe[0]]
             print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
-        print("\n*******************************")
+        print('\n'+slashes_full)
         return
 def elite4_healquit(poke_party):
     heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o, [b] to quit: ")     
@@ -3243,7 +3247,6 @@ def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
     border_r = genborder(num=sider,cha=cha2)
     ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
     return ans
-
 def codexer():
     codex=np.ones((19,19),dtype=float)
     codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
@@ -3267,6 +3270,7 @@ def codexer():
     ans = codex.copy()
     return ans
 rng = np.random.default_rng()
+game_width = 64
 #codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
