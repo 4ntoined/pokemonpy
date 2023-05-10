@@ -1027,3 +1027,9 @@ break the showdown save loader, so i might have to tweak that to account those n
 22:06- training menu, party menu, boxes menu, pokemon summaries are all looking really good
 and at very little cost
 
+10 may 2023-
+18:59- have been making the menus and headers much prettier, implemented command line controls
+to set banner widths throughout the game, you can also set your name and the number of starters
+you start with. have also been standardizing newlines and placement of pauses
+very cool. also new random elite5 leveling. someone text the battle mechanics
+

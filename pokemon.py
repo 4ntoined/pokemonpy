@@ -97,7 +97,8 @@ scarlet = field(rando=True)
 #####################
 copyrigh()
 dramaticpause()
-print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
+#print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
+print('\n'+magic_text(txt='Welcome to the Wonderful World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
 dramaticpause()
 while 1:
     #going to consolidate nursery and dex selection
@@ -615,12 +616,12 @@ while 1:
         while 1:
             trai = magic_text(txt='Training',long=game_width,spacing='  ',cha='&')
             ful = genborder(num=game_width,cha='&')
-            print(f"{ful}\n{trai}\n{ful}")
+            print(f"\n{ful}\n{trai}\n{ful}")
             #choose a pokemon
-            print("")
+            #print("")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
-            trainChoice=input("Which Pokémon will we train?:\n[#] or [b]ack: ")
+            trainChoice=input("\nWhich Pokémon will we train?:\n[#] or [b]ack: ")
             #option to go back, from pokemon selection to main screen
             if trainChoice=='b' or trainChoice=='B':
                 break
@@ -640,14 +641,18 @@ while 1:
                 pass
             else:
                 while 1:
-                    print(f"\n******** Training {pokeTrain.name} ********")
-                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n[#] or [b]ack\n: ")
+                    traline = magic_text(txt=f'Training {pokeTrain.name}',spacing=' ',long=game_width,cha='+')
+                    #print(f"\n******** Training {pokeTrain.name} ********")
+                    print('\n'+traline)
+                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n\n[#] or [b]ack\n: ")
                     if hypermoves == 'b' or hypermoves=='B': #superhyper
+                        print('\nLeaving Training...')
+                        micropause()
                         break
                     #### super-hyper training #### aa:training
                     if hypermoves == '1': 
                         while 1: #i want to loop back here unless specifically broken
-                            superHyper=input("Manage [E]Vs or [I]Vs or [L]evels\nor [b]ack: ") #anything other than options below will skip to the next loop of choose a pokemon
+                            superHyper=input("\nManage [E]Vs or [I]Vs or [L]evels\nor [b]ack: ") #anything other than options below will skip to the next loop of choose a pokemon
                             if superHyper=='b' or superHyper=='B':
                                 print("\nLeaving SuperHyper Training...")
                                 micropause()
@@ -655,7 +660,7 @@ while 1:
                             #EVs
                             if superHyper=='e':
                                 while 1:
-                                    evs=input("Enter 6 numbers (0-252) all at once.\nEVs cannot sum >508.:\n")
+                                    evs=input("\nEnter 6 numbers (0-252) all at once.\nEVs cannot sum >508.:\n")
                                     #option to go back
                                     if evs=='b':
                                         break #throws us back to ev/iv/lvls
@@ -694,7 +699,7 @@ while 1:
                             #IVs        
                             elif superHyper=='i':
                                 while 1:
-                                    ivs=input("Enter 6 numbers (0-31) all at once.:\n")
+                                    ivs=input("\nEnter 6 numbers (0-31) all at once.:\n")
                                     #option to go back, from iv input to ev/iv/lvl
                                     if ivs=='b':
                                         break
@@ -728,7 +733,7 @@ while 1:
                             #level
                             elif superHyper=='l':
                                 while 1:
-                                    levl=input(f"What level should {pokeTrain.name} be?\nor [b]ack: ")
+                                    levl=input(f"\nWhat level should {pokeTrain.name} be?\nor [b]ack: ")
                                     if levl=='b' or levl=='B':
                                         break
                                     try:
@@ -750,22 +755,25 @@ while 1:
                     #### move tutor #### aa:movetutor
                     elif hypermoves == '2':
                         while 1:
-                            print("\n****************************\n******** Move Tutor ********\n****************************\n\nYou can teach your Pokémon new moves!\n")
+                            ful = genborder(num=game_width,cha='+')
+                            tutorline=magic_text(long=game_width,cha='+',txt='Move Tutor',spacing=' ')
+                            #print(f"\n{ful}\n{tutorline}\n{ful}\nYou can teach your Pokémon new moves!")
                             #print all the moves
-                            print("\n------------ Pokémon Moves ------------")
+                            movesline = magic_text(txt='Moves',spacing=' ',cha='-',long=game_width)
+                            print("\n"+movesline)
                             for i in range(len(mov)):
                                 print(f"{mov[i]['index']}\t| {mov[i]['name']}\t| " + \
                                       f"{typeStrings[mov[i]['type']]}")
-                            print("---------------------------------------")
-                            micropause()
+                            print(genborder(num=game_width,cha='-'))
+                            #micropause()
                             #ask user what moves to learn
-                            learnChoice=input(f"What moves should {pokeTrain.name} learn?\n" + \
+                            learnChoice=input(f"\nWhat moves should {pokeTrain.name} learn?\n" + \
                                 "(Lead with 'i' to see move info.)\n(Use 'random n' to teach n random moves.)"+\
                                 "\n[#]'s or [b]ack: ")
                             #go back
                             if learnChoice=='b' or learnChoice=='B':
-                                print("Leaving Move Tutor...")
-                                shortpause()
+                                print("\nLeaving Move Tutor...")
+                                micropause()
                                 break #back to training-main
                             moveslearning = learnChoice.split()
                             mlcount = len(moveslearning)
@@ -819,7 +827,8 @@ while 1:
                                                         pokeTrain.knownMoves.append(i)
                                                         pokeTrain.PP.append(getMoveInfo(i)['pp'])
                                                         print(f"{pokeTrain.name} learned {getMoveInfo(i)['name']}!")
-                                                        micropause()
+                                                        #micropause()
+                                                micropause()
                                                 break #moves addressed, get out of here
                                                 #if incomplete==False: #if there are no conflicts
                                                     #break #all moves added, breaks loop and goes back to choose a pokemon
@@ -839,18 +848,18 @@ while 1:
                     #### move deletion #### aa:movedelete
                     elif hypermoves == '3': #move deletions
                         while 1: #user input loop
-                            print("\n******** Move Deleter ********")
-                            shortpause()
+                            #print("\n******** Move Deleter ********")
+                            #shortpause()
                             pokeTrain.summary()
-                            mvChoice=input("Which moves should be deleted?\n[#] or [b]ack: ")
+                            mvChoice=input("\nWhich moves should be deleted?\n[#] or [b]ack: ")
                             mvC1 = len(mvChoice.split())
-                            print(mvC1)
                             #go back
                             if mvChoice=="b" or mvChoice=="B":
+                                print('\nLeaving Move Deleter...')
+                                micropause()
                                 break
                             #display move info if you lead with I
                             if mvC1 >= 1:
-                                print(mvChoice.split()[0])
                                 if mvChoice.split()[0]=='i' or mvChoice.split()[0]=='I':
                                     try:
                                         movez=mvChoice.split()[1:] #pokemon movelist index (string)
@@ -875,23 +884,22 @@ while 1:
                                 print("")
                                 for i in range(len(chooz)):
                                     if len(pokeTrain.knownMoves)==1: #catch players trying to dump whole moveset
-                                        micropause()
                                         print("** Pokémon cannot forget its last move **")
+                                        micropause()
                                         break
                                     if i==0: #keeps us from checking empty arrays i.e. choices[0:0]
                                         byeMove=pokeTrain.knownMoves.pop(chooz[i])
                                         byePP = pokeTrain.PP.pop(chooz[i])
                                         print(f"{pokeTrain.name} forgets {mov[byeMove]['name']}...")
-                                        micropause()
                                     else:
                                         removedIndices=np.count_nonzero(chooz[0:i]<chooz[i]) #how many selected indices that are *lower* than current one have already been removed
                                         chooz[i]-=removedIndices
                                         byeMove=pokeTrain.knownMoves.pop(chooz[i])
                                         byePP = pokeTrain.PP.pop(chooz[i])
                                         print(f"{pokeTrain.name} forgets {mov[byeMove]['name']}...")
-                                        micropause()
-                                print("Selected moves have been forgetten!")
-                                #shortpause() #kills
+                                #shortpause()
+                                #print("Selected moves have been forgetten!")
+                                shortpause() #kills
                                 break #back to training menu
                             except ValueError:
                                 print("\n** Entry must be [#] or list of [#]s separated by spaces! **")
@@ -901,6 +909,8 @@ while 1:
                     elif hypermoves == '4': #renaming pokemon
                         pass
                     elif hypermoves == '5': #re-naturing pokemon
+                        pass
+                    elif hypermoves == '6': #regendering pokemon
                         pass
                     else:
                         pass
@@ -975,27 +985,25 @@ while 1:
     ###end of load save block###
     ####pokemon center#### aa:center aa:healing let's heal em up
     if userChoice=="c" or userChoice=="C":
-        print("\n******** Welcome to the Pokémon Center ********\n")
-        shortpause()
+        centerline = magic_text(txt='Pokémon Center',spacing=' ',long=game_width,cha='H')
+        #print("\n******** Welcome to the Pokémon Center ********\n")
+        print('\n'+centerline)
+        #shortpause()
         print("We can heal your Pokémon to full health!")
         shortpause()
         while 1:
-            cenChoice=input("[y] to restore your party or [b]ack\n: ")
-
+            cenChoice=input("\n[y] to restore your party or [b]ack: ")
             if cenChoice=='b':
-                print("See you soon!\n")
+                print("\nSee you soon!")
                 shortpause()
                 break
-            
             if cenChoice=='y':
-                print("\n")
+                print("")
                 for i in userParty:
                     i.restore()
                     print(f"{i.name} is ready for more battles!")
-                    micropause()
-                print("\nYour party is looking better than ever!!")
-                shortpause()
-                print("\nHave a nice day! and have fun!")
+                micropause()
+                print("\nYour party is looking better than ever!\nHave a nice day! And have fun!")
                 shortpause()
                 break #back to main screen    
     ####resetting user Party to Bulbasaur
@@ -1007,8 +1015,6 @@ while 1:
             if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
             else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
             line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
-            
-            #print("\n[[[[[[[[[[[[ Your Parties ]]]]]]]]]]]]\n")
             print(line1+'\n'+line2+'\n'+line1)
             for i in range(len(players_parties)):
                 print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
