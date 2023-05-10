@@ -38,6 +38,10 @@ rng=np.random.default_rng()
 #
 dash24 = dashborder(24)
 randomLevel = int(rng.normal(loc=100,scale=30))
+##aa:mainmenu
+mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
+    "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
+    "\n[L]oad\nWhat to do: "
 ############   give the player a starter  ###############
 #starterlevel = int(rng.normal(loc=100,scale=30))
 starter= makeRandom(level=randomLevel,how_created='starter')
@@ -64,23 +68,19 @@ hallfame_count = 0
 scarlet = field(rando=True)
 #####################
 copyrigh()
-#print("\n... Created by Adarius ...")
 dramaticpause()
 print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
 dramaticpause()
-#aa:mainmenu
 while 1:
     #going to consolidate nursery and dex selection
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
-    mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
-        "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
-        "\n[L]oad\nWhat to do: "
     if hallfame_count > 0:
         bord = dashborder(24)
         print(f"\nHall of Fame entries: {hallfame_count:0>2}",end='')
         print('\n'+bord,end='')
+    #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################
     #user setting the weather and terrain for classic mode #aa:classicsettings

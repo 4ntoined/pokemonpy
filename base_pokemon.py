@@ -1400,7 +1400,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
-        genborder(num=40,char='-')
+        genborder(num=40,cha='-')
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
@@ -3114,37 +3114,51 @@ def makeParty(numb=1,level=100):
         pokemon_party.append(new_mon)
     return pokemon_party
 def print_party(parti, named='namo', menu=False):
+    #parti: a list of mon() objects
     #namo: name of the party, string
     #menu: True if viewing fom the party menu, false if viewing from main
     global typeStrings
-    if menu:
-        print(f"\n////////////////////////////////\n//////// {named} /////////\n////////////////////////////////")
+    npoke = len(parti)
+    if npoke == 0:
+        print("This party is empty.")
+        return
     else:
-        print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
-    for i in range(len(parti)):
-        if parti[i].dualType:
-            thipe=typeStrings[parti[i].tipe[0]]
-            thipe+=" // "
-            thipe+=typeStrings[parti[i].tipe[1]]
-        else:
-            thipe=typeStrings[parti[i].tipe[0]]
-        print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
-    print("\n*******************************")
-    return
+        decor_length = 64
+        if not menu: named='Party Pokemon'
+        namesize = len(named)
+        oddname = namesize % 2 == 1
+        numsideslashL = ( decor_length - namesize - 2 ) //  2 #for 7-letter starter 32-9=23 // 2 = 11. then {11}{1}{7}{1}{11} = 24+7 = 31.
+        if oddname: numsideslashR = numsideslashL+1
+        else: numsideslashR = numsideslashL
+        slashes_full= genborder(num=decor_length,cha='/')
+        sideslashesL = genborder(num=numsideslashL,cha='/')
+        sideslashesR = genborder(num=numsideslashR,cha='/')
+        if menu: print(f"\n{slashes_full}\n{sideslashesL} {named} {sideslashesR}\n{slashes_full}")
+        else: print(f"\n{slashes_full}\n{sideslashesL} Party Pokémon {sideslashesR}\n{slashes_full}")
+        for i in range(len(parti)):
+            if parti[i].dualType:
+                thipe=typeStrings[parti[i].tipe[0]]
+                thipe+=" // "
+                thipe+=typeStrings[parti[i].tipe[1]]
+            else:
+                thipe=typeStrings[parti[i].tipe[0]]
+            print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
+        print("\n*******************************")
+        return
 def elite4_healquit(poke_party):
-    heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o: ")     
+    heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o, [b] to quit: ")     
     if heal1 == 'b' or heal1=='B':
         print("Leaving Indigo Plateau...")
         micropause()
         return "quitted"
     elif heal1 == 'y' or heal1=='Y':
         #heal all them
-        for i in poke_party:
-            i.restore()
+        for i in poke_party: i.restore()
         print("\nYour party is looking better than ever!!")
         shortpause()
         return "healed"
     else:
+        #otherwise, we move
         return "advance"
 #for printing all this info to screen
 def print_dex():
@@ -3200,16 +3214,39 @@ def hashborder(num=24):
     for i in range(num):
         blank+='#'
     return blank
-def genborder(num=24,char='='):
+def genborder(num=24,cha='='):
     star = ''
     for i in range(num):
-        star+=char
+        star+=cha
     return star
+def codexer():
+    codex=np.ones((19,19),dtype=float)
+    codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
+    codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
+    codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
+    codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
+    codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=2.0,0.5,0.5,0.0,2.0,0.5 #electric
+    codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],codex[5,9],codex[5,14],codex[5,16]=0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
+    codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
+    codex[7,3],codex[7,7],codex[7,8],codex[7,12],codex[7,13],codex[7,16],codex[7,17]=2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
+    codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],codex[8,11],codex[8,12],codex[8,16]=2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
+    codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=2.0,0.5,2.0,2.0,0.5,0.5 #flying
+    codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=2.0,2.0,0.5,0.0,0.5 #psychic
+    codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],codex[11,13],codex[11,15],codex[11,16],codex[11,17]=0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
+    codex[12,1],codex[12,5],codex[12,6],codex[12,8],codex[12,9],codex[12,11],codex[12,16]=2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
+    codex[13,0],codex[13,10],codex[13,13],codex[13,15]=0.0,2.0,2.0,0.5 #ghost
+    codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
+    codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
+    codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
+    codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
+    ans = codex.copy()
+    return ans
 rng = np.random.default_rng()
-codex=np.ones((19,19))
+#codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
 #steel 16,fairy 17,typeless (no relationships) 18
+"""
 codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
 codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
 codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
@@ -3228,6 +3265,8 @@ codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
 codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
 codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
 codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
+"""
+codex = codexer()
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Typeless"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
