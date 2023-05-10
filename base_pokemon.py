@@ -1331,10 +1331,18 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         fullhash = genborder(num=dec,cha='#')
         line1 = magic_text(long=dec,cha='#',spacing='  ',txt=self.name)
         print('\n'+line1)
-        if self.dualType:               print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
-        else:                           print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
-        if self.null_nature == False:   print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
-        else:                           print(f"Nature : {self.nature_str} | Up - None, Down - None")
+        if self.dualType:
+            print(f"\nLevel {self.level}"+\
+                f" \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}"+\
+                f" \t({self.gender})")
+        else:
+            print(f"\nLevel {self.level}"+\
+                f" \t{typeStrings[self.tipe[0]]} \t({self.gender})")
+        if self.null_nature == False:
+            print(f"Nature : {self.nature_str}"+\
+                f" | Up - {nature_stat_str[self.nature[0]]},"+\
+                f" Down - {nature_stat_str[self.nature[1]]}")
+        else:   print(f"Nature : {self.nature_str} | Up - None, Down - None")
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
         print(f"Atk : \t{format(self.attack,'.2f')}")
         print(f"Def : \t{format(self.defense,'.2f')}")
@@ -1342,7 +1350,6 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         print(f"Sp.D: \t{format(self.spdef,'.2f')}")
         print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
-        print(fullhash)
         #met conditions
         #birthday
         borndays = t.strftime("%a %d %b %Y,%H:%M:%S",self.timeborn).split(',')
@@ -1389,20 +1396,14 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def showMoves(self):
         global typeStrings,mov,game_width
         dec = game_width
-        #siz = len(f'  {self.name}ss Moves  ')
-        #oddd = siz % 2 == 1
-        #sidL = (dec - siz) // 2
-        #if oddd: sidR = sidL +1
-        #else: sidR = sidL
-        #hashL  =genborder(num=sidL,cha='#')
-        #hashR  =genborder(num=sidR,cha='#')
-        #print(f"{hashL}  {self.name}'s Moves  {hashR}")
+        fullhash = genborder(num=game_width,cha='#')
         line1 = magic_text(long=dec,cha='#',txt=f"{self.name}'s Moves",spacing='  ')
-        print('\n'+line1)
+        print('\n'+line1+'\n')
         for i in range(len(self.knownMoves)):
             print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}"+ \
                     f"\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}"+ \
                     f"\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
+        print('\n'+fullhash)
         return
     #show evs and ivs
     def appraise(self):
@@ -1436,8 +1437,10 @@ class battle:
     #this needs to go IN battle()
     def checkBattle(self):
         ## need to add hazards, flying, diving, digging, shadowing, grounded or ungrounded
-        global typeStrings
-        print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\\\\\\\\\\\\\")
+        global typeStrings,game_width
+        cpuname_line = magic_text(txt=f'{self.cpu_mon.name} ({self.cpu_name})',spacing=' ',long=game_width,cha='/',cha2='\\')
+        #print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\\\\\\\\\\\\\")
+        print(cpuname_line)
         if self.cpu_mon.dualType:
                 print(f"{typeStrings[self.cpu_mon.tipe[0]]} // {typeStrings[self.cpu_mon.tipe[1]]}")
         else:
@@ -1505,8 +1508,12 @@ class battle:
                 print(prii[i[0]])
             pass
         ####       hazards for blue...          ####
-        print("------------------------------------")
-        print(f"\\\\\\\\\\\\\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
+        #print("------------------------------------")
+        dasher = genborder(num=game_width,cha='-')
+        print(dasher)
+        usrname_line = magic_text(txt=f'{self.usr_mon.name} ({self.usr_name})',spacing=' ',long=game_width,cha2='/',cha='\\')
+        #print(f"\\\\\\\\\\\\\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
+        print(usrname_line)
         if self.usr_mon.dualType:
                 print(f"{typeStrings[self.usr_mon.tipe[0]]} // {typeStrings[self.usr_mon.tipe[1]]}")
         else:
@@ -1553,7 +1560,8 @@ class battle:
             print(f"HP |#...........| {format(self.usr_mon.currenthpp,'.2f')}%")
         #stat boosts
         redStats=[self.usr_mon.atstage-6,self.usr_mon.destage-6,self.usr_mon.sastage-6,self.usr_mon.sdstage-6,self.usr_mon.spstage-6,self.usr_mon.acstage-6,self.usr_mon.evstage-6]
-        print("\nStat Boosts and Nerfs\n****************************")
+        #print("\nStat Boosts and Nerfs\n"+genborder(num=game_width,cha='*'))
+        print("\n"+magic_text(txt='Stat Boosts and Nerfs',spacing=' ',cha=' ',long=game_width)+"\n"+genborder(num=game_width,cha='*'))
         for i in range(len(redStats)):
             if redStats[i]==0:
                 print(statstrs[i]+" none")
@@ -1570,8 +1578,10 @@ class battle:
             if i[1]>0:
                 print(drii[i[0]])
             pass
-        print("------------------------------------")
-        print("-------Battle Settings-------")
+        #print("------------------------------------")
+        print(dasher)
+        setline = magic_text(txt='Battle Settings',spacing='',long=game_width,cha='-')
+        print(setline)
         if self.field.weather=="clear":
             weat="CLEAR"
         elif self.field.weather=="sunny":
@@ -1594,7 +1604,8 @@ class battle:
             terr="MISTY"
         print(f"Weather : {weat}")
         print(f"Terrain : {terr}")
-        print("\n___ End of battle status ___")
+        endline = magic_text(txt='End of battle status',spacing=' ',cha='_',long=game_width)
+        print("\n"+endline)
 
     def startbattle(self, e4=False):
         ####Battle starts####
