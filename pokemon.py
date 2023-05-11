@@ -30,7 +30,7 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
     print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
-    magic_text, genborder#, game_width
+    magic_text, genborder, party_fixivs, party_fixevs#, game_width
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -618,13 +618,23 @@ while 1:
             ful = genborder(num=game_width,cha='&')
             print(f"\n{ful}\n{trai}\n{ful}")
             #choose a pokemon
-            #print("")
             for i in range(len(userParty)):
                 print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level}")
-            trainChoice=input("\nWhich Pokémon will we train?:\n[#] or [b]ack: ")
+            trainChoice=input("\nWhich Pokémon will we train?:\n[#], [p]erfect IVs, [f]ull EVs, or [b]ack: ")
             #option to go back, from pokemon selection to main screen
             if trainChoice=='b' or trainChoice=='B':
                 break
+            elif trainChoice=='p' or trainChoice=='P':
+                #perfect ivs of all
+                party_fixivs(userParty)
+                print('\nPerfected all IVs!')
+                micropause()
+                continue
+            elif trainChoice=='f' or trainChoice=='F':
+                party_fixevs(userParty)
+                print('\nFully trained all Pokémon!')
+                micropause()
+                continue
             try:
                 pokeIndex=int(trainChoice)-1
                 pokeTrain=userParty[pokeIndex]
@@ -642,7 +652,6 @@ while 1:
             else:
                 while 1:
                     traline = magic_text(txt=f'Training {pokeTrain.name}',spacing=' ',long=game_width,cha='+')
-                    #print(f"\n******** Training {pokeTrain.name} ********")
                     print('\n'+traline)
                     hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n\n[#] or [b]ack\n: ")
                     if hypermoves == 'b' or hypermoves=='B': #superhyper
@@ -652,11 +661,21 @@ while 1:
                     #### super-hyper training #### aa:training
                     if hypermoves == '1': 
                         while 1: #i want to loop back here unless specifically broken
-                            superHyper=input("\nManage [E]Vs or [I]Vs or [L]evels\nor [b]ack: ") #anything other than options below will skip to the next loop of choose a pokemon
+                            superHyper=input("\nManage [E]Vs or [I]Vs or [L]evels\n[p]erfect IVs, [f]ull EVs, or [b]ack: ") #anything other than options below will skip to the next loop of choose a pokemon
                             if superHyper=='b' or superHyper=='B':
                                 print("\nLeaving SuperHyper Training...")
                                 micropause()
                                 break
+                            if superHyper=='p' or superHyper=='P':
+                                pokeTrain.perfect_ivs()
+                                print("\nPerfected IVs!")
+                                micropause()
+                                continue
+                            if superHyper=='f' or superHyper=='F':
+                                pokeTrain.full_evs()
+                                print(f"\nFully trained {pokeTrain.name}!")
+                                micropause()
+                                continue
                             #EVs
                             if superHyper=='e':
                                 while 1:

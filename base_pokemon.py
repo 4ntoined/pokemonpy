@@ -264,6 +264,12 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         else:
             self.reStat()
         return
+    def perfect_ivs(self,val=31):
+        self.set_evs((val,val,val,val,val,val),ivs=True)
+        return
+    def full_evs(self):
+        self.set_evs(tuple(random_evs()),ivs=False)
+        return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
         #sets should be a list of str with names of moves to learn
@@ -1502,10 +1508,11 @@ class battle:
         #####################################################################################
         ## is there a screen up
         walls = (self.field.reflectBCounter, self.field.lightscBCounter, self.field.veilBCounter)
-        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===",f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
+        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", \
+                f"\n=== Light Screen Up : {self.field.lightscBCounter} ===", \
+                f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
         for i in list(enumerate(walls)):
-            if i[1]>0:
-                print(prii[i[0]])
+            if i[1]>0:  print(prii[i[0]])
             pass
         ####       hazards for blue...          ####
         #print("------------------------------------")
@@ -2794,6 +2801,22 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
         return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
         debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
         tipe=np.array([tipe1,tipe2]),how_created=how_created)
+def makeRandom(level=100,numMoves=6,how_created='nursery'):
+    global mov,mo
+    dome = makeMon( rng.integers( len(dex) ), level, \
+        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
+    ranMoves = rng.choice(mo,size=numMoves,replace=False)
+    dome.knownMoves = list(ranMoves)
+    dome.PP=[mov[i]["pp"] for i in ranMoves]
+    return dome
+def party_fixivs(parti):
+    #set all ivs of every pokemon in parti to 31
+    for i in parti: i.perfect_ivs()
+    return
+def party_fixevs(parti):
+    #fully train evs on every pokemon in parti
+    for i in parti: i.full_evs()
+    return
 def saveParty(savefile,pokeparty,overwrite=False):
     if os.path.exists(savefile) and not overwrite:
         #do not save
@@ -3091,14 +3114,6 @@ def loadMon(savefile):
     except ValueError:
         print("!! This file is all over the place !!")
         return [0]
-def makeRandom(level=100,numMoves=6,how_created='nursery'):
-    global mov,mo
-    dome = makeMon( rng.integers( len(dex) ), level, \
-        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
-    ranMoves = rng.choice(mo,size=numMoves,replace=False)
-    dome.knownMoves = list(ranMoves)
-    dome.PP=[mov[i]["pp"] for i in ranMoves]
-    return dome
 #check party for non fainted pokemon
 def checkBlackout(party):
     """
@@ -3258,6 +3273,18 @@ def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
     border_r = genborder(num=sider,cha=cha2)
     ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
     return ans
+def random_evs():
+    global rng
+    ii = 0
+    evv = [0]
+    while ii < 5: #do 5 times
+        #take random values [0,min(252,remaining ev allowance)]
+        limit = min(252,508-sum(evv))
+        opts = np.arange(0,limit+1,4)
+        evv.append(rng.choice(opts))
+        ii+=1
+    evv.append(508-sum(evv)) #for 6th recorded entry, take the remaining allowance
+    return evv[1:]
 def codexer():
     codex=np.ones((19,19),dtype=float)
     codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal

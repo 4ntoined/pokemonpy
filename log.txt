@@ -1032,4 +1032,6 @@ and at very little cost
 to set banner widths throughout the game, you can also set your name and the number of starters
 you start with. have also been standardizing newlines and placement of pauses
 very cool. also new random elite5 leveling. someone text the battle mechanics
+20:23- added buttons to fully ev train or perfect the ivs of individual pokemon and whole
+parties at once. youre welcome
 
