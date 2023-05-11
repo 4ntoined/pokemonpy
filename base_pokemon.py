@@ -1,4 +1,4 @@
-#the basic classes and functions of the pokemon code
+#the basic classes and functions of the Pokémon code
 """ legal stuff
 Copyright (C) 2023 Adarius
 This program is free software: you can redistribute it and/or modify
@@ -22,6 +22,7 @@ import calendar as cal
 import hashlib
 #import copy
 import numpy as np
+from texter import genborder,magic_text,magic_head
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 #classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats
@@ -148,12 +149,11 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         if os.path.exists(filename) and not overwrite:
             ans = 'file exists'
         else:
-            poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
-            poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
-            poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
-            poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
-            #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]
+            poke_tuple = [self.name,self.level,self.nature,self.tipe,self.gender]           #name, level, nature, type, gender
+            poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]             #base stats
+            poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]        #evs
+            poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]        #ivs
+            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]   #borntime, bornplace, how born, hall of fame count
             poke_moves = [self.knownMoves]
             poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
             #gen hash
@@ -170,6 +170,15 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         return ans
     def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
+        poke_tuple = [self.name,self.level,self.nature,self.tipe,self.gender]           #name, level, nature, type, gender
+        poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]             #base stats
+        poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]        #evs
+        poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]        #ivs
+        poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]   #borntime, bornplace, how born, hall of fame count
+        poke_moves = [self.knownMoves]
+        poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
+        #
+        """
         name=self.name
         lvl=self.level
         #pokemon base stats
@@ -202,28 +211,29 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         nacher = self.nature
         #known moves
         mvs=self.knownMoves
+        """
         #construct line to save all pokemon data
-        line=name
-        line+=f",{lvl},"
-        for i in base: #add all the base stats
+        line=self.name #name
+        line+=f",{self.level},"
+        for i in poke_base: #add all the base stats
             line+=f" {i}"
         line+=","
-        for i in iv: #add all the ivs
+        for i in poke_ivs: #add all the ivs
             line+=f" {i}"
         line+=","
-        for i in ev: #add all the evs
+        for i in poke_evs: #add all the evs
             line+=f" {i}"
         line+=","
-        for i in tip:
+        for i in self.tipe:
             line+=f" {i}"
         line+=","
-        for i in nacher:
+        for i in self.nature:
             line+=f" {i}"
         line+=","
-        for i in mvs:
+        for i in self.knownMoves:
             line+=f" {i}"
         line+=','
-        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount}"
+        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount},{self.gender}"
         #gen hash
         coder = hashlib.new('md5')
         coder.update(line.encode('UTF-8'))
@@ -1701,16 +1711,16 @@ class battle:
                             else:
                                 ### looking at a pokemon in the party ###
                                 while 1: 
-                                    pChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
+                                    pChoice=input(f"\nWhat to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
                                     ## go back
                                     if pChoice=="b" or pChoice=="B":
                                         break #breaks the singular pokemon loop and back to the party
                                     ## show move details
                                     if pChoice=="m" or pChoice=="M":
                                         while 1: #move input loop for displaying move info
-                                            print("")
+                                            #print("")
                                             select.showMoves()
-                                            movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
+                                            movChoice=input("\nWhich move(s) to look at?\n[#] or [b]ack: ")
                                             if movChoice=="b" or movChoice=="B":
                                                 #leave move info selection, back to what to do w pokemon
                                                 break
@@ -1725,7 +1735,7 @@ class battle:
                                                 print("\n** Use the indices to select moves to take a closer look at. **")
                                             else:
                                                 for i in range(len(movez)):
-                                                    print("")
+                                                    #print("")
                                                     moveInfo(movez[i])
                                                     micropause()
                                                 #we got all the move info out?, go back to pokemon?
@@ -1780,7 +1790,7 @@ class battle:
                                         print("\n** Use the indices to select moves to take a closer look at. **")
                                     else:
                                         for i in range(len(movez)):
-                                            print("")
+                                            #print("")
                                             moveInfo(movez[i])
                                             micropause() #drama
                                         #we got all the move info out?, go back to pokemon?
@@ -2105,7 +2115,7 @@ class battle:
                                                     print("\n** Use the indices to select moves to take a closer look at. **")
                                                 else:
                                                     for i in range(len(movez)):
-                                                        print("")
+                                                        #print("")
                                                         moveInfo(movez[i])
                                                         micropause() #drama
                                                     #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
@@ -2986,7 +2996,7 @@ def loadShowdown(savefile):
         #set name, moves, evs, ivs
         newmon.name = namer
         newmon.set_evs(eevs)                        #proofed! should make sure these are error-proofed
-        newmon.set_ivs(iivs)                        #proofed!
+        newmon.set_evs(iivs,ivs=True)               #proofed!
         newmon.learn_sets( moves )                  #proofed!
         if gender == 'none': newmon.gender = 'N'
         else: newmon.gender = gender
@@ -3003,7 +3013,7 @@ def loadMonNpy(savefile):
     cheers=False
     try:
         poke_arrr = np.load(savefile,allow_pickle=True)
-        poke_arrr = poke_arrr.reshape((-1,28))
+        poke_arrr = poke_arrr.reshape((-1,29))
         n_poke = poke_arrr.shape[0]
     except FileNotFoundError:
         print('File not found.')
@@ -3025,24 +3035,25 @@ def loadMonNpy(savefile):
                 coder=hashlib.new('md5')
                 coder.update(str(poke_line).encode('UTF-8'))
                 hass = coder.hexdigest()
-                oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
-                atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
-                spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
+                oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[5],\
+                atbase=poke_arr[6],debase=poke_arr[7],sabase=poke_arr[8],sdbase=poke_arr[9],\
+                spbase=poke_arr[10],tipe=poke_arr[3],how_created=poke_arr[24])
                 #to set moves,pp,evs,ivs,birthtime
-                oldie.knownMoves = poke_arr[26]
+                oldie.knownMoves = poke_arr[27]
                 oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
                 oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
-                    poke_arr[10:16]
+                    poke_arr[11:17]
                 oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
-                    poke_arr[16:22]
+                    poke_arr[17:23]
+                oldie.gender=poke_arr[4]
                 tampered=False
                 if hass != poke_hass:
                     tampered=True
                     oldie.set_born(how_created='tampered')
                 else:
-                    oldie.timeborn=poke_arr[22]
-                    oldie.bornplace=poke_arr[24]
-                    oldie.hallfamecount=poke_arr[25]
+                    oldie.timeborn=poke_arr[23]
+                    oldie.bornplace=poke_arr[25]
+                    oldie.hallfamecount=poke_arr[26]
                 pass
             #except ValueError:
             #    print('Value error/Data corrupted')
@@ -3094,8 +3105,11 @@ def loadMon(savefile):
                 newP.bornplace = line[10]
                 newP.hallfamecount = int(float(line[11]))
             newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
-            newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
-            newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+            #newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
+            #newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+            newP.set_evs(evz)
+            newP.set_evs(ivz,ivs=True)
+            newP.gender=line[12]
             newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
@@ -3135,7 +3149,8 @@ def checkBlackout(party):
 def moveInfo(moveCode):
     global mov, typeStrings
     move=mov[moveCode]
-    print(f"------------ {move['name']} ------------")
+    #print(f"------------ {move['name']} ------------")
+    print('\n'+magic_text(txt=f"{move['name']}",spacing=' ',cha='-',long=game_width))
     print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
     if move['special?']==2:
         print(f"[{typeStrings[move['type']]}] | [Status] | PP: {move['pp']}")
@@ -3166,7 +3181,7 @@ def print_party(parti, named='namo', menu=False):
         return
     else:
         dec = game_width
-        if not menu: named='Party Pokemon'
+        if not menu: named='Party Pokémon'
         #namesize = len(named)
         #oddname = namesize % 2 == 1
         #numsideslashL = ( decor_length - namesize - 2 ) //  2 #for 7-letter starter 32-9=23 // 2 = 11. then {11}{1}{7}{1}{11} = 24+7 = 31.
@@ -3175,8 +3190,9 @@ def print_party(parti, named='namo', menu=False):
         slashes_full= genborder(num=dec,cha='/')
         #sideslashesL = genborder(num=numsideslashL,cha='/')
         #sideslashesR = genborder(num=numsideslashR,cha='/')
-        line1 = magic_text(txt=named,spacing=' ',cha='/',long=dec)
-        print(f"\n{slashes_full}\n{line1}\n{slashes_full}")
+        #line1 = magic_text(txt=named,spacing=' ',cha='/',long=dec)
+        #print(f"\n{slashes_full}\n{line1}\n{slashes_full}")
+        print('\n'+magic_head(txt=named,spacing=' ',cha='/',long=game_width))
         #else: print(f"\n{slashes_full}\n{sideslashesL} Party Pokémon {sideslashesR}\n{slashes_full}")
         for i in range(len(parti)):
             if parti[i].dualType:
@@ -3257,22 +3273,22 @@ def hashborder(num=24):
     for i in range(num):
         blank+='#'
     return blank
-def genborder(num=24,cha='='):
-    star = ''
-    for i in range(num):
-        star+=cha
-    return star
-def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
-    if not cha2: cha2 = cha
-    summ = long-len(txt)-len(spacing) * 2
-    od = summ % 2 == 1
-    sidel = summ // 2
-    if od: sider = sidel + 1
-    else: sider = sidel
-    border_l = genborder(num=sidel,cha=cha)
-    border_r = genborder(num=sider,cha=cha2)
-    ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
-    return ans
+#def genborder(num=24,cha='='):
+#    star = ''
+#    for i in range(num):
+#        star+=cha
+#    return star
+#def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
+#    if not cha2: cha2 = cha
+#    summ = long-len(txt)-len(spacing) * 2
+#    od = summ % 2 == 1
+#    sidel = summ // 2
+#    if od: sider = sidel + 1
+#    else: sider = sidel
+#    border_l = genborder(num=sidel,cha=cha)
+#    border_r = genborder(num=sider,cha=cha2)
+#    ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
+#    return ans
 def random_evs():
     global rng
     ii = 0
@@ -3287,24 +3303,51 @@ def random_evs():
     return evv[1:]
 def codexer():
     codex=np.ones((19,19),dtype=float)
-    codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
-    codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
-    codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
-    codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
-    codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=2.0,0.5,0.5,0.0,2.0,0.5 #electric
-    codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],codex[5,9],codex[5,14],codex[5,16]=0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
-    codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
-    codex[7,3],codex[7,7],codex[7,8],codex[7,12],codex[7,13],codex[7,16],codex[7,17]=2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
-    codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],codex[8,11],codex[8,12],codex[8,16]=2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
-    codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=2.0,0.5,2.0,2.0,0.5,0.5 #flying
-    codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=2.0,2.0,0.5,0.0,0.5 #psychic
-    codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],codex[11,13],codex[11,15],codex[11,16],codex[11,17]=0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
-    codex[12,1],codex[12,5],codex[12,6],codex[12,8],codex[12,9],codex[12,11],codex[12,16]=2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
-    codex[13,0],codex[13,10],codex[13,13],codex[13,15]=0.0,2.0,2.0,0.5 #ghost
-    codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
-    codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
-    codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
-    codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
+    codex[0,12],codex[0,13],codex[0,16]=\
+            0.5,0,0.5 #normal
+    codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],\
+            codex[1,12],codex[1,14],codex[1,16]=\
+            0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
+    codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=\
+            2.0,0.5,0.5,2.0,2.0,0.5 #water
+    codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],\
+            codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=\
+            0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
+    codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=\
+            2.0,0.5,0.5,0.0,2.0,0.5 #electric
+    codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],\
+            codex[5,9],codex[5,14],codex[5,16]=\
+            0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
+    codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],\
+            codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=\
+            2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
+    codex[7,3],codex[7,7],codex[7,8],codex[7,12],\
+            codex[7,13],codex[7,16],codex[7,17]=\
+            2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
+    codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],\
+            codex[8,11],codex[8,12],codex[8,16]=\
+            2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
+    codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=\
+            2.0,0.5,2.0,2.0,0.5,0.5 #flying
+    codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=\
+            2.0,2.0,0.5,0.0,0.5 #psychic
+    codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],\
+            codex[11,13],codex[11,15],codex[11,16],codex[11,17]=\
+            0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
+    codex[12,1],codex[12,5],codex[12,6],codex[12,8],\
+            codex[12,9],codex[12,11],codex[12,16]=\
+            2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
+    codex[13,0],codex[13,10],codex[13,13],codex[13,15]=\
+            0.0,2.0,2.0,0.5 #ghost
+    codex[14,14],codex[14,16],codex[14,17]=\
+            2.0,0.5,0.0 #dragon
+    codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=\
+            0.5,2.0,2.0,0.5,0.5 #dark
+    codex[16,1],codex[16,2],codex[16,4],codex[16,5],\
+            codex[16,12],codex[16,16],codex[16,17]=\
+            0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
+    codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=\
+            0.5,2.0,0.5,2.0,2.0,0.5 #fairy
     ans = codex.copy()
     return ans
 rng = np.random.default_rng()

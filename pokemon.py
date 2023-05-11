@@ -30,7 +30,8 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
     print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
-    magic_text, genborder, party_fixivs, party_fixevs#, game_width
+    party_fixivs, party_fixevs#, game_width
+from texter import genborder,magic_text,magic_head
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
@@ -341,16 +342,6 @@ while 1:
     #### check party pokemon? aa:party ####
     if userChoice=="p" or userChoice=="P":
         while 1:
-            """
-            print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
-            for i in range(len(userParty)):
-                if userParty[i].dualType:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                    thipe+=" // "
-                    thipe+=typeStrings[userParty[i].tipe[1]]
-                else:
-                    thipe=typeStrings[userParty[i].tipe[0]]
-                print(f"[{i+1}] {userParty[i].name} \tLv. {userParty[i].level} \tHP: {format(userParty[i].currenthpp,'.2f')}% \t{thipe}")"""
             print_party(userParty)
             partyChoice=input("\nEnter a number to see a Pokémon's summary.\n[#] or [b]ack: ")
             #go back to main screen
@@ -423,12 +414,12 @@ while 1:
                     #set first
                     if sumChoice=='f' or sumChoice=='F':
                         if pokeInd==0:
-                            print(f"{selMon.name} is already first!")
+                            print(f"\n{selMon.name} is already first!")
                             shortpause()
                             continue
                         moving=userParty.pop(pokeInd)
                         userParty.insert(0,moving)
-                        print(f"{moving.name} was moved to the front!")
+                        print(f"\n{moving.name} was moved to the front!")
                         shortpause() #kills
                         continue
                     #
@@ -448,11 +439,11 @@ while 1:
                             except IndexError: print("\n** Use the indices to select moves to take a closer look at. **")
                             else:
                                 for i in range(len(movez)):
-                                    print("")
+                                    #print("")
                                     moveInfo(movez[i])
                                     micropause() #drama
                                 #we got all the move info out?, go back to pokemon?
-                                pause=input("\nEnter anything to continue back to Pokémon summary...")
+                                pause=input("\nEnter anything to continue...")
                                 break
                     #judge
                     if sumChoice=="j" or sumChoice=="J":
@@ -814,7 +805,7 @@ while 1:
                                         print("\n** Use the indices to select moves to take a closer look at. **")
                                     else:
                                         for i in range(len(movez)):
-                                            print("")
+                                            #print("")
                                             moveInfo(movez[i])
                                             micropause() #drama
                                         pause=input("\nEnter anything to continue... ")
@@ -890,7 +881,7 @@ while 1:
                                         print("\n** Use the indices to select moves to take a closer look at. **")
                                     else:
                                         for i in range(len(movez)):
-                                            print("")
+                                            #print("")
                                             moveInfo(movea[i])
                                             micropause() #drama
                                         pause=input("\nEnter anything to continue... ")
