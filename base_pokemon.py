@@ -20,7 +20,6 @@ import os
 import time as t
 import calendar as cal
 import hashlib
-#import copy
 import numpy as np
 from texter import genborder,magic_text,magic_head
 from dexpoke import dex
@@ -1038,14 +1037,13 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def hit(self,attacker,damagepoints,effectiveness,notes,move_index,comments):
         global mov
         moveTipe = mov[move_index]['type']
-        if effectiveness==0. and not ('arrows' in notes):
-            print(f"{self.name} is immune!")
+        if effectiveness==0. and not ('arrows' in notes): print(f"{self.name} is immune!")
         else:
             if ('arrows' in notes) and (not self.grounded or self.flying): #will need to further generalize for smack down?
                 print(f"The arrows can reach {self.name}!")
                 self.grounded=True
+                if self.flying and self.charged: self.charged = False    #cancel charged move only if it was fly or bounce
                 self.flying=False
-                self.charged=False #canceling fly and bounce
                 self.field.grounding(self)
                 effectiveness=1.0
             print(f"\n{self.name} is hit!")
@@ -1104,16 +1102,13 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             shortpause()
             #check for faint
-            if self.currenthp<=0.:
-                self.faint()
+            if self.currenthp<=0.:  self.faint()
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
                 shortpause()
                 ### setting counter/mirror coat damage data info
-                if mov[move_index]['special?'] == 1:
-                    self.counter_damage = (damagepoints, "spec")
-                else:
-                    self.counter_damage = (damagepoints, "phys")
+                if mov[move_index]['special?'] == 1:    self.counter_damage = (damagepoints, "spec")
+                else:                                   self.counter_damage = (damagepoints, "phys")
                 #status conditions
                 #statuses bro
                 statuses=[]  #hey, hear me out, what if we made a numpy array out of these strings, "para" "burn" etc., and used numpy tricks to do all
@@ -2404,7 +2399,7 @@ class field:
                     pass
                 pass
             return ans
-    ### only the hazards on the ground
+    ### call when a pokemon is grounded
     def grounding(self,poke):
         #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
@@ -2413,10 +2408,8 @@ class field:
         if stickyOn:
             poke.stickyNerf()
         if spikesOn:
-            if poke.battlespot == "red":
-                poke.spikesDamage(self.spikesA)
-            elif poke.battlespot == "blue":
-                poke.spikesDamage(self.spikesB)
+            if poke.battlespot == "red":    poke.spikesDamage(self.spikesA)
+            elif poke.battlespot == "blue": poke.spikesDamage(self.spikesB)
         if toxicOn:
             if poke.battlespot == "red":
                 #check for poison type
@@ -2424,30 +2417,26 @@ class field:
                     self.toxicA = 0
                     print(f"{poke.name} absorbs the toxic spikes!")
                     micropause()
-                else:
-                    poke.toxicAffliction(self.toxicA)
+                else:   poke.toxicAffliction(self.toxicA)
             elif poke.battlespot == "blue":
                 if 7 in poke.tipe:
                     self.toxicB = 0
                     print(f"{poke.name} absorbs the toxic spikes!")
                     micropause()
-                else:
-                    poke.toxicAffliction(self.toxicB)
+                else:   poke.toxicAffliction(self.toxicB)
     ### call when a pokemon comes out
     def landing(self,poke):
         #this function will simulate pokemon being damaged by entry hazards
         #need to make functions for mon() of the entry hazard damages being done
         #need to check for rocks, spikes, toxix spikes (except for poisons) and sticky web
         #only for grounded pokemon tho...
-        rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         #stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
         #spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
         #toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
+        rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         ##some hazards
-        if rocksOn:
-            poke.rocksDamage()
-        if poke.grounded:
-            self.grounding(poke)
+        if rocksOn:         poke.rocksDamage()
+        if poke.grounded:   self.grounding(poke)
         # there will be more entry hazards unfortunately
         return
     #aa:hazards
@@ -3117,10 +3106,10 @@ def loadMon(savefile):
             micropause()
         return loadPokes
     except FileNotFoundError:
-        print("! The file name wasn't found... !\n")
+        print("! The file name wasn't found... !")
         return [0]
     except OSError:
-        print("! The file name wasn't found... !\n")
+        print("! The file name wasn't found... !")
         return [0]
     except IndexError:
         print("!! The save file is corrupted !!")
@@ -3131,8 +3120,10 @@ def loadMon(savefile):
 #check party for non fainted pokemon
 def checkBlackout(party):
     """
+    input..
     party : list of mon() objects
         a party of pokemon
+    returns..
     p : integer
         number of nonfainted pokemon
     alive : list of intgers
@@ -3144,25 +3135,25 @@ def checkBlackout(party):
         if party[i].fainted==False:
             p+=1
             alive.append(i)
-    return p,alive
+    return (p,alive)
 #moves have pwr, phys/spec, type, accu, descipt
 def moveInfo(moveCode):
-    global mov, typeStrings
+    global mov, typeStrings, move_dict
     move=mov[moveCode]
     #print(f"------------ {move['name']} ------------")
+    #stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
     print('\n'+magic_text(txt=f"{move['name']}",spacing=' ',cha='-',long=game_width))
     print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
-    if move['special?']==2:
-        print(f"[{typeStrings[move['type']]}] | [Status] | PP: {move['pp']}")
-    elif move['special?']==1:
-        print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
-    elif move['special?']==0:
-        print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
+    print(f"[{typeStrings[move['type']]}] | [{move_dict[move['special?']]}] | PP: {move['pp']}")
     print("-\n"+move['desc'])
-    if move['contact?']:
-        print("-The user makes contact with the target.")
-    else:
-        print("-The user does not make contact with the target.")
+    if move['contact?']:    print("-The user makes contact with the target.")
+    else:                   print("-The user does not make contact with the target.")
+    #if move['special?']==2:
+    #elif move['special?']==1:
+    #    print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
+    #elif move['special?']==0:
+    #    print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
+    return
 def makeParty(numb=1,level=100):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
@@ -3263,16 +3254,16 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.4)
     return
-def dashborder(num=24):
-    blank = ''
-    for i in range(num):
-        blank+='-'
-    return blank
-def hashborder(num=24):
-    blank = ''
-    for i in range(num):
-        blank+='#'
-    return blank
+#def dashborder(num=24):
+#    blank = ''
+#    for i in range(num):
+#        blank+='-'
+#    return blank
+#def hashborder(num=24):
+#    blank = ''
+#    for i in range(num):
+#        blank+='#'
+#    return blank
 #def genborder(num=24,cha='='):
 #    star = ''
 #    for i in range(num):
@@ -3299,9 +3290,14 @@ def random_evs():
         opts = np.arange(0,limit+1,4)
         evv.append(rng.choice(opts))
         ii+=1
-    evv.append(508-sum(evv)) #for 6th recorded entry, take the remaining allowance
+    remain = 508-sum(evv)
+    if remain > 252: evv.append(252)
+    else: evv.append(remain) 
     return evv[1:]
 def codexer():
+    #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
+    #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
+    #steel 16,fairy 17,typeless (no relationships) 18
     codex=np.ones((19,19),dtype=float)
     codex[0,12],codex[0,13],codex[0,16]=\
             0.5,0,0.5 #normal
@@ -3352,37 +3348,19 @@ def codexer():
     return ans
 rng = np.random.default_rng()
 game_width = 64
-#codex=np.ones((19,19))
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
 #steel 16,fairy 17,typeless (no relationships) 18
-"""
-codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
-codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
-codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
-codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
-codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=2.0,0.5,0.5,0.0,2.0,0.5 #electric
-codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],codex[5,9],codex[5,14],codex[5,16]=0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
-codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
-codex[7,3],codex[7,7],codex[7,8],codex[7,12],codex[7,13],codex[7,16],codex[7,17]=2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
-codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],codex[8,11],codex[8,12],codex[8,16]=2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
-codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=2.0,0.5,2.0,2.0,0.5,0.5 #flying
-codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=2.0,2.0,0.5,0.0,0.5 #psychic
-codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],codex[11,13],codex[11,15],codex[11,16],codex[11,17]=0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
-codex[12,1],codex[12,5],codex[12,6],codex[12,8],codex[12,9],codex[12,11],codex[12,16]=2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
-codex[13,0],codex[13,10],codex[13,13],codex[13,15]=0.0,2.0,2.0,0.5 #ghost
-codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
-codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
-codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
-codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
-"""
 codex = codexer()
-typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Typeless"]
+typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
+        "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
+        "Dark","Steel","Fairy","Typeless"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
-stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
+stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)]) #used for showdown save loading
+move_dict = dict([(2,'Status'),(1,'Special'),(0,'Physical')])                  #used for move info displaying
 Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggle_i=struggle #move index of struggle

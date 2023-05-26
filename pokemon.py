@@ -29,7 +29,7 @@ import base_pokemon
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
-    print_party, loadMonNpy, saveParty, dashborder, loadShowdown, copyrigh, \
+    print_party, loadMonNpy, saveParty, loadShowdown, copyrigh, \
     party_fixivs, party_fixevs#, game_width
 from texter import genborder,magic_text,magic_head
 from moves import getMoveInfo,mov #,natures
@@ -929,10 +929,12 @@ while 1:
     #zz:training    
     ####Loading pokemon aa:loadpokemon
     if userChoice=='l' or userChoice=='L':
-        print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!")
-        print("(use 'showdown' or 'sd' to load a Pokemon Showdown team. I.e. 'sd team.sav')")
+        print('\n'+magic_text(txt='Load Pokémon',cha='*',spacing=' ',long=game_width))
+        print('You can load previously saved Pokémon')
+        #print("******** Load Pokémon ********\n\nYou can load previously saved Pokémon!")
+        print("(use 'showdown' or 'sd' to load a Pokémon Showdown team.)\n(i.e. 'sd team.sav')")
         while 1: #savefile input loop
-            shortpause()
+            #shortpause()
             saveChoice=input("\nWhat save file to load?\n[blank] entry to use default or [b]ack\n: ")
             #go back
             showdown_yes = saveChoice.split(' ')
@@ -940,17 +942,17 @@ while 1:
                 print("Leaving Load Pokémon..")
                 shortpause()
                 break
-            elif saveChoice=='7':
-                print('dev insights')
-                her = loadMon2('newmew.npy')
-                if her == 'messed up':
-                    print("try again")
-                    #shortpause()
-                else:
-                    userParty.append(her)
-                    #shortpause()
+            #elif saveChoice=='7':
+            #    print('dev insights')
+            #    her = loadMon2('newmew.npy')
+            #    if her == 'messed up':
+            #        print("try again")
+            #        #shortpause()
+            #    else:
+            #        userParty.append(her)
+            #        #shortpause()
             elif ( showdown_yes[0] == 'showdown' or showdown_yes[0] == 'sd' ) and len(showdown_yes) > 1 :
-                newbies = loadShowdown( saveChoice.split(' ')[1] )
+                newbies = loadShowdown( showdown_yes[1] )
                 #except IndexError:
                 #    #input was 'showdown', quietly continue to try to open that file
                 #    pass
