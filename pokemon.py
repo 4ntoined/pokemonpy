@@ -17,10 +17,10 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-# *****************************   to do list   *****************************: 
-# ABILITIES *cough* // genders ugh
-# priority // fly/dig/dive/etc // baton pass // bide // trapping moves bind/whirlpool 
-# multistrike moves // encore // endeavor // echoed voice/rollout // protect-feint
+# *****************************   to do list   ******************************
+# ABILITIES *cough*
+# baton pass // bide // trapping moves bind/whirlpool 
+# multistrike moves // encore // endeavor // echoed voice // protect-feint
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
 import os, copy, sys, getopt, argparse
@@ -1027,7 +1027,7 @@ while 1:
             if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
             else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
             line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
-            print(line1+'\n'+line2+'\n'+line1)
+            print('\n'+line1+'\n'+line2+'\n'+line1)
             for i in range(len(players_parties)):
                 print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
             print(f"Equipped: {players_parties[equii][1]}\n")
@@ -1073,8 +1073,8 @@ while 1:
                 party_count += 1
                 if len(new_party)>=1: equi = input("Would you like to equip this party?\n[y] or [n]: ")
                 if equi=='y' or equi=="Y":
-                    userParty = new_party
-                    equiped = players_parties[-1][2]
+                    userParty=new_party
+                    equiped=players_parties[-1][2]
                 pass
             elif 1: #some condition? for looking at a party, should just be an integer
                 #see the pokemon in the party, give and take options for that party
@@ -1149,8 +1149,10 @@ while 1:
                         elif megaChoice=='a' or megaChoice=='A':
                             #list pokemon from userParty and copy them into
                             #this party, party_i
+                            blah = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2] == equiped ))
+                            currentpartyname = players_parties[blah][1] 
                             while 1: #input loop for choosing pokemon, break when pokemon are added
-                                print_party(userParty)
+                                print_party(userParty,named=currentpartyname,menu=True)
                                 gigChoice = input("Which Pokémon to add?\n[#]'s or [b]ack: ")
                                 if gigChoice=='b' or gigChoice=='B': break
                                 if gigChoice=='all' or gigChoice=='All' or gigChoice=='ALL':
@@ -1314,6 +1316,5 @@ while 1:
                 pass
         #after parties menu while loop
     ####what's the next spot?####
-
     #end of game, loops back to main screen
 #runs after intial while loop

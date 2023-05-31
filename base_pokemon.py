@@ -1328,20 +1328,14 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
             print(f"{typeStrings[self.tipe[0]]} / {typeStrings[self.tipe[1]]}")
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
-    def summary(self):
+    def summary(self,inbattle=False):
         global typeStrings, nature_stat_str, game_width
         dec = game_width
-        #namesize = len(self.name)
-        #oddname = namesize % 2 == 1
-        #hashnumL= ( dec_length-namesize-4 ) // 2
-        #if oddname: hashnumR = hashnumL+1
-        #else: hashnumR = hashnumL
-        #sidehashL = genborder(num=hashnumL,cha='#')
-        #sidehashR = genborder(num=hashnumR,cha='#')
-        #print(f"\n{sidehashL}  {self.name}  {sidehashR}")
         fullhash = genborder(num=dec,cha='#')
         line1 = magic_text(long=dec,cha='#',spacing='  ',txt=self.name)
+        #print poke name
         print('\n'+line1)
+        #print type, level, gender
         if self.dualType:
             print(f"\nLevel {self.level}"+\
                 f" \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}"+\
@@ -1349,17 +1343,27 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         else:
             print(f"\nLevel {self.level}"+\
                 f" \t{typeStrings[self.tipe[0]]} \t({self.gender})")
+        #print nature
         if self.null_nature == False:
             print(f"Nature : {self.nature_str}"+\
                 f" | Up - {nature_stat_str[self.nature[0]]},"+\
                 f" Down - {nature_stat_str[self.nature[1]]}")
         else:   print(f"Nature : {self.nature_str} | Up - None, Down - None")
+        #print stats
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
-        print(f"Atk : \t{format(self.attack,'.2f')}")
-        print(f"Def : \t{format(self.defense,'.2f')}")
-        print(f"Sp.A: \t{format(self.spatk,'.2f')}")
-        print(f"Sp.D: \t{format(self.spdef,'.2f')}")
-        print(f"Spe : \t{format(self.speed,'.2f')}")
+        if inbattle:
+            print(f"Atk : \t{format(self.bat,'.2f')}")
+            print(f"Def : \t{format(self.bde,'.2f')}")
+            print(f"Sp.A: \t{format(self.bsa,'.2f')}")
+            print(f"Sp.D: \t{format(self.bsd,'.2f')}")
+            print(f"Spe : \t{format(self.bsp,'.2f')}")
+            print("\n* These stats reflect in-battle boosts and nerfs. *")
+        else:
+            print(f"Atk : \t{format(self.attack,'.2f')}")
+            print(f"Def : \t{format(self.defense,'.2f')}")
+            print(f"Sp.A: \t{format(self.spatk,'.2f')}")
+            print(f"Sp.D: \t{format(self.spdef,'.2f')}")
+            print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
         #met conditions
         #birthday
@@ -1382,6 +1386,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         if self.hallfamecount == 1: print("It has defeated the Elite Four 1 time.")
         elif self.hallfamecount >= 2: print(f"It has defeated the Elite Four {self.hallfamecount} times.")
         print(fullhash)
+        return
         
     def battleSummary(self):
         global typeStrings,nature_stat_str
@@ -1688,17 +1693,19 @@ class battle:
                     #### go party pokemon ####
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
-                            print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                            #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
                             ## show the player's pokemon
-                            for i in range(len(self.usrs)):
-                                print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
-                            partyChoice=input("Select a Pokémon...\n[#] or [b] to go back: ")
+                            #for i in range(len(self.usrs)):
+                            #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                            print_party(self.usrs, menu=False)
+                            partyChoice=input("\nSelect a Pokémon!\n[#] or [b]ack: ")
                             if partyChoice=='b' or partyChoice=="B":
                                 break #goes back to user turn loop from pokemon selection
                             try:
                                 select=self.usrs[int(partyChoice)-1]
                                 nuserInd=int(partyChoice)-1
-                                select.battleSummary()
+                                #select.battleSummary()
+                                select.summary(inbattle=True)
                             except ValueError: #will print warning, and restart the party loop without seeing a pokemon
                                 print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
                             except IndexError:
@@ -2081,7 +2088,8 @@ class battle:
                                 try:
                                     nuserInd=int(newPoke)-1
                                     select=self.usrs[nuserInd]
-                                    select.battleSummary()
+                                    #select.battleSummary()
+                                    select.summary(inbattle=True)
                                 except ValueError:
                                     print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
                                 except IndexError:

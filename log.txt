@@ -1035,3 +1035,9 @@ very cool. also new random elite5 leveling. someone text the battle mechanics
 20:23- added buttons to fully ev train or perfect the ivs of individual pokemon and whole
 parties at once. youre welcome
 
+31 may 2023-
+15:34- i just made so many small, nice improvements to UI can code tidiness and lost all of it bc
+somewhere along the way I deleted like half of the code ,the whole battle class, half of the mon class
+and all the small changes I made. so i had to revert to the github backup that naturally
+has none of this days progress saved. so im so mad right now
+
