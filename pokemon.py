@@ -425,7 +425,7 @@ while 1:
                     #
                     if sumChoice=="m" or sumChoice=="M":
                         while 1: #user input loop
-                            selMon.showMoves()
+                            #selMon.showMoves()
                             movChoice=input("\nWhich move to look at?\n[#] or [b]ack: ")
                             if movChoice=="b" or movChoice=="B":
                                 #leave move info selection, back to what to do w pokemon

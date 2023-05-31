@@ -1438,8 +1438,14 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
 #zz:monclass
 #aa:battleclass
 class battle:
-    def __init__(self, usr_party, cpu_party, fields, usr_name='You', cpu_name='OPPONENT'):
+    def __init__(self, usr_party, cpu_party, fields, usr_name='', cpu_name='OPPONENT'):
         ###can i get a uhhhhhhh
+        if not usr_name:
+            self.usr_name = 'You'
+            self.usr_named = False
+        else:
+            self.usr_name = usr_name
+            self.usr_named = True
         self.usr_name = usr_name
         self.cpu_name = cpu_name
         self.usrs = usr_party
@@ -1650,14 +1656,15 @@ class battle:
                 switching=False
                 fighting=False
                 charging=False
-                print(f"\n================ Turn {turn} ================\n")
-                
+                print( magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+                #print(f"\n================ Turn {turn} ================\n") 
                 self.usr_mon.inBattle()
                 self.cpu_mon.inBattle()
                 #----UI----#
                 print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
                 print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
-                print("\n............Your team:")
+                if self.usr_named:  print(f"\n............{self.usr_name}:")
+                else:               print("\n............Your team:")
                 print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
                 print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
                 ## if the usrs pokemon has their resting flag from a mustRest move, usr cant move (unless their move missed...
@@ -1680,16 +1687,16 @@ class battle:
                 else:
                     resting=False
                     charging=False
-                    userMove=input(f"What should {self.usr_mon.name} do?\n[F]ight\n[P]okemon\n[S]tatus\n[R]un\n: ")
+                    userMove=input(f"\nWhat should {self.usr_mon.name} do?\n[F]ight\n[P]okémon\n[S]tatus\n[R]un\n: ")
                     #### run away to end battle ####
                     if userMove=='r' or userMove == 'R':
-                        print(f"{self.usr_name} and {self.usr_mon.name} get away safely!")
+                        print(f"\n{self.usr_name} and {self.usr_mon.name} get away safely!")
                         battleOver=True
                         break #break the otherwise indefinite turn-loop, ending the battle
                     #### check status of battle? ####
                     if userMove=="s" or userMove=="S":
                         self.checkBattle()
-                        input("enter anything to go back...")
+                        pause=input("enter anything to go back...")
                     #### go party pokemon ####
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
@@ -1705,15 +1712,15 @@ class battle:
                                 select=self.usrs[int(partyChoice)-1]
                                 nuserInd=int(partyChoice)-1
                                 #select.battleSummary()
-                                select.summary(inbattle=True)
                             except ValueError: #will print warning, and restart the party loop without seeing a pokemon
-                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
                             except IndexError:
-                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
                             else:
                                 ### looking at a pokemon in the party ###
                                 while 1: 
-                                    pChoice=input(f"\nWhat to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
+                                    select.summary(inbattle=True)
+                                    pChoice=input(f"\nWhat to do with {select.name}?\n[s]end into battle, see [m]oves, or [b]ack: ")
                                     ## go back
                                     if pChoice=="b" or pChoice=="B":
                                         break #breaks the singular pokemon loop and back to the party
@@ -1721,7 +1728,7 @@ class battle:
                                     if pChoice=="m" or pChoice=="M":
                                         while 1: #move input loop for displaying move info
                                             #print("")
-                                            select.showMoves()
+                                            #select.showMoves()
                                             movChoice=input("\nWhich move(s) to look at?\n[#] or [b]ack: ")
                                             if movChoice=="b" or movChoice=="B":
                                                 #leave move info selection, back to what to do w pokemon
@@ -1737,7 +1744,6 @@ class battle:
                                                 print("\n** Use the indices to select moves to take a closer look at. **")
                                             else:
                                                 for i in range(len(movez)):
-                                                    #print("")
                                                     moveInfo(movez[i])
                                                     micropause()
                                                 #we got all the move info out?, go back to pokemon?
@@ -1751,9 +1757,11 @@ class battle:
                                         #keep fainted pokemon off the field
                                         if select.fainted:
                                             print("\n** Cannot switch in fainted Pokémon! **")
+                                            shortpause()
                                             break #back to party
                                         if nuserInd==userInd:
                                             print(f"\n** {select.name} is already in battle! **")
+                                            shortpause()
                                             break #bacl to party
                                         switching=True
                                         break
@@ -1763,10 +1771,11 @@ class battle:
                             #end of pokemon selection loop
                         #end of party pokemon block
                         #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
-                    #fight
+                    #### fight ####
                     if userMove=='f' or userMove=='F':                    
                         #fighting options
                         while 1: #move input loop
+                            print("")
                             for i in range(len(self.usr_mon.knownMoves)):
                                 print(f"[{i+1}] \t{getMoveInfo(self.usr_mon.knownMoves[i])['name']} \t{self.usr_mon.PP[i]} PP")
                             if np.count_nonzero(self.usr_mon.PP)==0:
@@ -1775,7 +1784,7 @@ class battle:
                                 moveDex=struggle_i
                                 shortpause()
                                 break
-                            userFight=input(f"What move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
+                            userFight=input(f"\nWhat move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
                             #go back
                             infom = userFight.split()
                             if userFight=='b' or userFight=='B':
