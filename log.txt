@@ -1041,3 +1041,18 @@ somewhere along the way I deleted like half of the code ,the whole battle class,
 and all the small changes I made. so i had to revert to the github backup that naturally
 has none of this days progress saved. so im so mad right now
 
+2 june 2023-
+15:15- forgot to mention last time while I was so mad that i added some fire type moves
+doing some water type moves now, I think i will go down the line of types and add moves
+whose functions are already programmed-in
+thinking about it i could probably come up with something to rip all the relevant information
+of a move directly from bulbapedia and configure it into the format that I need
+so i wont have to do it manually. but idk we'll see
+15:46- i just tried to play the game before commiting and got an error "Segmentation fault (core dumped)"
+googled, and don't know exactly what it means, but i found that the breaking point was
+where moves.py goes to save the movedex to movedex.txt. My thinking is that with the moves I added today
+there's just too much data for that save to txt file to withstand and it breaks
+i was able to fix it by just not saving movedex.txt, but we'll have to think up a
+work-around/alternative to it
+but crisis resolved for now so im going to commit and play zelda!
+

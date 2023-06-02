@@ -1368,18 +1368,18 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         #met conditions
         #birthday
         borndays = t.strftime("%a %d %b %Y,%H:%M:%S",self.timeborn).split(',')
-        print(f"This Pokemon was initialized on\n=== {borndays[0]} @ "+\
+        print(f"This Pokémon was initialized on\n=== {borndays[0]} @ "+\
                 f"{borndays[1]} UTC")
         #birthplace
         print(f"=== In the {self.bornplace} timezone.")
         #birth circumstance
         if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
-        elif self.bornpath == 'copied':print("=== It was cloned from another Pokemon!")
-        elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
+        elif self.bornpath == 'copied':print("=== It was cloned from another Pokémon!")
+        elif self.bornpath == 'starter':print("=== It was a starter Pokémon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
-        elif self.bornpath == 'showdown':print("=== It was made in Pokemon Showdown!")
+        elif self.bornpath == 'showdown':print("=== It was made in Pokémon Showdown!")
         elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
@@ -1656,11 +1656,10 @@ class battle:
                 switching=False
                 fighting=False
                 charging=False
-                print( magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
-                #print(f"\n================ Turn {turn} ================\n") 
                 self.usr_mon.inBattle()
                 self.cpu_mon.inBattle()
                 #----UI----#
+                print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
                 print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
                 print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
                 if self.usr_named:  print(f"\n............{self.usr_name}:")
@@ -1682,7 +1681,6 @@ class battle:
                     charging=False
                     resting=False
                     fighting=True
-                    pass
                 ## the usr will select a move, or send out another pokemon
                 else:
                     resting=False
@@ -2090,9 +2088,10 @@ class battle:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             self.field.faintedA = True #if there was a faint, mark it on the field
                             while 1:
-                                print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
-                                for i in range(len(self.usrs)):
-                                    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                                #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                                #for i in range(len(self.usrs)):
+                                #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                                print_party(self.usrs,menu=False)
                                 newPoke=input("Select a Pokémon for battle...\n[#]: ")
                                 try:
                                     nuserInd=int(newPoke)-1
@@ -2280,16 +2279,13 @@ class battle:
         #self.field.weather=rng.choice(Weathers)
         self.field.weatherCounter=np.inf
         self.field.terrain=rng.choice(Terrains)
-        if self.field.terrain=="none":
-            self.field.terrainCounter=np.inf
-        else:
-            self.field.terrainCounter=5
+        if self.field.terrain=="none":  self.field.terrainCounter=np.inf
+        else:                           self.field.terrainCounter=5
         for i in self.cpus:
             i.withdraw()
             i.restore()
-        for i in self.usrs:
-            i.withdraw()
-        shortpause() #kills
+        for i in self.usrs: i.withdraw()
+        shortpause()
         return self.user_won
     ###end of battle block###
     

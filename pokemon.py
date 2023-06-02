@@ -1,4 +1,4 @@
-#Pokemon x Python
+#Pokémon x Python
 """
 Copyright (C) 2023 Adarius
 This program is free software: you can redistribute it and/or modify
@@ -40,7 +40,7 @@ rng=np.random.default_rng()
 #parse arguments
 n_args = len(sys.argv)-1
 if n_args: #there are arguments
-    parser = argparse.ArgumentParser(description='Play Pokemon!')
+    parser = argparse.ArgumentParser(description='Play Pokémon!')
     parser.add_argument('-w','--width',action='store',default=64,type=int,\
             required=False, dest='gamewidth', \
             help='set the width of banners and headings, recommended: 64')
@@ -48,7 +48,7 @@ if n_args: #there are arguments
             required=False, help='write your name'\
             )
     parser.add_argument('-p','--npoke',action='store',default=1,type=int,
-            required=False,help='number of starter Pokemon'\
+            required=False,help='number of starter Pokémon'\
             )
     #parser.add_argument()
     argos = parser.parse_args( sys.argv[1:] )
@@ -1111,7 +1111,7 @@ while 1:
                                 print(f"\n!! {party_name} is already equipped !!")
                                 micropause()
                                 continue #back to party options
-                            if sizep < 1: #if this party has zero or fewer Pokemon
+                            if sizep < 1: #if this party has zero or fewer Pokémon
                                 print("\n!! You cannot equip an empty party !!")
                                 micropause()
                                 continue #back to party options
