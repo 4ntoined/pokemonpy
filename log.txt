@@ -1056,3 +1056,10 @@ i was able to fix it by just not saving movedex.txt, but we'll have to think up 
 work-around/alternative to it
 but crisis resolved for now so im going to commit and play zelda!
 
+6 june 2023-
+20:50- i think i did frost breath and storm throw, i did some UI stuff in the battle functions
+some other things that arent so important to note but its cool they exist
+i wanted to work on my fledgling trainer ai (def not an ai but thats what we're gonna call her)
+but also max and z moves, maybe filling out the battle status thing with some of the newer
+mechanics that've been implemented
+

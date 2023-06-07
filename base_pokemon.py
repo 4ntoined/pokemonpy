@@ -1629,6 +1629,18 @@ class battle:
         print(f"Terrain : {terr}")
         endline = magic_text(txt='End of battle status',spacing=' ',cha='_',long=game_width)
         print("\n"+endline)
+        return
+    
+    def UI(self): #turnnumber, cpumon, usrsmon, usrname, whether user is named, 
+        #print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+        print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
+        print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.usr_named:  print(f"\n............{self.usr_name}:")
+        else:               print("\n............Your team:")
+        print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
+        print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+        return
+  
 
     def startbattle(self, e4=False):
         ####Battle starts####
@@ -1660,12 +1672,13 @@ class battle:
                 self.cpu_mon.inBattle()
                 #----UI----#
                 print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
-                print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
-                print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
-                if self.usr_named:  print(f"\n............{self.usr_name}:")
-                else:               print("\n............Your team:")
-                print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
-                print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+                self.UI()
+                #print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
+                #print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
+                #if self.usr_named:  print(f"\n............{self.usr_name}:")
+                #else:               print("\n............Your team:")
+                #print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
+                #print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
                 ## if the usrs pokemon has their resting flag from a mustRest move, usr cant move (unless their move missed...
                 if self.usr_mon.resting:    #or the target is immune.... more work)
                     resting=True
@@ -1702,6 +1715,8 @@ class battle:
                             ## show the player's pokemon
                             #for i in range(len(self.usrs)):
                             #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                            self.UI()
+                            print("")
                             print_party(self.usrs, menu=False)
                             partyChoice=input("\nSelect a Pokémon!\n[#] or [b]ack: ")
                             if partyChoice=='b' or partyChoice=="B":
@@ -1773,6 +1788,8 @@ class battle:
                     if userMove=='f' or userMove=='F':                    
                         #fighting options
                         while 1: #move input loop
+                            print("")
+                            self.UI()
                             print("")
                             for i in range(len(self.usr_mon.knownMoves)):
                                 print(f"[{i+1}] \t{getMoveInfo(self.usr_mon.knownMoves[i])['name']} \t{self.usr_mon.PP[i]} PP")
@@ -2630,8 +2647,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #### rollout #### 
     if 'rollout' in note: 
         if attacker.curled: #another boost if poke has used defense curl
-            power*=2
-        power *= 2** (float(attacker.rolling_out))
+            power*=2.
+        power *= 2. ** (float(attacker.rolling_out))
     #### getting caught ####
     #digging diving flying
     if ('gust' in note) and defender.flying:
@@ -2720,22 +2737,24 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         else:
             pass
     ####critical hit chance####
+    crit_tiers = (25,9,3,2) #standard = 1/24, 1/8, 1/2, 1/1
     critical=1.
-    if "highCrit" in note:
-        crit=9
+    crit = 0
+    if frostbreath in note:     critical = 1.5  #guaranteed crit
     else:
-        crit=25
-    if rng.integers(1,crit)==1:
-        critical=1.5
-        if statNerf<1: #if change is not productive to attacker
-            attack/=statNerf #undo it
-        if statBoost>1: #if change is productive to defender
-            defense/=statBoost #undo it
+        if "highCrit" in note:                  crit+=1         #better chances
+        elif "fetch_holding_leek" in note:      crit+=1         #better chances
+        if crit > 3:                            crit=3          #catch overflow
+        if rng.integers(1,crit_tiers[crit])==1: critical=1.5    #hitting a crit
+    if critical == 1.5:         #it's a critical hit
+        if statNerf<1:          #if change is not productive to attacker
+            attack/=statNerf    #undo it
+        if statBoost>1:         #if change is productive to defender
+            defense/=statBoost  #undo it
         damages.append("It's a critical hit!")
         screennerf=1.0 #critical hits bypass screens
         burn=1.0 #critical hits bypass burn-attack-nerf
-    if screennerf < 1.0:
-        damages.append(f"Protected by {screen_tag[screen_i]}")
+    if screennerf < 1.0:    damages.append(f"Protected by {screen_tag[screen_i]}")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
     ####STAB####

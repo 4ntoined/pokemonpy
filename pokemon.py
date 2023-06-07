@@ -71,8 +71,8 @@ game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
 ##aa:mainmenu
 mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
-    "\nPokémon [C]enter\nBo[x]es\nBattle [S]etting"+ \
-    "\n[L]oad\nWhat to do: "
+    "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
+    "\n[L]oad\n\nWhat to do: "
 ############   give the player a starter  ###############
 starterParty=[]
 for i in range(nstart):
