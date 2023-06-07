@@ -35,6 +35,7 @@ from texter import genborder,magic_text,magic_head
 from moves import getMoveInfo,mov #,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
+from trainerai import cpu
 #set up the rng
 rng=np.random.default_rng()
 #parse arguments
@@ -115,6 +116,13 @@ while 1:
     #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################
+    if userChoice == "Adarius":
+        tessb = battle(userParty, trainerParty, scarlet, usr_name=username, cpu_name=opponentName)
+        tess = cpu(tessb)
+        tess.echo()
+        tess.test1()
+
+
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":
         #hello
