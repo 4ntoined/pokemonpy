@@ -16,11 +16,19 @@ class cpu:
     def test1(self):
         print(self.activemon.name)
         return
+    def checkMoveEffectiveness(movei, typing):
+
+        return
+
     def fightswitch(self):
         #let's start here
         #the cpu has to deicde whether it will fight or choose a new pokemon
-        #influences: do we have super-effective moves? stab moves?
-
+        #influences: do we have super-effective moves? stab moves?, are we faster?, are we defensive
+        #are we the right kind of defensive, based on target's stats
+        #logic: try to fight, if we have supereffective moves or otherwise highly rated moves, fight
+        #       if we have no highly rated moves, switch
+        target_type = self.enemymon.tipe
+        
         return
     def moveRating():
         return
