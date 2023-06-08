@@ -16,3 +16,39 @@ class cpu:
     def test1(self):
         print(self.activemon.name)
         return
+    def fightswitch(self):
+        #let's start here
+        #the cpu has to deicde whether it will fight or choose a new pokemon
+        #influences: do we have super-effective moves? stab moves?
+
+        return
+    def moveRating():
+        return
+    def statMoveRating(self):
+        return
+    def damageMoveRating(self,poke,targetmon='',maxx=16):
+        #overall, considering all the things
+        #things to consider: power, secondary effects, phy/spec
+        #priority to brick break when a screen is up
+        #priority to high crit moves when a screen is up or target has boosted defense
+        #
+        if not targetmon: targetmon = self.enemymon
+        nmoves = len(poke.knownMoves)
+        if nmoves > maxx: nmoves = maxx
+        for i in range(len(nmoves)):
+            ans = power * 
+        return
+    def powerRating(self,poke,targetmon='',maxx=16):
+        #this function will look at the moves of poke, apply their
+        #base powers, types, categories with opponent mon self.enemymon
+        #if not targetmon: targetmon = self.enemymon
+        #determine/set number of moves to consider
+        nmoves = len(poke.knownMoves)
+        if nmoves > maxx: nmoves = maxx
+        #for each move, give a rating
+        for i in range(len(nmoves)):
+            
+            ans = movepower * typeeff * stab
+
+        
+        return

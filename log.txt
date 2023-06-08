@@ -1062,4 +1062,6 @@ some other things that arent so important to note but its cool they exist
 i wanted to work on my fledgling trainer ai (def not an ai but thats what we're gonna call her)
 but also max and z moves, maybe filling out the battle status thing with some of the newer
 mechanics that've been implemented
+23:08- trainer ai is a mess at the moment but my I am chipping away at the concept and
+that's the first step to all of this
 
