@@ -116,11 +116,15 @@ while 1:
     #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################
-    if userChoice == "Adarius":
+    if userChoice == "adarius":
         tessb = battle(userParty, trainerParty, scarlet, usr_name=username, cpu_name=opponentName)
         tess = cpu(tessb)
-        tess.echo()
-        tess.test1()
+        #tess.echo()
+        #tess.test1()
+        she =  tess.powerRating(trainerParty[0], 1 )
+        she =  tess.powerRating(trainerParty[0], 1 )
+        she =  tess.powerRating(trainerParty[0], 42 )
+        print(she)
 
 
     #user setting the weather and terrain for classic mode #aa:classicsettings
