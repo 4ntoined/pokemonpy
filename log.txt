@@ -1065,3 +1065,11 @@ mechanics that've been implemented
 23:08- trainer ai is a mess at the moment but my I am chipping away at the concept and
 that's the first step to all of this
 
+16 june 2023-
+18:14- working on the cpu ai still, but i also just got an idea to write a script
+that produces some pokemon, maybe a couple parties and a battle instance
+you could run that script in a live session of python and call on those
+pokes, parties and battlefields and you could really easily execute certain
+functions write there in terminal, would also be useful for importing into scripts
+etc...probably gonna do that rn lol
+

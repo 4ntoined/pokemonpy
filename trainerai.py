@@ -51,7 +51,7 @@ class cpu:
         if not targetmon: targetmon = self.enemymon
         movedat = mov[ movei ]
         move_phys = movedat['special?'] == 0
-        move_notes = list(movedat['notes'].copy())
+        move_notes = movedat['notes'].copy()
         #nmoves = len(poke.knownMoves)
         #if nmoves > maxx: nmoves = maxx
         #for i in range(len(nmoves)):
