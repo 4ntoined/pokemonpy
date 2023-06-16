@@ -8,7 +8,7 @@ class cpu:
         self.party = battlefield.cpus
         self.activemon = battlefield.cpu_mon
         self.enemymon = battlefield.usr_mon
-        self.field = battlefield
+        self.bfield = battlefield
         return
 
     def echo(self):
@@ -32,7 +32,12 @@ class cpu:
         target_type = self.enemymon.tipe
         
         return
-    def moveRating():
+    def stat_vs_damage_Rating(self):
+        #the cpu has decided to use a move instead of switching out
+        #we will check for special cases where a status move could be handy
+        #if none exist we will prioritize damaging
+        #if low-health, look for a healing move
+        #if you can set up a beneficial weather or terrain, do that
         return
     def statMoveRating(self):
         return
@@ -44,18 +49,44 @@ class cpu:
         #
         global mov
         if not targetmon: targetmon = self.enemymon
-        movedat=mov[movei]
+        movedat = mov[ movei ]
+        move_phys = movedat['special?'] == 0
+        move_notes = list(movedat['notes'].copy())
         #nmoves = len(poke.knownMoves)
         #if nmoves > maxx: nmoves = maxx
         #for i in range(len(nmoves)):
         #move category poke stats synergy
+        ##      consider physical vs special    ##
+        #physical moves are favored when attacker has greater physical than special stat, vise versa
+        #physical moves are favored when target has greater special than physical, vise versa
         phys_attacker = poke.bat > poke.bsa
-        if phys_attacker and movedat['special?']==0:        physpec = 1.3
-        elif not phys_attacker and movedat['special?']==1:  physpec = 1.3
-        else: physpec = 1.
+        phys_defense = targetmon.bde > targetmon.bsd
+        physpec = 1.
+        if move_phys:
+            if phys_attacker:       physpec += 0.2
+            if not phys_defense:    physpec += 0.2
+        else:
+            if not phys_attacker:   physpec += 0.2
+            if phys_defense:        physpec += 0.2
+        ##                                          ##
+        ##      consider secondary effects      ##
+        weatherball_flag = self.bfield.field.weather != 'clear'
+        splitnotes = move_notes.split(' ')
+        seconds = ('burn' in splitnotes) or ('frze' in splitnotes) or ('pois' in splitnotes) \
+                or ('badPois' in splitnotes) or ('para' in splitnotes) or ('sleep' in splitnotes)
+        thirds = ('highCrit' in splitnotes) or ('frostbreath' in splitnotes) or ('conf' in splitnotes) \
+                ('flinch' in splitnotes) or (weatherball_flag and ('weatherball' in splitnotes))
+        if seconds or thirds:   fourth = 1.3
+        else:                   fourth = 1.
+        ##                                          ##
+        #if phys_attacker and movedat['special?']==0:        physpec = 1.3
+        #elif not phys_attacker and movedat['special?']==1:  physpec = 1.3
+        #else: physpec = 1.
+        #move category enemy synergy
+        #if phys_defense and movedat
         ## calc move power and stab and stat boosts nerfs
         power = powerRating(self,poke,movei,targetmon=targetmon)
-        ans = power * physpec
+        ans = power * physpec * fourth
 
         return
     def powerRating(self,poke,movei,targetmon='',maxx=16):
@@ -65,7 +96,7 @@ class cpu:
         if not targetmon: targetmon = self.enemymon
         #unload move
         movedat = mov[movei]
-        #check for 2turn or must rest, well halve the power
+        #check for 2turn or must rest, we'll halve the power
         if '2turn' in movedat['notes'] or 'mustRest' in movedat['notes']:   turnnerf = 0.75
         else:                                                               turnnerf = 1.
         #check for stab
@@ -76,6 +107,8 @@ class cpu:
         else:                       boost = statStages[poke.atstage]
         #consider defensive stat stages#
         ##
+        #   consider weather synergy    #
+        #                               #
         #
         ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost
         return ans
