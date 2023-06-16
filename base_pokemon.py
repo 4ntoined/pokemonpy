@@ -2600,7 +2600,7 @@ class field:
 ##zz:fieldclass
 #aa:damagefunction
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
-    global statStages
+    global statStages, crit_tiers
     ####damage read-out strings####
     damages=[]
     ####set some variable straight
@@ -2737,10 +2737,9 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         else:
             pass
     ####critical hit chance####
-    crit_tiers = (25,9,3,2) #standard = 1/24, 1/8, 1/2, 1/1
     critical=1.
     crit = 0
-    if frostbreath in note:     critical = 1.5  #guaranteed crit
+    if 'frostbreath' in note:     critical = 1.5  #guaranteed crit
     else:
         if "highCrit" in note:                  crit+=1         #better chances
         elif "fetch_holding_leek" in note:      crit+=1         #better chances
@@ -3389,6 +3388,7 @@ typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
         "Dark","Steel","Fairy","Typeless"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
+crit_tiers = (25,9,3,2) #standard = 1/24, 1/8, 1/2, 1/1
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
 stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)]) #used for showdown save loading

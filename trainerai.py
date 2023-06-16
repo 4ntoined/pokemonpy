@@ -71,9 +71,11 @@ class cpu:
         #check for stab
         if movedat['type'] in poke.tipe:    stab = 1.5
         else:                               stab = 1.
-        #consider stat stages
+        #consider offensive stat stages
         if movedat['special?']==1:  boost = statStages[poke.sastage]
         else:                       boost = statStages[poke.atstage]
+        #consider defensive stat stages#
+        ##
         #
         ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost
         return ans
