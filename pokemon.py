@@ -30,9 +30,9 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     makeRandom, makeParty, moveInfo, typeStrings, Weathers, Terrains, \
     shortpause, dramaticpause, micropause, elite4_healquit, print_dex, \
     print_party, loadMonNpy, saveParty, loadShowdown, copyrigh, \
-    party_fixivs, party_fixevs#, game_width
+    party_fixivs, party_fixevs, print_parties, easter_strings
 from texter import genborder,magic_text,magic_head
-from moves import getMoveInfo,mov #,natures
+from moves import getMoveInfo,mov 
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
@@ -48,8 +48,11 @@ if n_args: #there are arguments
     parser.add_argument( '-n','--name',action='store',default='',type=str,\
             required=False, help='write your name'\
             )
-    parser.add_argument('-p','--npoke',action='store',default=1,type=int,
+    parser.add_argument('-s','--psize',action='store',default=1,type=int,
             required=False,help='number of starter Pokémon'\
+            )
+    parser.add_argument('-p','--nparty',action='store',default=1,type=int,
+            required=False,help='number of starter parties'\
             )
     #parser.add_argument()
     argos = parser.parse_args( sys.argv[1:] )
@@ -57,16 +60,20 @@ if n_args: #there are arguments
     #print(argos.gamewidth)
     base_pokemon.game_width = argos.gamewidth
     if argos.name:
-        username=argos.name
-        username_set = True
+        username        = argos.name
+        username_set    = True
     else:
-        username='You'
-        username_set=False
-    nstart=argos.npoke
+        username        ='You'
+        username_set    = False
+    if argos.psize <= 0:    nstart = 1
+    else:                   nstart = argos.psize
+    if argos.nparty <= 0:   nparty = 1
+    else:                   nparty = argos.nparty
 else:
-    username_set=False
-    username='You'
-    nstart=1
+    username_set    = False
+    username        = 'You'
+    nstart          = 6
+    nparty          = 1
 #some oddball variables to calculate once and never again
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
@@ -75,23 +82,29 @@ mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
     "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
     "\n[L]oad\n\nWhat to do: "
 ############   give the player a starter  ###############
-starterParty=[]
-for i in range(nstart):
-    randomLevel = int(rng.normal(loc=100,scale=30))
-    starter= makeRandom(level=randomLevel,how_created='starter')
-    starter.set_evs(tuple(random_evs()))
-    starterParty.append( starter )
+#starterParty=[]
+#for i in range(nstart):
+#    randomLevel = int(rng.normal(loc=100,scale=30))
+#    starter= makeRandom(level=randomLevel,how_created='starter')
+#    starter.set_evs(tuple(random_evs()))
+#    starterParty.append( starter )
 players_parties = []
-players_parties.append((starterParty, "starter", 0))
+pnames = rng.choice(easter_strings, nparty, replace = False)
+for i in range(nparty):
+    newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
+    partyname = pnames[i]
+    players_parties.append((newparty, partyname, i))
+
+#players_parties.append((starterParty, "starter", 0))
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
-userParty=starterParty
+userParty=players_parties[0][0]
 equiped = 0
-party_count = 1 #keeping track of parties as they are created for indexing purposes
+party_count = nparty #keeping track of parties as they are created for indexing purposes
 hallfame_count = 0
 #####################
 ##### creating the trainer for classic mode #####
-rival= makeRandom(np.floor(starter.level*(0.96)), 6)
-rival2= makeRandom(np.floor(starter.level*1.07), 6)
+rival= makeRandom(np.floor(userParty[0].level*(0.96)), 6)
+rival2= makeRandom(np.floor(userParty[0].level*1.07), 6)
 trainerParty=[rival,rival2]
 opponentName="RIVAL"
 #load up a battlefield for classic mode
@@ -1035,16 +1048,18 @@ while 1:
     if userChoice=='X' or userChoice=='x':
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
-            equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
+            #equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
             #if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
             #else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
             #line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
             #print('\n'+line1+'\n'+line2+'\n'+line1)
             partymenuheader = magic_head(txt='Your Parties',long=game_width,spacing='  ',cha='[',cha2=']')
             print('\n'+partymenuheader)
-            for i in range(len(players_parties)):
-                print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
-            print(f"Equipped: {players_parties[equii][1]}\n")
+            print_parties(players_parties, equip=equiped, prespace=False)
+            #equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
+            #for i in range(len(players_parties)):
+            #    print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
+            #print(f"Equipped: {players_parties[equii][1]}\n")
             #equipd = np.argwhere(players_parties[:,1]=="")
             partiesChoice = input("[S]tart a new party\n[#] see party\nor [b]ack: ") 
             if partiesChoice == "b" or partiesChoice == "B":

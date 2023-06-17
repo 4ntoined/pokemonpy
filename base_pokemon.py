@@ -276,8 +276,9 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def perfect_ivs(self,val=31):
         self.set_evs((val,val,val,val,val,val),ivs=True)
         return
-    def full_evs(self):
-        self.set_evs(tuple(random_evs()),ivs=False)
+    def full_evs(self,ivs=False,val=31):
+        if ivs:     self.set_evs(( val,val,val,val,val,val ), ivs = True)
+        else:       self.set_evs( tuple( random_evs() ), ivs = False)
         return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
@@ -2597,7 +2598,7 @@ class field:
             pass
     #more functions of field
 ##zz:fieldclass
-#aa:damagefunction
+#aa:damagefunction #aa:functions
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
     global statStages, crit_tiers
     ####damage read-out strings####
@@ -2794,7 +2795,6 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         ans= np.floor( ((((2.*level)/5. + 2.)*power*attack/defense)/50. + 2.)*damageModifier )
     return ans,tyype,damages
 #zz:damagefunction
-#aa:functions
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
     ans=((2.*base+IV+EV/4.)*level/100.+5.)*nature
@@ -2811,41 +2811,47 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     else:
         matchup2=1.0
     return matchup1*matchup2
-#create a pokemon from the pokedex
-def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
-    Hp=dex[pokedexNumber]['hp']
-    At=dex[pokedexNumber]['at']
-    De=dex[pokedexNumber]['de']
-    Sa=dex[pokedexNumber]['sa']
-    Sd=dex[pokedexNumber]['sd']
-    Sp=dex[pokedexNumber]['sp']
-    nayme=dex[pokedexNumber]['name']
-    tipe1=dex[pokedexNumber]['type1']
-    tipe2=dex[pokedexNumber]['type2']
-    if dex[pokedexNumber]['type2']==20: #single-typed mon
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
-        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
-        tipe=np.array([tipe1]), how_created=how_created)
-    else: #dual-typed
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
-        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
-        tipe=np.array([tipe1,tipe2]),how_created=how_created)
-def makeRandom(level=100,numMoves=6,how_created='nursery'):
-    global mov,mo
-    dome = makeMon( rng.integers( len(dex) ), level, \
-        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
-    ranMoves = rng.choice(mo,size=numMoves,replace=False)
-    dome.knownMoves = list(ranMoves)
-    dome.PP=[mov[i]["pp"] for i in ranMoves]
-    return dome
+##aa:pokeediting
+def random_evs():
+    global rng
+    ii = 0
+    evv = [0]
+    while ii < 5: #do 5 times
+        #take random values [0,min(252,remaining ev allowance)]
+        limit = min(252,508-sum(evv))
+        opts = np.arange(0,limit+1,4,dtype=int)
+        evv.append(rng.choice(opts))
+        ii+=1
+    remain = 508-sum(evv)
+    if remain > 252:
+        evv.append(252)
+        diff = remain-252
+        nopen = 252 - np.array(evv[1:],dtype=int)
+        for i in range(len(nopen)):
+            if nopen[i] > 0:
+                if nopen[i] >= diff:
+                    evv[i+1] += diff
+                    break
+                else:
+                    evv[i+1] += nopen
+                    diff -= nopen
+                pass
+            pass
+        pass
+    else: evv.append(remain) 
+    return evv[1:]
 def party_fixivs(parti):
     #set all ivs of every pokemon in parti to 31
     for i in parti: i.perfect_ivs()
     return
-def party_fixevs(parti):
+def party_fixevs(parti, ivs=False):
     #fully train evs on every pokemon in parti
-    for i in parti: i.full_evs()
+    if ivs:
+        for i in parti: i.perfect_ivs()
+    else:
+        for i in parti: i.full_evs()
     return
+##zz:pokeediting
 def saveParty(savefile,pokeparty,overwrite=False):
     if os.path.exists(savefile) and not overwrite:
         #do not save
@@ -3166,28 +3172,11 @@ def checkBlackout(party):
             p+=1
             alive.append(i)
     return (p,alive)
-#moves have pwr, phys/spec, type, accu, descipt
-def moveInfo(moveCode):
-    global mov, typeStrings, move_dict
-    move=mov[moveCode]
-    #print(f"------------ {move['name']} ------------")
-    #stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
-    print('\n'+magic_text(txt=f"{move['name']}",spacing=' ',cha='-',long=game_width))
-    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
-    print(f"[{typeStrings[move['type']]}] | [{move_dict[move['special?']]}] | PP: {move['pp']}")
-    print("-\n"+move['desc'])
-    if move['contact?']:    print("-The user makes contact with the target.")
-    else:                   print("-The user does not make contact with the target.")
-    #if move['special?']==2:
-    #elif move['special?']==1:
-    #    print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
-    #elif move['special?']==0:
-    #    print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
-    return
-def maker(nparty,psize,nfield):
+## aa:createpokemon
+def maker(nparty,psize,nfield,level=100,how_created='random'):
     # making parties
     parties = []
-    for i in range(nparty): parties.append( makeParty(numb=psize) )
+    for i in range(nparty): parties.append( makeParty(numb=psize,level=level,how_created=how_created) )
         #party = []
         #for j in range(psize):
         #    newmon = makeRandom(how_created='random')
@@ -3199,13 +3188,41 @@ def maker(nparty,psize,nfield):
         newfield = field(rando=True)
         fields.append(newfield)
     return (parties, fields)
-def makeParty(numb=1,level=100):
+def makeParty(numb=1,level=100, how_created='random', doevs=False):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
     for i in range(numb):
-        new_mon = makeRandom(level=level,how_created='random')
+        new_mon = makeRandom(level=level,how_created=how_created)
         pokemon_party.append(new_mon)
     return pokemon_party
+def makeRandom(level=100,numMoves=6,how_created='nursery'):
+    global mov,mo
+    dome = makeMon( rng.integers( len(dex) ), level, \
+        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
+    ranMoves = rng.choice(mo,size=numMoves,replace=False)
+    dome.knownMoves = list(ranMoves)
+    dome.PP=[mov[i]["pp"] for i in ranMoves]
+    dome.full_evs()
+    return dome
+#create a pokemon from the pokedex
+def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
+    Hp,At,De,Sa,Sd,Sp=dex[pokedexNumber]['hp'], dex[pokedexNumber]['at'], \
+            dex[pokedexNumber]['de'], dex[pokedexNumber]['sa'], \
+            dex[pokedexNumber]['sd'], dex[pokedexNumber]['sp']
+    nayme=dex[pokedexNumber]['name']
+    tipe1=dex[pokedexNumber]['type1']
+    tipe2=dex[pokedexNumber]['type2']
+    if dex[pokedexNumber]['type2']==20: #single-typed mon
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1]), how_created=how_created)
+    else: #dual-typed
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1,tipe2]),how_created=how_created)
+
+#zz:createpokemon
+#aa:textprint
 def print_party(parti, named='namo', menu=False):
     #parti: a list of mon() objects
     #namo: name of the party, string
@@ -3213,33 +3230,36 @@ def print_party(parti, named='namo', menu=False):
     global typeStrings
     npoke = len(parti)
     if npoke == 0:
-        print("This party is empty.")
+        print("\nprint_party: This party is empty.")
         return
     else:
         dec = game_width
         if not menu: named='Party Pokémon'
-        #namesize = len(named)
-        #oddname = namesize % 2 == 1
-        #numsideslashL = ( decor_length - namesize - 2 ) //  2 #for 7-letter starter 32-9=23 // 2 = 11. then {11}{1}{7}{1}{11} = 24+7 = 31.
-        #if oddname: numsideslashR = numsideslashL+1
-        #else: numsideslashR = numsideslashL
         slashes_full= genborder(num=dec,cha='/')
-        #sideslashesL = genborder(num=numsideslashL,cha='/')
-        #sideslashesR = genborder(num=numsideslashR,cha='/')
-        #line1 = magic_text(txt=named,spacing=' ',cha='/',long=dec)
-        #print(f"\n{slashes_full}\n{line1}\n{slashes_full}")
         print('\n'+magic_head(txt=named,spacing=' ',cha='/',long=game_width))
-        #else: print(f"\n{slashes_full}\n{sideslashesL} Party Pokémon {sideslashesR}\n{slashes_full}")
         for i in range(len(parti)):
             if parti[i].dualType:
                 thipe=typeStrings[parti[i].tipe[0]]
                 thipe+=" // "
                 thipe+=typeStrings[parti[i].tipe[1]]
-            else:
-                thipe=typeStrings[parti[i].tipe[0]]
+            else:   thipe=typeStrings[parti[i].tipe[0]]
             print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
         print('\n'+slashes_full)
         return
+def print_parties(partylist,equip=0,prespace=True):
+    #partylist: list of 3-tuples containing
+    # (mon objects, strings(party name), int(party index))
+    if len(partylist) == 0:
+        print('\nprint_parties: There are no parties.')
+        return
+    else:
+        equii = np.squeeze( np.argwhere( np.array(partylist,dtype=object)[:,2]==equip ))
+        if prespace: print("")
+        for i in range(len(partylist)):
+            print(f"[{i+1}] {partylist[i][1]} | size: {len(partylist[i][0])}")
+        print(f"Equipped: {partylist[equii][1]}\n")
+        return
+## make starter parties
 def elite4_healquit(poke_party):
     heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o, [b] to quit: ")     
     if heal1 == 'b' or heal1=='B':
@@ -3267,6 +3287,25 @@ def print_dex():
         print(f"{i['index']}:{i['name']} " + tipe + f" | [{i['hp']}]  [{i['at']}]  [{i['de']}]  "+\
               f"[{i['sa']}]  [{i['sd']}]  [{i['sp']}]")
     return
+#moves have pwr, phys/spec, type, accu, descipt
+def moveInfo(moveCode):
+    global mov, typeStrings, move_dict
+    move=mov[moveCode]
+    #print(f"------------ {move['name']} ------------")
+    #stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
+    print('\n'+magic_text(txt=f"{move['name']}",spacing=' ',cha='-',long=game_width))
+    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
+    print(f"[{typeStrings[move['type']]}] | [{move_dict[move['special?']]}] | PP: {move['pp']}")
+    print("-\n"+move['desc'])
+    if move['contact?']:    print("-The user makes contact with the target.")
+    else:                   print("-The user does not make contact with the target.")
+    #if move['special?']==2:
+    #elif move['special?']==1:
+    #    print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
+    #elif move['special?']==0:
+    #    print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
+    return
+##zz:textprint
 def readEvIv(dato):
     #dato - string of "/"-separated stats
     global stats_dict
@@ -3284,12 +3323,6 @@ def readEvIv(dato):
         return ['bonk']
     else:
         return empt
-#def copyrigh():
-#    print('\nCopyright (C) 2023 Adarius')
-#    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
-#        'This is free software, and you are welcome to\n'+\
-#        'redistribute it under certain conditions.')
-#    return
 def micropause():
     t.sleep(0.4)
     return
@@ -3299,46 +3332,6 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.4)
     return
-#def dashborder(num=24):
-#    blank = ''
-#    for i in range(num):
-#        blank+='-'
-#    return blank
-#def hashborder(num=24):
-#    blank = ''
-#    for i in range(num):
-#        blank+='#'
-#    return blank
-#def genborder(num=24,cha='='):
-#    star = ''
-#    for i in range(num):
-#        star+=cha
-#    return star
-#def magic_text(txt='text', cha='=', long=16, spacing=' ',cha2 = ''):
-#    if not cha2: cha2 = cha
-#    summ = long-len(txt)-len(spacing) * 2
-#    od = summ % 2 == 1
-#    sidel = summ // 2
-#    if od: sider = sidel + 1
-#    else: sider = sidel
-#    border_l = genborder(num=sidel,cha=cha)
-#    border_r = genborder(num=sider,cha=cha2)
-#    ans = f"{border_l}{spacing}{txt}{spacing}{border_r}"
-#    return ans
-def random_evs():
-    global rng
-    ii = 0
-    evv = [0]
-    while ii < 5: #do 5 times
-        #take random values [0,min(252,remaining ev allowance)]
-        limit = min(252,508-sum(evv))
-        opts = np.arange(0,limit+1,4)
-        evv.append(rng.choice(opts))
-        ii+=1
-    remain = 508-sum(evv)
-    if remain > 252: evv.append(252)
-    else: evv.append(remain) 
-    return evv[1:]
 def codexer():
     #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
     #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
@@ -3397,6 +3390,10 @@ game_width = 64
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
 #steel 16,fairy 17,typeless (no relationships) 18
 codex = codexer()
+easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
+        "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White"\
+        "Gray","X","Y","Z","Sun","Moon","Stars","Eclipse","Sword","Shield",\
+        "Armor","Crown","Scarlet","Violet","Teal","Indigo")
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
         "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
         "Dark","Steel","Fairy","Typeless"]
