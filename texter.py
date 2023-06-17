@@ -1,6 +1,6 @@
 #gonna use this for my text-printing functions
 #
-def copyrigh(prespace = False):
+def copyrigh(prespace = True):
     if prespace:    print('\nCopyright (C) 2023 Adarius')
     else:           print('Copyright (C) 2023 Adarius')
     print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\

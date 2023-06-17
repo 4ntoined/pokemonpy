@@ -41,7 +41,7 @@ class cpu:
         return
     def statMoveRating(self):
         return
-    def damageMoveRating(self,poke,movei,targetmon,maxx=16):
+    def damageMoveRating(self,poke,movei,targetmon,maxx=16,debug=False):
         #overall, considering all the things
         #things to consider: power, secondary effects, phy/spec
         #priority to brick break when a screen is up
@@ -87,9 +87,12 @@ class cpu:
         ## calc move power and stab and stat boosts nerfs
         #print(targetmon)
         power = self.powerRating(poke,movei,targetmon)
-        ans = power * physpec * fourth
-
-        return ans
+        parts = [physpec, fourth]
+        ans = 1.
+        for i in parts: ans *= i
+        #ans = power * physpec * fourth
+        if debug:   return (ans, parts)
+        else:       return ans
     def powerRating(self,poke,movei,targetmon,maxx=16):
         #this function will look at the moves of poke, apply their
         #base powers, types, categories with opponent mon self.enemymon

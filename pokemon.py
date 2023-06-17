@@ -1036,10 +1036,12 @@ while 1:
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?
             equii = np.squeeze( np.argwhere( np.array(players_parties,dtype=object)[:,2]==equiped ))
-            if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
-            else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
-            line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
-            print('\n'+line1+'\n'+line2+'\n'+line1)
+            #if oddw:    line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2+1)
+            #else:       line1 = genborder(cha='[',num=game_width//2) + genborder(cha=']',num=game_width//2)
+            #line2 = magic_text(long=game_width,cha='[',cha2=']',txt='Your Parties',spacing='  ')
+            #print('\n'+line1+'\n'+line2+'\n'+line1)
+            partymenuheader = magic_head(txt='Your Parties',long=game_width,spacing='  ',cha='[',cha2=']')
+            print('\n'+partymenuheader)
             for i in range(len(players_parties)):
                 print(f"[{i+1}] {players_parties[i][1]} | size: {len(players_parties[i][0])}")
             print(f"Equipped: {players_parties[equii][1]}\n")
@@ -1169,11 +1171,11 @@ while 1:
                                 if gigChoice=='b' or gigChoice=='B': break
                                 if gigChoice=='all' or gigChoice=='All' or gigChoice=='ALL':
                                     pokis = userParty
-                                    break
+                                    #break
                                 else:
                                     try: #number of a pokemon in userParty, 1-indexed
-                                        pokis_i = [int(float(i)-1) for i in gigChoice.split()] #the indeces chosen
-                                        pokis = [userParty[i] for i in pokis_i] # the pokemon selected
+                                        pokis_i = [int(float(i)-1.) for i in gigChoice.split()] #the indeces chosen
+                                        pokis = [userParty[i] for i in pokis_i] # the pokemon(s) selected
                                     except ValueError:
                                         print("\n** Try Again **")
                                         micropause()
@@ -1183,13 +1185,13 @@ while 1:
                                         micropause()
                                         pass
                                     else: #if all goes well, break the add pokemon input
+                                        for i in pokis:
+                                            party_i.append(copy.deepcopy(i))
+                                            party_i[-1].set_born(how_created='copied')
+                                            print(f"{i.name} joined {party_name}!")
+                                        shortpause()
                                         break
                             #take the selection, make a copy of each and add to selected party
-                            for i in pokis:
-                                party_i.append(copy.deepcopy(i))
-                                party_i[-1].set_born(how_created='copied')
-                                print(f"{i.name} joined {party_name}!")
-                            shortpause()
                             pass
                         elif megaChoice=='c' or megaChoice=='C':
                             #ask for a name for the copied party
