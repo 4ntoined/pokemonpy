@@ -1,5 +1,12 @@
 #gonna use this for my text-printing functions
 #
+def copyrigh(prespace = False):
+    if prespace:    print('\nCopyright (C) 2023 Adarius')
+    else:           print('Copyright (C) 2023 Adarius')
+    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+        'This is free software, and you are welcome to\n'+\
+        'redistribute it under certain conditions.')
+    return
 def magic_head(txt='text',cha='=',long=32,spacing=' ',cha2=''):
     if not cha2: cha2 = cha
     oddd = long%2 == 1

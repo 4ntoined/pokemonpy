@@ -22,6 +22,7 @@ import numpy as np
 from base_pokemon import mon, makeMon, makeRandom, mo, saveParty
 from moves import mov,struggle
 from dexpoke import dex
+from texter import copyrigh
 def set_ivs(poke, vals):
     #vals is list or tuple of 6
     poke.hpiv,poke.ativ,poke.deiv,poke.saiv,poke.sdiv,poke.spiv = vals
@@ -255,10 +256,11 @@ mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
 #c1_party = []
 
 if __name__ == "__main__":
-    print('\nCopyright (C) 2023 Adarius')
-    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
-            'This is free software, and you are welcome to\n'+\
-            'redistribute it under certain conditions.\n')
+    #print('\nCopyright (C) 2023 Adarius')
+    #print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+    #        'This is free software, and you are welcome to\n'+\
+    #        'redistribute it under certain conditions.\n')
+    copyrigh(prespace=True)
     savehere = input('directory to save: ') or 'elite_four_teams'
     if not os.path.exists(savehere):
         os.makedirs(savehere)

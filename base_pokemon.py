@@ -21,7 +21,7 @@ import time as t
 import calendar as cal
 import hashlib
 import numpy as np
-from texter import genborder,magic_text,magic_head
+from texter import genborder,magic_text,magic_head,copyrigh
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
 #classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats
@@ -1641,7 +1641,6 @@ class battle:
         print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
         return
   
-
     def startbattle(self, e4=False):
         ####Battle starts####
         if e4: print(f"\nYou challenge {self.cpu_name} to a Pokémon Battle!")
@@ -3185,6 +3184,21 @@ def moveInfo(moveCode):
     #elif move['special?']==0:
     #    print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
     return
+def maker(nparty,psize,nfield):
+    # making parties
+    parties = []
+    for i in range(nparty): parties.append( makeParty(numb=psize) )
+        #party = []
+        #for j in range(psize):
+        #    newmon = makeRandom(how_created='random')
+        #    party.append(newmon)
+        #parties.append(party)
+    # making the fields
+    fields = []
+    for i in range(nfield):
+        newfield = field(rando=True)
+        fields.append(newfield)
+    return (parties, fields)
 def makeParty(numb=1,level=100):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
@@ -3270,12 +3284,12 @@ def readEvIv(dato):
         return ['bonk']
     else:
         return empt
-def copyrigh():
-    print('\nCopyright (C) 2023 Adarius')
-    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
-        'This is free software, and you are welcome to\n'+\
-        'redistribute it under certain conditions.')
-    return
+#def copyrigh():
+#    print('\nCopyright (C) 2023 Adarius')
+#    print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
+#        'This is free software, and you are welcome to\n'+\
+#        'redistribute it under certain conditions.')
+#    return
 def micropause():
     t.sleep(0.4)
     return

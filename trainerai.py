@@ -41,14 +41,14 @@ class cpu:
         return
     def statMoveRating(self):
         return
-    def damageMoveRating(self,poke,movei,targetmon='',maxx=16):
+    def damageMoveRating(self,poke,movei,targetmon,maxx=16):
         #overall, considering all the things
         #things to consider: power, secondary effects, phy/spec
         #priority to brick break when a screen is up
         #priority to high crit moves when a screen is up or target has boosted defense
         #
         global mov
-        if not targetmon: targetmon = self.enemymon
+        #if not targetmon: targetmon = self.enemymon
         movedat = mov[ movei ]
         move_phys = movedat['special?'] == 0
         move_notes = movedat['notes'].copy()
@@ -75,7 +75,7 @@ class cpu:
         seconds = ('burn' in splitnotes) or ('frze' in splitnotes) or ('pois' in splitnotes) \
                 or ('badPois' in splitnotes) or ('para' in splitnotes) or ('sleep' in splitnotes)
         thirds = ('highCrit' in splitnotes) or ('frostbreath' in splitnotes) or ('conf' in splitnotes) \
-                ('flinch' in splitnotes) or (weatherball_flag and ('weatherball' in splitnotes))
+                or ('flinch' in splitnotes) or (weatherball_flag and ('weatherball' in splitnotes))
         if seconds or thirds:   fourth = 1.3
         else:                   fourth = 1.
         ##                                          ##
@@ -85,15 +85,16 @@ class cpu:
         #move category enemy synergy
         #if phys_defense and movedat
         ## calc move power and stab and stat boosts nerfs
-        power = powerRating(self,poke,movei,targetmon=targetmon)
+        #print(targetmon)
+        power = self.powerRating(poke,movei,targetmon)
         ans = power * physpec * fourth
 
-        return
-    def powerRating(self,poke,movei,targetmon='',maxx=16):
+        return ans
+    def powerRating(self,poke,movei,targetmon,maxx=16):
         #this function will look at the moves of poke, apply their
         #base powers, types, categories with opponent mon self.enemymon
         global mov,statStages
-        if not targetmon: targetmon = self.enemymon
+        #if not targetmon: targetmon = self.enemymon
         #unload move
         movedat = mov[movei]
         #check for 2turn or must rest, we'll halve the power

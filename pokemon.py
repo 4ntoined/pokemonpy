@@ -23,7 +23,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # multistrike moves // encore // endeavor // echoed voice // protect-feint
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
-import os, copy, sys, getopt, argparse
+import os, copy, sys, argparse
 import numpy as np
 import base_pokemon
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
