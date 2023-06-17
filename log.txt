@@ -1073,3 +1073,7 @@ pokes, parties and battlefields and you could really easily execute certain
 functions write there in terminal, would also be useful for importing into scripts
 etc...probably gonna do that rn lol
 
+17 june 2023-
+11:32- i'm doing [x]trainer ai, [x]pausing uniforming, [x]new moves, finish water type, then to grass
+[x] other things probably that I can't think of
+

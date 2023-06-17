@@ -94,7 +94,6 @@ for i in range(nparty):
     newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
     partyname = pnames[i]
     players_parties.append((newparty, partyname, i))
-
 #players_parties.append((starterParty, "starter", 0))
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 userParty=players_parties[0][0]

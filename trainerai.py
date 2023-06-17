@@ -98,26 +98,40 @@ class cpu:
         #base powers, types, categories with opponent mon self.enemymon
         global mov,statStages
         #if not targetmon: targetmon = self.enemymon
+        #check the weather
+        weathe = self.bfield.field.weather
+        terrai = self.bfield.field.terrain
         #unload move
-        movedat = mov[movei]
-        #check for 2turn or must rest, we'll halve the power
-        if '2turn' in movedat['notes'] or 'mustRest' in movedat['notes']:   turnnerf = 0.75
-        else:                                                               turnnerf = 1.
+        movedat = mov[ movei ]
+        move_phys = movedat['special?'] == 0
+        move_notes = movedat['notes'].copy()
+        splitnotes = move_notes.split(' ')
+        #check for 2turn or must rest, we'll nerf the base power
+        if ('2turn' in splitnotes) or ('mustRest' in splitnotes):   turnnerf = 0.75
+        else:                                                       turnnerf = 1.
         #check for stab
         if movedat['type'] in poke.tipe:    stab = 1.5
         else:                               stab = 1.
-        #consider offensive stat stages
-        if movedat['special?']==1:  boost = statStages[poke.sastage]
-        else:                       boost = statStages[poke.atstage]
-        #consider defensive stat stages#
-        ##
+        #consider offensive/defensive stat stages
+        if not move_phys:   boost = statStages[poke.sastage] / statStages[targetmon.sdstage]
+        else:               boost = statStages[poke.atstage] / statStages[targetmon.destage]
         #   consider weather synergy    #
+        #weatherboost = 1.
+        weatheron = (( weathe == 'sunny') and ( movedat['type']==1 )) or \
+                (( weathe == 'rain') and ( movedat['type'] == 2 )) or \
+                (( terrai == 'grassy') and ( movedat['type']==3 )) or \
+                (( terrai == 'electric') and ( movedat['type'] == 4 )) or \
+                (( terrai == 'psychic') and ( movedat['type'] == 10 ))
+        if weatheron:   weatherboost = 1.3
+        else:           weatherboost = 1.
         #                               #
         #
-        ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost
+        ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost * weatherboost
         return ans
 
 def typeeff(attackType,defendType):
+    #attackType: integer (0, 18)
+    #defendType: list of 1 or 2 integers ie [1 2]
     global codex
     match1 = codex[attackType,defendType[0]]
     if len(defendType)>1:   match2 = codex[attackType,defendType[1]]
