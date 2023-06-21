@@ -1041,12 +1041,13 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         if effectiveness==0. and not ('arrows' in notes): print(f"{self.name} is immune!")
         else:
             if ('arrows' in notes) and (not self.grounded or self.flying): #will need to further generalize for smack down?
-                print(f"The arrows can reach {self.name}!")
+                print(f"\nThe arrows can reach {self.name}!")
+                micropause()
                 self.grounded=True
                 if self.flying and self.charged: self.charged = False    #cancel charged move only if it was fly or bounce
                 self.flying=False
                 self.field.grounding(self)
-                effectiveness=1.0
+                effectiveness=1. 
             print(f"\n{self.name} is hit!")
             micropause()
             #with a successful hit from rollout, the attacker rolling out counter increases
@@ -1828,7 +1829,8 @@ class battle:
                                 try:
                                     fightChoice=int(userFight)-1 #make sure given input refers to a move
                                     if self.usr_mon.PP[fightChoice]==0:
-                                        print(f"{self.usr_mon.name} does not have enough energy to use this move!")
+                                        print(f"\n{self.usr_mon.name} does not have enough energy to use this move!")
+                                        shortpause()
                                         continue
                                     moveDex=self.usr_mon.knownMoves[fightChoice]
                                     fighting=True
@@ -2781,7 +2783,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     if burn<1.0:
         damages.append("The burn reduces damage...")
     #circumvent normal damage calculation sometimes
-    if (('mirrorcoat' in note) and (attacker.counter_damage[1] == 'spec')) or (('counter' in note) and (attacker.counter_damage[1]=='phys')):
+    if (('mirrorcoat' in note) and (attacker.counter_damage[1] == 'spec')) \
+            or (('counter' in note) and (attacker.counter_damage[1]=='phys')):
         ans = np.floor(2.*attacker.counter_damage[0])
         damages = []
     elif (('mirrorcoat' in note) or ('counter' in note)):
@@ -2789,19 +2792,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         damages = ["failed"]
     else:
         ####modifiers united####
-        #print(tyype)
-        damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf*caught_bonus
+        damageModifier = weatherBonus * critical * rando * STAB * tyype * burn * screennerf * caught_bonus
         ####damage calculation####
         ans= np.floor( ((((2.*level)/5. + 2.)*power*attack/defense)/50. + 2.)*damageModifier )
     return ans,tyype,damages
 #zz:damagefunction
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
-    ans=((2.*base+IV+EV/4.)*level/100.+5.)*nature
+    ans=((2.*base+IV+EV//4)*level/100.+5.)*nature
     return ans
 #calculates HP stat
 def HP(level,base,IV,EV):
-    ans=np.floor( ((2.*base+IV+EV/4.)*level/100.)+level+10. )
+    ans=np.floor( ((2.*base+IV+EV//4)*level/100.)+level+10. )
     return ans
 def checkTypeEffectiveness(moveTipe,defendantTipe):
     global codex
@@ -3247,8 +3249,10 @@ def print_party(parti, named='namo', menu=False):
         print('\n'+slashes_full)
         return
 def print_parties(partylist,equip=0,prespace=True):
+    """
     #partylist: list of 3-tuples containing
     # (mon objects, strings(party name), int(party index))
+    """
     if len(partylist) == 0:
         print('\nprint_parties: There are no parties.')
         return

@@ -38,8 +38,24 @@ class cpu:
         #if none exist we will prioritize damaging
         #if low-health, look for a healing move
         #if you can set up a beneficial weather or terrain, do that
+
+        ## if have water-damaging moves, and rain dance, use rain dance
+        ## if fire-damage moves and sunny day, use sunny day
+        
+        ## if rock type and has sandstorm, use sandstorm
+        ## if ice type and have hail/snowscape, use snowscape
+        
+        ## if damaging grass, psychic, or electric move and have the terrain, use the terrain
+        ## if oppo is dragon type, use misty terrain
+
         return
     def statMoveRating(self):
+        #prioritize healing move, if low health
+        # 
+        ans = 1.
+        return ans
+    def chooseStatMove(self,poke,targetmon):
+        #will choose among the status moves of poke and decide what to use
         return
     def damageMoveRating(self,poke,movei,targetmon,maxx=16,debug=False):
         #overall, considering all the things
@@ -94,8 +110,8 @@ class cpu:
         if debug:   return (ans, parts)
         else:       return ans
     def powerRating(self,poke,movei,targetmon,maxx=16):
-        #this function will look at the moves of poke, apply their
-        #base powers, types, categories with opponent mon self.enemymon
+        #this function will look at a move of poke, apply
+        #base power, type, category with opponent mon self.enemymon
         global mov,statStages
         #if not targetmon: targetmon = self.enemymon
         #check the weather
@@ -106,15 +122,27 @@ class cpu:
         move_phys = movedat['special?'] == 0
         move_notes = movedat['notes'].copy()
         splitnotes = move_notes.split(' ')
-        #check for 2turn or must rest, we'll nerf the base power
-        if ('2turn' in splitnotes) or ('mustRest' in splitnotes):   turnnerf = 0.75
+        #   check for 2turn or must rest, we'll nerf the base power #
+        if ('2turn' in splitnotes) or ('mustRest' in splitnotes):
+            if ('solar' in splitnotes) and (weathe=='sunny'):       turnnerf = 1.
+            else:                                                   turnnerf = 0.75
         else:                                                       turnnerf = 1.
-        #check for stab
+        #                                                           #
+        #   check for stab  #
         if movedat['type'] in poke.tipe:    stab = 1.5
         else:                               stab = 1.
-        #consider offensive/defensive stat stages
-        if not move_phys:   boost = statStages[poke.sastage] / statStages[targetmon.sdstage]
-        else:               boost = statStages[poke.atstage] / statStages[targetmon.destage]
+        #                   #
+        #   consider offensive/defensive stat stages, burns, screens    #
+        screen = 1.
+        burn = 1.
+        if not move_phys:
+            boost = statStages[poke.sastage] / statStages[targetmon.sdstage]
+            if self.bfield.field.lightscACounter > 0:   screen = 0.5
+        else:
+            boost = statStages[poke.atstage] / statStages[targetmon.destage]
+            if poke.burned:     burn = 0.5
+            if self.bfield.field.reflectACounter > 0:   screen = 0.5
+        #                                               #
         #   consider weather synergy    #
         #weatherboost = 1.
         weatheron = (( weathe == 'sunny') and ( movedat['type']==1 )) or \
@@ -125,8 +153,10 @@ class cpu:
         if weatheron:   weatherboost = 1.3
         else:           weatherboost = 1.
         #                               #
+        #   consider burn nerf  #
+        #                       #
         #
-        ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost * weatherboost
+        ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost * weatherboost * burn * screen
         return ans
 
 def typeeff(attackType,defendType):
