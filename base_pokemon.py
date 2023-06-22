@@ -1084,7 +1084,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
                 recoilDmg=damagepoints
             #lose HP
             self.currenthp-=damagepoints
-            self.currenthpp=100*self.currenthp/self.maxhp
+            self.currenthpp=100.*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
                 micropause() #for drama
@@ -3226,9 +3226,11 @@ def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
 #zz:createpokemon
 #aa:textprint
 def print_party(parti, named='namo', menu=False):
+    """
     #parti: a list of mon() objects
-    #namo: name of the party, string
-    #menu: True if viewing fom the party menu, false if viewing from main
+    #named: name of the party, string
+    #menu: True if viewing from the party menu, false if viewing from main
+    """
     global typeStrings
     npoke = len(parti)
     if npoke == 0:

@@ -1077,3 +1077,8 @@ etc...probably gonna do that rn lol
 11:32- i'm doing [x]trainer ai, [x]pausing uniforming, [x]new moves, finish water type, then to grass
 [x] other things probably that I can't think of
 
+21 june 2023
+20:03- i think I have done enough with the trainer ai that I can start implementing it into
+the game, I even tested some stuff and its working exactly as I expect
+so i could be wrapping this up soon
+
