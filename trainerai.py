@@ -21,13 +21,15 @@ class cpu:
         print(memon.name)
         return
     
-    def go(self):
+    def go(self,pokeme='',pokeyou=''):
         global mov
-        pokeme = self.activemon
-        pokeyou = self.enemymon
+        if not pokeme:  pokeme = self.activemon
+        if not pokeyou: pokeyou = self.enemymon
+        #
         choice1 = self.fightswitch()    #will be 'fight' or 'switch'
         if choice1 == 'switch':
             #switch pokemon, for now randomly, but maybe not forever
+            print('switching')
             pass
         elif choice1 == 'fight':
             movecat = mov[pokeme.knownMoves]['special?']
@@ -35,9 +37,20 @@ class cpu:
             damages = np.squeeze(np.argwhere(np.logical_or(movecat==0,movecat==1)))     #indeces from knownMoves of damaging moves
             #do we use a damage move or status move
             #status move logic doesnt exist yet so we'll set some ~20% chance to use a status
-            roll_for_status = rng.random()
-            #if len(status) >= 1 and 
-
+            # vv need to replace with proper status move logic vv #
+            roll_for_status = rng.random() 
+            if ( len(damages) == 0 ) or ( len(status) >= 1 and roll_for_status < 0.20):   #if you have at least one status move and the roll is right
+                #use a status move at random
+                choice3 = rng.choice(status)
+                print(mov[pokeme.knownMoves[choice3]]['name'] )
+            else:   #you have 1+ damage move, and ( no status moves or roll didnt hit)
+                #use a damage move USING logic
+                ratings = [ self.damageMoveRating(pokeme.knownMoves[i],pokeme=pokeme,pokeyou=pokeyou)**3. for i in damages ]
+                ratinga = np.array(ratings,dtype=float)
+                rat_sum = sum(ratinga)
+                ratp = ratinga / rat_sum
+                choice2 = rng.choice(damages,p=ratp)
+                print(mov[pokeme.knownMoves[choice2]]['name'] )
         return
 
     def fightswitch(self,pokeme='',pokeyou=''):
@@ -46,7 +59,7 @@ class cpu:
         the cpu has to decide whether it will fight or choose a new pokemon
         logic: default to fighting, switch if (low health), (type-disadvantage), (defense / attack < certain threshold) eh
         mechanism: pressure to switch builds due to certain influences > built switch pressure is divided by total possible pressure
-            > switch pres. ratio is further weighted for fine tuning, if it is less than 0.05, it is set to 0.05
+            > switch pres. ratio is further weighted for fine tuning > if it is less than 0.05, it is set to 0.05
             > this value becomes the probabilty that the cpu will switch
         """
         if not pokeme:  pokeme = self.activemon
@@ -55,7 +68,7 @@ class cpu:
         #switchpressure = 0.
         #target_type = self.enemymon.tipe
         ## consider type disadvantage ## the lower the typead() value, the less likely to switch ##
-        #type pressure = (0, 1), for typeAd(1 or less, 9)
+        #type pressure = (0, 1), for typeAd = (1 or less, 9)
         typep_max = 1.
         typep = max( (self.typeAdvantage(defender=pokeme,attacker=pokeyou)-1.) / 8., 0.)
         ## check self health ##
@@ -65,12 +78,15 @@ class cpu:
         else:                           healthp = 0.
         ## defense  ##
         ##          ##
+        ## collecting it all ##
         all_pressures = [typep, healthp]
         all_max = [typep_max, healthp_max]
-        #
+        ##                   ##
         #pressuremax = sum(all_max)
+        ## taking sums ##
         switchpressure = sum(all_pressures) / sum(all_max)  #range (0,1)
         thresh = max(switchpressure * 0.8, 0.05) #at least 5% chance to switch
+        ## choosing ##
         ans = rng.choice(['fight','switch'], p=[ 1.-thresh, thresh ])
         return ans
     def stat_vs_damage_Rating(self):

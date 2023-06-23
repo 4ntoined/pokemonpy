@@ -48,7 +48,7 @@ if n_args: #there are arguments
     parser.add_argument( '-n','--name',action='store',default='',type=str,\
             required=False, help='write your name'\
             )
-    parser.add_argument('-s','--psize',action='store',default=1,type=int,
+    parser.add_argument('-s','--psize',action='store',default=6,type=int,
             required=False,help='number of starter Pokémon'\
             )
     parser.add_argument('-p','--nparty',action='store',default=1,type=int,

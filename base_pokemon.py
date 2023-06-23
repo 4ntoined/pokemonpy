@@ -1514,7 +1514,8 @@ class battle:
                    self.cpu_mon.sdstage-6,self.cpu_mon.spstage-6,self.cpu_mon.acstage-6, \
                        self.cpu_mon.evstage-6]
         statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
-        print("\nStat Boosts and Nerfs\n****************************")
+        #print("\nStat Boosts and Nerfs\n****************************")
+        print("\n"+magic_text(txt='Stat Boosts and Nerfs',spacing=' ',cha=' ',long=game_width)+"\n"+genborder(num=game_width,cha='*'))
         for i in range(len(blueStats)):
             if blueStats[i]==0:
                 print(statstrs[i]+" none")
