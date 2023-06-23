@@ -15,55 +15,63 @@ class cpu:
         print('echo')
         return
 
-    def test1(self):
-        print(self.activemon.name)
+    def test1(self,memon=''):
+        if not memon:
+            memon=self.activemon
+        print(memon.name)
+        return
+    
+    def go(self):
+        global mov
+        pokeme = self.activemon
+        pokeyou = self.enemymon
+        choice1 = self.fightswitch()    #will be 'fight' or 'switch'
+        if choice1 == 'switch':
+            #switch pokemon, for now randomly, but maybe not forever
+            pass
+        elif choice1 == 'fight':
+            movecat = mov[pokeme.knownMoves]['special?']
+            status = np.squeeze(np.argwhere(movecat == 2))                              #indeces from knownMoves of status moves
+            damages = np.squeeze(np.argwhere(np.logical_or(movecat==0,movecat==1)))     #indeces from knownMoves of damaging moves
+            #do we use a damage move or status move
+            #status move logic doesnt exist yet so we'll set some ~20% chance to use a status
+            roll_for_status = rng.random()
+            #if len(status) >= 1 and 
+
         return
 
-    def typeAdvantage(self):
-        """
-        determine if one pokemon has a type advantage over the other
-        considers only pokemon-typing, not move-typing!
-        """
-        defending = self.activemon.tipe
-        attacking = self.enemymon.tipe
-        if len(attacking)==2:
-            do1 = typeeff(attacking[0],defending)
-            do2 = typeeff(attacking[1],defending)
-            dote = do1 * do2
-            if dote > 8.:       dote = 9.
-            elif dote < 0.125:  dote = 0.111
-        else:   dote = typeeff(attacking[0],defending)
-        #dote will vary from 0.111 to 9 when attacker has 2 types
-        # 0.25 to 4 when attacker has only 1 type
-        return dote
-
-    def fightswitch(self):
+    def fightswitch(self,pokeme='',pokeyou=''):
         """
         let's start here
         the cpu has to decide whether it will fight or choose a new pokemon
         logic: default to fighting, switch if (low health), (type-disadvantage), (defense / attack < certain threshold) eh
+        mechanism: pressure to switch builds due to certain influences > built switch pressure is divided by total possible pressure
+            > switch pres. ratio is further weighted for fine tuning, if it is less than 0.05, it is set to 0.05
+            > this value becomes the probabilty that the cpu will switch
         """
-        ans = 'fight'
+        if not pokeme:  pokeme = self.activemon
+        if not pokeyou: pokeyou = self.enemymon
+        #ans = 'fight'
         #switchpressure = 0.
         #target_type = self.enemymon.tipe
         ## consider type disadvantage ## the lower the typead() value, the less likely to switch ##
         #type pressure = (0, 1), for typeAd(1 or less, 9)
         typep_max = 1.
-        typep = max( (self.typeAdvantage()-1.) / 8., 0.)
+        typep = max( (self.typeAdvantage(defender=pokeme,attacker=pokeyou)-1.) / 8., 0.)
         ## check self health ##
         healthp_max = 1.
-        if self.activemon.currenthpp <= 20:     healthp = 1.
-        elif self.activemon.currenthpp < 50:    healthp = 0.6
-        else:                                   healthp = 0.
+        if pokeme.currenthpp <= 20:     healthp = 1.
+        elif pokeme.currenthpp < 50:    healthp = 0.6
+        else:                           healthp = 0.
         ## defense  ##
         ##          ##
         all_pressures = [typep, healthp]
         all_max = [typep_max, healthp_max]
         #
-        pressuremax = sum(all_max)
-        switchpressure = sum(all_pressures) / pressuremax #range (0,1)
+        #pressuremax = sum(all_max)
+        switchpressure = sum(all_pressures) / sum(all_max)  #range (0,1)
         thresh = max(switchpressure * 0.8, 0.05) #at least 5% chance to switch
-        ans = rng.choice([ 'fight', 'switch'], p=[ 1.-thresh, thresh ])
+        ans = rng.choice(['fight','switch'], p=[ 1.-thresh, thresh ])
         return ans
     def stat_vs_damage_Rating(self):
         #the cpu has decided to use a move instead of switching out
@@ -84,10 +92,10 @@ class cpu:
 
         ## if you have aqua ring (and not already in it), use it
 
-        ## if multiple things apply here, pick one mostly at random
-
         ## if you have a stat-boosting move, use it with a set probability,
         #higher prob if you dont already have a boost
+
+        ## if multiple things apply here, pick one mostly at random
 
         return
     def statMoveRating(self): #prob gonna scrap
@@ -98,7 +106,7 @@ class cpu:
     def chooseStatMove(self,poke,targetmon): #sounds like same as above, prob scrap
         #will choose among the status moves of poke and decide what to use
         return
-    def damageMoveRating(self,poke,movei,targetmon,maxx=16,debug=False):
+    def damageMoveRating(self,movei,pokeme='',pokeyou='',maxx=16,debug=False):
         #overall, considering all the things
         #things to consider: effective power, secondary effects, phy/spec
         #priority to brick break when a screen is up
@@ -114,8 +122,8 @@ class cpu:
         ##      consider physical vs special        ##
         #physical moves are favored when attacker has greater physical than special stat, vise versa
         #physical moves are favored when target has greater special than physical, vise versa
-        phys_attacker = poke.bat > poke.bsa
-        phys_defense = targetmon.bde > targetmon.bsd
+        phys_attacker = pokeme.bat > pokeme.bsa
+        phys_defense = pokeyou.bde > pokeyou.bsd
         physpec = 1.
         if move_phys:
             if phys_attacker:       physpec += 0.2
@@ -134,7 +142,7 @@ class cpu:
         else:                   fourth = 1.
         ##                                      ##
         ##      calc move power and stab and stat boosts nerfs
-        power = self.powerRating(poke,movei,targetmon)
+        power = self.powerRating(movei,pokeme=pokeme,pokeyou=pokeyou)
         ##      put it all together     ##
         parts = [physpec, fourth]
         ans = power
@@ -142,10 +150,12 @@ class cpu:
         ##                              ##
         if debug:   return (ans, parts)
         else:       return ans
-    def powerRating(self,poke,movei,targetmon,maxx=16):
+    def powerRating(self,movei,pokeme='',pokeyou='',maxx=16):
         #this function will look at a move of poke, apply
         #base power, type, category with opponent mon self.enemymon
         global mov,statStages
+        if not pokeme:  pokeme = self.activemon
+        if not pokeyou: pokeyou = self.enemymon
         #if not targetmon: targetmon = self.enemymon
         #check the weather
         weathe = self.bfield.field.weather
@@ -162,18 +172,18 @@ class cpu:
         else:                                                       turnnerf = 1.
         #                                                           #
         #   check for stab  #
-        if movedat['type'] in poke.tipe:    stab = 1.5
-        else:                               stab = 1.
+        if movedat['type'] in pokeme.tipe:      stab = 1.5
+        else:                                   stab = 1.
         #                   #
         #   consider offensive/defensive stat stages, burns, screens    #
         screen = 1.
         burn = 1.
         if not move_phys:
-            boost = statStages[poke.sastage] / statStages[targetmon.sdstage]
+            boost = statStages[pokeme.sastage] / statStages[pokeyou.sdstage]
             if self.bfield.field.lightscACounter > 0:   screen = 0.5
         else:
-            boost = statStages[poke.atstage] / statStages[targetmon.destage]
-            if poke.burned:     burn = 0.5
+            boost = statStages[pokeme.atstage] / statStages[pokeyou.destage]
+            if pokeme.burned:                             burn = 0.5
             if self.bfield.field.reflectACounter > 0:   screen = 0.5
         #                                               #
         #   consider weather synergy    #
@@ -187,8 +197,31 @@ class cpu:
         else:           weatherboost = 1.
         #                               #
         #
-        ans = movedat['pwr'] * typeeff(movedat['type'],targetmon.tipe) * stab * turnnerf * boost * weatherboost * burn * screen
+        ans = movedat['pwr'] * typeeff(movedat['type'],pokeyou.tipe) * stab * \
+                turnnerf * boost * weatherboost * burn * screen
         return ans
+    
+    def typeAdvantage(self,defender='',attacker=''):
+        """
+        defender: mon() object worried about being hit
+        attacker: mon() object doing the hitting
+        determine if one pokemon has a type advantage over the other
+        considers only pokemon-typing, not move-typing!
+        """
+        if not defender:    defender = self.activemon
+        if not attacker:    attacker = self.enemymon
+        defending = defender.tipe
+        attacking = attacker.tipe
+        if len(attacking)==2:
+            do1 = typeeff(attacking[0],defending)
+            do2 = typeeff(attacking[1],defending)
+            dote = do1 * do2
+            if dote > 8.:       dote = 9.
+            elif dote < 0.125:  dote = 0.111
+        else:   dote = typeeff(attacking[0],defending)
+        #dote will vary from 0.111 to 9 when attacker has 2 types
+        # 0.25 to 4 when attacker has only 1 type
+        return dote
 
 def typeeff(attackType,defendType):
     #attackType: integer (0, 18)

@@ -1082,3 +1082,13 @@ etc...probably gonna do that rn lol
 the game, I even tested some stuff and its working exactly as I expect
 so i could be wrapping this up soon
 
+23 june 2023-
+12:42- still working on trainer ai, really almost at implementation, but been having some thoughts I wanna
+record before they leave me mind:
+[x] field should itself utilize a new class, "field-side/field-half/something" so that I can just make 2 of those for
+each side on the battlefield so we don't have to do the A/B deliniation, that stuff is ANNOYING
+[x] i need to go through all the different battle effect texts "it starts raining!" etc
+and make sure there are proper pauses for readability
+[x] make a list (tuple prob better) of the sending pokemon out/recalling them dialogues
+so we can draw on those randomly when its time to use them
+
