@@ -128,6 +128,9 @@ if not mute_pregame:
     print('Your mission:')
     shortpause()
     print('Be cool and have fun.')
+else:
+    print('\n'+'Here is your party:')
+    print_party(userParty)   
 while 1:
     #going to consolidate nursery and dex selection
     #move tutor and move deleter and training

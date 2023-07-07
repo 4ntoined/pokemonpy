@@ -1105,4 +1105,6 @@ when the game starts. it stalls startup just a little but i think it's neat
 hold on...
 okay use the option -m to skip the whole pre-game text and get right into the mess
 i'm like insane someone should hire me somewhere and pay me to do this
+22:13- okay we no longer skip the text but we do leave the pauses out
+so you can get into it pretty much immediately
 
