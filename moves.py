@@ -169,8 +169,21 @@ moremoves=[
         ("Inferno Overdrive (S)",200,100,1,1,0,1,0,"The user breathes a stream of intense fire toward the target using its Z-Power!","zmove"),
 
         #max moves
-        ("Max Flare (P)",150,100,3,0,1,1,0,"A Fire-type Dynamax move! Causes harsh sunlight for five turns.","maxmove sun"),
-        ("Max Flare (S)",150,100,3,1,0,1,0,"A Fire-type Dynamax move! Causes harsh sunlight for five turns.","maxmove sun"),
+        ("Max Strike (P)",150,100,3,0,1,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
+        ("Max Strike (S)",150,100,3,1,0,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
+        ("Max Flare (P)",150,100,3,0,1,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
+        ("Max Flare (S)",150,100,3,1,0,2,0,"A Water-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
+        ("Max Geyser (P)",130,100,3,0,1,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
+        ("Max Geyser (S)",150,100,3,1,0,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
+        ("Max Overgrowth (P)",140,100,3,0,1,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
+        ("Max Overgrowth (S)",150,100,3,1,0,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
+        #electric, ice, fighting, poison
+        ("Max Lightning (P)",140,100,3,0,1,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
+        ("Max Lightning (S)",140,100,3,1,0,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
+        ("Max Hailstorm (P)",140,100,3,0,1,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
+        ("Max Hailstorm (S)",140,100,3,1,0,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
+
+
         
         #counter and mirror coat,
         ("Counter",1,100,20,0,1,6,-5,"An attack for countering any physical move.\nInflicts on the target double the damage taken by the user.","counter"),
