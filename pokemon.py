@@ -84,9 +84,15 @@ else:
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
 ##aa:mainmenu
-mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
-    "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
-    "\n[L]oad\n\nWhat to do: "
+#mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
+#    "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
+#    "\n[L]oad\n\nWhat to do: "
+#mainmenu = "\n[P]okémon\n[B]attle!\n[4] Elite 4\n[T]raining\n[N]ursery" + \
+#    "\n[X] Boxes\n[C] Pokémon Center\n[S] Battle Setting"+ \
+#    "\n[L]oad\n\nWhat to do: "
+mainmenu = "\n[P] Pokémon\n[B] Battle!\n[4] Elite 4\n[T] Training\n[N] Nursery" + \
+    "\n[X] Boxes\n[C] Pokémon Center\n[S] Battle Setting"+ \
+    "\n[L] Load\n\nWhat to do: "
 ############   give the player a starter  ###############
 #starterParty=[]
 #for i in range(nstart):
@@ -121,15 +127,14 @@ if not mute_pregame:
     #print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
     print('\n'+magic_text(txt='Welcome to the Wonderful World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
     dramaticpause()
-    print('\n'+'Here is your party:')
+    print('\nHere is your party:')
     shortpause()
     print_party(userParty)
     dramaticpause()
-    print('Your mission:')
+    print('\nYour mission:')
     shortpause()
     print('Be cool and have fun.')
 else:
-    print('\n'+'Here is your party:')
     print_party(userParty)   
 while 1:
     #going to consolidate nursery and dex selection

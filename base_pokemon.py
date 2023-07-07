@@ -3398,7 +3398,7 @@ game_width = 64
 #steel 16,fairy 17,typeless (no relationships) 18
 codex = codexer()
 easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
-        "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White"\
+        "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White",\
         "Gray","X","Y","Z","Sun","Moon","Stars","Eclipse","Sword","Shield",\
         "Armor","Crown","Scarlet","Violet","Teal","Indigo")
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
