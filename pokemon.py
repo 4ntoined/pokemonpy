@@ -54,11 +54,15 @@ if n_args: #there are arguments
     parser.add_argument('-p','--nparty',action='store',default=1,type=int,
             required=False,help='number of starter parties'\
             )
+    parser.add_argument('-m','--mute',action='count',default=0,
+            required=False,help='skip the pre-game text'\
+            )
     #parser.add_argument()
     argos = parser.parse_args( sys.argv[1:] )
     #width_arg = int(float(sys.argv[1]))
     #print(argos.gamewidth)
     base_pokemon.game_width = argos.gamewidth
+    mute_pregame = argos.mute >= 1
     if argos.name:
         username        = argos.name
         username_set    = True
@@ -74,6 +78,8 @@ else:
     username        = 'You'
     nstart          = 6
     nparty          = 1
+    mute_pregame    = 0
+
 #some oddball variables to calculate once and never again
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
@@ -108,12 +114,20 @@ trainerParty=[rival,rival2]
 opponentName="RIVAL"
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
-#####################
+#########   game starting !!! ############
 copyrigh()
-dramaticpause()
-#print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
-print('\n'+magic_text(txt='Welcome to the Wonderful World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
-dramaticpause()
+if not mute_pregame:
+    dramaticpause()
+    #print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
+    print('\n'+magic_text(txt='Welcome to the Wonderful World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
+    dramaticpause()
+    print('\n'+'Here is your party:')
+    shortpause()
+    print_party(userParty)
+    dramaticpause()
+    print('Your mission:')
+    shortpause()
+    print('Be cool and have fun.')
 while 1:
     #going to consolidate nursery and dex selection
     #move tutor and move deleter and training

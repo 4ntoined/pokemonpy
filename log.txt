@@ -1092,3 +1092,17 @@ and make sure there are proper pauses for readability
 [x] make a list (tuple prob better) of the sending pokemon out/recalling them dialogues
 so we can draw on those randomly when its time to use them
 
+6 july 2023-
+21:45- uhhh so i on a whim started an android app project
+I am still conceptualizing what I would do with an app "version"
+of this program. let what does that look like. honestly
+does anybody know? please enlighten me! so I have done no particular
+app coding and it might be a ways off while I figure out how to use
+a new python package + what do i wanna do with it? tapping a screen
+is an ENTIRELY different user-interface than the text based stuff we've been
+using. so also what the heck dude. anyway i also added more to the prelude
+when the game starts. it stalls startup just a little but i think it's neat
+hold on...
+okay use the option -m to skip the whole pre-game text and get right into the mess
+i'm like insane someone should hire me somewhere and pay me to do this
+
