@@ -182,6 +182,33 @@ moremoves=[
         ("Max Lightning (S)",140,100,3,1,0,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
         ("Max Hailstorm (P)",140,100,3,0,1,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
         ("Max Hailstorm (S)",140,100,3,1,0,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
+        ("Max Knuckle (P)",100,100,3,0,1,6,0,"A Fighting-type Dynamax move! Summons a hailstorm for five turns.","maxmove "),
+        ("Max Knuckle (S)",100,100,3,1,0,6,0,"A Fighting-type Dynamax move! Summons a hailstorm for five turns.","maxmove "),
+        ("Max Ooze (P)",95,100,3,0,1,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
+        ("Max Ooze (S)",95,100,3,1,0,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
+        #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
+        #dark 15,steel 16,fairy 17
+        ("Max Quake (P)",140,100,3,0,1,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        ("Max Quake (S)",130,100,3,1,0,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        ("Max Airstream (P)",140,100,3,0,1,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
+        ("Max Airstream (S)",140,100,3,1,0,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
+        ("Max Mindstorm (P)",130,100,3,0,1,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
+        ("Max Mindstorm (S)",150,100,3,1,0,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
+        ("Max Flutterby (P)",140,100,3,0,1,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
+        ("Max Flutterby (S)",130,100,3,1,0,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
+        ("Max Rockfall (P)",150,100,3,0,1,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
+        ("Max Rockfall (S)",140,100,3,1,0,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
+        ("Max Phantasm (P)",140,100,3,0,1,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
+        ("Max Phantasm (S)",140,100,3,1,0,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
+        ("Max Wyrmwind (P)",140,100,3,0,1,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
+        ("Max Wyrmwind (S)",150,100,3,1,0,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
+        ("Max Darkness (P)",130,100,3,0,1,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
+        ("Max Darkness (S)",130,100,3,1,0,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
+        ("Max Steelspike (P)",140,100,3,0,1,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        ("Max Steelspike (S)",140,100,3,1,0,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        ("Max Starfall (P)",130,100,3,0,1,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
+        ("Max Starfall (S)",140,100,3,1,0,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
+        #("Max Guard",150,100,3,1,0,10,0,"A Psychic-type Dynamax move! Weirdly causes psychih terrain for five turns.","maxmove guard? protect?"),
 
 
         
@@ -203,7 +230,7 @@ moremoves=[
         ("Misty Terrain",0,100,10,2,0,17,0,"The user covers the battlefield in mist! Dragon-type moves get a 50% nerf.","misty noMiss noTarg"),
          #entry hazards
         ("Spikes",0,100,20,2,0,8,0,"The user spreads spikes on the opponent's side of the field!\nStack up to 3 times!","noMiss spikes noTarg"),
-        ("Toxic Spikes",0,100,20,2,0,7,0,"The user sends out toxic barbs on the target's side of the field!\nPokémon are poisoned on entry.\nStacks up to 2 times for bad poisoned.","noMiss toxspk noTarg"),
+        ("Toxic Spikes",0,100,20,2,0,7,0,"The user sends out toxic barbs on the target's side of the field!\nPokémon are poisoned on entry.\nStacks up to 2 times for bad poison.","noMiss toxspk noTarg"),
         ("Sticky Web",0,100,20,2,0,11,0,"The user weaves a web on the target's side of the field!\nLowers Spe. stat 1 stage upon entry.","noMiss sticky noTarg"),
         ("Stealth Rocks",0,100,20,2,0,12,0,"The user spreads pointed stones on the opponent's side of the field!\nDoes rock-type damge.","noMiss rocks noTarg"),
          #reflect, lightscreen
@@ -244,32 +271,34 @@ moremoves=[
 #labels = np.dtype( [('name','U25'),('pwr','i4'),('accu','i4'),('pp','i4'),('special?','i4'),('contact?','i4'),('type','i4'),('desc','U140'),('notes','U140')] )
 #for when i'm ready for priority
 labels = np.dtype( [('name','U25'),('pwr','i4'),('accu','i4'),('pp','i4'),('special?','i4'),('contact?','i4'),('type','i4'),('priority','i4'),('desc','U140'),('notes','U140')] )
+mov = np.array(moremoves, dtype=labels)
+new_dt = np.dtype( [('index','i4')] + mov.dtype.descr)
+mov2 = np.zeros(mov.shape, dtype=new_dt)
 #creating structed arrays
 #print('check 2')
-mov = np.array(moremoves, dtype=labels)
 #new dtype to add the index column and priority 
 #print('check 3')
-new_dt = np.dtype( [('index','i4')] + mov.dtype.descr)
 #print(len(mov.dtype.descr))
 #new structured array for the new dtype
-mov2 = np.zeros(mov.shape, dtype=new_dt)
 #dump data from old array into new array
 for i in mov.dtype.names:
     mov2[i] = mov[i]
     pass
 mov = mov2
 mov['index'] = np.arange(0,len(mov), dtype=int)
-#find struggle
+#find struggle, future sight, tackle
 ind=np.argwhere(mov["name"]=="Struggle")
 struggle=int(mov[ind]["index"])
-#find future sight
 ind2 = np.argwhere(mov["name"]=="Future Sight")
 futuresigh=int(mov[ind2]["index"])
 tackl = int(mov[int(np.argwhere(mov["name"]=="Tackle"))]["index"])
-
-#print('check 4')
 ### find the max and z moves, keep their indices stored somewhere so as to easily exclude them ###
-
+maxx = [ "maxmove" in i for i in mov['notes'] ]
+max2 = np.argwhere( maxx )
+maxset = [ i[0] for i in max2 ]
+zzzs = [ "zmove" in i for i in mov['notes'] ]
+zzz2 = np.argwhere( zzzs )
+zzzset = [ i[0] for i in zzz2 ]
 ### xx ###
 
 #print('check 7')

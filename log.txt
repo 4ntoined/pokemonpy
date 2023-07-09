@@ -1108,3 +1108,9 @@ i'm like insane someone should hire me somewhere and pay me to do this
 22:13- okay we no longer skip the text but we do leave the pauses out
 so you can get into it pretty much immediately
 
+9 july 2023
+13:06- finished adding all the maxmoves, need to make sure they'll work with
+(need to make sure they set the weather and terrain, as those i think ive only been setting
+with status moves up until now
+i also need to make sure im excluding z/max moves from normal random move generation, like i
+do with struggle
