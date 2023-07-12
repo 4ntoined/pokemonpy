@@ -1114,3 +1114,6 @@ so you can get into it pretty much immediately
 with status moves up until now
 i also need to make sure im excluding z/max moves from normal random move generation, like i
 do with struggle
+
+11 july 2023
+20:30- made some changes to the main menu that i dont know if i like....
