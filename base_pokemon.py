@@ -29,7 +29,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
         debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),\
         random_move=True,how_created='nursery'\
-        ): #add natures
+        ): #
         global mo
         #birth details
         self.timebornLOCAL = t.localtime(t.time())
@@ -167,6 +167,10 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
                 np.save(filename,poke_array)
                 ans = 'saved'
         return ans
+    def championd(self):
+        #for when a pokemon is on a team that defeats the elite 4 and grand champion
+        self.hallfamecount+=1
+        return
     def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
         poke_tuple = [self.name,self.level,self.nature,self.tipe,self.gender]           #name, level, nature, type, gender
@@ -1670,6 +1674,7 @@ class battle:
                 switching=False
                 fighting=False
                 charging=False
+                running=False
                 self.usr_mon.inBattle()
                 self.cpu_mon.inBattle()
                 #----UI----#
@@ -1703,8 +1708,8 @@ class battle:
                     userMove=input(f"\nWhat should {self.usr_mon.name} do?\n[F]ight\n[P]okémon\n[S]tatus\n[R]un\n: ")
                     #### run away to end battle ####
                     if userMove=='r' or userMove == 'R':
-                        print(f"\n{self.usr_name} and {self.usr_mon.name} get away safely!")
                         battleOver=True
+                        running=True
                         break #break the otherwise indefinite turn-loop, ending the battle
                     #### check status of battle? ####
                     if userMove=="s" or userMove=="S":
@@ -2018,9 +2023,8 @@ class battle:
                         break
                     #check for TRAINER BLACKOUT
                     if checkBlackout(self.cpus)[0]==0:
-                        battleOver=True
-                        print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
-                        self.user_won = True
+                        battleOver=True                        
+                        self.user_won=True
                         shortpause()
                         break
                     #print("")
@@ -2290,10 +2294,22 @@ class battle:
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
+                print("\nThe battle ended!")
+                shortpause()
+                if self.user_won:
+                    print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
+                    dramaticpause()
+                elif running:
+                    print(f"\n{self.usr_name} and {self.usr_mon.name} forfeited to {self.cpu_name}!")
+                    shortpause()
+                else:
+                    print("\nYou're out of usable Pokémon!")
+                    shortpause()
+                    print(f"\nYou lost to {self.cpu_name}!")
+                    shortpause()
                 break #breaks battle loop, back to main screen
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
-        print("The battle ended!")
         #clean up
         self.field.clearfield()
         #self.field.weather=rng.choice(Weathers)

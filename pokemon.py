@@ -24,6 +24,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 # entry hazards in battle status, grounded/ungrounded in battle status
 # ***************************************************************************
 import os, copy, sys, argparse
+#import time as t
+from time import localtime, strftime
 import numpy as np
 import base_pokemon
 from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
@@ -162,7 +164,7 @@ while 1:
         she =  tess.powerRating(trainerParty[0], 1 )
         she =  tess.powerRating(trainerParty[0], 42 )
         print(she)
-
+    
 
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":
@@ -173,7 +175,7 @@ while 1:
             print("")
             micropause()
             #settings menu
-            print("[1] Set the conditions of battle\n[2] Set your opponent's party")
+            print("[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
             sat_choice = input("What [#] to do or [b]ack: ")
             if sat_choice == 'b' or sat_choice == 'B':
                 break
@@ -255,6 +257,12 @@ while 1:
                     print("Leaving Opponent Reset...")
                     shortpause() #kills
                 #end of opponent set, back to main screen
+            elif sat_choice == '3': #battlefield conditions setting
+                playername = input("What's your name?\n: ")
+                username=playername
+                username_set=True
+                print(f"Thank you {username}!")
+                shortpause() #kills
             else:
                 #print("*like I'm hearing a ghost*: What was that?")
                 pass
@@ -300,9 +308,9 @@ while 1:
             nnnP= nnns_stuff[1]
             chaP= chps_stuff[1]
             #
-            battle1 = battle(userParty, silP, gold, cpu_name = sils_stuff[0])
+            battle1 = battle(userParty, silP, gold, usr_name=username, cpu_name = sils_stuff[0])
             resu1 = battle1.startbattle(e4=True)
-            resu1=True
+            #resu1=True
             if (not resu1): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -312,9 +320,9 @@ while 1:
             hea_1 = elite4_healquit(userParty)
             if hea_1 =='quitted': continue
             #zinnia's battle
-            battle2 = battle(userParty,zinP,sapphire,cpu_name = zins_stuff[0])
+            battle2 = battle(userParty,zinP,sapphire, usr_name=username, cpu_name = zins_stuff[0])
             resu2 = battle2.startbattle(e4=True)
-            resu2=True
+            #resu2=True
             #win check
             if (not resu2): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -325,9 +333,9 @@ while 1:
             hea_2 = elite4_healquit(userParty)
             if hea_2 =='quitted': continue
             #cynthias battle
-            battle3 = battle(userParty,cynP,diamond,cpu_name = cyns_stuff[0])
+            battle3 = battle(userParty,cynP,diamond,usr_name=username, cpu_name = cyns_stuff[0])
             resu3 = battle3.startbattle(e4=True)
-            resu3 = True
+            #resu3 = True
             if (not resu3): #the user lost
                 print("Leaving Indigo Plateau...")
                 micropause()
@@ -337,9 +345,9 @@ while 1:
             hea_3 = elite4_healquit(userParty)
             if hea_3 =='quitted': continue
             #N's battle
-            battle4 = battle(userParty, nnnP, black,cpu_name = nnns_stuff[0])
+            battle4 = battle(userParty, nnnP, black,usr_name=username, cpu_name = nnns_stuff[0])
             resu4 = battle4.startbattle(e4=True)
-            resu4=True
+            #resu4=True
             #win
             if (not resu4): #the user lost
                 print("Leaving Indigo Plateau...")
@@ -350,9 +358,9 @@ while 1:
             hea_4 = elite4_healquit(userParty)
             if hea_4 =='quitted': continue
             #champ
-            battle5 = battle(userParty, chaP, indigo,cpu_name = chps_stuff[0])
+            battle5 = battle(userParty, chaP, indigo,usr_name=username, cpu_name = chps_stuff[0])
             resu5 = battle5.startbattle(e4=True)
-            resu5=True
+            #resu5=True
             #if you won, you won, like it's over
             if not resu5:
                 print("Leaving Indigo Plateau...")
@@ -360,14 +368,18 @@ while 1:
                 continue
             else:         
                 hallfame_count += 1
+                for i in userParty: i.championd()   #ribbons for all the pokemon that won!
                 print("\nYou defeated the Elite Four and the Grand Champion!")
                 dramaticpause()
                 print("Congratulations! Cheers to the new Grand Champion! A true Pokémon Master!")
                 dramaticpause()
                 hallfame = input("Would you like to save your Hall of Fame record?\n[y]es or [n]o: ")
                 if hallfame == "y" or hallfame == "Y":
+                    #take the time
+                    timestring = strftime("%y%m%d_%H%M%S", localtime())
                     #save the party
-                    savehere = f'halloffame_{hallfame_count:0>2}.npy'
+                    #savehere = f'halloffame_{hallfame_count:0>2}.npy'
+                    savehere = f'halloffame_{timestring}.npy'
                     saveParty(savehere,userParty)
                     micropause()
                 pass
