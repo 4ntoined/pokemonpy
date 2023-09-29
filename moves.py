@@ -172,7 +172,7 @@ moremoves=[
         ("Max Strike (P)",150,100,3,0,1,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
         ("Max Strike (S)",150,100,3,1,0,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
         ("Max Flare (P)",150,100,3,0,1,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
-        ("Max Flare (S)",150,100,3,1,0,1,0,"A Water-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
+        ("Max Flare (S)",150,100,3,1,0,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
         ("Max Geyser (P)",130,100,3,0,1,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
         ("Max Geyser (S)",150,100,3,1,0,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
         ("Max Overgrowth (P)",140,100,3,0,1,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
@@ -182,8 +182,8 @@ moremoves=[
         ("Max Lightning (S)",140,100,3,1,0,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
         ("Max Hailstorm (P)",140,100,3,0,1,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
         ("Max Hailstorm (S)",140,100,3,1,0,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
-        ("Max Knuckle (P)",100,100,3,0,1,6,0,"A Fighting-type Dynamax move! Summons a hailstorm for five turns.","maxmove "),
-        ("Max Knuckle (S)",100,100,3,1,0,6,0,"A Fighting-type Dynamax move! Summons a hailstorm for five turns.","maxmove "),
+        ("Max Knuckle (P)",100,100,3,0,1,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
+        ("Max Knuckle (S)",100,100,3,1,0,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
         ("Max Ooze (P)",95,100,3,0,1,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
         ("Max Ooze (S)",95,100,3,1,0,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
         #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
@@ -208,7 +208,7 @@ moremoves=[
         ("Max Steelspike (S)",140,100,3,1,0,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
         ("Max Starfall (P)",130,100,3,0,1,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
         ("Max Starfall (S)",140,100,3,1,0,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
-        #("Max Guard",150,100,3,1,0,10,0,"A Psychic-type Dynamax move! Weirdly causes psychih terrain for five turns.","maxmove guard? protect?"),
+        #("Max Guard",0,100,3,1,0,10,0," ","maxmove guard? protect? noMiss?noTarg?"),
 
 
         

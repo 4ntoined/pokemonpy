@@ -90,12 +90,12 @@ oddw = game_width % 2 == 1
 #mainmenu = "\n[P]okémon\n[B]attle!\n[4] Elite 4\n[T]raining\n[N]ursery" + \
 #    "\n[X] Boxes\n[C] Pokémon Center\n[S] Battle Setting"+ \
 #    "\n[L]oad\n\nWhat to do: "
-#mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
-#    "\n[T] Training\n[X] Boxes\n[L] Load Game\n[C] Pokémon Center\n[S] Battle Setting"+ \
-#    "\n\nWhat to do: "
-mainmenu = "\n[P] Party\n !Play!\n[B] Battle!\n[4] Elite 4\n !Pokémon!\n[N] Nursery" + \
-    "\n[T] Training\n[X] Boxes\n[L] Load Game\n !etc!\n[C] Pokémon Center\n[S] Battle Setting"+ \
+mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
+    "\n[T] Training\n[X] Boxes\n[L] Load Game\n[C] Pokémon Center\n[S] Battle Setting"+ \
     "\n\nWhat to do: "
+#mainmenu = "\n[P] Party\n !Play!\n[B] Battle!\n[4] Elite 4\n !Pokémon!\n[N] Nursery" + \
+#    "\n[T] Training\n[X] Boxes\n[L] Load Game\n !etc!\n[C] Pokémon Center\n[S] Battle Setting"+ \
+#    "\n\nWhat to do: "
 ############   give the player a starter  ###############
 #starterParty=[]
 #for i in range(nstart):
