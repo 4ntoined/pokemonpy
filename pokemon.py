@@ -79,7 +79,7 @@ else:
     username_set    = False
     username        = 'You'
     nstart          = 6
-    nparty          = 1
+    nparty          = 6
     mute_pregame    = 0
 
 #some oddball variables to calculate once and never again
@@ -164,7 +164,10 @@ while 1:
         she =  tess.powerRating(trainerParty[0], 1 )
         she =  tess.powerRating(trainerParty[0], 42 )
         print(she)
-    
+    if userChoice == 'butt':
+        bbb = battle(userParty, trainerParty, scarlet)
+        bbb.s_ai()
+        print('did')
 
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":

@@ -29,8 +29,8 @@ class cpu:
         choice1 = self.fightswitch()    #will be 'fight' or 'switch'
         if choice1 == 'switch':
             #switch pokemon, for now randomly, but maybe not forever
-            print('switching')
-            pass
+            #print('switching')
+            return 'switch'
         elif choice1 == 'fight':
             movecat = mov[pokeme.knownMoves]['special?']
             status = np.squeeze(np.argwhere(movecat == 2))                              #indeces from knownMoves of status moves
@@ -42,7 +42,8 @@ class cpu:
             if ( len(damages) == 0 ) or ( len(status) >= 1 and roll_for_status < 0.20):   #if you have at least one status move and the roll is right
                 #use a status move at random
                 choice3 = rng.choice(status)
-                print(mov[pokeme.knownMoves[choice3]]['name'] )
+                #print(mov[pokeme.knownMoves[choice3]]['name'] )
+                return choice3
             else:   #you have 1+ damage move, and ( no status moves or roll didnt hit)
                 #use a damage move USING logic
                 ratings = [ self.damageMoveRating(pokeme.knownMoves[i],pokeme=pokeme,pokeyou=pokeyou)**3. for i in damages ]
@@ -50,8 +51,8 @@ class cpu:
                 rat_sum = sum(ratinga)
                 ratp = ratinga / rat_sum
                 choice2 = rng.choice(damages,p=ratp)
-                print(mov[pokeme.knownMoves[choice2]]['name'] )
-        return
+                #print(mov[pokeme.knownMoves[choice2]]['name'] )
+                return choice2
 
     def fightswitch(self,pokeme='',pokeyou=''):
         """
