@@ -145,7 +145,7 @@ class cpu:
         #physical moves are favored when attacker has greater physical than special stat, vise versa
         #physical moves are favored when target has greater special than physical, vise versa
         phys_attacker = pokeme.bat > pokeme.bsa
-        phys_defense = pokeyou.bde > pokeyou.bsd
+        phys_defense = pokeyou.deb > pokeyou.sdb
         physpec = 1.
         if move_phys:
             if phys_attacker:       physpec += 0.2
