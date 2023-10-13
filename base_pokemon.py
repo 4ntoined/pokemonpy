@@ -45,11 +45,10 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
         self.null_nature = False
+        self.nature_multipliers = np.ones(5)
         if self.nature[0] == self.nature[1]:
             self.null_nature = True
-            self.nature_multipliers = np.ones(5)
         else:
-            self.nature_multipliers = np.ones(5)
             self.nature_multipliers[self.nature[0]] = 1.1
             self.nature_multipliers[self.nature[1]] = 0.9
         self.hpiv=rng.integers(0,32)
@@ -89,10 +88,11 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         #pokemon is singly-typed
         else: self.dualType=False
         self.fainted=False
+        #moves
         self.knownMoves=[tackle_i]
         self.PP=[35]
-        #instead of tackle, start the pokemon with any single move
         if random_move: self.randomizeMoveset(1)
+        #grounding/unground
         if 9 in self.tipe: self.grounded=False #flying types aren't grounded
         else: self.grounded=True
         #battle stat stages
@@ -2346,6 +2346,7 @@ class battle:
             #emerald = field()
             self.usr_mon.chosen("user",self.field)
             self.cpu_mon.chosen("cpu",self.field)
+            #pre-user selection
             ####fight/run/pokemon/bag####
             while 1: #turn loop, advances to pokemon move exchange if user selects a move or shifts, otherwise we should loop back here
                 switching=False
@@ -2385,9 +2386,13 @@ class battle:
                     userMove=input(f"\nWhat should {self.usr_mon.name} do?\n[F]ight\n[P]okémon\n[S]tatus\n[R]un\n: ")
                     #### run away to end battle ####
                     if userMove=='r' or userMove == 'R':
-                        battleOver=True
-                        running=True
-                        break #break the otherwise indefinite turn-loop, ending the battle
+                        #confirm
+                        surety=input("\nAre you sure you want to forfeit? [y]/[n]: ")
+                        if surety == 'Y' or surety == 'y':
+                            battleOver=True
+                            running=True
+                            break #break the otherwise indefinite turn-loop, ending the battle
+                        else: pass
                     #### check status of battle? ####
                     if userMove=="s" or userMove=="S":
                         self.checkBattle()
@@ -2555,9 +2560,9 @@ class battle:
                     else:
                         #trainerCharge=False
                         pass
-                    nfp,nfpList=checkBlackout(self.cpus)
                     trainerShift=False
-                    rivalgo = rivalbrain.go(self.cpu_mon,self.usr_mon)
+                    nfp,nfpList=checkBlackout(self.cpus)
+                    rivalgo = rivalbrain.go(nfp,self.cpu_mon,self.usr_mon)
                     if nfp>1 and rivalgo == 'switch' and (not self.cpu_mon.resting) and (not self.cpu_mon.charged): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
                         del nfpList[int(np.argwhere(np.array(nfpList)==trainerInd))] #removing the current pokemon from the list of nonfainted pokemon in the party
                         self.cpu_mon.withdraw()
@@ -2574,7 +2579,9 @@ class battle:
                         self.cpu_mon.inBattle()
                         self.field.landing(self.cpu_mon)
                         trainerShift=True
+                        rivalgo=0
                         #end of trainer switching
+                        #we should really be checking for faint after these possible switch ins, given entry hazards
                     ########################################################
                     # if both pokemon are attacking, compare move priority #
                     # then compare pokemon speeds ##########################

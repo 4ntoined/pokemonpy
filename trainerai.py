@@ -21,20 +21,22 @@ class cpu:
         print(memon.name)
         return
     
-    def go(self,pokeme='',pokeyou=''):
+    def go(self,n_nonfainted,pokeme='',pokeyou=''):
         global mov
         if not pokeme:  pokeme = self.activemon
         if not pokeyou: pokeyou = self.enemymon
         #
-        choice1 = self.fightswitch()    #will be 'fight' or 'switch'
+        choice1 = self.fightswitch(n_nonfainted,pokeme=pokeme,pokeyou=pokeyou)    #will be 'fight' or 'switch'
         if choice1 == 'switch':
             #switch pokemon, for now randomly, but maybe not forever
             #print('switching')
             return 'switch'
         elif choice1 == 'fight':
-            movecat = mov[pokeme.knownMoves]['special?']
-            status = np.squeeze(np.argwhere(movecat == 2))                              #indeces from knownMoves of status moves
-            damages = np.squeeze(np.argwhere(np.logical_or(movecat==0,movecat==1)))     #indeces from knownMoves of damaging moves
+            movecat = mov[pokeme.knownMoves]['special?'].copy()
+            movepp = pokeme.PP.copy()
+            status = np.reshape( np.squeeze( np.argwhere( np.logical_and( movecat == 2, np.array(movepp) > 0 ))),(-1))                                 #indeces from knownMoves of status moves
+            damages = np.reshape( np.squeeze( np.argwhere( np.logical_and( np.logical_or( movecat==0, movecat==1 ), np.array(movepp) > 0))),(-1))      #indeces from knownMoves of damaging moves
+            #damages = [   ] np.where(  pokeme.PP[damages_] ) 
             #do we use a damage move or status move
             #status move logic doesnt exist yet so we'll set some ~20% chance to use a status
             # vv need to replace with proper status move logic vv #
@@ -54,7 +56,7 @@ class cpu:
                 #print(mov[pokeme.knownMoves[choice2]]['name'] )
                 return choice2
 
-    def fightswitch(self,pokeme='',pokeyou=''):
+    def fightswitch(self,n_nonfainted,pokeme='',pokeyou=''):
         """
         let's start here
         the cpu has to decide whether it will fight or choose a new pokemon
@@ -66,30 +68,33 @@ class cpu:
         if not pokeme:  pokeme = self.activemon
         if not pokeyou: pokeyou = self.enemymon
         #ans = 'fight'
-        #switchpressure = 0.
-        #target_type = self.enemymon.tipe
-        ## consider type disadvantage ## the lower the typead() value, the less likely to switch ##
-        #type pressure = (0, 1), for typeAd = (1 or less, 9)
-        typep_max = 1.
-        typep = max( (self.typeAdvantage(defender=pokeme,attacker=pokeyou)-1.) / 8., 0.)
-        ## check self health ##
-        healthp_max = 1.
-        if pokeme.currenthpp <= 20:     healthp = 1.
-        elif pokeme.currenthpp < 50:    healthp = 0.6
-        else:                           healthp = 0.
-        ## defense  ##
-        ##          ##
-        ## collecting it all ##
-        all_pressures = [typep, healthp]
-        all_max = [typep_max, healthp_max]
-        ##                   ##
-        #pressuremax = sum(all_max)
-        ## taking sums ##
-        switchpressure = sum(all_pressures) / sum(all_max)  #range (0,1)
-        thresh = max(switchpressure * 0.8, 0.05) #at least 5% chance to switch
-        ## choosing ##
-        ans = rng.choice(['fight','switch'], p=[ 1.-thresh, thresh ])
-        return ans
+        if n_nonfainted <= 1:
+            return 'fight'
+        else:
+            #switchpressure = 0.
+            #target_type = self.enemymon.tipe
+            ## consider type disadvantage ## the lower the typead() value, the less likely to switch ##
+            #type pressure = (0, 1), for typeAd = (1 or less, 9)
+            typep_max = 1.
+            typep = max( (self.typeAdvantage(defender=pokeme,attacker=pokeyou)-1.) / 8., 0.)
+            ## check self health ##
+            healthp_max = 1.
+            if pokeme.currenthpp <= 20:     healthp = 1.
+            elif pokeme.currenthpp < 50:    healthp = 0.6
+            else:                           healthp = 0.
+            ## defense  ##
+            ##          ##
+            ## collecting it all ##
+            all_pressures = [typep, healthp]
+            all_max = [typep_max, healthp_max]
+            ##                   ##
+            #pressuremax = sum(all_max)
+            ## taking sums ##
+            switchpressure = sum(all_pressures) / sum(all_max)  #range (0,1)
+            thresh = max(switchpressure * 0.8, 0.05) #at least 5% chance to switch
+            ## choosing ##
+            ans = rng.choice(['fight','switch'], p=[ 1.-thresh, thresh ])
+            return ans
     def stat_vs_damage_Rating(self):
         #the cpu has decided to use a move instead of switching out
         #we will check for special cases where a status move could be handy

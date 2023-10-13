@@ -1130,4 +1130,11 @@ mostly in the code which is not descriptive enough for me
 cpu and opponent work I guess but that's not where the code is rn
 anyway, hi hello I'm gonna try to make this Holiday '23 release, just
 don't know all what features we're gonna ship with
-
+16:58- a launch to-do list: *put hazards and walls in battle status
+*get all the max moves and z moves and make sure they work and
+random move generation doesnt overpopulate them
+*trainer ai? something extra...can be a first week patch kinda thing
+*really look at grounding/ungrounding pokemon
+*think that's it
+18:31- think i might have got the bugs with ai ironed out, did a whole battle
+w/o error after several tries and fails
