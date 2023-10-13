@@ -146,6 +146,7 @@ while 1:
     #move tutor and move deleter and training
     #opponent set and battle setting set 
     #reseting the party can get swallowed into expanded multi-party functions
+    #aa:hallfamecount
     if hallfame_count > 0:
         bord = genborder(num=game_width, cha='-')
         nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)

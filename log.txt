@@ -1117,3 +1117,17 @@ do with struggle
 
 11 july 2023
 20:30- made some changes to the main menu that i dont know if i like....
+
+13 oct 2023
+15:35- yeah Im still working on this thing, no I am not ready for formal release, what of it
+I started implementning the trainer ai into the battles, i think its working where i expect it to work
+I just had a crash because 'switch' was set as the oppo poke's move choice
+and poke tried to move even after it was just switched in but of course 'switch' isnt a valid move index
+so gotta fix that, gotta teach trainer ai how to evaluate status moves,
+also some other stuff im sure to round out cpu brains
+also gotta hammer down terminology for this cpu opponent, i use 'trainer'
+mostly in the code which is not descriptive enough for me
+cpu and opponent work I guess but that's not where the code is rn
+anyway, hi hello I'm gonna try to make this Holiday '23 release, just
+don't know all what features we're gonna ship with
+
