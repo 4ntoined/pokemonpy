@@ -85,6 +85,8 @@ else:
 #some oddball variables to calculate once and never again
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
+cut_the_line=1.
+cutline_dict = dict([( 1., False ), ( -1., True )])
 ##aa:mainmenu
 #mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
 #    "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
@@ -313,9 +315,9 @@ while 1:
             chaP= chps_stuff[1]
             #
             battle1 = battle(userParty, silP, gold, usr_name=username, cpu_name = sils_stuff[0])
-            resu1 = battle1.startbattle(e4=True)
+            resu1 = battle1.start_withai(e4=True)
             #resu1=True
-            if (not resu1): #the user lost
+            if not (resu1 or cutline_dict[cut_the_line]): #the user lost, cheats off
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
@@ -325,10 +327,10 @@ while 1:
             if hea_1 =='quitted': continue
             #zinnia's battle
             battle2 = battle(userParty,zinP,sapphire, usr_name=username, cpu_name = zins_stuff[0])
-            resu2 = battle2.startbattle(e4=True)
+            resu2 = battle2.start_withai(e4=True)
             #resu2=True
             #win check
-            if (not resu2): #the user lost
+            if not (resu2 or cutline_dict[cut_the_line]): #the user lost, cheats off
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
@@ -338,9 +340,9 @@ while 1:
             if hea_2 =='quitted': continue
             #cynthias battle
             battle3 = battle(userParty,cynP,diamond,usr_name=username, cpu_name = cyns_stuff[0])
-            resu3 = battle3.startbattle(e4=True)
+            resu3 = battle3.start_withai(e4=True)
             #resu3 = True
-            if (not resu3): #the user lost
+            if not (resu3 or cutline_dict[cut_the_line]): #the user lost, cheats off
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
@@ -350,10 +352,10 @@ while 1:
             if hea_3 =='quitted': continue
             #N's battle
             battle4 = battle(userParty, nnnP, black,usr_name=username, cpu_name = nnns_stuff[0])
-            resu4 = battle4.startbattle(e4=True)
+            resu4 = battle4.start_withai(e4=True)
             #resu4=True
             #win
-            if (not resu4): #the user lost
+            if not (resu4 or cutline_dict[cut_the_line]): #the user lost, cheats off
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
@@ -363,10 +365,10 @@ while 1:
             if hea_4 =='quitted': continue
             #champ
             battle5 = battle(userParty, chaP, indigo,usr_name=username, cpu_name = chps_stuff[0])
-            resu5 = battle5.startbattle(e4=True)
+            resu5 = battle5.start_withai(e4=True)
             #resu5=True
             #if you won, you won, like it's over
-            if not resu5:
+            if not (resu5 or cutline_dict[cut_the_line]): #the user lost, cheats off
                 print("Leaving Indigo Plateau...")
                 micropause()
                 continue
@@ -401,7 +403,7 @@ while 1:
             shortpause()
             continue #go back to main without starting the battle
         classicbattle = battle(userParty, trainerParty, scarlet, usr_name=username, cpu_name=opponentName)
-        classicbattle.startbattle()
+        classicbattle.start_withai()
         #then it should loop back to the main menu?
     ###end of battle block### zz:battlemode
     #### check party pokemon? aa:party ####
@@ -1046,7 +1048,7 @@ while 1:
                     if saveChoice[-4:]=='.npy': newMons=loadMonNpy(saveChoice)
                     else: newMons=loadMon(saveChoice)
                 except OSError:
-                    print(f"! That filename wasn't found !**\nno reason why this should run")
+                    print("! That filename wasn't found !**\nno reason why this should run")
                 else:
                     if newMons[0]==0: #error in loading data
                         continue
@@ -1385,5 +1387,15 @@ while 1:
                 pass
         #after parties menu while loop
     ####what's the next spot?####
+    if userChoice == "cheats":
+        yoo = input("\nYo, what's up?...")
+        if yoo == "eliter":
+            #print(cut_the_line)
+            cut_the_line *= -1.
+            print('\nReceived.')
+            micropause()
+        elif yoo == '14':
+            print('4 million?')
+        pass
     #end of game, loops back to main screen
 #runs after intial while loop

@@ -2326,7 +2326,7 @@ class battle:
         return self.user_won
     ###end of battle block###
     ##aa:aibattle
-    def s_ai(self, e4=False):
+    def start_withai(self, e4=False):
         ####Battle starts####
         userInd=0
         trainerInd=0
