@@ -34,8 +34,12 @@ class cpu:
         elif choice1 == 'fight':
             movecat = mov[pokeme.knownMoves]['special?'].copy()
             movepp = pokeme.PP.copy()
-            status = np.reshape( np.squeeze( np.argwhere( np.logical_and( movecat == 2, np.array(movepp) > 0 ))),(-1))                                 #indeces from knownMoves of status moves
-            damages = np.reshape( np.squeeze( np.argwhere( np.logical_and( np.logical_or( movecat==0, movecat==1 ), np.array(movepp) > 0))),(-1))      #indeces from knownMoves of damaging moves
+            status = np.reshape( np.squeeze( np.argwhere( \
+                    np.logical_and(movecat == 2, np.array(movepp) > 0 ))),\
+                    (-1))                                 #indeces from knownMoves of status moves
+            damages = np.reshape( np.squeeze( np.argwhere( \
+                    np.logical_and( np.logical_or( movecat==0, movecat==1 ), np.array(movepp) > 0))),\
+                    (-1))      #indeces from knownMoves of damaging moves
             #damages = [   ] np.where(  pokeme.PP[damages_] ) 
             #do we use a damage move or status move
             #status move logic doesnt exist yet so we'll set some ~20% chance to use a status
@@ -78,9 +82,14 @@ class cpu:
             typep_max = 1.
             typep = max( (self.typeAdvantage(defender=pokeme,attacker=pokeyou)-1.) / 8., 0.)
             ## check self health ##
+            # compare to all other mons health
+            #print(self.party.copy().remove(self.activemon))
+            others = self.party.copy()
+            #others  = others_.remove(self.activemon)
+            teamhpp = np.mean( [i.currenthpp for i in others] )
             healthp_max = 1.
-            if pokeme.currenthpp <= 20:     healthp = 1.
-            elif pokeme.currenthpp < 50:    healthp = 0.6
+            if pokeme.currenthpp <= teamhpp * .2:     healthp = 1.
+            elif pokeme.currenthpp < teamhpp * .5:    healthp = 0.6
             else:                           healthp = 0.
             ## defense  ##
             ##          ##

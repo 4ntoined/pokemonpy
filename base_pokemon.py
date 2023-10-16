@@ -3012,6 +3012,38 @@ class battle:
     def moreBattleFunctions(self):
         return
 #zz:battleclass
+class semifield:
+    def __init__(self,color):
+        self.color = color #'should' be red or blue
+        self.tailwindCounter = 0
+        self.futures = 0   #realized I dont need to specify its a counter
+        self.fainted = False
+        self.rocks=False
+        self.sticky=False
+        self.steel=False
+        self.spikes=0
+        self.toxic=0
+        self.reflectCounter = 0
+        self.lightscCounter = 0
+        self.veilCounter = 0
+        return
+    def clear(self):
+        self.tailwindCounter = 0
+        self.futures = 0   #realized I dont need to specify its a counter
+        self.fainted = False
+        self.rocks=False
+        self.sticky=False
+        self.steel=False
+        self.spikes=0
+        self.toxic=0
+        self.reflectCounter = 0
+        self.lightscCounter = 0
+        self.veilCounter = 0
+        return
+    
+    def echo(self):
+        return
+
 ##aa:fieldclass## possible in the code, but I like the clarity of battlefield while working all this out
 class field:
     def __init__(self, weath = 'clear', terra = 'none', rando = False):
@@ -3031,6 +3063,8 @@ class field:
         # fusion bolt flare trackers
         self.fusionb=False
         self.fusionf=False
+        self.a_field = semifield('red')
+        self.b_field = semifield('blue')
         #A for Red
         self.tailwindACounter = 0
         self.futuresA = 0 #set to 3, execute an attack at 0
@@ -3078,14 +3112,14 @@ class field:
         self.terrain='none'
         self.weatherCounter=np.inf
         self.terrainCounter=5
+        self.fusionf=False
+        self.fusionb=False
         self.rocksA=False
         self.rocksB=False
         self.steelA=False
         self.steelB=False
         self.stickyA=False
         self.stickyB=False
-        self.fusionf=False
-        self.fusionb=False
         self.faintedA=False
         self.faintedB=False
         #feel like we dont need these flags and we can do what

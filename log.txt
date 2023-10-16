@@ -1138,3 +1138,12 @@ random move generation doesnt overpopulate them
 *think that's it
 18:31- think i might have got the bugs with ai ironed out, did a whole battle
 w/o error after several tries and fails
+
+15 octo 2023
+22:41- uhh so *trainerai should consider switching conditional on current ons
+remaining health compared to their other mons' remaining health, average
+the average should include only non-active mons, that are not fainted
+*a function that takes any string input and breaks it into strings of a
+given length...so we can wrap all the lines to fit within the banners and headers
+what else
+
