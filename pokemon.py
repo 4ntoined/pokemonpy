@@ -133,7 +133,7 @@ copyrigh()
 if not mute_pregame:
     dramaticpause()
     #print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
-    print('\n'+magic_text(txt='Welcome to the Wonderful World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
+    print('\n'+magic_text(txt='Welcome to the World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
     dramaticpause()
     print('\nHere is your party:')
     shortpause()

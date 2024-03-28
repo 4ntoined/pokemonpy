@@ -326,6 +326,7 @@ natures = np.array(natures,dtype=object)
 #
 if __name__ == "__main__":
     np.save("saved_movedex.npy",mov)
+    #np.save("saved_natures.npy",natures)
 else:
     pass
 
