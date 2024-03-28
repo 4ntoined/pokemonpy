@@ -70,6 +70,7 @@ def make_teams():
         lvl_m.append( level_multipliers )
     lvl_m.append( [ rng_wild.normal(loc=1.,scale=.03) for i in range(6)]  )
 
+    #silver, Weavile, crobat, h-typhlosion(register), lugia
     silver1 = makeMon(460,level=levil+6,nacher=(0, 3),how_created='elite') #weavile
     silver2 = makeMon(168,level=levil+3,nacher=(4, 0),how_created='elite') #crobat
     silver3 = makeMon(914,level=levil+7,nacher=(2, 4),how_created='elite') #typhlosion
@@ -252,8 +253,7 @@ chari_set = ("Fire Blast","Focus Blast","Air Slash","Dragon Pulse")
 blast_set = ("Water Spout","Hydro Pump","Blizzard","Focus Blast")
 #mew_set   = ("","","","")
 mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
-#silver, Weavile, crobat, h-typhlosion(register), lugia
-#c1_party = []
+#FreePalestine
 
 if __name__ == "__main__":
     copyrigh(prespace=True)

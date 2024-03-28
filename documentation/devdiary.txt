@@ -1181,3 +1181,8 @@ I think any 'log' going forward should actually properly
 document changes and updates and new features etc.
 bug reports, and forks and pull requests and all that, not just
 me freestyling.
+22:20- did all the stuff I mentioned in the prev. timestamp. I
+think like that's everything? I am working on the readme but once
+thats done Im gonna slap a v0.1.0 on this thing and send a tweet
+or something
+

@@ -182,40 +182,6 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         poke_moves = [self.knownMoves]
         poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
         #
-        """
-        name=self.name
-        lvl=self.level
-        #pokemon base stats
-        hp=self.hpb
-        at=self.atb
-        de=self.deb
-        sa=self.sab
-        sd=self.sdb
-        sp=self.spb
-        base=[hp,at,de,sa,sd,sp]
-        #pokemon ivs
-        hpi=self.hpiv
-        ati=self.ativ
-        dei=self.deiv
-        sai=self.saiv
-        sdi=self.sdiv
-        spi=self.spiv
-        iv=[hpi,ati,dei,sai,sdi,spi]
-        #pokemon evs
-        hpe=self.hpev
-        ate=self.atev
-        dee=self.deev
-        sae=self.saev
-        sde=self.sdev
-        spe=self.spev
-        ev=[hpe,ate,dee,sae,sde,spe]
-        #pokemon types
-        tip=self.tipe
-        #nature
-        nacher = self.nature
-        #known moves
-        mvs=self.knownMoves
-        """
         #construct line to save all pokemon data
         line=self.name #name
         line+=f",{self.level},"
@@ -3092,12 +3058,6 @@ class field:
         self.reflectBCounter = 0
         self.lightscBCounter = 0
         self.veilBCounter = 0
-        #self.reflectA=False
-        #self.reflectB=False
-        #self.lightscA=False
-        #self.lightscB=False
-        #feel like we dont need these flags and we can do what
-        #we did for toxic and spikes
         #trick room
         #the same way weather and terrain are set globally, i think trick room could be as well
         #also weather and terrain could be an attribute of battle() rn not much difference
@@ -3124,10 +3084,6 @@ class field:
         self.faintedB=False
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
-        #self.reflectA=False
-        #self.reflectB=False
-        #self.lightscA=False
-        #self.lightscB=False
         self.spikesA=0 #up to 3
         self.spikesB=0
         self.toxicA=0 #up to 2 
@@ -3168,7 +3124,6 @@ class field:
             return ans
     ### call when a pokemon is grounded
     def grounding(self,poke):
-        #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
         spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
         toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
@@ -3197,9 +3152,6 @@ class field:
         #need to make functions for mon() of the entry hazard damages being done
         #need to check for rocks, spikes, toxix spikes (except for poisons) and sticky web
         #only for grounded pokemon tho...
-        #stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
-        #spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
-        #toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
         rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         ##some hazards
         if rocksOn:         poke.rocksDamage()
@@ -3762,8 +3714,6 @@ def loadShowdown(savefile):
         newmon.learn_sets( moves )                  #proofed!
         if gender == 'none': newmon.gender = 'N'
         else: newmon.gender = gender
-        #newmon = mon(lvl,namer,nature=nature,hpbase=1,atbase=1,debase=1, \
-        #    sabase=1,sdbase=1,spbase=1,tipe=tiping,how_created='showdown')
         #anything else?
         loadparty.append(newmon)
         pass
@@ -3837,7 +3787,6 @@ def loadMon(savefile):
         #dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
         dat = dat2[:,0] #1 or 2 dim, if 2-dim: first one is num pokes, elsewi
         loadPokes=[]
-        #if type(dat[0])==np.str_: dat=dat.reshape((1,-1)) #only the case if there's only 1 pokemon #to treat this pokemon like any other line in a list of saved pokemon
         #for i in dat:
         for i in range(len(dat)):
             #hash check business
@@ -3867,8 +3816,6 @@ def loadMon(savefile):
                 newP.bornplace = line[10]
                 newP.hallfamecount = int(float(line[11]))
             newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
-            #newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
-            #newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
             newP.set_evs(evz)
             newP.set_evs(ivz,ivs=True)
             newP.gender=line[12]
@@ -3914,11 +3861,6 @@ def maker(nparty,psize,nfield,level=100,how_created='random'):
     # making parties
     parties = []
     for i in range(nparty): parties.append( makeParty(numb=psize,level=level,how_created=how_created) )
-        #party = []
-        #for j in range(psize):
-        #    newmon = makeRandom(how_created='random')
-        #    party.append(newmon)
-        #parties.append(party)
     # making the fields
     fields = []
     for i in range(nfield):
@@ -4040,11 +3982,6 @@ def moveInfo(moveCode):
     print("-\n"+move['desc'])
     if move['contact?']:    print("-The user makes contact with the target.")
     else:                   print("-The user does not make contact with the target.")
-    #if move['special?']==2:
-    #elif move['special?']==1:
-    #    print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
-    #elif move['special?']==0:
-    #    print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
     return
 ##zz:textprint
 def readEvIv(dato):
@@ -4125,6 +4062,7 @@ def codexer():
             0.5,2.0,0.5,2.0,2.0,0.5 #fairy
     ans = codex.copy()
     return ans
+#FreePalestine
 rng = np.random.default_rng()
 game_width = 64
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
@@ -4133,8 +4071,8 @@ game_width = 64
 codex = codexer()
 easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
         "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White",\
-        "Gray","X","Y","Z","Sun","Moon","Stars","Eclipse","Sword","Shield",\
-        "Armor","Crown","Scarlet","Violet","Teal","Indigo")
+        "Gray","X","Y","Z","Z-A","Sun","Moon","Stars","Eclipse","Sword","Shield",\
+        "Armor","Crown","Legend","Scarlet","Violet","Teal","Indigo")
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
         "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
         "Dark","Steel","Fairy","Typeless"]

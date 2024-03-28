@@ -102,6 +102,7 @@ mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
 #    "\n\nWhat to do: "
 ############   give the player a starter  ###############
 #starterParty=[]
+#FreePalestine
 #for i in range(nstart):
 #    randomLevel = int(rng.normal(loc=100,scale=30))
 #    starter= makeRandom(level=randomLevel,how_created='starter')
