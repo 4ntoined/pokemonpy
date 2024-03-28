@@ -176,25 +176,21 @@ while 1:
     if userChoice=="s" or userChoice=="S":
         #hello
         while 1: #user input loop
-            print("\n------------Classic Mode Settings------------")
-            micropause()
-            print("")
-            micropause()
-            #settings menu
-            print("[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
+            print("\n"+magic_text(txt='"Battle!" Settings', cha="x",long=game_width))
+            print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
             sat_choice = input("What [#] to do or [b]ack: ")
             if sat_choice == 'b' or sat_choice == 'B':
                 break
             if sat_choice == '1': #battlefield conditions setting
-                print("\n------------ Set the Stage ------------\n-------------------------------------------------")
+                print("\n"+magic_text(txt='Set the stage',cha='x',long=game_width))
                 print("\nCurrent Battle conditions:")
-                micropause()
+                #micropause()
                 print(f"Weather: {scarlet.weather}\nTerrain: {scarlet.terrain}")
                 print("\n[1] Randomize weather and terrain\n[2] Randomize just weather\n[3] Randomize just terrain\n[4] Set manually")
                 setChoice=input("What [#] to do or [b]ack: ")
                 #go back
                 if setChoice=="b" or setChoice=="B":
-                    break
+                    continue
                 #randomize both
                 if setChoice=="1":
                     scarlet.shuffleweather()
@@ -252,19 +248,19 @@ while 1:
                                     print("*\n** Not a valid entry **\n*")
                 #more options to change battle conditions
             elif sat_choice == '2': ## another setting somewhere
-                print("\n________ Opponent Reset ________")
-                shortpause()
-                aceChoice=input("Set your current team as the battle opponent?\n[y] or [b]ack: ")
+                print("\n"+magic_text(txt='Set Rival Team',cha='x',spacing=' ',long=game_width))
+                #shortpause()
+                aceChoice=input("\nSet your current team as the battle opponent?\n[y] or [b]ack: ")
                 if aceChoice=='y' or aceChoice=="Y":
                     trainerParty=copy.deepcopy(userParty)
-                    print("The Battle Opponent has a new Party! Good Luck!")
+                    print("The Battle! Opponent has a new Party! Good Luck!")
                     shortpause() #kills
                 else:
                     print("Leaving Opponent Reset...")
                     shortpause() #kills
                 #end of opponent set, back to main screen
             elif sat_choice == '3': #battlefield conditions setting
-                playername = input("What's your name?\n: ")
+                playername = input("\nWhat's your name?\n: ")
                 username=playername
                 username_set=True
                 print(f"Thank you {username}!")
@@ -524,13 +520,12 @@ while 1:
     ###end of party display block###zz:pokemonparty
     ####pokemon aa:nursery####
     if userChoice=='n' or userChoice=='N':
-        print("\n____ Welcome to the Pokémon Nursery! ____")
-        shortpause()
-        print("Here, you can create Pokémon from scratch!")
-        shortpause()
+        #print("\n____ Welcome to the Pokémon Nursery! ____")
         ####nursery loop####
         while 1:
-            nurseChoice=input("What do you want to do?\n[1] Create a Pokémon!!\n[2] Choose from the Pokedex\n[#] or [b]ack: ")
+            print( '\n' + magic_head(txt='The Nursery',cha='-',long=game_width,spacing='  ') )
+            print("Here, you can create Pokémon from scratch!")
+            nurseChoice=input("\nWhat do you want to do?\n[1] Create a Pokémon!!\n[2] Choose from the Pokédex\n[#] or [b]ack: ")
             if nurseChoice=='b' or nurseChoice=='B':
                 break #exits nursery loop
             ####new pokemon####
@@ -624,7 +619,7 @@ while 1:
             ##pokedex selection aa:pokedex
             elif nurseChoice == '2':
                 #do the dex selection
-                printdex= input("Would you like to see the Pokedex?\n[y]es, [n]o, or [b]ack: ")
+                printdex= input("Would you like to see the Pokédex?\n[y]es, [n]o, or [b]ack: ")
                 if printdex=='b' or printdex=='B':
                     continue
                 elif printdex=='y' or printdex=='Y':
@@ -634,7 +629,7 @@ while 1:
                 while 1:
                     pokeChoice=input("Which Pokémon would you like to add to your team?\n[#]'s or [b]ack: ")
                     if pokeChoice=='b' or pokeChoice=='B':
-                        print("Leaving Pokedex...")
+                        print("Leaving Pokédex...")
                         shortpause() #kills
                         break
                     try:
