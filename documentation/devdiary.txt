@@ -1185,4 +1185,8 @@ me freestyling.
 think like that's everything? I am working on the readme but once
 thats done Im gonna slap a v0.1.0 on this thing and send a tweet
 or something
+22:30- just realized I made all these commits today with my alt github account
+that I was using to make a website. so silly. 3.5 years straight of
+a single contributor only for this random to pop in at the 11th hour
+(but they're both me)
 
