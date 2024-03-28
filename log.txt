@@ -1147,3 +1147,37 @@ the average should include only non-active mons, that are not fainted
 given length...so we can wrap all the lines to fit within the banners and headers
 what else
 
+27 mar 2024
+19:40- yeah. so 2 days ago I recorded a demo for the game and started
+editing the video and yesterday i did the bulk of the editing and
+this morning I made all the final edits. I think it's good? I feel
+like that its not voiced is gonna turn people off, I'm always worried
+about peoples having short attention spans and so if you aren't
+interesting enough, immediately enough, you really don't get that
+attention. but also like I can only do what i can do
+I recorded demos last year where I talked all through my playthrough
+and they were so bad. Having to talk about the code and the game
+and walk people through it and pokemon concepts was a slog for me
+the talked and me the audience watching it back. i think i figured
+out very recently that the key to doing this was to figure out the
+core pillars of the game and chart a path through each of them
+and idk I feel like the game mostly speaks for itself I can play
+a battle without having to explain to you that Hey so Im gonna
+start the code by and hey lets check out my party and see what
+Pokemon I have woah its a Pallossand(sp?)!
+And I think I did the voiceless narrator thing moderately well
+its an unusual video style for me but Im kinda just built like
+that idk. So I think the video is good and with the Elite 4 long
+finished I think Im ready to put a version number behind this
+and push it out of the door
+Pokemon.py v0.1.0? I like it?
+some notes for release: commented out max and z moves
+want to take a quick look at the elite5 team leveling
+want to fix the headers in the nursery and also somewhere
+else....will report back when I find it
+Im gonna retire/archive this log! it has not been a log
+as much as its been a kind of developer diary and
+I think any 'log' going forward should actually properly
+document changes and updates and new features etc.
+bug reports, and forks and pull requests and all that, not just
+me freestyling.

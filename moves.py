@@ -164,50 +164,68 @@ moremoves=[
         
         ("Rollout",30,90,20,0,1,12,0,"The user rolls into the target for fives turns!\nDoes more damage each consecutive turn.","rollout"),
 
-        #z-moves
-        ("Inferno Overdrive (P)",220,100,1,0,1,1,0,"The user breathes a stream of intense fire toward the target using its Z-Power!","zmove"),
-        ("Inferno Overdrive (S)",200,100,1,1,0,1,0,"The user breathes a stream of intense fire toward the target using its Z-Power!","zmove"),
-
-        #max moves
-        ("Max Strike (P)",150,100,3,0,1,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
-        ("Max Strike (S)",150,100,3,1,0,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
-        ("Max Flare (P)",150,100,3,0,1,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
-        ("Max Flare (S)",150,100,3,1,0,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
-        ("Max Geyser (P)",130,100,3,0,1,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
-        ("Max Geyser (S)",150,100,3,1,0,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
-        ("Max Overgrowth (P)",140,100,3,0,1,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
-        ("Max Overgrowth (S)",150,100,3,1,0,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
+        #z-moves,                power,accuracy,PP,phys/spec,contact,type,prority,flavor-text,tags
+        #("Breakneak Blitz (P)"  ,200,100,1,0,1,0,0,"The user builds momentum using its Z-Power and crashes into the target at full speed!","zmove"),
+        #("Breakneak Blitz (S)"  ,200,100,1,1,0,0,0,"The user builds momentum using its Z-Power and crashes into the target at full speed!","zmove"),
+        #("Inferno Overdrive (P)",220,100,1,0,1,1,0,"The user breathes a stream of intense fire toward the target using its Z-Power!","zmove"),
+        #("Inferno Overdrive (S)",200,100,1,1,0,1,0,"The user breathes a stream of intense fire toward the target using its Z-Power!","zmove"),
+        #("Hydro Vortex (P)"     ,180,100,1,0,1,2,0,"The user swallows the target with a huge whirling current using its Z-Power!","zmove"),
+        #("Hydro Vortex (S)"     ,200,100,1,1,0,2,0,"The user swallows the target with a huge whirling current using its Z-Power!","zmove"),
+        #("Bloom Doom (P)"       ,190,100,1,0,1,3,0,"The user draws energy from the plants and attacks the target with full force using its Z-Power!","zmove"),
+        #("Bloom Doom (S)"       ,200,100,1,1,0,3,0,"The user draws energy from the plants and attacks the target with full force using its Z-Power!","zmove"),
+        #("Gigavolt Havoc (P)"   ,195,100,1,0,1,4,0,"The user hits the target with an electric current collected by its Z-Power!","zmove"),
+        #("Gigavolt Havoc (S)"   ,190,100,1,1,0,4,0,"The user hits the target with an electric current collected by its Z-Power!","zmove"),
         #electric, ice, fighting, poison
-        ("Max Lightning (P)",140,100,3,0,1,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
-        ("Max Lightning (S)",140,100,3,1,0,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
-        ("Max Hailstorm (P)",140,100,3,0,1,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
-        ("Max Hailstorm (S)",140,100,3,1,0,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
-        ("Max Knuckle (P)",100,100,3,0,1,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
-        ("Max Knuckle (S)",100,100,3,1,0,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
-        ("Max Ooze (P)",95,100,3,0,1,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
-        ("Max Ooze (S)",95,100,3,1,0,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
+        #("Subzero Slammer (P)"  ,200,100,1,0,1,5,0,"The user drops the temperature and freezes the target with its Z-Power!","zmove"),
+        #("Subzero Slammer (S)"  ,200,100,1,1,0,5,0,"The user drops the temperature and freezes the target with its Z-Power!","zmove"),
+        #("All-Out Pummeling (P)",200,100,1,0,1,5,0,"The user rams an energy orb created by its Z-Power into the target with full force!","zmove"),
+        #("All-Out Pummeling (S)",190,100,1,1,0,5,0,"The user rams an energy orb created by its Z-Power into the target with full force!","zmove"),
+        #("Acid Downpour (P)"    ,190,100,1,1,0,5,0,"The user sinks the target in a poisonous swamp with its Z-Power!","zmove"),
+        #("Acid Downpour (S)"    ,190,100,1,1,0,5,0,"The user sinks the target in a poisonous swamp with its Z-Power!","zmove"),
         #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
         #dark 15,steel 16,fairy 17
-        ("Max Quake (P)",140,100,3,0,1,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
-        ("Max Quake (S)",130,100,3,1,0,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
-        ("Max Airstream (P)",140,100,3,0,1,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
-        ("Max Airstream (S)",140,100,3,1,0,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
-        ("Max Mindstorm (P)",130,100,3,0,1,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
-        ("Max Mindstorm (S)",150,100,3,1,0,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
-        ("Max Flutterby (P)",140,100,3,0,1,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
-        ("Max Flutterby (S)",130,100,3,1,0,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
-        ("Max Rockfall (P)",150,100,3,0,1,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
-        ("Max Rockfall (S)",140,100,3,1,0,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
-        ("Max Phantasm (P)",140,100,3,0,1,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
-        ("Max Phantasm (S)",140,100,3,1,0,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
-        ("Max Wyrmwind (P)",140,100,3,0,1,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
-        ("Max Wyrmwind (S)",150,100,3,1,0,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
-        ("Max Darkness (P)",130,100,3,0,1,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
-        ("Max Darkness (S)",130,100,3,1,0,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
-        ("Max Steelspike (P)",140,100,3,0,1,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
-        ("Max Steelspike (S)",140,100,3,1,0,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
-        ("Max Starfall (P)",130,100,3,0,1,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
-        ("Max Starfall (S)",140,100,3,1,0,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
+
+
+        #max moves
+        #("Max Strike (P)",150,100,3,0,1,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
+        #("Max Strike (S)",150,100,3,1,0,0,0,"A Normal-type Dynamax move! Decreases the target's Spe. 1 stage.","maxmove stat targ,sp,-1,100"),
+        #("Max Flare (P)",150,100,3,0,1,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
+        #("Max Flare (S)",150,100,3,1,0,1,0,"A Fire-type Dynamax move! Summons harsh sunlight for five turns.","maxmove sun"),
+        #("Max Geyser (P)",130,100,3,0,1,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
+        #("Max Geyser (S)",150,100,3,1,0,2,0,"A Water-type Dynamax move! Summons rain for five turns.","maxmove rain"),
+        #("Max Overgrowth (P)",140,100,3,0,1,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
+        #("Max Overgrowth (S)",150,100,3,1,0,3,0,"A Grass-type Dynamax move! Sprouts grassy terrain for five turns.","maxmove grassy"),
+        #electric, ice, fighting, poison
+        #("Max Lightning (P)",140,100,3,0,1,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
+        #("Max Lightning (S)",140,100,3,1,0,4,0,"An Electric-type Dynamax move! Sparks electric terrain for five turns.","maxmove electric"),
+        #("Max Hailstorm (P)",140,100,3,0,1,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
+        #("Max Hailstorm (S)",140,100,3,1,0,5,0,"An Ice-type Dynamax move! Summons a hailstorm for five turns.","maxmove hail snow"),
+        #("Max Knuckle (P)",100,100,3,0,1,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
+        #("Max Knuckle (S)",100,100,3,1,0,6,0,"A Fighting-type Dynamax move! Boosts user's Atk. 1 stage.","maxmove stat self,at,1,100"),
+        #("Max Ooze (P)",95,100,3,0,1,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
+        #("Max Ooze (S)",95,100,3,1,0,7,0,"A Poison-type Dynamax move! Boosts user's Sp.A 1 stage.","maxmove stat self,sa,1,100"),
+        #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,
+        #dark 15,steel 16,fairy 17
+        #("Max Quake (P)",140,100,3,0,1,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        #("Max Quake (S)",130,100,3,1,0,8,0,"A Ground-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        #("Max Airstream (P)",140,100,3,0,1,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
+        #("Max Airstream (S)",140,100,3,1,0,9,0,"A Flying-type Dynamax move! Boosts user's Spe. 1 stage.","maxmove stat self,sp,1,100"),
+        #("Max Mindstorm (P)",130,100,3,0,1,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
+        #("Max Mindstorm (S)",150,100,3,1,0,10,0,"A Psychic-type Dynamax move! Weirdly causes psychic terrain for five turns.","maxmove psychic"),
+        #("Max Flutterby (P)",140,100,3,0,1,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
+        #("Max Flutterby (S)",130,100,3,1,0,11,0,"A Bug-type Dynamax move! Lowers target's Sp.A 1 stage.","maxmove stat targ,sa,-1,100"),
+        #("Max Rockfall (P)",150,100,3,0,1,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
+        #("Max Rockfall (S)",140,100,3,1,0,12,0,"A Rock-type Dynamax move! Summons a sandstorm for five turns.","maxmove sand"),
+        #("Max Phantasm (P)",140,100,3,0,1,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
+        #("Max Phantasm (S)",140,100,3,1,0,13,0,"A Ghost-type Dynamax move! Lowers target's Def. 1 stage.","maxmove stat targ,de,-1,100"),
+        #("Max Wyrmwind (P)",140,100,3,0,1,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
+        #("Max Wyrmwind (S)",150,100,3,1,0,14,0,"A Dragon-type Dynamax move! Lowers target's Atk. 1 stage.","maxmove stat targ,at,-1,100"),
+        #("Max Darkness (P)",130,100,3,0,1,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
+        #("Max Darkness (S)",130,100,3,1,0,15,0,"A Dark-type Dynamax move! Lowers target's Sp.D 1 stage.","maxmove stat targ,sd,-1,100"),
+        #("Max Steelspike (P)",140,100,3,0,1,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        #("Max Steelspike (S)",140,100,3,1,0,16,0,"A Steel-type Dynamax move! Boosts user's Def. 1 stage.","maxmove stat self,de,1,100"),
+        #("Max Starfall (P)",130,100,3,0,1,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
+        #("Max Starfall (S)",140,100,3,1,0,17,0,"A Fairy-type Dynamax move! Mystifies a misty terrain for five turns.","maxmove misty"),
         #("Max Guard",0,100,3,1,0,10,0," ","maxmove guard? protect? noMiss?noTarg?"),
 
 
@@ -266,19 +284,13 @@ moremoves=[
         #to do: z/max moves! terrain pulse! brine! trapping/binding moves!
         ("Struggle",50,100,1,0,1,18,0,"The user is otherwise out of moves.","noMiss recoil 1/4maxhp")
         ]
-#print('check 1')
 #constructing dtypes and names to accompany data
-#labels = np.dtype( [('name','U25'),('pwr','i4'),('accu','i4'),('pp','i4'),('special?','i4'),('contact?','i4'),('type','i4'),('desc','U140'),('notes','U140')] )
-#for when i'm ready for priority
 labels = np.dtype( [('name','U25'),('pwr','i4'),('accu','i4'),('pp','i4'),('special?','i4'),('contact?','i4'),('type','i4'),('priority','i4'),('desc','U140'),('notes','U140')] )
 mov = np.array(moremoves, dtype=labels)
 new_dt = np.dtype( [('index','i4')] + mov.dtype.descr)
 mov2 = np.zeros(mov.shape, dtype=new_dt)
 #creating structed arrays
-#print('check 2')
 #new dtype to add the index column and priority 
-#print('check 3')
-#print(len(mov.dtype.descr))
 #new structured array for the new dtype
 #dump data from old array into new array
 for i in mov.dtype.names:
@@ -301,15 +313,9 @@ zzz2 = np.argwhere( zzzs )
 zzzset = [ i[0] for i in zzz2 ]
 ### xx ###
 
-#print('check 7')
-#save the table, especially for readability
-#mov.tofile('movedex.txt', sep='\n')
-#with open('movedex.txt', 'a') as ofile:
-#    ofile.write('\n')
 #Natures?
 #no idea the best way to store this data
 #okay got it
-#print('check 6')
 #atk = 0, def = 1, spatk = 2, spdef = 3, speed = 4
 natures = [ ["Hardy","Lonely","Adamant","Naughty","Brave"], \
            ["Bold","Docile","Impish","Lax","Relaxed"], \
@@ -317,7 +323,7 @@ natures = [ ["Hardy","Lonely","Adamant","Naughty","Brave"], \
                    ["Calm","Gentle","Careful","Quirky","Sassy"], \
                        ["Timid","Hasty","Jolly","Naive","Serious"] ]
 natures = np.array(natures,dtype=object)
-#print('check 5')
+#
 if __name__ == "__main__":
     np.save("saved_movedex.npy",mov)
 else:

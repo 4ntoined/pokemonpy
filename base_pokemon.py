@@ -3781,10 +3781,10 @@ def loadMonNpy(savefile):
         print('File not found.')
         micropause()
     except ValueError:
-        print('Error loading file')
+        print('Error loading file/ValueErr')
         micropause()
     except OSError:
-        print('Error loading file')
+        print('Error loading file/OSErr')
         micropause()
     else:
         takehome = []

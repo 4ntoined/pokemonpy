@@ -48,7 +48,7 @@ def random_evs():
 def learn_sets(poke, sets):
     global mov
     #sets should be a list of str with names of moves to learn
-    poke.knownMoves=[ int(np.argwhere( mov['name'] == sets[i])) for i in range(len(sets))]
+    poke.knownMoves=[ int( np.argwhere( mov['name'] == sets[i])[0][0] ) for i in range(len(sets))]
     poke.PP = [ mov['pp'][i] for i in poke.knownMoves]
     return
 def add_random_moves(poke, number=2):
@@ -256,12 +256,8 @@ mewtw_set = ("Psystrike","Aura Sphere","Recover","Amnesia")
 #c1_party = []
 
 if __name__ == "__main__":
-    #print('\nCopyright (C) 2023 Adarius')
-    #print('This program comes with ABSOLUTELY NO WARRANTY.\n'+\
-    #        'This is free software, and you are welcome to\n'+\
-    #        'redistribute it under certain conditions.\n')
     copyrigh(prespace=True)
-    savehere = input('directory to save: ') or 'elite_four_teams'
+    savehere = input('\nDirectory to save to: ') or 'elite_four_teams'
     if not os.path.exists(savehere):
         os.makedirs(savehere)
     bigg = make_teams()
