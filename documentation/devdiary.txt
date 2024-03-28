@@ -1190,3 +1190,29 @@ that I was using to make a website. so silly. 3.5 years straight of
 a single contributor only for this random to pop in at the 11th hour
 (but they're both me)
 
+28 mar 2024
+08:37- thought about it some more and I think straight up I will delete this
+file from the repo. I'll keep updating it until game is fully formally released
+but it doesnt need to exist, and it'll stll exist in prior commits, you, reader
+who is evidently reading this, can still find it and uncover all my secrets
+you will just have to be (you have had to be) a little more dedicated I guess.
+anyway I wanted to jot down that I think it would be cool to do a follow-up
+demo and showcase using some of the code outside of the main game
+like I was playing around a moment ago and I was able to jump into a battle
+literally from raw python just by importing 'base_pokemon' and doing like 5
+lines of setup. so the capabilities are there and Im afraid that if i
+don't point it out, that part might be lost on most people
+I think I had other thoughts about things to demo, yeah like backend stuff
+like adding moves. yes and I want to point out the 'aa:' 'zz:' markers i
+commented throughout the code to help with finding particular parts of the code
+okay I think thats it for now, I have non-this work to tend to so
+i gotta blast
+17:02- uhhhh i did a couple things today, i re-edited the demo video bc i realized
+there were little things to improve. i did some tidying up of the repo, deleted a lot of stuff
+moved some other stuff around, scripts that aren't essential to running the code are now
+in documentation/archive. i felt like i did more but i can't think of anything else
+so I am working on getting the readme file together, figuring out what needs to be said and
+how to say it. and then I'll start the changelog where its like "Pokemon.py v0.1.0: game is launched"
+currently planning a sat 30 march release, really hoping people spend their weekend installing python
+and playing my stupid game.
+

@@ -18,3 +18,22 @@ Did I leave out your favorite 'mon or a move essential to your E4 strategy? Do i
  -  E4 + Champion teams are pre-saved and can be loaded into the game as your own.
  -  Multi-party support through "Boxes" on the main menu.
  -  Perfect all IVs of individual Pokémon or your whole party at once. Fully EV train individual Pokémon or your whole party at once (EVs are distributed randomly, but in multiples of 4 so none are wasted.)
+
+### HOW TO PLAY:
+1. Clone (download) this Github repository (https://www.github.com/4ntoined/pokemonpy) to your computer. (Congrats! You've installed the game!)
+2. Navigate to the 'pokemonpy' folder from your terminal (command: 'cd /your/path/to/the/folder/here/pokemonpy/')
+3. Enter 'python3 pokemon.py'
+
+#### Prerequisites:
+1. Access to the command line
+   - Search your computer for 'terminal' or 'command prompt' or 'command line'
+   - Windows, in my experience, is a little weird about the command line. Mac and Linux are pretty straightforward I think. To play on Windows, I search 'bash' on the start menu and run 'bash.exe' when it pops up. Alternatively, typing and entering 'bash' from the raw command line also works. Bash is a Unix shell. There are others like sh, csh, zsh, and your computer might have one of these installed instead of bash. For our purposes I think they all work just about the same. Your mileage may vary, I'm literally just having fun with it.
+
+2. Python 3.7(ish) or later
+   - https://www.python.org
+
+3. Numpy package for Python
+   - https://numpy.org/doc/stable/index.html
+
+Tip: Numpy recommends the Anaconda distribution of Python (https://www.anaconda.com/data-science-platform) for users who do not already have Python. If you go this route you get Python and Numpy all at once (no need to install Python, Anaconda will take care of it), along with a lot of other packages you won't need for Pokemon.py. Anaconda's cool, she makes managing Python and its packages pretty easy, but she takes up a lot of storage space and you ONLY need Python + Numpy to play Pokemon.py. So do you.
+

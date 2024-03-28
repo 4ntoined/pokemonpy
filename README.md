@@ -1,6 +1,8 @@
 # Pokemon.py
 
-This Python program simulated Pokemon and Pokemon battles.
+This Python program simulates Pokémon and Pokémon battles.
+
+## To play
 
 Prerequisites:
  - Python
