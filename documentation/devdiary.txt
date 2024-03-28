@@ -1215,4 +1215,20 @@ so I am working on getting the readme file together, figuring out what needs to 
 how to say it. and then I'll start the changelog where its like "Pokemon.py v0.1.0: game is launched"
 currently planning a sat 30 march release, really hoping people spend their weekend installing python
 and playing my stupid game.
-
+17:47- we will have to run a post-launch update at some point for a few important things I think
+1. tracking a pokemons moves by move name and not just indeces, indeces work for almost all the
+time, but the whole thing breaks when new moves are added or removed. e.g. the demo team save is
+'corrupted' because I removed the maxz moves and now there are ~40 fewer moves in the game so those 
+later move indeces no longer exist
+2. a mechanism to change pokemon names (poke names dont do anything in this game, and you can always
+create a new pokemon thats a clone of your old pokemon but with a new name, but renaming is so easy to
+implement and such a QoL update over the workaround I just described) AND changing natures/choosing nature
+for dex selection.
+so 1 of those points is relatively simple and straightforward and the other is annoying me already
+we might fit point 2 in v0.1.0 if i feel like doing it tomorrow (dont feel like doing it rn) point 1
+is probably definitely destined for v0.1.1
+18:01- removing the demoteam from the repo since it is currently broken, when there are enough moves so
+that the save isnt broken (itll still be broken unless I just re-add the maxz moves in their unfinished state
+but the game WILL load the mons at least, theyll just have the wrong moves) I'll add it back for
+posterity. making a lot of post-release plans for a mans who wanted to release the game and not touch it for
+10 years
