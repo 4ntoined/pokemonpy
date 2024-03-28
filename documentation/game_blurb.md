@@ -9,8 +9,8 @@ The level-100 cap is dead and gone! Your Pikachu can be Level 999,999 if you wan
 Did I leave out your favorite 'mon or a move essential to your E4 strategy? Do it yourself! As a github repository, the whole program is public. If you can play it, you can also edit 'moves.py' or 'somemons.dat' to include your additions. (Adding moves with 'new functionality' (i.e. there is not already a move that has this particular effect) is a little more involved than editing 'moves.py,' but I think I'll explain all that in some other context.)
 
 ### Rapid-fire features I haven't mentioned yet:
- - The CPU opponent is kinda smart!! I programmed an algorithm that takes into account type advantages, phys/spec spectrum considerations, status effects, etc. You will get hit with STABS and super-effective moves a LOT!
- -  Pokémon keep track of how they were created: starters vs. nursery vs. randomized by Boxes. E4 + Champion Pokémon are marked as such. The game detects when a Pokemon.py save file has been 'tampered' with and marks this on affected Pokémon. And more!
+ - The CPU opponent is kinda smart! I programmed an algorithm that takes into account type matchups, phys/spec damage considerations, status effects, etc. You will get hit with STABs and super-effective moves a LOT!
+ -  Pokémon keep track of when, where, and how they were created: starters vs. nursery vs. randomized by Boxes. E4 + Champion Pokémon are marked as such. The game detects when a Pokemon.py save file has been 'tampered' with and marks this on affected Pokémon. And more!
  -  Teams made and saved by Pokémon Showdown! are mostly supported and loadable. (Pokémon with spaces in their names (Mr. Mime, Type: Null) will break this I think. Otherwise this was one of my masterstroke moves, ngl.)
  -  Make a team and then set it to be the rival trainer's team.
  -  Set the starting weather and terrain of the rival trainer battle.
