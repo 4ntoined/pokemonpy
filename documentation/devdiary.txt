@@ -1232,3 +1232,8 @@ that the save isnt broken (itll still be broken unless I just re-add the maxz mo
 but the game WILL load the mons at least, theyll just have the wrong moves) I'll add it back for
 posterity. making a lot of post-release plans for a mans who wanted to release the game and not touch it for
 10 years
+23:16- think I'm seriously done now. I'm about to delete this and add the change_log and call it done
+This is really a moment.
+
+-Adarius
+
