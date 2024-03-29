@@ -34,7 +34,7 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
     print_party, loadMonNpy, saveParty, loadShowdown, copyrigh, \
     party_fixivs, party_fixevs, print_parties, easter_strings
 from texter import genborder,magic_text,magic_head
-from moves import getMoveInfo,mov 
+from moves import getMoveInfo,mov,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
@@ -611,7 +611,8 @@ while 1:
                 if printdex=='b' or printdex=='B':
                     continue
                 elif printdex=='y' or printdex=='Y':
-                    print("\n*****************************\n******** The Pokedex ********\n*****************************\n")
+                    #print("\n*****************************\n******** The Pokedex ********\n*****************************\n")
+                    print(magic_head(txt="The Pokédex",cha='*',spacing=' ',long=game_width))
                     print_dex()
                     shortpause()
                 while 1:
@@ -694,7 +695,9 @@ while 1:
                 while 1:
                     traline = magic_text(txt=f'Training {pokeTrain.name}',spacing=' ',long=game_width,cha='+')
                     print('\n'+traline)
-                    hypermoves = input("[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n\n[#] or [b]ack\n: ")
+                    traprompt = "\n[1] Super-Hyper Training\n[2] Move Tutor\n[3] Move Deleter\n[4] Name Rater\n"+ \
+                                "[5] Nature Mints\n[6] Gender Editor\n[#] or [b]ack\n: "
+                    hypermoves = input(traprompt)
                     if hypermoves == 'b' or hypermoves=='B': #superhyper
                         print('\nLeaving Training...')
                         micropause()
@@ -967,10 +970,85 @@ while 1:
                                 print("\n** Entry must correspond to a Pokémon move! **")
                         ###zz:movedelete
                     elif hypermoves == '4': #renaming pokemon
+                        while 1:
+                            print("\n" + magic_text(txt="Name Rater's House",spacing=' ',cha='+',long=game_width))
+                            print(f"Name Rater: Oh, {pokeTrain.name} is a fine name. But perhaps you've thought of something better?")
+                            namerChoice=input(f"\nWhat should {pokeTrain.name}'s new name be?\nor [b]ack: ")
+                            if namerChoice=="b" or namerChoice=="B":
+                                print("Leaving the Namer Rater's House...")
+                                break
+                            if namerChoice=="I'd like to name my Pokemon 'b'":
+                                pokeTrain.name = 'b'
+                                print("You got it!")
+                                shortpause()
+                                break
+                            elif namerChoice=="I'd like to name my Pokemon 'B'":
+                                pokeTrain.name = 'B'
+                                print("You got it!")
+                                shortpause()
+                                break
+                            elif namerChoice=="":
+                                continue
+                            else:
+                                pokeTrain.name = namerChoice
+                                print(f"\nName Rater: Interesting... Yes, {namerChoice} is a much better name for this Pokémon!")
+                                shortpause()
+                                print("Name Rater: Come back anytime!")
+                                shortpause()
+                                break
+                            pass
                         pass
                     elif hypermoves == '5': #re-naturing pokemon
+                        while 1:
+                            print("\n" + magic_text(txt="The Mint Store",spacing=' ',cha='+',long=game_width))
+                            print(f"Clerk: Hiya. Here, we have all the mints you could want!")
+                            print("\n~~~~~~~~~~\nAttack : 0\nDefense: 1\nSp. Atk: 2\nSp. Def: 3\nSpeed  : 4\n~~~~~~~~~~")
+                            mintChoice=input(f"What should be {pokeTrain.name}'s boosted stat and nerfed stat?\nor [b]ack: ")
+                            if mintChoice=="b" or mintChoice=="B":
+                                print("Leaving the Mint Store...")
+                                break
+                            elif mintChoice=="":
+                                continue
+                            else:
+                                try:
+                                    mintz = mintChoice.split(' ') #should work fine
+                                    minty = ( int(float(mintz[0])), int(float(mintz[1])) ) #possible value error
+                                    mintstr = natures[minty[0],minty[1]]
+                                    pokeTrain.nature = minty
+                                    pokeTrain.reStat()  #possible index error, using integers >4
+                                    pass
+                                except ValueError:
+                                    print("Nope! That's a ValueError\nTry 2 numbers separated by a space. eg '1 2'")
+                                    shortpause()
+                                except IndexError:
+                                    print("Nope! That's an IndexError\nOnly numbers 0-4!")
+                                    shortpause()
+                                else:
+                                    #nothing broke good to go
+                                    print(f"\nClerk: That's a {mintstr} mint. I'll feed it to {pokeTrain.name} for you.")
+                                    shortpause()
+                                    print(f"Woah! Their stats changed! Come again!")
+                                    shortpause()
+                                    break
+                                pass
+                            pass
                         pass
                     elif hypermoves == '6': #regendering pokemon
+                        while 1:
+                            print("\n"+magic_text(txt='Gender Editor',cha='+',long=game_width,spacing=' '))
+                            print(f"{pokeTrain.name}'s current gender: {pokeTrain.gender}")
+                            genChoice = input(f"\nWhat should {pokeTrain.name}'s gender be?\n[F], [M], [N], or [b]ack: ")
+                            if genChoice == 'b' or genChoice =='B':
+                                print("Leaving the Gender Editor...")
+                                break
+                            elif genChoice=="":
+                                continue
+                            else:
+                                pokeTrain.gender = genChoice
+                                print(f"\n{pokeTrain.name}'s gender was changed to {genChoice}!")
+                                shortpause()
+                                break
+                            pass
                         pass
                     else:
                         pass

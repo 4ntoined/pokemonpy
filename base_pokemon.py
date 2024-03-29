@@ -275,6 +275,16 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         return
     #recalculate stats
     def reStat(self):
+        # remaking the nature
+        self.nature_str = natures[self.nature[0],self.nature[1]]
+        self.nature_multipliers = np.ones(5)
+        if self.nature[0] == self.nature[1]:
+            self.null_nature = True
+        else:
+            self.null_nature = False
+            self.nature_multipliers[self.nature[0]] = 1.1
+            self.nature_multipliers[self.nature[1]] = 0.9
+        # recalcing the stats
         self.maxhp=HP(self.level,self.hpb,self.hpiv,self.hpev)
         self.attack=stats(self.level,self.atb,self.ativ,self.atev,self.nature_multipliers[0])
         self.defense=stats(self.level,self.deb,self.deiv,self.deev,self.nature_multipliers[1])
