@@ -27,8 +27,8 @@ Idk fam, follow your heart.
 You can add moves by adding them to moves.py. You'll find the construction of a list of tuples (it's hard to miss). Each of these tuples is a move. To add new moves, add your own tuples to this list.
 You'll need to specify the move's name, its base power, accuracy, max PP, priority, type, category, whether it makes contact, a description, and "notes."
 (Refer to the commenting within the script itself to get the order of the things right I definitely just butchered it.) The "notes" is where a move's mechanics are detailed. E.g. "burn 10" indicates a 10% chance to burn the target.
-Stats are raised and lowered using "stat A,B,C,D" where A=(self or targ) whose stats to change, B=(at,de,sa,sd,sp) what stat to change, C=(-6 to +6) how many stages to change and in what direction, D=(0 to 100) what percent chance is there for the stat change to occur
-Multiple stats can be changed at once using colons. E.g. Agility looks like "stat self,sp,+2,100", Leer = "stat targ,de,-1,100", Dragon Dance = "stat self,at:sp,+1:+1,100:100"
+Stats are raised and lowered using ```stat A,B,C,D``` where A=(self or targ) whose stats to change, B=(at,de,sa,sd,sp) what stat to change, C=(-6 to +6) how many stages to change and in what direction, D=(0 to 100) what percent chance is there for the stat change to occur
+Multiple stats can be changed at once using colons. E.g. Agility looks like ```stat self,sp,+2,100```, Leer = ```stat targ,de,-1,100```, Dragon Dance = ```stat self,at:sp,+1:+1,100:100```
 And there are very many more move effects.
 
 #### Adding Pokémon
