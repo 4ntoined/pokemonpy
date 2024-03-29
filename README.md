@@ -8,8 +8,7 @@ This Python program simulates Pokémon and Pokémon battles. For a more detailed
  - Numpy
 
 #### Start the game:
-```python3 pokemon.py [-m] [-n your_name_here] [-w how_big_to_display_the_game] [-p number_of_starter_parties] [-s number_of_pokemon_per_party]
-```
+```python3 pokemon.py [-m] [-n your_name_here] [-w how_big_to_display_the_game] [-p number_of_starter_parties] [-s number_of_pokemon_per_party]```
 
 use '-m' to skip the game start-up
 
