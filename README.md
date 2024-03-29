@@ -67,7 +67,7 @@ This script constructs the Elite 4 + Champion.
 
 #### trainerai.py
 This script contains the logic for the cpu opponent in the RIVAL battle and the e4+champion. Unfinished. It has no means of evaluating status moves, and uses them at random.
-But it is brutal with damaging moves, favoring supper-effective and STAB moves. Maybe I need to tone this down? Don't know. Let me know.
+But it is brutal with damaging moves, favoring super-effective and STAB moves. Maybe I need to tone this down? Don't know. Let me know.
 
 #### texter.py
 Contains a bunch of functions that deal solely with text. I wanted to definitely separate them from the web of interdependent codes between base_pokemon.py and pokemon.py.
