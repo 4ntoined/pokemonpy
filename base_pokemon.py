@@ -1,4 +1,4 @@
-#the basic classes and functions of the pokemon code
+#the basic classes and functions of the Pokémon code
 """ legal stuff
 Copyright (C) 2023 Adarius
 This program is free software: you can redistribute it and/or modify
@@ -20,18 +20,17 @@ import os
 import time as t
 import calendar as cal
 import hashlib
-#import copy
 import numpy as np
+from texter import genborder,magic_text,magic_head,copyrigh
 from dexpoke import dex
 from moves import mov,natures,struggle,futuresigh,tackl,getMoveInfo
-#classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats, 
-rng = np.random.default_rng()
-#aa:monclass
-class mon: #open up sypder and rename these from hpbase to hbp, etc.
+from trainerai import cpu
+#classes: mon, battle, field | functions: damage, checkBlackout, loadMon, makeMon, checktype effectiveness, HP, stats
+class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc.
     def __init__(self,level,named,nature=(0,0),hpbase=70,atbase=70,\
         debase=70,sabase=70,sdbase=70,spbase=70,tipe=np.array([0]),\
-        random_move=True,how_created='nursery')\
-        : #add natures
+        random_move=True,how_created='nursery'\
+        ): #
         global mo
         #birth details
         self.timebornLOCAL = t.localtime(t.time())
@@ -41,16 +40,15 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         #memories?
         self.hallfamecount = 0
         #level, nature, evs, ivs, base stats, gender
-        self.gender = rng.choice(('N','F','M'), size=1)
+        self.gender = rng.choice(('N','F','M'), size=1)[0]
         self.level=int(level)
         self.nature = nature
         self.nature_str = natures[int(nature[0]),int(nature[1])]
         self.null_nature = False
+        self.nature_multipliers = np.ones(5)
         if self.nature[0] == self.nature[1]:
             self.null_nature = True
-            self.nature_multipliers = np.ones(5)
         else:
-            self.nature_multipliers = np.ones(5)
             self.nature_multipliers[self.nature[0]] = 1.1
             self.nature_multipliers[self.nature[1]] = 0.9
         self.hpiv=rng.integers(0,32)
@@ -90,10 +88,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         #pokemon is singly-typed
         else: self.dualType=False
         self.fainted=False
+        #moves
         self.knownMoves=[tackle_i]
         self.PP=[35]
-        #instead of tackle, start the pokemon with any single move
         if random_move: self.randomizeMoveset(1)
+        #grounding/unground
         if 9 in self.tipe: self.grounded=False #flying types aren't grounded
         else: self.grounded=True
         #battle stat stages
@@ -150,12 +149,11 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         if os.path.exists(filename) and not overwrite:
             ans = 'file exists'
         else:
-            poke_tuple = [ self.name,self.level, self.nature, self.tipe ]
-            poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
-            poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]
-            poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
-            #poke_dtype = (('name','U24'),('level','i4'),('nature',np.singlecomplex),)
-            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]
+            poke_tuple = [self.name,self.level,self.nature,self.tipe,self.gender]           #name, level, nature, type, gender
+            poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]             #base stats
+            poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]        #evs
+            poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]        #ivs
+            poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]   #borntime, bornplace, how born, hall of fame count
             poke_moves = [self.knownMoves]
             poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
             #gen hash
@@ -170,62 +168,42 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
                 np.save(filename,poke_array)
                 ans = 'saved'
         return ans
+    def championd(self):
+        #for when a pokemon is on a team that defeats the elite 4 and grand champion
+        self.hallfamecount+=1
+        return
     def save(self,filename='pypokemon.sav'):
         f=open(filename,'a')
-        name=self.name
-        lvl=self.level
-        #pokemon base stats
-        hp=self.hpb
-        at=self.atb
-        de=self.deb
-        sa=self.sab
-        sd=self.sdb
-        sp=self.spb
-        base=[hp,at,de,sa,sd,sp]
-        #pokemon ivs
-        hpi=self.hpiv
-        ati=self.ativ
-        dei=self.deiv
-        sai=self.saiv
-        sdi=self.sdiv
-        spi=self.spiv
-        iv=[hpi,ati,dei,sai,sdi,spi]
-        #pokemon evs
-        hpe=self.hpev
-        ate=self.atev
-        dee=self.deev
-        sae=self.saev
-        sde=self.sdev
-        spe=self.spev
-        ev=[hpe,ate,dee,sae,sde,spe]
-        #pokemon types
-        tip=self.tipe
-        #nature
-        nacher = self.nature
-        #known moves
-        mvs=self.knownMoves
+        poke_tuple = [self.name,self.level,self.nature,self.tipe,self.gender]           #name, level, nature, type, gender
+        poke_base = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]             #base stats
+        poke_evs = [self.hpev,self.atev,self.deev,self.saev,self.sdev,self.spev]        #evs
+        poke_ivs = [self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]        #ivs
+        poke_bir = [self.timeborn, self.bornpath, self.bornplace, self.hallfamecount]   #borntime, bornplace, how born, hall of fame count
+        poke_moves = [self.knownMoves]
+        poke_list = poke_tuple + poke_base + poke_evs + poke_ivs + poke_bir + poke_moves
+        #
         #construct line to save all pokemon data
-        line=name
-        line+=f",{lvl},"
-        for i in base: #add all the base stats
+        line=self.name #name
+        line+=f",{self.level},"
+        for i in poke_base: #add all the base stats
             line+=f" {i}"
         line+=","
-        for i in iv: #add all the ivs
+        for i in poke_ivs: #add all the ivs
             line+=f" {i}"
         line+=","
-        for i in ev: #add all the evs
+        for i in poke_evs: #add all the evs
             line+=f" {i}"
         line+=","
-        for i in tip:
+        for i in self.tipe:
             line+=f" {i}"
         line+=","
-        for i in nacher:
+        for i in self.nature:
             line+=f" {i}"
         line+=","
-        for i in mvs:
+        for i in self.knownMoves:
             line+=f" {i}"
         line+=','
-        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount}"
+        line+=f" {cal.timegm(self.timeborn)},{self.bornpath},{self.bornplace},{self.hallfamecount},{self.gender}"
         #gen hash
         coder = hashlib.new('md5')
         coder.update(line.encode('UTF-8'))
@@ -265,6 +243,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
             print('Value error/Numbers!')
         else:
             self.reStat()
+        return
+    def perfect_ivs(self,val=31):
+        self.set_evs((val,val,val,val,val,val),ivs=True)
+        return
+    def full_evs(self,ivs=False,val=31):
+        if ivs:     self.set_evs(( val,val,val,val,val,val ), ivs = True)
+        else:       self.set_evs( tuple( random_evs() ), ivs = False)
         return
     #apply a moveset given with a list of names of moves
     def learn_sets(self, sets):
@@ -1024,16 +1009,16 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
     def hit(self,attacker,damagepoints,effectiveness,notes,move_index,comments):
         global mov
         moveTipe = mov[move_index]['type']
-        if effectiveness==0. and not ('arrows' in notes):
-            print(f"{self.name} is immune!")
+        if effectiveness==0. and not ('arrows' in notes): print(f"{self.name} is immune!")
         else:
             if ('arrows' in notes) and (not self.grounded or self.flying): #will need to further generalize for smack down?
-                print(f"The arrows can reach {self.name}!")
+                print(f"\nThe arrows can reach {self.name}!")
+                micropause()
                 self.grounded=True
+                if self.flying and self.charged: self.charged = False    #cancel charged move only if it was fly or bounce
                 self.flying=False
-                self.charged=False #canceling fly and bounce
                 self.field.grounding(self)
-                effectiveness=1.0
+                effectiveness=1. 
             print(f"\n{self.name} is hit!")
             micropause()
             #with a successful hit from rollout, the attacker rolling out counter increases
@@ -1070,7 +1055,7 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
                 recoilDmg=damagepoints
             #lose HP
             self.currenthp-=damagepoints
-            self.currenthpp=100*self.currenthp/self.maxhp
+            self.currenthpp=100.*self.currenthp/self.maxhp
             #show all the damage boosts
             for i in comments:
                 micropause() #for drama
@@ -1090,16 +1075,13 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
             print(f"{self.name} lost {format(100*damagepoints/self.maxhp,'.2f')}% HP!")
             shortpause()
             #check for faint
-            if self.currenthp<=0.:
-                self.faint()
+            if self.currenthp<=0.:  self.faint()
             else:
                 print(f"{self.name} has {format(self.currenthpp,'.2f')}% HP left!")
                 shortpause()
                 ### setting counter/mirror coat damage data info
-                if mov[move_index]['special?'] == 1:
-                    self.counter_damage = (damagepoints, "spec")
-                else:
-                    self.counter_damage = (damagepoints, "phys")
+                if mov[move_index]['special?'] == 1:    self.counter_damage = (damagepoints, "spec")
+                else:                                   self.counter_damage = (damagepoints, "phys")
                 #status conditions
                 #statuses bro
                 statuses=[]  #hey, hear me out, what if we made a numpy array out of these strings, "para" "burn" etc., and used numpy tricks to do all
@@ -1319,50 +1301,65 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
             print(f"{typeStrings[self.tipe[0]]} / {typeStrings[self.tipe[1]]}")
         print(f"Current HP: {self.currenthp}, {self.currenthp/self.maxhp*100}%")
         
-    def summary(self):
-        global typeStrings, nature_stat_str
-        print(f"\n############ {self.name} ############")
-        #gender_dict = dict([(),(),()])
+    def summary(self,inbattle=False):
+        global typeStrings, nature_stat_str, game_width
+        dec = game_width
+        fullhash = genborder(num=dec,cha='#')
+        line1 = magic_text(long=dec,cha='#',spacing='  ',txt=self.name)
+        #print poke name
+        print('\n'+line1)
+        #print type, level, gender
         if self.dualType:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]} \t({self.gender})")
+            print(f"\nLevel {self.level}"+\
+                f" \t{typeStrings[self.tipe[0]]} // {typeStrings[self.tipe[1]]}"+\
+                f" \t({self.gender})")
         else:
-            print(f"\nLevel {self.level} \t{typeStrings[self.tipe[0]]} \t({self.gender})")
+            print(f"\nLevel {self.level}"+\
+                f" \t{typeStrings[self.tipe[0]]} \t({self.gender})")
+        #print nature
         if self.null_nature == False:
-            print(f"Nature : {self.nature_str} | Up - {nature_stat_str[self.nature[0]]}, Down - {nature_stat_str[self.nature[1]]}")
-        else:
-            print(f"Nature : {self.nature_str} | Up - None, Down - None")
+            print(f"Nature : {self.nature_str}"+\
+                f" | Up - {nature_stat_str[self.nature[0]]},"+\
+                f" Down - {nature_stat_str[self.nature[1]]}")
+        else:   print(f"Nature : {self.nature_str} | Up - None, Down - None")
+        #print stats
         print(f"HP  : \t{format(self.currenthp,'.2f')}/{format(self.maxhp,'.2f')} \t{format(self.currenthpp,'.2f')}%")
-        print(f"Atk : \t{format(self.attack,'.2f')}")
-        print(f"Def : \t{format(self.defense,'.2f')}")
-        print(f"Sp.A: \t{format(self.spatk,'.2f')}")
-        print(f"Sp.D: \t{format(self.spdef,'.2f')}")
-        print(f"Spe : \t{format(self.speed,'.2f')}")
+        if inbattle:
+            print(f"Atk : \t{format(self.bat,'.2f')}")
+            print(f"Def : \t{format(self.bde,'.2f')}")
+            print(f"Sp.A: \t{format(self.bsa,'.2f')}")
+            print(f"Sp.D: \t{format(self.bsd,'.2f')}")
+            print(f"Spe : \t{format(self.bsp,'.2f')}")
+            print("\n* These stats reflect in-battle boosts and nerfs. *")
+        else:
+            print(f"Atk : \t{format(self.attack,'.2f')}")
+            print(f"Def : \t{format(self.defense,'.2f')}")
+            print(f"Sp.A: \t{format(self.spatk,'.2f')}")
+            print(f"Sp.D: \t{format(self.spdef,'.2f')}")
+            print(f"Spe : \t{format(self.speed,'.2f')}")
         self.showMoves()
-        print("##############################################")
         #met conditions
         #birthday
-        #borndays = t.asctime(self.timeborn).split()
         borndays = t.strftime("%a %d %b %Y,%H:%M:%S",self.timeborn).split(',')
-        #print(f"This Pokemon was initialized on\n=== {borndays[0]} "+\
-        #        f"{borndays[2]+' '+borndays[1]+' '+borndays[4]+' @ '+borndays[3]} UTC")
-        print(f"This Pokemon was initialized on\n=== {borndays[0]} @ "+\
+        print(f"This Pokémon was initialized on\n=== {borndays[0]} @ "+\
                 f"{borndays[1]} UTC")
         #birthplace
         print(f"=== In the {self.bornplace} timezone.")
         #birth circumstance
         if self.bornpath == 'nursery':print("=== It was hatched in the nursery!")
-        elif self.bornpath == 'copied':print("=== It was cloned from another Pokemon!")
-        elif self.bornpath == 'starter':print("=== It was a starter Pokemon!")
+        elif self.bornpath == 'copied':print("=== It was cloned from another Pokémon!")
+        elif self.bornpath == 'starter':print("=== It was a starter Pokémon!")
         elif self.bornpath == 'gifted':print("=== It was gifted to you!")
         elif self.bornpath == 'random':print("=== It was randomized by Boxes!")
         elif self.bornpath == 'elite':print("=== It was trained by an elite!")
-        elif self.bornpath == 'showdown':print("=== It was made in Pokemon Showdown!")
+        elif self.bornpath == 'showdown':print("=== It was made in Pokémon Showdown!")
         elif self.bornpath == 'tampered':print("=== It came from a tampered save!")
         elif self.bornpath == 'hacked':print("=== It was created externally!")
         else: print("=== It appeared mysteriously...")
         if self.hallfamecount == 1: print("It has defeated the Elite Four 1 time.")
         elif self.hallfamecount >= 2: print(f"It has defeated the Elite Four {self.hallfamecount} times.")
-        print("##############################################")
+        print(fullhash)
+        return
         
     def battleSummary(self):
         global typeStrings,nature_stat_str
@@ -1386,10 +1383,16 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         print("##############################################")
     
     def showMoves(self):
-        global typeStrings,mov
-        print(f"############ {self.name}'s Moves #############")
+        global typeStrings,mov,game_width
+        dec = game_width
+        fullhash = genborder(num=game_width,cha='#')
+        line1 = magic_text(long=dec,cha='#',txt=f"{self.name}'s Moves",spacing='  ')
+        print('\n'+line1+'\n')
         for i in range(len(self.knownMoves)):
-            print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
+            print(f"[{i+1}] {mov[self.knownMoves[i]]['name']}"+ \
+                    f"\t{typeStrings[int(mov[self.knownMoves[i]]['type'])]}"+ \
+                    f"\t{self.PP[i]}/{mov[self.knownMoves[i]]['pp']} PP")
+        print('\n'+fullhash)
         return
     #show evs and ivs
     def appraise(self):
@@ -1397,17 +1400,25 @@ class mon: #open up sypder and rename these from hpbase to hbp, etc.
         iz=[self.hpiv,self.ativ,self.deiv,self.saiv,self.sdiv,self.spiv]
         bz = [self.hpb,self.atb,self.deb,self.sab,self.sdb,self.spb]
         st=["HP  :","Atk :","Def :","Sp.A:","Sp.D:","Spe :"]
-        print(f"\n############ {self.name} ############")
+        dec = game_width
+        line1 = magic_text(long=dec,spacing='  ',txt=f"{self.name}'s Stats",cha='#')
+        print('\n'+line1)
         print("\n     \tIV\tEV\tBASE")
         for i in range(len(st)):
             print(f"{st[i]}\t{iz[i]}\t{ez[i]}\t{bz[i]}")
-        genborder(num=40,char='-')
+        print(genborder(num=game_width,cha='-'))
     #anymore pokemon attributes?
 #zz:monclass
 #aa:battleclass
 class battle:
-    def __init__(self, usr_party, cpu_party, fields, usr_name='You', cpu_name='OPPONENT'):
+    def __init__(self, usr_party, cpu_party, fields, usr_name='', cpu_name='OPPONENT'):
         ###can i get a uhhhhhhh
+        if not usr_name:
+            self.usr_name = 'You'
+            self.usr_named = False
+        else:
+            self.usr_name = usr_name
+            self.usr_named = True
         self.usr_name = usr_name
         self.cpu_name = cpu_name
         self.usrs = usr_party
@@ -1421,8 +1432,10 @@ class battle:
     #this needs to go IN battle()
     def checkBattle(self):
         ## need to add hazards, flying, diving, digging, shadowing, grounded or ungrounded
-        global typeStrings
-        print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\\\\\\\\\\\\\")
+        global typeStrings,game_width
+        cpuname_line = magic_text(txt=f'{self.cpu_mon.name} ({self.cpu_name})',spacing=' ',long=game_width,cha='/',cha2='\\')
+        #print(f"\n//////////// {self.cpu_mon.name} ({self.cpu_name}) \\\\\\\\\\\\\\\\\\\\\\\\")
+        print(cpuname_line)
         if self.cpu_mon.dualType:
                 print(f"{typeStrings[self.cpu_mon.tipe[0]]} // {typeStrings[self.cpu_mon.tipe[1]]}")
         else:
@@ -1472,7 +1485,8 @@ class battle:
                    self.cpu_mon.sdstage-6,self.cpu_mon.spstage-6,self.cpu_mon.acstage-6, \
                        self.cpu_mon.evstage-6]
         statstrs=["Atk :","Def :","Sp.A:","Sp.D:","Spd :","Accu:","Evas:"]
-        print("\nStat Boosts and Nerfs\n****************************")
+        #print("\nStat Boosts and Nerfs\n****************************")
+        print("\n"+magic_text(txt='Stat Boosts and Nerfs',spacing=' ',cha=' ',long=game_width)+"\n"+genborder(num=game_width,cha='*'))
         for i in range(len(blueStats)):
             if blueStats[i]==0:
                 print(statstrs[i]+" none")
@@ -1484,14 +1498,19 @@ class battle:
         #####################################################################################
         ## is there a screen up
         walls = (self.field.reflectBCounter, self.field.lightscBCounter, self.field.veilBCounter)
-        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", f"\n=== Light Screen Up : {self.field.lightscBCounter} ===",f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
+        prii = (f"\n=== Reflect Up : {self.field.reflectBCounter} ===", \
+                f"\n=== Light Screen Up : {self.field.lightscBCounter} ===", \
+                f"\n=== Aurora Veil Up : {self.field.veilBCounter} ===")
         for i in list(enumerate(walls)):
-            if i[1]>0:
-                print(prii[i[0]])
+            if i[1]>0:  print(prii[i[0]])
             pass
         ####       hazards for blue...          ####
-        print("------------------------------------")
-        print(f"\\\\\\\\\\\\\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
+        #print("------------------------------------")
+        dasher = genborder(num=game_width,cha='-')
+        print(dasher)
+        usrname_line = magic_text(txt=f'{self.usr_mon.name} ({self.usr_name})',spacing=' ',long=game_width,cha2='/',cha='\\')
+        #print(f"\\\\\\\\\\\\\\\\\\\\\\\\ {self.usr_mon.name} (You) ////////////")
+        print(usrname_line)
         if self.usr_mon.dualType:
                 print(f"{typeStrings[self.usr_mon.tipe[0]]} // {typeStrings[self.usr_mon.tipe[1]]}")
         else:
@@ -1538,7 +1557,8 @@ class battle:
             print(f"HP |#...........| {format(self.usr_mon.currenthpp,'.2f')}%")
         #stat boosts
         redStats=[self.usr_mon.atstage-6,self.usr_mon.destage-6,self.usr_mon.sastage-6,self.usr_mon.sdstage-6,self.usr_mon.spstage-6,self.usr_mon.acstage-6,self.usr_mon.evstage-6]
-        print("\nStat Boosts and Nerfs\n****************************")
+        #print("\nStat Boosts and Nerfs\n"+genborder(num=game_width,cha='*'))
+        print("\n"+magic_text(txt='Stat Boosts and Nerfs',spacing=' ',cha=' ',long=game_width)+"\n"+genborder(num=game_width,cha='*'))
         for i in range(len(redStats)):
             if redStats[i]==0:
                 print(statstrs[i]+" none")
@@ -1555,8 +1575,10 @@ class battle:
             if i[1]>0:
                 print(drii[i[0]])
             pass
-        print("------------------------------------")
-        print("-------Battle Settings-------")
+        #print("------------------------------------")
+        print(dasher)
+        setline = magic_text(txt='Battle Settings',spacing='',long=game_width,cha='-')
+        print(setline)
         if self.field.weather=="clear":
             weat="CLEAR"
         elif self.field.weather=="sunny":
@@ -1579,8 +1601,20 @@ class battle:
             terr="MISTY"
         print(f"Weather : {weat}")
         print(f"Terrain : {terr}")
-        print("\n___ End of battle status ___")
-
+        endline = magic_text(txt='End of battle status',spacing=' ',cha='_',long=game_width)
+        print("\n"+endline)
+        return
+    
+    def UI(self): #turnnumber, cpumon, usrsmon, usrname, whether user is named, 
+        #print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+        print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
+        print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
+        if self.usr_named:  print(f"\n............{self.usr_name}:")
+        else:               print("\n............Your team:")
+        print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
+        print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+        return
+  
     def startbattle(self, e4=False):
         ####Battle starts####
         if e4: print(f"\nYou challenge {self.cpu_name} to a Pokémon Battle!")
@@ -1607,16 +1641,18 @@ class battle:
                 switching=False
                 fighting=False
                 charging=False
-                print(f"\n================ Turn {turn} ================\n")
-                
+                running=False
                 self.usr_mon.inBattle()
                 self.cpu_mon.inBattle()
                 #----UI----#
-                print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
-                print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
-                print("\n............Your team:")
-                print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
-                print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+                print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+                self.UI()
+                #print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
+                #print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
+                #if self.usr_named:  print(f"\n............{self.usr_name}:")
+                #else:               print("\n............Your team:")
+                #print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
+                #print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
                 ## if the usrs pokemon has their resting flag from a mustRest move, usr cant move (unless their move missed...
                 if self.usr_mon.resting:    #or the target is immune.... more work)
                     resting=True
@@ -1632,52 +1668,55 @@ class battle:
                     charging=False
                     resting=False
                     fighting=True
-                    pass
                 ## the usr will select a move, or send out another pokemon
                 else:
                     resting=False
                     charging=False
-                    userMove=input(f"What should {self.usr_mon.name} do?\n[F]ight\n[P]okemon\n[S]tatus\n[R]un\n: ")
+                    userMove=input(f"\nWhat should {self.usr_mon.name} do?\n[F]ight\n[P]okémon\n[S]tatus\n[R]un\n: ")
                     #### run away to end battle ####
                     if userMove=='r' or userMove == 'R':
-                        print(f"{self.usr_name} and {self.usr_mon.name} get away safely!")
                         battleOver=True
+                        running=True
                         break #break the otherwise indefinite turn-loop, ending the battle
                     #### check status of battle? ####
                     if userMove=="s" or userMove=="S":
                         self.checkBattle()
-                        input("enter anything to go back...")
+                        pause=input("enter anything to go back...")
                     #### go party pokemon ####
                     if userMove=='p' or userMove == 'P':
                         while 1: #a little input loop, for your party, 
-                            print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                            #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
                             ## show the player's pokemon
-                            for i in range(len(self.usrs)):
-                                print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
-                            partyChoice=input("Select a Pokémon...\n[#] or [b] to go back: ")
+                            #for i in range(len(self.usrs)):
+                            #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                            self.UI()
+                            print("")
+                            print_party(self.usrs, menu=False)
+                            partyChoice=input("\nSelect a Pokémon!\n[#] or [b]ack: ")
                             if partyChoice=='b' or partyChoice=="B":
                                 break #goes back to user turn loop from pokemon selection
                             try:
                                 select=self.usrs[int(partyChoice)-1]
                                 nuserInd=int(partyChoice)-1
-                                select.battleSummary()
+                                #select.battleSummary()
                             except ValueError: #will print warning, and restart the party loop without seeing a pokemon
-                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
                             except IndexError:
-                                print("\nEnter the [#] corresponding to a Pokémon!\nor [b]ack")
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
                             else:
                                 ### looking at a pokemon in the party ###
                                 while 1: 
-                                    pChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
+                                    select.summary(inbattle=True)
+                                    pChoice=input(f"\nWhat to do with {select.name}?\n[s]end into battle, see [m]oves, or [b]ack: ")
                                     ## go back
                                     if pChoice=="b" or pChoice=="B":
                                         break #breaks the singular pokemon loop and back to the party
                                     ## show move details
                                     if pChoice=="m" or pChoice=="M":
                                         while 1: #move input loop for displaying move info
-                                            print("")
-                                            select.showMoves()
-                                            movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
+                                            #print("")
+                                            #select.showMoves()
+                                            movChoice=input("\nWhich move(s) to look at?\n[#] or [b]ack: ")
                                             if movChoice=="b" or movChoice=="B":
                                                 #leave move info selection, back to what to do w pokemon
                                                 break
@@ -1692,7 +1731,6 @@ class battle:
                                                 print("\n** Use the indices to select moves to take a closer look at. **")
                                             else:
                                                 for i in range(len(movez)):
-                                                    print("")
                                                     moveInfo(movez[i])
                                                     micropause()
                                                 #we got all the move info out?, go back to pokemon?
@@ -1706,9 +1744,11 @@ class battle:
                                         #keep fainted pokemon off the field
                                         if select.fainted:
                                             print("\n** Cannot switch in fainted Pokémon! **")
+                                            shortpause()
                                             break #back to party
                                         if nuserInd==userInd:
                                             print(f"\n** {select.name} is already in battle! **")
+                                            shortpause()
                                             break #bacl to party
                                         switching=True
                                         break
@@ -1718,10 +1758,13 @@ class battle:
                             #end of pokemon selection loop
                         #end of party pokemon block
                         #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
-                    #fight
-                    if userMove=='f':                    
+                    #### fight ####
+                    if userMove=='f' or userMove=='F':                    
                         #fighting options
                         while 1: #move input loop
+                            print("")
+                            self.UI()
+                            print("")
                             for i in range(len(self.usr_mon.knownMoves)):
                                 print(f"[{i+1}] \t{getMoveInfo(self.usr_mon.knownMoves[i])['name']} \t{self.usr_mon.PP[i]} PP")
                             if np.count_nonzero(self.usr_mon.PP)==0:
@@ -1730,7 +1773,7 @@ class battle:
                                 moveDex=struggle_i
                                 shortpause()
                                 break
-                            userFight=input(f"What move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
+                            userFight=input(f"\nWhat move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
                             #go back
                             infom = userFight.split()
                             if userFight=='b' or userFight=='B':
@@ -1747,7 +1790,7 @@ class battle:
                                         print("\n** Use the indices to select moves to take a closer look at. **")
                                     else:
                                         for i in range(len(movez)):
-                                            print("")
+                                            #print("")
                                             moveInfo(movez[i])
                                             micropause() #drama
                                         #we got all the move info out?, go back to pokemon?
@@ -1759,7 +1802,8 @@ class battle:
                                 try:
                                     fightChoice=int(userFight)-1 #make sure given input refers to a move
                                     if self.usr_mon.PP[fightChoice]==0:
-                                        print(f"{self.usr_mon.name} does not have enough energy to use this move!")
+                                        print(f"\n{self.usr_mon.name} does not have enough energy to use this move!")
+                                        shortpause()
                                         continue
                                     moveDex=self.usr_mon.knownMoves[fightChoice]
                                     fighting=True
@@ -1946,9 +1990,8 @@ class battle:
                         break
                     #check for TRAINER BLACKOUT
                     if checkBlackout(self.cpus)[0]==0:
-                        battleOver=True
-                        print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
-                        self.user_won = True
+                        battleOver=True                        
+                        self.user_won=True
                         shortpause()
                         break
                     #print("")
@@ -2036,14 +2079,16 @@ class battle:
                             bShifted=False #forcing the user to shift to a non-fainted pokemon
                             self.field.faintedA = True #if there was a faint, mark it on the field
                             while 1:
-                                print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
-                                for i in range(len(self.usrs)):
-                                    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                                #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                                #for i in range(len(self.usrs)):
+                                #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                                print_party(self.usrs,menu=False)
                                 newPoke=input("Select a Pokémon for battle...\n[#]: ")
                                 try:
                                     nuserInd=int(newPoke)-1
                                     select=self.usrs[nuserInd]
-                                    select.battleSummary()
+                                    #select.battleSummary()
+                                    select.summary(inbattle=True)
                                 except ValueError:
                                     print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
                                 except IndexError:
@@ -2072,7 +2117,7 @@ class battle:
                                                     print("\n** Use the indices to select moves to take a closer look at. **")
                                                 else:
                                                     for i in range(len(movez)):
-                                                        print("")
+                                                        #print("")
                                                         moveInfo(movez[i])
                                                         micropause() #drama
                                                     #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
@@ -2216,31 +2261,755 @@ class battle:
                     turn+=1
                     #loop to next turn
             if battleOver: #if user ran
+                print("\nThe battle ended!")
+                shortpause()
+                if self.user_won:
+                    print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
+                    dramaticpause()
+                elif running:
+                    print(f"\n{self.usr_name} and {self.usr_mon.name} forfeited to {self.cpu_name}!")
+                    shortpause()
+                else:
+                    print("\nYou're out of usable Pokémon!")
+                    shortpause()
+                    print(f"\nYou lost to {self.cpu_name}!")
+                    shortpause()
                 break #breaks battle loop, back to main screen
             #loop back to "turn begins"
             #if a pokemon has fainted, loop ends
-        print("The battle ended!")
         #clean up
         self.field.clearfield()
         #self.field.weather=rng.choice(Weathers)
         self.field.weatherCounter=np.inf
         self.field.terrain=rng.choice(Terrains)
-        if self.field.terrain=="none":
-            self.field.terrainCounter=np.inf
-        else:
-            self.field.terrainCounter=5
+        if self.field.terrain=="none":  self.field.terrainCounter=np.inf
+        else:                           self.field.terrainCounter=5
         for i in self.cpus:
             i.withdraw()
             i.restore()
-        for i in self.usrs:
-            i.withdraw()
-        shortpause() #kills
+        for i in self.usrs: i.withdraw()
+        shortpause()
         return self.user_won
     ###end of battle block###
+    ##aa:aibattle
+    def start_withai(self, e4=False):
+        ####Battle starts####
+        userInd=0
+        trainerInd=0
+        rivalbrain = cpu(self)
+        if e4: print(f"\nYou challenge {self.cpu_name} to a Pokémon Battle!")
+        else: print(f"\n{self.cpu_name} challenges you to a Pokémon Battle!")
+        dramaticpause()
+        print(f"\n{self.usr_mon.name}! I choose you!")
+        shortpause()
+        print(f"\n{self.cpu_name}: {self.cpu_mon.name}! Go!")
+        shortpause()
+        turn=1
+        #### turn begins ####
+        while 1: #only breaks when BattleOver is True
+            #battle conditions?
+            battleOver=False
+            #emerald = field()
+            self.usr_mon.chosen("user",self.field)
+            self.cpu_mon.chosen("cpu",self.field)
+            #pre-user selection
+            ####fight/run/pokemon/bag####
+            while 1: #turn loop, advances to pokemon move exchange if user selects a move or shifts, otherwise we should loop back here
+                switching=False
+                fighting=False
+                charging=False
+                running=False
+                self.usr_mon.inBattle()
+                self.cpu_mon.inBattle()
+                #----UI----#
+                print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+                self.UI()
+                #print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
+                #print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
+                #if self.usr_named:  print(f"\n............{self.usr_name}:")
+                #else:               print("\n............Your team:")
+                #print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
+                #print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+                ## if the usrs pokemon has their resting flag from a mustRest move, usr cant move (unless their move missed...
+                if self.usr_mon.resting:    #or the target is immune.... more work)
+                    resting=True
+                    charging=False
+                    print(f"\n{self.usr_mon.name} is recharging and can't move...")
+                    shortpause()
+                ## if the usrs pokemon is already committed to a move, and it was just charging it...
+                elif self.usr_mon.charged:
+                    charging=True
+                    resting=False
+                ## if the usr is locked into rollout
+                elif self.usr_mon.rolling_out>0:
+                    charging=False
+                    resting=False
+                    fighting=True
+                ## the usr will select a move, or send out another pokemon
+                else:
+                    resting=False
+                    charging=False
+                    userMove=input(f"\nWhat should {self.usr_mon.name} do?\n[F]ight\n[P]okémon\n[S]tatus\n[R]un\n: ")
+                    #### run away to end battle ####
+                    if userMove=='r' or userMove == 'R':
+                        #confirm
+                        surety=input("\nAre you sure you want to forfeit? [y]/[n]: ")
+                        if surety == 'Y' or surety == 'y':
+                            battleOver=True
+                            running=True
+                            break #break the otherwise indefinite turn-loop, ending the battle
+                        else: pass
+                    #### check status of battle? ####
+                    if userMove=="s" or userMove=="S":
+                        self.checkBattle()
+                        pause=input("enter anything to go back...")
+                    #### go party pokemon ####
+                    if userMove=='p' or userMove == 'P':
+                        while 1: #a little input loop, for your party, 
+                            #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                            ## show the player's pokemon
+                            #for i in range(len(self.usrs)):
+                            #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                            self.UI()
+                            print("")
+                            print_party(self.usrs, menu=False)
+                            partyChoice=input("\nSelect a Pokémon!\n[#] or [b]ack: ")
+                            if partyChoice=='b' or partyChoice=="B":
+                                break #goes back to user turn loop from pokemon selection
+                            try:
+                                select=self.usrs[int(partyChoice)-1]
+                                nuserInd=int(partyChoice)-1
+                                #select.battleSummary()
+                            except ValueError: #will print warning, and restart the party loop without seeing a pokemon
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
+                            except IndexError:
+                                print("\n! Enter a [#] corresponding to a Pokémon!")
+                            else:
+                                ### looking at a pokemon in the party ###
+                                while 1: 
+                                    select.summary(inbattle=True)
+                                    pChoice=input(f"\nWhat to do with {select.name}?\n[s]end into battle, see [m]oves, or [b]ack: ")
+                                    ## go back
+                                    if pChoice=="b" or pChoice=="B":
+                                        break #breaks the singular pokemon loop and back to the party
+                                    ## show move details
+                                    if pChoice=="m" or pChoice=="M":
+                                        while 1: #move input loop for displaying move info
+                                            #print("")
+                                            #select.showMoves()
+                                            movChoice=input("\nWhich move(s) to look at?\n[#] or [b]ack: ")
+                                            if movChoice=="b" or movChoice=="B":
+                                                #leave move info selection, back to what to do w pokemon
+                                                break
+                                            #try to get numbers from user input
+                                            try:
+                                                movez=movChoice.split() #pokemon movelist index (string)
+                                                movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                                movez=[select.knownMoves[i] for i in movez] #pokemon move movedex index
+                                            except ValueError:
+                                                print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                            except IndexError:
+                                                print("\n** Use the indices to select moves to take a closer look at. **")
+                                            else:
+                                                for i in range(len(movez)):
+                                                    moveInfo(movez[i])
+                                                    micropause()
+                                                #we got all the move info out?, go back to pokemon?
+                                                #pause the code for reading purposes
+                                                input("\nEnter anything to go back to Pokémon summary...")
+                                                break #bacl to pokemon summary
+                                            #move info contents
+                                        #
+                                    #switch pokemon
+                                    if pChoice=="s" or pChoice=="S":
+                                        #keep fainted pokemon off the field
+                                        if select.fainted:
+                                            print("\n** Cannot switch in fainted Pokémon! **")
+                                            shortpause()
+                                            break #back to party
+                                        if nuserInd==userInd:
+                                            print(f"\n** {select.name} is already in battle! **")
+                                            shortpause()
+                                            break #bacl to party
+                                        switching=True
+                                        break
+                                    #anything other than approved things repeat the loop
+                                if switching:
+                                    break #breaks the party loop and throws you back into the turn loop, user will switch pokemon
+                            #end of pokemon selection loop
+                        #end of party pokemon block
+                        #just dawned on me that user pokemon switching does not need to take place entirely in this if statement
+                    #### fight ####
+                    if userMove=='f' or userMove=='F':                    
+                        #fighting options
+                        while 1: #move input loop
+                            print("")
+                            self.UI()
+                            print("")
+                            for i in range(len(self.usr_mon.knownMoves)):
+                                print(f"[{i+1}] \t{getMoveInfo(self.usr_mon.knownMoves[i])['name']} \t{self.usr_mon.PP[i]} PP")
+                            if np.count_nonzero(self.usr_mon.PP)==0:
+                                print(f"{self.usr_mon.name} can only Struggle!")
+                                fighting=True
+                                moveDex=struggle_i
+                                shortpause()
+                                break
+                            userFight=input(f"\nWhat move should {self.usr_mon.name} use?\n(Lead with 'i' to see move info)\n[#] or [b]: ")
+                            #go back
+                            infom = userFight.split()
+                            if userFight=='b' or userFight=='B':
+                                break
+                            elif len(infom)>1:
+                                if userFight.split()[0]=="i" or userFight.split()[0]=="I":
+                                    try:
+                                        movez=userFight.split()[1:] #pokemon movelist index (string)
+                                        movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                        movez=[self.usr_mon.knownMoves[i] for i in movez] #pokemon move movedex index
+                                    except ValueError:
+                                        print("\n** Entry must be a [#] or list of [#]'s, separated by spaces! **")
+                                    except IndexError:
+                                        print("\n** Use the indices to select moves to take a closer look at. **")
+                                    else:
+                                        for i in range(len(movez)):
+                                            #print("")
+                                            moveInfo(movez[i])
+                                            micropause() #drama
+                                        #we got all the move info out?, go back to pokemon?
+                                        input("\nenter anything to continue...")
+                                else: #other secret options
+                                    pass
+                            else:
+                                #try to use user input to call a move
+                                try:
+                                    fightChoice=int(userFight)-1 #make sure given input refers to a move
+                                    if self.usr_mon.PP[fightChoice]==0:
+                                        print(f"\n{self.usr_mon.name} does not have enough energy to use this move!")
+                                        shortpause()
+                                        continue
+                                    moveDex=self.usr_mon.knownMoves[fightChoice]
+                                    fighting=True
+                                    break
+                                except:
+                                    print("\n**Enter one of the numbers above.**")
+                                    micropause()
+                    
+                ####after either swithing or attacking
+                if fighting or switching or resting or charging:
+                    #user shifting?
+                    if switching:
+                        #put current pokemon back?
+                        self.usr_mon.withdraw()
+                        self.usrs[userInd]=self.usr_mon
+                        print(f"\n{self.usr_mon.name} come back!")
+                        shortpause()
+                        #set new selection as user pokemon
+                        self.usr_mon=select
+                        userInd=nuserInd
+                        print(f"{self.usr_mon.name}, it's your turn!")
+                        shortpause()
+                        #assign the pokemon to users side of the field
+                        self.usr_mon.chosen("user",self.field)
+                        # calculate the pokemon's stat's, considering the weather and status conditions
+                        self.usr_mon.inBattle()
+                        # apply the field to the pokemon (entry hazards)
+                        self.field.landing(self.usr_mon)
+                    #does the trainer mon need to rest?
+                    if self.cpu_mon.resting:
+                        #trainerRest=True
+                        print(f"\n{self.cpu_mon.name} must recharge and cannot attack!")
+                    else:
+                        #trainerRest=False
+                        pass
+                    if self.cpu_mon.charged:
+                        #trainerCharge=True
+                        pass
+                    else:
+                        #trainerCharge=False
+                        pass
+                    trainerShift=False
+                    nfp,nfpList=checkBlackout(self.cpus)
+                    rivalgo = rivalbrain.go(nfp,self.cpu_mon,self.usr_mon)
+                    if nfp>1 and rivalgo == 'switch' and (not self.cpu_mon.resting) and (not self.cpu_mon.charged): #if trainer has more than 1 non fainted pokemon, 10% of the time, but not if their pokemon has to recharge
+                        del nfpList[int(np.argwhere(np.array(nfpList)==trainerInd))] #removing the current pokemon from the list of nonfainted pokemon in the party
+                        self.cpu_mon.withdraw()
+                        self.cpus[trainerInd]=self.cpu_mon #put pokemon away
+                        print(f"\n{self.cpu_name}'s {self.cpu_mon.name} is withdrawn!")
+                        #take new pokemon out, random
+                        nTrainerInd=rng.choice(nfpList)
+                        trainerInd=nTrainerInd
+                        self.cpu_mon=self.cpus[trainerInd]
+                        shortpause()
+                        print(f"{self.cpu_name}: {self.cpu_mon.name}! Finish them off!")
+                        shortpause()
+                        self.cpu_mon.chosen("cpu",self.field)
+                        self.cpu_mon.inBattle()
+                        self.field.landing(self.cpu_mon)
+                        trainerShift=True
+                        rivalgo=0
+                        #end of trainer switching
+                        #we should really be checking for faint after these possible switch ins, given entry hazards
+                    ########################################################
+                    # if both pokemon are attacking, compare move priority #
+                    # then compare pokemon speeds ##########################
+                    ########################################################
+                    uFaint=False
+                    tFaint=False
+                    flinching=False
+                    ######## opponent selecting a move #######
+                    if self.cpu_mon.charged:
+                        pass #trainMoveInd should already be set from last round
+                    elif self.cpu_mon.rolling_out>0:
+                        pass #uhh same
+                    else:
+                        trainStruggle=False
+                        cpu_ppcheck = np.argwhere(np.array(self.cpu_mon.PP) > 0)
+                        if np.size(cpu_ppcheck) > 0:
+                            #trainMoveInd=int(rng.choice(cpu_ppcheck))
+                            trainMoveInd = int(rivalgo)
+                            tmovedex = self.cpu_mon.knownMoves[trainMoveInd]
+                        else: #struggle will trigger 
+                            trainStruggle=True
+                        pass
+                    #### speed and priority check ####
+                    if fighting and (not trainerShift):
+                        prior_check = (getMoveInfo(moveDex)['priority'], getMoveInfo(tmovedex)['priority'])
+                    else:
+                        prior_check = (0,0)
+                    if prior_check[0] == prior_check[1]:
+                        #set boolean to true if user has higher effective speed stat
+                        userFast=self.usr_mon.bsp>=self.cpu_mon.bsp
+                    elif prior_check[0] > prior_check[1]:   #user has advanced priority
+                        userFast=True
+                    else:                                   #user has decreased priority
+                        userFast=False
+                    ##USER FASTER##
+                    if userFast:
+                        #USER ATTACK
+                        #make sure user/trainer didn't switch in this turn
+                        if fighting or charging: #is never set to true if resting is true this turn, not set to true if the user decided to switch mons
+                            self.usr_mon.move(self.cpu_mon, moveDex)
+                            # check for faints after 1st move used
+                            if self.cpu_mon.fainted:
+                                tFaint=True
+                            if self.usr_mon.fainted:
+                                uFaint=True
+                            if self.cpu_mon.flinched and (not tFaint):
+                                flinching=True
+                                self.cpu_mon.rolling_out=0
+                                print(f"\n{self.cpu_name}'s {self.cpu_mon.name} flinches and can't attack!")
+                                shortpause()
+                        ##OPPO ATTACK
+                        if (not trainerShift) and (not flinching) and (not tFaint):
+                            if uFaint:
+                                print(f"\nThere is no target for {self.cpu_mon.name} to attack!")
+                                shortpause()
+                            elif trainStruggle: #np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
+                                self.cpu_mon.move(self.usr_mon,struggle_i)
+                            else: #otherwise, cue up one of the known moves
+                                self.cpu_mon.move(self.usr_mon,tmovedex)
+                            # check for faints as result of 2nd move used
+                            if self.usr_mon.fainted:
+                                uFaint=True
+                            if self.cpu_mon.fainted:
+                                tFaint=True
+                    ##USER SLOWER##
+                    else:
+                        ##OPPO ATTACK##
+                        if (not trainerShift) and (not self.cpu_mon.resting):
+                            if np.count_nonzero(self.cpu_mon.PP)==0: #if trainer is out of PP, use struggle
+                                self.cpu_mon.move(self.usr_mon,struggle_i)
+                            else: #otherwise, cue up one of the known moves
+                                self.cpu_mon.move(self.usr_mon,tmovedex)
+                            # check for faints after 1st move used
+                            if self.usr_mon.fainted:
+                                uFaint=True
+                            if self.cpu_mon.fainted:
+                                tFaint=True
+                            #check for flinch
+                            if self.usr_mon.flinched and (not uFaint): #make sure neither pokemon just fainted after this attack
+                                flinching=True
+                                self.usr_mon.rolling_out=0
+                                print(f"\n{self.usr_mon.name} flinches and can't attack!")
+                                micropause()
+                        ##USER ATTACK##
+                        if (fighting or charging) and (not flinching) and (not uFaint):
+                            if tFaint:
+                                print(f"\nThere is no target for {self.usr_mon.name}'s attack!")
+                                shortpause()
+                            else:
+                                self.usr_mon.move(self.cpu_mon,moveDex)
+                            # check for faints after 2nd move used
+                            if self.cpu_mon.fainted:
+                                tFaint=True
+                            if self.usr_mon.fainted:
+                                uFaint=True
+                    #end of turn, pokemon have attacked
+                    #turn off fusion flags
+                    self.field.fusionf = False
+                    self.field.fusionb = False
+                    #empty counter variables
+                    self.usr_mon.counter_damage = (0.0, "none")
+                    self.cpu_mon.counter_damage = (0.0, "none")
+                    #if poke didnt just switch in, first turn flag is turned off
+                    if (not switching):
+                        self.usr_mon.firstturnout=False
+                    if (not trainerShift):
+                        self.cpu_mon.firstturnout=False
+                    #regardless of whether pokemon fainted this turn, if they were recognized to be resting while the attacks were exchanged, we can repeal the resting tags
+                    if resting:
+                        self.usr_mon.resting=False
+                    if self.cpu_mon.resting:
+                        self.cpu_mon.resting=False
+                    if flinching: #moves have already been used, we can reset them
+                        self.usr_mon.flinched=False
+                        self.cpu_mon.flinched=False
+                    #check for USER BLACKOUT
+                    if checkBlackout(self.usrs)[0]==0:
+                        battleOver=True
+                        print("\nYou're out of usable Pokémon!")
+                        shortpause()
+                        print("You blacked out!")
+                        shortpause()
+                        break
+                    #check for TRAINER BLACKOUT
+                    if checkBlackout(self.cpus)[0]==0:
+                        battleOver=True                        
+                        self.user_won=True
+                        shortpause()
+                        break
+                    #print("")
+                    #damages for pokemon that made it through the turn
+                    ### future sight ###
+                    self.field.futuresA-=1
+                    self.field.futuresB-=1
+                    #user foresaw this attack
+                    if self.field.futuresA == 0:
+                        if tFaint:
+                            print("There's no target for the Future Sight attack!")
+                            micropause()
+                        else:
+                            self.usr_mon.futureSight(self.cpu_mon)
+                            if self.cpu_mon.fainted:
+                                tFaint=True
+                    #cpu foresaw this attack
+                    if self.field.futuresB == 0:
+                        if uFaint:
+                            print("There's no target for the Future Sight attack!")
+                            micropause()
+                        else:
+                            self.cpu_mon.futureSight(self.usr_mon)
+                            if self.usr_mon.fainted:
+                                uFaint=True
+                            #
+                    # I think that's all folks
+                    #order of end of battle damages: burn,poison,badPoison,weather,grassy heal
+                    #burns
+                    if self.usr_mon.burned and (not uFaint):
+                        self.usr_mon.burnDamage()
+                    if self.cpu_mon.burned and (not tFaint):
+                        self.cpu_mon.burnDamage()
+                    #poisons
+                    if self.usr_mon.poisoned and (not uFaint):
+                        self.usr_mon.poisonDamage()
+                    if self.cpu_mon.poisoned and (not tFaint):
+                        self.cpu_mon.poisonDamage()
+                    #badPoisons
+                    if self.usr_mon.badlypoisoned and (not uFaint):
+                        self.usr_mon.badPoison()
+                        self.usr_mon.poisonCounter+=1
+                    if self.cpu_mon.badlypoisoned and (not tFaint):
+                        self.cpu_mon.badPoison()
+                        self.cpu_mon.poisonCounter+=1
+                    #weather
+                    if self.field.weather=="sandstorm":
+                        if (not uFaint):
+                            self.usr_mon.sandDamage()
+                        if (not tFaint):
+                            self.cpu_mon.sandDamage()
+                    if self.field.weather=="hail":
+                        if (not uFaint):
+                            self.usr_mon.hailDamage()
+                        if (not tFaint):
+                            self.cpu_mon.hailDamage()
+                    #grassy terrain heal
+                    #make sure we're not bringing anyone back to life after possible damages
+                    if self.usr_mon.fainted:
+                        uFaint=True
+                    if self.cpu_mon.fainted:
+                        tFaint=True
+                    if self.field.terrain=="grassy":
+                        if self.usr_mon.grounded and (not uFaint):
+                            self.usr_mon.grassyHeal()
+                        if self.cpu_mon.grounded and (not tFaint):
+                            self.cpu_mon.grassyHeal()
+                    # aqua ring healing
+                    if self.usr_mon.aquaring and (not uFaint):
+                        self.usr_mon.aquaheal()
+                    if self.cpu_mon.aquaring and (not tFaint):
+                        self.cpu_mon.aquaheal()
+                    #make switches in case of faints
+                    #user switch
+                    if uFaint:
+                        #check for USER BLACKOUT
+                        if checkBlackout(self.usrs)[0]==0:
+                            battleOver=True
+                            print("\nYou're out of usable Pokémon!")
+                            shortpause()
+                            print("You blacked out!")
+                            shortpause()
+                            break
+                        else:
+                            bShifted=False #forcing the user to shift to a non-fainted pokemon
+                            self.field.faintedA = True #if there was a faint, mark it on the field
+                            while 1:
+                                #print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
+                                #for i in range(len(self.usrs)):
+                                #    print(f"[{i+1}] {self.usrs[i].name} \tLv. {self.usrs[i].level} \tHP: {format(self.usrs[i].currenthpp,'.2f')}%")
+                                print_party(self.usrs,menu=False)
+                                newPoke=input("Select a Pokémon for battle...\n[#]: ")
+                                try:
+                                    nuserInd=int(newPoke)-1
+                                    select=self.usrs[nuserInd]
+                                    #select.battleSummary()
+                                    select.summary(inbattle=True)
+                                except ValueError:
+                                    print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
+                                except IndexError:
+                                    print("\n** Enter a [#] corresponding to a Pokémon!\nor [b]ack **")
+                                else:
+                                    while 1: #another user input loop to loop at a pokemon
+                                        sChoice=input(f"What to do with {select.name}?\n[s]hift into battle, see [m]oves, or [b]ack: ")
+                                        #go back
+                                        if sChoice=='b' or sChoice=="B":
+                                            break
+                                        if sChoice=="m" or sChoice=="M":
+                                            while 1: #move input loop for displaying move info
+                                                select.showMoves()    
+                                                movChoice=input("Which move(s) to look at?\n[#] or [b]ack: ")
+                                                if movChoice=="b" or movChoice=="B":
+                                                    #leave move info selection, back to what to do w pokemon
+                                                    break
+                                                #try to get numbers from user input
+                                                try:
+                                                    movez=movChoice.split() #pokemon movelist index (string)
+                                                    movez=[int(i)-1 for i in movez] #pokemon movelist indices (int)
+                                                    movez=[select.knownMoves[i] for i in movez] #pokemon move movedex index
+                                                except ValueError:
+                                                    print("\n** Entry must be a [#] or list of [#]s, separated by spaces! **")
+                                                except IndexError:
+                                                    print("\n** Use the indices to select moves to take a closer look at. **")
+                                                else:
+                                                    for i in range(len(movez)):
+                                                        #print("")
+                                                        moveInfo(movez[i])
+                                                        micropause() #drama
+                                                    #we got all the move info out?, go back to pokemon, user NEEDS to switch someone in
+                                                    break 
+                                        #switch pokemon
+                                        if sChoice=='s' or sChoice=="S":
+                                            #keep fainted pokemon off the field
+                                            if select.fainted:
+                                                print("** Cannot switch in fainted Pokémon! **")
+                                                break
+                                            if nuserInd==userInd:
+                                                print("** {select.name} is already in battle! **")
+                                                break
+                                            #put current pokemon back?
+                                            self.usr_mon.withdraw()
+                                            self.usrs[userInd]=self.usr_mon
+                                            print(f"\n{self.usr_mon.name} come back!")
+                                            #set new selection as user pokemon
+                                            self.usr_mon=select
+                                            userInd=nuserInd
+                                            shortpause()
+                                            print(f"{self.usr_mon.name}, it's your turn!")
+                                            shortpause()
+                                            self.usr_mon.chosen("user",self.field)
+                                            self.usr_mon.inBattle()
+                                            self.field.landing(self.usr_mon)
+                                            bShifted=True
+                                            break
+                                        #anything other than y repeats the loop
+                                    if bShifted:
+                                        break
+                    else: #user's pokemon did not faint,
+                        self.field.faintedA=False
+                    #oppo switch
+                    if tFaint:
+                        #check for TRAINER BLACKOUT
+                        blk,blkList=checkBlackout(self.cpus)
+                        if blk==0:
+                            battleOver=True
+                            print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
+                            self.user_won=True
+                            shortpause()
+                            break
+                        else:
+                            self.field.faintedB=True
+                            #put fainted one away
+                            self.cpu_mon.withdraw()
+                            self.cpus[trainerInd]=self.cpu_mon
+                            #take out random non fainted one
+                            trainerInd=rng.choice(blkList)
+                            self.cpu_mon=self.cpus[trainerInd]
+                            self.cpu_mon.chosen("cpu",self.field)
+                            self.cpu_mon.inBattle()
+                            self.field.landing(self.cpu_mon)
+                            print(f"\n{self.cpu_name}: {self.cpu_mon.name}! I'm counting on you!")
+                            shortpause()
+                        #
+                    else:
+                        self.field.faintedB=False
+                    #pokemon have been switched in
+                    #print("")
+                    #is weather still happening
+                    self.field.weatherCounter-=1
+                    if self.field.weather=='sunny':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
+                            print("The harsh sunlight is fading...")
+                            shortpause()
+                        else:
+                            print("The sunlight is harsh!")
+                            shortpause()
+                    if self.field.weather=='rain':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
+                            print("The rain stops...")
+                            shortpause()
+                        else:
+                            print("It's raining!")
+                            shortpause()
+                    if self.field.weather=='sandstorm':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
+                            print("The sandstorm is subsiding...")
+                            shortpause()
+                        else:
+                            print("The sandstorm is raging!")
+                            shortpause()
+                    if self.field.weather=='hail':
+                        if self.field.weatherCounter==0:
+                            self.field.weather='clear'
+                            self.field.weatherCounter=np.inf
+                            print("The hail stops")
+                            shortpause()
+                        else:
+                            print("It's hailing!")
+                            shortpause()
+                    #is the terrain still on?
+                    self.field.terrainCounter-=1
+                    if self.field.terrainCounter==0:
+                        self.field.terrain="none"
+                        self.field.terrainCounter=np.inf
+                        print("The terrain faded away...")
+                        shortpause()
+                    elif self.field.terrain=="grassy":
+                        print("The battlefield is grassy!")
+                        shortpause()
+                    elif self.field.terrain=="electric":
+                        print("The battlefield is electrified!")
+                        shortpause()
+                    elif self.field.terrain=="psychic":
+                        print("The battlefield is weird!")
+                        shortpause()
+                    elif self.field.terrain=="misty":
+                        print("The battlefield is misty!")
+                        shortpause()
+                    #print("")
+                    #if nothing was set, will go from 0 to -1, and keep going negative
+                    #until someone sets a screen, at which point itll be set to 5, decrease from there
+                    #to 0, which we will catch and call out
+                    self.field.lightscACounter-=1
+                    self.field.lightscBCounter-=1
+                    self.field.reflectACounter-=1
+                    self.field.reflectBCounter-=1
+                    self.field.veilACounter-=1
+                    self.field.veilBCounter-=1
+                    #are these screens still up?
+                    say = ("Your team's Light Screen fades away...","Their Light Screen fades away...",\
+                           "Your team's Reflect fades away...","Their Reflect fades away...", \
+                           "Your team's Aurora Veil fades...","Thier Aurora Veil fades...")
+                    for ee in list(enumerate((self.field.lightscACounter,self.field.lightscBCounter, self.field.reflectACounter,self.field.reflectBCounter, self.field.veilACounter,self.field.veilBCounter))) :
+                        #print([ee[1]])
+                        if ee[1] == 0:
+                            #scr_flag[ee[0]] = False
+                            print("\n"+say[ee[0]])
+                            micropause()
+                        pass
+                    #yo what's next
+                    turn+=1
+                    #loop to next turn
+            if battleOver: #if user ran
+                print("\nThe battle ended!")
+                shortpause()
+                if self.user_won:
+                    print(f"\n{self.cpu_name} is out of usable Pokémon!\nYou win!")
+                    dramaticpause()
+                elif running:
+                    print(f"\n{self.usr_name} and {self.usr_mon.name} forfeited to {self.cpu_name}!")
+                    shortpause()
+                else:
+                    print("\nYou're out of usable Pokémon!")
+                    shortpause()
+                    print(f"\nYou lost to {self.cpu_name}!")
+                    shortpause()
+                break #breaks battle loop, back to main screen
+            #loop back to "turn begins"
+            #if a pokemon has fainted, loop ends
+        #clean up
+        self.field.clearfield()
+        #self.field.weather=rng.choice(Weathers)
+        self.field.weatherCounter=np.inf
+        self.field.terrain=rng.choice(Terrains)
+        if self.field.terrain=="none":  self.field.terrainCounter=np.inf
+        else:                           self.field.terrainCounter=5
+        for i in self.cpus:
+            i.withdraw()
+            i.restore()
+        for i in self.usrs: i.withdraw()
+        shortpause()
+        return self.user_won
+    ###end of battle AI block###
     
     def moreBattleFunctions(self):
         return
 #zz:battleclass
+class semifield:
+    def __init__(self,color):
+        self.color = color #'should' be red or blue
+        self.tailwindCounter = 0
+        self.futures = 0   #realized I dont need to specify its a counter
+        self.fainted = False
+        self.rocks=False
+        self.sticky=False
+        self.steel=False
+        self.spikes=0
+        self.toxic=0
+        self.reflectCounter = 0
+        self.lightscCounter = 0
+        self.veilCounter = 0
+        return
+    def clear(self):
+        self.tailwindCounter = 0
+        self.futures = 0   #realized I dont need to specify its a counter
+        self.fainted = False
+        self.rocks=False
+        self.sticky=False
+        self.steel=False
+        self.spikes=0
+        self.toxic=0
+        self.reflectCounter = 0
+        self.lightscCounter = 0
+        self.veilCounter = 0
+        return
+    
+    def echo(self):
+        return
+
 ##aa:fieldclass## possible in the code, but I like the clarity of battlefield while working all this out
 class field:
     def __init__(self, weath = 'clear', terra = 'none', rando = False):
@@ -2260,6 +3029,8 @@ class field:
         # fusion bolt flare trackers
         self.fusionb=False
         self.fusionf=False
+        self.a_field = semifield('red')
+        self.b_field = semifield('blue')
         #A for Red
         self.tailwindACounter = 0
         self.futuresA = 0 #set to 3, execute an attack at 0
@@ -2287,12 +3058,6 @@ class field:
         self.reflectBCounter = 0
         self.lightscBCounter = 0
         self.veilBCounter = 0
-        #self.reflectA=False
-        #self.reflectB=False
-        #self.lightscA=False
-        #self.lightscB=False
-        #feel like we dont need these flags and we can do what
-        #we did for toxic and spikes
         #trick room
         #the same way weather and terrain are set globally, i think trick room could be as well
         #also weather and terrain could be an attribute of battle() rn not much difference
@@ -2307,22 +3072,18 @@ class field:
         self.terrain='none'
         self.weatherCounter=np.inf
         self.terrainCounter=5
+        self.fusionf=False
+        self.fusionb=False
         self.rocksA=False
         self.rocksB=False
         self.steelA=False
         self.steelB=False
         self.stickyA=False
         self.stickyB=False
-        self.fusionf=False
-        self.fusionb=False
         self.faintedA=False
         self.faintedB=False
         #feel like we dont need these flags and we can do what
         #we did for toxic and spikes
-        #self.reflectA=False
-        #self.reflectB=False
-        #self.lightscA=False
-        #self.lightscB=False
         self.spikesA=0 #up to 3
         self.spikesB=0
         self.toxicA=0 #up to 2 
@@ -2361,19 +3122,16 @@ class field:
                     pass
                 pass
             return ans
-    ### only the hazards on the ground
+    ### call when a pokemon is grounded
     def grounding(self,poke):
-        #rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
         stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
         spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
         toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
         if stickyOn:
             poke.stickyNerf()
         if spikesOn:
-            if poke.battlespot == "red":
-                poke.spikesDamage(self.spikesA)
-            elif poke.battlespot == "blue":
-                poke.spikesDamage(self.spikesB)
+            if poke.battlespot == "red":    poke.spikesDamage(self.spikesA)
+            elif poke.battlespot == "blue": poke.spikesDamage(self.spikesB)
         if toxicOn:
             if poke.battlespot == "red":
                 #check for poison type
@@ -2381,15 +3139,13 @@ class field:
                     self.toxicA = 0
                     print(f"{poke.name} absorbs the toxic spikes!")
                     micropause()
-                else:
-                    poke.toxicAffliction(self.toxicA)
+                else:   poke.toxicAffliction(self.toxicA)
             elif poke.battlespot == "blue":
                 if 7 in poke.tipe:
                     self.toxicB = 0
                     print(f"{poke.name} absorbs the toxic spikes!")
                     micropause()
-                else:
-                    poke.toxicAffliction(self.toxicB)
+                else:   poke.toxicAffliction(self.toxicB)
     ### call when a pokemon comes out
     def landing(self,poke):
         #this function will simulate pokemon being damaged by entry hazards
@@ -2397,14 +3153,9 @@ class field:
         #need to check for rocks, spikes, toxix spikes (except for poisons) and sticky web
         #only for grounded pokemon tho...
         rocksOn = ( poke.battlespot == "red" and self.rocksA ) or ( poke.battlespot == "blue" and self.rocksB )
-        #stickyOn = ( poke.battlespot == "red" and self.stickyA ) or ( poke.battlespot == "blue" and self.stickyB )
-        #spikesOn = ( poke.battlespot == "red" and self.spikesA > 0 ) or ( poke.battlespot == "blue" and self.spikesB > 0)
-        #toxicOn = ( poke.battlespot == "red" and self.toxicA > 0 ) or ( poke.battlespot == "blue" and self.toxicB > 0)
         ##some hazards
-        if rocksOn:
-            poke.rocksDamage()
-        if poke.grounded:
-            self.grounding(poke)
+        if rocksOn:         poke.rocksDamage()
+        if poke.grounded:   self.grounding(poke)
         # there will be more entry hazards unfortunately
         return
     #aa:hazards
@@ -2536,9 +3287,9 @@ class field:
             pass
     #more functions of field
 ##zz:fieldclass
-#aa:damagefunction
+#aa:damagefunction #aa:functions
 def damage(attacker,defender,power,moveTipe,isSpecial,note):
-    global statStages
+    global statStages, crit_tiers
     ####damage read-out strings####
     damages=[]
     ####set some variable straight
@@ -2585,8 +3336,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #### rollout #### 
     if 'rollout' in note: 
         if attacker.curled: #another boost if poke has used defense curl
-            power*=2
-        power *= 2** (float(attacker.rolling_out))
+            power*=2.
+        power *= 2. ** (float(attacker.rolling_out))
     #### getting caught ####
     #digging diving flying
     if ('gust' in note) and defender.flying:
@@ -2676,21 +3427,22 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
             pass
     ####critical hit chance####
     critical=1.
-    if "highCrit" in note:
-        crit=9
+    crit = 0
+    if 'frostbreath' in note:     critical = 1.5  #guaranteed crit
     else:
-        crit=25
-    if rng.integers(1,crit)==1:
-        critical=1.5
-        if statNerf<1: #if change is not productive to attacker
-            attack/=statNerf #undo it
-        if statBoost>1: #if change is productive to defender
-            defense/=statBoost #undo it
+        if "highCrit" in note:                  crit+=1         #better chances
+        elif "fetch_holding_leek" in note:      crit+=1         #better chances
+        if crit > 3:                            crit=3          #catch overflow
+        if rng.integers(1,crit_tiers[crit])==1: critical=1.5    #hitting a crit
+    if critical == 1.5:         #it's a critical hit
+        if statNerf<1:          #if change is not productive to attacker
+            attack/=statNerf    #undo it
+        if statBoost>1:         #if change is productive to defender
+            defense/=statBoost  #undo it
         damages.append("It's a critical hit!")
         screennerf=1.0 #critical hits bypass screens
         burn=1.0 #critical hits bypass burn-attack-nerf
-    if screennerf < 1.0:
-        damages.append(f"Protected by {screen_tag[screen_i]}")
+    if screennerf < 1.0:    damages.append(f"Protected by {screen_tag[screen_i]}")
     ####random fluctuation 85%-100%
     rando=rng.integers(85,101)*0.01
     ####STAB####
@@ -2718,7 +3470,8 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     if burn<1.0:
         damages.append("The burn reduces damage...")
     #circumvent normal damage calculation sometimes
-    if (('mirrorcoat' in note) and (attacker.counter_damage[1] == 'spec')) or (('counter' in note) and (attacker.counter_damage[1]=='phys')):
+    if (('mirrorcoat' in note) and (attacker.counter_damage[1] == 'spec')) \
+            or (('counter' in note) and (attacker.counter_damage[1]=='phys')):
         ans = np.floor(2.*attacker.counter_damage[0])
         damages = []
     elif (('mirrorcoat' in note) or ('counter' in note)):
@@ -2726,20 +3479,18 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
         damages = ["failed"]
     else:
         ####modifiers united####
-        #print(tyype)
-        damageModifier=weatherBonus*critical*rando*STAB*tyype*burn*screennerf*caught_bonus
+        damageModifier = weatherBonus * critical * rando * STAB * tyype * burn * screennerf * caught_bonus
         ####damage calculation####
         ans= np.floor( ((((2.*level)/5. + 2.)*power*attack/defense)/50. + 2.)*damageModifier )
     return ans,tyype,damages
 #zz:damagefunction
-#aa:functions
 #calculates pokemon stats (non-HP)
 def stats(level,base,IV,EV,nature):
-    ans=((2.*base+IV+EV/4.)*level/100.+5.)*nature
+    ans=((2.*base+IV+EV//4)*level/100.+5.)*nature
     return ans
 #calculates HP stat
 def HP(level,base,IV,EV):
-    ans=np.floor( ((2.*base+IV+EV/4.)*level/100.)+level+10. )
+    ans=np.floor( ((2.*base+IV+EV//4)*level/100.)+level+10. )
     return ans
 def checkTypeEffectiveness(moveTipe,defendantTipe):
     global codex
@@ -2749,25 +3500,47 @@ def checkTypeEffectiveness(moveTipe,defendantTipe):
     else:
         matchup2=1.0
     return matchup1*matchup2
-#create a pokemon from the pokedex
-def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
-    Hp=dex[pokedexNumber]['hp']
-    At=dex[pokedexNumber]['at']
-    De=dex[pokedexNumber]['de']
-    Sa=dex[pokedexNumber]['sa']
-    Sd=dex[pokedexNumber]['sd']
-    Sp=dex[pokedexNumber]['sp']
-    nayme=dex[pokedexNumber]['name']
-    tipe1=dex[pokedexNumber]['type1']
-    tipe2=dex[pokedexNumber]['type2']
-    if dex[pokedexNumber]['type2']==20: #single-typed mon
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
-        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
-        tipe=np.array([tipe1]), how_created=how_created)
-    else: #dual-typed
-        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
-        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
-        tipe=np.array([tipe1,tipe2]),how_created=how_created)
+##aa:pokeediting
+def random_evs():
+    global rng
+    ii = 0
+    evv = [0]
+    while ii < 5: #do 5 times
+        #take random values [0,min(252,remaining ev allowance)]
+        limit = min(252,508-sum(evv))
+        opts = np.arange(0,limit+1,4,dtype=int)
+        evv.append(rng.choice(opts))
+        ii+=1
+    remain = 508-sum(evv)
+    if remain > 252:
+        evv.append(252)
+        diff = remain-252
+        nopen = 252 - np.array(evv[1:],dtype=int)
+        for i in range(len(nopen)):
+            if nopen[i] > 0:
+                if nopen[i] >= diff:
+                    evv[i+1] += diff
+                    break
+                else:
+                    evv[i+1] += nopen
+                    diff -= nopen
+                pass
+            pass
+        pass
+    else: evv.append(remain) 
+    return evv[1:]
+def party_fixivs(parti):
+    #set all ivs of every pokemon in parti to 31
+    for i in parti: i.perfect_ivs()
+    return
+def party_fixevs(parti, ivs=False):
+    #fully train evs on every pokemon in parti
+    if ivs:
+        for i in parti: i.perfect_ivs()
+    else:
+        for i in parti: i.full_evs()
+    return
+##zz:pokeediting
 def saveParty(savefile,pokeparty,overwrite=False):
     if os.path.exists(savefile) and not overwrite:
         #do not save
@@ -2937,12 +3710,10 @@ def loadShowdown(savefile):
         #set name, moves, evs, ivs
         newmon.name = namer
         newmon.set_evs(eevs)                        #proofed! should make sure these are error-proofed
-        newmon.set_ivs(iivs)                        #proofed!
+        newmon.set_evs(iivs,ivs=True)               #proofed!
         newmon.learn_sets( moves )                  #proofed!
         if gender == 'none': newmon.gender = 'N'
         else: newmon.gender = gender
-        #newmon = mon(lvl,namer,nature=nature,hpbase=1,atbase=1,debase=1, \
-        #    sabase=1,sdbase=1,spbase=1,tipe=tiping,how_created='showdown')
         #anything else?
         loadparty.append(newmon)
         pass
@@ -2954,16 +3725,16 @@ def loadMonNpy(savefile):
     cheers=False
     try:
         poke_arrr = np.load(savefile,allow_pickle=True)
-        poke_arrr = poke_arrr.reshape((-1,28))
+        poke_arrr = poke_arrr.reshape((-1,29))
         n_poke = poke_arrr.shape[0]
     except FileNotFoundError:
         print('File not found.')
         micropause()
     except ValueError:
-        print('Error loading file')
+        print('Error loading file/ValueErr')
         micropause()
     except OSError:
-        print('Error loading file')
+        print('Error loading file/OSErr')
         micropause()
     else:
         takehome = []
@@ -2976,24 +3747,25 @@ def loadMonNpy(savefile):
                 coder=hashlib.new('md5')
                 coder.update(str(poke_line).encode('UTF-8'))
                 hass = coder.hexdigest()
-                oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[4],\
-                atbase=poke_arr[5],debase=poke_arr[6],sabase=poke_arr[7],sdbase=poke_arr[8],\
-                spbase=poke_arr[9],tipe=poke_arr[3],how_created=poke_arr[23])
+                oldie = mon(poke_arr[1],poke_arr[0],nature=poke_arr[2],hpbase=poke_arr[5],\
+                atbase=poke_arr[6],debase=poke_arr[7],sabase=poke_arr[8],sdbase=poke_arr[9],\
+                spbase=poke_arr[10],tipe=poke_arr[3],how_created=poke_arr[24])
                 #to set moves,pp,evs,ivs,birthtime
-                oldie.knownMoves = poke_arr[26]
+                oldie.knownMoves = poke_arr[27]
                 oldie.PP = [ mov[i]['pp'] for i in oldie.knownMoves ]
                 oldie.hpev,oldie.atev,oldie.deev,oldie.saev,oldie.sdev,oldie.spev = \
-                    poke_arr[10:16]
+                    poke_arr[11:17]
                 oldie.hpiv,oldie.ativ,oldie.deiv,oldie.saiv,oldie.sdiv,oldie.spiv = \
-                    poke_arr[16:22]
+                    poke_arr[17:23]
+                oldie.gender=poke_arr[4]
                 tampered=False
                 if hass != poke_hass:
                     tampered=True
                     oldie.set_born(how_created='tampered')
                 else:
-                    oldie.timeborn=poke_arr[22]
-                    oldie.bornplace=poke_arr[24]
-                    oldie.hallfamecount=poke_arr[25]
+                    oldie.timeborn=poke_arr[23]
+                    oldie.bornplace=poke_arr[25]
+                    oldie.hallfamecount=poke_arr[26]
                 pass
             #except ValueError:
             #    print('Value error/Data corrupted')
@@ -3015,7 +3787,6 @@ def loadMon(savefile):
         #dat=np.loadtxt(savefile,delimiter=",",dtype='U140')
         dat = dat2[:,0] #1 or 2 dim, if 2-dim: first one is num pokes, elsewi
         loadPokes=[]
-        #if type(dat[0])==np.str_: dat=dat.reshape((1,-1)) #only the case if there's only 1 pokemon #to treat this pokemon like any other line in a list of saved pokemon
         #for i in dat:
         for i in range(len(dat)):
             #hash check business
@@ -3036,15 +3807,18 @@ def loadMon(savefile):
             typ=np.array([int(iiii) for iiii in line[5].split()])
             if max(typ)>18 or min(typ)<0: return [0]  #invalid types
             nacher = np.array([int(iv) for iv in line[6].split()])
-            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],spbase=baseI[5],tipe=typ,how_created=line[9])
+            newP=mon(int(line[1]),line[0],nature=nacher,hpbase=baseI[0],\
+                    atbase=baseI[1],debase=baseI[2],sabase=baseI[3],sdbase=baseI[4],\
+                    spbase=baseI[5],tipe=typ,how_created=line[9])
             if tampered: newP.set_born(how_created='tampered')
             else:
                 newP.timeborn = t.gmtime(int(float(line[8])))
                 newP.bornplace = line[10]
-                newP.hallfamecount = line[11]
+                newP.hallfamecount = int(float(line[11]))
             newP.knownMoves=[int(iiiii) for iiiii in line[7].split()]
-            newP.hpiv,newP.ativ,newP.deiv,newP.saiv,newP.sdiv,newP.spiv=ivz
-            newP.hpev,newP.atev,newP.deev,newP.saev,newP.sdev,newP.spev=evz
+            newP.set_evs(evz)
+            newP.set_evs(ivz,ivs=True)
+            newP.gender=line[12]
             newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
@@ -3052,10 +3826,10 @@ def loadMon(savefile):
             micropause()
         return loadPokes
     except FileNotFoundError:
-        print("! The file name wasn't found... !\n")
+        print("! The file name wasn't found... !")
         return [0]
     except OSError:
-        print("! The file name wasn't found... !\n")
+        print("! The file name wasn't found... !")
         return [0]
     except IndexError:
         print("!! The save file is corrupted !!")
@@ -3063,19 +3837,13 @@ def loadMon(savefile):
     except ValueError:
         print("!! This file is all over the place !!")
         return [0]
-def makeRandom(level=int(rng.normal(loc=80,scale=30)),numMoves=6,how_created='nursery'):
-    global mov,mo
-    dome = makeMon( rng.integers( len(dex) ), level, \
-        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
-    ranMoves = rng.choice(mo,size=numMoves,replace=False)
-    dome.knownMoves = list(ranMoves)
-    dome.PP=[mov[i]["pp"] for i in ranMoves]
-    return dome
 #check party for non fainted pokemon
 def checkBlackout(party):
     """
+    input..
     party : list of mon() objects
         a party of pokemon
+    returns..
     p : integer
         number of nonfainted pokemon
     alive : list of intgers
@@ -3087,63 +3855,108 @@ def checkBlackout(party):
         if party[i].fainted==False:
             p+=1
             alive.append(i)
-    return p,alive
-#moves have pwr, phys/spec, type, accu, descipt
-def moveInfo(moveCode):
-    global mov, typeStrings
-    move=mov[moveCode]
-    print(f"------------ {move['name']} ------------")
-    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
-    if move['special?']==2:
-        print(f"[{typeStrings[move['type']]}] | [Status] | PP: {move['pp']}")
-    elif move['special?']==1:
-        print(f"[{typeStrings[move['type']]}] | [Special] | PP: {move['pp']}")
-    elif move['special?']==0:
-        print(f"[{typeStrings[move['type']]}] | [Physical] | PP: {move['pp']}")
-    print("-\n"+move['desc'])
-    if move['contact?']:
-        print("-The user makes contact with the target.")
-    else:
-        print("-The user does not make contact with the target.")
-def makeParty(numb=0,level=100):
+    return (p,alive)
+## aa:createpokemon
+def maker(nparty,psize,nfield,level=100,how_created='random'):
+    # making parties
+    parties = []
+    for i in range(nparty): parties.append( makeParty(numb=psize,level=level,how_created=how_created) )
+    # making the fields
+    fields = []
+    for i in range(nfield):
+        newfield = field(rando=True)
+        fields.append(newfield)
+    return (parties, fields)
+def makeParty(numb=1,level=100, how_created='random', doevs=False):
     #numb : integer number of random pokemon to initialize the party
     pokemon_party=[]
     for i in range(numb):
-        new_mon = makeRandom(level=level,how_created='random')
+        new_mon = makeRandom(level=level,how_created=how_created)
         pokemon_party.append(new_mon)
     return pokemon_party
+def makeRandom(level=100,numMoves=6,how_created='nursery'):
+    global mov,mo
+    dome = makeMon( rng.integers( len(dex) ), level, \
+        (int(rng.choice([0,1,2,3,4])),int(rng.choice([0,1,2,3,4]))), how_created=how_created)
+    ranMoves = rng.choice(mo,size=numMoves,replace=False)
+    dome.knownMoves = list(ranMoves)
+    dome.PP=[mov[i]["pp"] for i in ranMoves]
+    dome.full_evs()
+    return dome
+#create a pokemon from the pokedex
+def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
+    Hp,At,De,Sa,Sd,Sp=dex[pokedexNumber]['hp'], dex[pokedexNumber]['at'], \
+            dex[pokedexNumber]['de'], dex[pokedexNumber]['sa'], \
+            dex[pokedexNumber]['sd'], dex[pokedexNumber]['sp']
+    nayme=dex[pokedexNumber]['name']
+    tipe1=dex[pokedexNumber]['type1']
+    tipe2=dex[pokedexNumber]['type2']
+    if dex[pokedexNumber]['type2']==20: #single-typed mon
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1]), how_created=how_created)
+    else: #dual-typed
+        return mon(level,nayme,nature=nacher,hpbase=Hp,atbase=At,\
+        debase=De,sabase=Sa,sdbase=Sd,spbase=Sp,\
+        tipe=np.array([tipe1,tipe2]),how_created=how_created)
+
+#zz:createpokemon
+#aa:textprint
 def print_party(parti, named='namo', menu=False):
-    #namo: name of the party, string
-    #menu: True if viewing fom the party menu, false if viewing from main
+    """
+    #parti: a list of mon() objects
+    #named: name of the party, string
+    #menu: True if viewing from the party menu, false if viewing from main
+    """
     global typeStrings
-    if menu:
-        print(f"\n////////////////////////////////\n//////// {named} /////////\n////////////////////////////////")
+    npoke = len(parti)
+    if npoke == 0:
+        print("\nprint_party: This party is empty.")
+        return
     else:
-        print("\n////////////////////////////////\n//////// Party Pokémon /////////\n////////////////////////////////")
-    for i in range(len(parti)):
-        if parti[i].dualType:
-            thipe=typeStrings[parti[i].tipe[0]]
-            thipe+=" // "
-            thipe+=typeStrings[parti[i].tipe[1]]
-        else:
-            thipe=typeStrings[parti[i].tipe[0]]
-        print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
-    print("\n*******************************")
-    return
+        dec = game_width
+        if not menu: named='Party Pokémon'
+        slashes_full= genborder(num=dec,cha='/')
+        print('\n'+magic_head(txt=named,spacing=' ',cha='/',long=game_width))
+        for i in range(len(parti)):
+            if parti[i].dualType:
+                thipe=typeStrings[parti[i].tipe[0]]
+                thipe+=" // "
+                thipe+=typeStrings[parti[i].tipe[1]]
+            else:   thipe=typeStrings[parti[i].tipe[0]]
+            print(f"[{i+1}] {parti[i].name} \tLv. {parti[i].level} \tHP: {format(parti[i].currenthpp,'.2f')}% \t{thipe}")
+        print('\n'+slashes_full)
+        return
+def print_parties(partylist,equip=0,prespace=True):
+    """
+    #partylist: list of 3-tuples containing
+    # (mon objects, strings(party name), int(party index))
+    """
+    if len(partylist) == 0:
+        print('\nprint_parties: There are no parties.')
+        return
+    else:
+        equii = np.squeeze( np.argwhere( np.array(partylist,dtype=object)[:,2]==equip ))
+        if prespace: print("")
+        for i in range(len(partylist)):
+            print(f"[{i+1}] {partylist[i][1]} | size: {len(partylist[i][0])}")
+        print(f"Equipped: {partylist[equii][1]}\n")
+        return
+## make starter parties
 def elite4_healquit(poke_party):
-    heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o: ")     
+    heal1 = input("Would you like me to heal your Pokémon?\n[y]es, [n]o, [b] to quit: ")     
     if heal1 == 'b' or heal1=='B':
         print("Leaving Indigo Plateau...")
         micropause()
         return "quitted"
     elif heal1 == 'y' or heal1=='Y':
         #heal all them
-        for i in poke_party:
-            i.restore()
+        for i in poke_party: i.restore()
         print("\nYour party is looking better than ever!!")
         shortpause()
         return "healed"
     else:
+        #otherwise, we move
         return "advance"
 #for printing all this info to screen
 def print_dex():
@@ -3157,6 +3970,20 @@ def print_dex():
         print(f"{i['index']}:{i['name']} " + tipe + f" | [{i['hp']}]  [{i['at']}]  [{i['de']}]  "+\
               f"[{i['sa']}]  [{i['sd']}]  [{i['sp']}]")
     return
+#moves have pwr, phys/spec, type, accu, descipt
+def moveInfo(moveCode):
+    global mov, typeStrings, move_dict
+    move=mov[moveCode]
+    #print(f"------------ {move['name']} ------------")
+    #stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
+    print('\n'+magic_text(txt=f"{move['name']}",spacing=' ',cha='-',long=game_width))
+    print(f"Power: {move['pwr']} | Accuracy: {move['accu']}%")
+    print(f"[{typeStrings[move['type']]}] | [{move_dict[move['special?']]}] | PP: {move['pp']}")
+    print("-\n"+move['desc'])
+    if move['contact?']:    print("-The user makes contact with the target.")
+    else:                   print("-The user does not make contact with the target.")
+    return
+##zz:textprint
 def readEvIv(dato):
     #dato - string of "/"-separated stats
     global stats_dict
@@ -3183,49 +4010,79 @@ def shortpause():
 def dramaticpause():
     t.sleep(1.4)
     return
-def dashborder(num=24):
-    blank = ''
-    for i in range(num):
-        blank+='-'
-    return blank
-def hashborder(num=24):
-    blank = ''
-    for i in range(num):
-        blank+='#'
-    return blank
-def genborder(num=24,char='='):
-    star = ''
-    for i in range(num):
-        star+=char
-    return star
-codex=np.ones((19,19))
+def codexer():
+    #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
+    #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
+    #steel 16,fairy 17,typeless (no relationships) 18
+    codex=np.ones((19,19),dtype=float)
+    codex[0,12],codex[0,13],codex[0,16]=\
+            0.5,0,0.5 #normal
+    codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],\
+            codex[1,12],codex[1,14],codex[1,16]=\
+            0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
+    codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=\
+            2.0,0.5,0.5,2.0,2.0,0.5 #water
+    codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],\
+            codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=\
+            0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
+    codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=\
+            2.0,0.5,0.5,0.0,2.0,0.5 #electric
+    codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],\
+            codex[5,9],codex[5,14],codex[5,16]=\
+            0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
+    codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],\
+            codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=\
+            2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
+    codex[7,3],codex[7,7],codex[7,8],codex[7,12],\
+            codex[7,13],codex[7,16],codex[7,17]=\
+            2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
+    codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],\
+            codex[8,11],codex[8,12],codex[8,16]=\
+            2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
+    codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=\
+            2.0,0.5,2.0,2.0,0.5,0.5 #flying
+    codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=\
+            2.0,2.0,0.5,0.0,0.5 #psychic
+    codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],\
+            codex[11,13],codex[11,15],codex[11,16],codex[11,17]=\
+            0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
+    codex[12,1],codex[12,5],codex[12,6],codex[12,8],\
+            codex[12,9],codex[12,11],codex[12,16]=\
+            2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
+    codex[13,0],codex[13,10],codex[13,13],codex[13,15]=\
+            0.0,2.0,2.0,0.5 #ghost
+    codex[14,14],codex[14,16],codex[14,17]=\
+            2.0,0.5,0.0 #dragon
+    codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=\
+            0.5,2.0,2.0,0.5,0.5 #dark
+    codex[16,1],codex[16,2],codex[16,4],codex[16,5],\
+            codex[16,12],codex[16,16],codex[16,17]=\
+            0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
+    codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=\
+            0.5,2.0,0.5,2.0,2.0,0.5 #fairy
+    ans = codex.copy()
+    return ans
+#FreePalestine
+rng = np.random.default_rng()
+game_width = 64
 #order: normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11,rock 12,ghost 13,dragon 14,dark 15,
 #steel 16,fairy 17,typeless (no relationships) 18
-codex[0,12],codex[0,13],codex[0,16]=0.5,0,0.5 #normal
-codex[1,1],codex[1,2],codex[1,3],codex[1,5],codex[1,11],codex[1,12],codex[1,14],codex[1,16]=0.5,0.5,2.0,2.0,2.0,0.5,0.5,2.0 #fire
-codex[2,1],codex[2,2],codex[2,3],codex[2,8],codex[2,12],codex[2,14]=2.0,0.5,0.5,2.0,2.0,0.5 #water
-codex[3,1],codex[3,2],codex[3,3],codex[3,7],codex[3,8],codex[3,9],codex[3,11],codex[3,12],codex[3,14],codex[3,16]=0.5,2.0,0.5,0.5,2.0,0.5,0.5,2.0,0.5,0.5 #grass
-codex[4,2],codex[4,3],codex[4,4],codex[4,8],codex[4,9],codex[4,14]=2.0,0.5,0.5,0.0,2.0,0.5 #electric
-codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],codex[5,9],codex[5,14],codex[5,16]=0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
-codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
-codex[7,3],codex[7,7],codex[7,8],codex[7,12],codex[7,13],codex[7,16],codex[7,17]=2.0,0.5,0.5,0.5,0.5,0.0,2.0 #poison
-codex[8,1],codex[8,3],codex[8,4],codex[8,7],codex[8,9],codex[8,11],codex[8,12],codex[8,16]=2.0,0.5,2.0,2.0,0.0,0.5,2.0,2.0 #ground
-codex[9,3],codex[9,4],codex[9,6],codex[9,11],codex[9,12],codex[9,16]=2.0,0.5,2.0,2.0,0.5,0.5 #flying
-codex[10,6],codex[10,7],codex[10,10],codex[10,15],codex[10,16]=2.0,2.0,0.5,0.0,0.5 #psychic
-codex[11,1],codex[11,3],codex[11,6],codex[11,7],codex[11,9],codex[11,10],codex[11,13],codex[11,15],codex[11,16],codex[11,17]=0.5,2.0,0.5,0.5,0.5,2.0,0.5,2.0,0.5,0.5  #bug
-codex[12,1],codex[12,5],codex[12,6],codex[12,8],codex[12,9],codex[12,11],codex[12,16]=2.0,2.0,0.5,0.5,2.0,2.0,0.5 #rock
-codex[13,0],codex[13,10],codex[13,13],codex[13,15]=0.0,2.0,2.0,0.5 #ghost
-codex[14,14],codex[14,16],codex[14,17]=2.0,0.5,0.0 #dragon
-codex[15,6],codex[15,10],codex[15,13],codex[15,15],codex[15,17]=0.5,2.0,2.0,0.5,0.5 #dark
-codex[16,1],codex[16,2],codex[16,4],codex[16,5],codex[16,12],codex[16,16],codex[16,17]=0.5,0.5,0.5,2.0,2.0,0.5,2.0 #steel
-codex[17,1],codex[17,6],codex[17,7],codex[17,14],codex[17,15],codex[17,16]=0.5,2.0,0.5,2.0,2.0,0.5 #fairy
-typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting","Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon","Dark","Steel","Fairy","Typeless"]
+codex = codexer()
+easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
+        "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White",\
+        "Gray","X","Y","Z","Z-A","Sun","Moon","Stars","Eclipse","Sword","Shield",\
+        "Armor","Crown","Legend","Scarlet","Violet","Teal","Indigo")
+typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
+        "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
+        "Dark","Steel","Fairy","Typeless"]
 statStages=[2/8,2/7,2/6,2/5,2/4,2/3,2/2,3/2,4/2,5/2,6/2,7/2,8/2] #0 to 6 to 12
 acevStages=[3/9,3/8,3/7,3/6,3/5,3/4,3/3,4/3,5/3,6/3,7/3,8/3,9/3] #0 to 6 to 12, based in accuracy stages, evasion stages are reverse don't think about it too hard
+crit_tiers = (25,9,3,2) #standard = 1/24, 1/8, 1/2, 1/1
 stageStrings=["fell severely","fell harshly","fell","[BLANK]","rose","rose sharply","rose drastically"] #0(-3) to 2(-1) to 4(+1) to 6(+3)
 nature_stat_str = ["Atk","Def","SpA","SpD","Spe"]
-stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)])
+stats_dict = dict([('HP',0),('Atk',1),('Def',2),('SpA',3),('SpD',4),('Spe',5)]) #used for showdown save loading
+move_dict = dict([(2,'Status'),(1,'Special'),(0,'Physical')])                  #used for move info displaying
 Weathers=['clear','sunny','rain','sandstorm','hail']
 Terrains=['none','electric','grassy','misty','psychic']
 struggle_i=struggle #move index of struggle
