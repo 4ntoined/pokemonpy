@@ -41,7 +41,8 @@ But _I_ think my game is cool.
 
 #### base_pokemon.py
 Everything that pokemon.py does, it can do because it's in this script. (From terminal) I like to
-```python3
+```
+python3
 python$ from base_pokemon import *
 python$ parties, fields = maker(2,6,2)
 python$ bb = battle(parties[0],parties[1],fields[0],usr_name='4ntoined',cpu_name='the_ops')
@@ -51,7 +52,8 @@ python$ bb.startbattle()
 That's a Pokémon battle in 5 lines. I'm a legend.
 
 Try:
-```python3
+```
+python3
 python$ from base_pokemon import *
 python$ parties, fields = maker(2,6,2)
 python$ print_party(parties[0])
