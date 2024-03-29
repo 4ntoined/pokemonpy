@@ -1,4 +1,4 @@
-#Pokemon.py, Pokémon in Python
+# Pokemon.py, Pokémon in Python
 
 Pokemon.py is a text-based Python game that simulates Pokémon and Pokémon battles. Players start the game with a random party of Pokémon, each with a random moveset made from almost 200 moves. As a trainer, you're encouraged to try out a Trainer Battle against an opponent with a random team of their own. Don't care for your random party? You can create new Pokémon using a Pokédex of 920+ different Pokémon species and forms. Or, you can create your own Pokémon from scratch. Determine its base stats, typing, nature, and, most importantly, name, and it'll do battle right alongside Bulbasaur and Arceus. Don't forget to train them! Once you've conquered your rival, you might have what it takes to defeat the Elite 4 and their champion, five (5) trainers with specifically tailored teams and movesets. Beat them, and each of your Pokémon will be bestowed a title, recognizing their champion status. And when you're done, you can save your team(s) to simple text files or less-simple numpy.ndarrays, so they can be loaded into the game again in later play sessions.
 
