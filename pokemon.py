@@ -83,6 +83,7 @@ else:
     mute_pregame    = 0
 
 #some oddball variables to calculate once and never again
+gameversion = '0.1.2'
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
 cut_the_line=1.
@@ -100,21 +101,14 @@ mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
 #mainmenu = "\n[P] Party\n !Play!\n[B] Battle!\n[4] Elite 4\n !Pokémon!\n[N] Nursery" + \
 #    "\n[T] Training\n[X] Boxes\n[L] Load Game\n !etc!\n[C] Pokémon Center\n[S] Battle Setting"+ \
 #    "\n\nWhat to do: "
-############   give the player a starter  ###############
-#starterParty=[]
 #FreePalestine
-#for i in range(nstart):
-#    randomLevel = int(rng.normal(loc=100,scale=30))
-#    starter= makeRandom(level=randomLevel,how_created='starter')
-#    starter.set_evs(tuple(random_evs()))
-#    starterParty.append( starter )
+############   give the player a starter  ###############
 players_parties = []
 pnames = rng.choice(easter_strings, nparty, replace = False)
 for i in range(nparty):
     newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
     partyname = pnames[i]
     players_parties.append((newparty, partyname, i))
-#players_parties.append((starterParty, "starter", 0))
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 userParty=players_parties[0][0]
 equiped = 0
@@ -145,20 +139,27 @@ if not mute_pregame:
 else:
     print_party(userParty)   
 while 1:
-    #going to consolidate nursery and dex selection
-    #move tutor and move deleter and training
-    #opponent set and battle setting set 
-    #reseting the party can get swallowed into expanded multi-party functions
     #aa:hallfamecount
     if hallfame_count > 0:
         bord = genborder(num=game_width, cha='-')
         nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
+        #nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
         if username_set:    print(f"\n{nameline}\nHall of Fame entries: {hallfame_count:0>2}")
         else:               print(f"\nHall of Fame entries: {hallfame_count:0>2}")
         print(bord,end='')
     #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################
+    if userChoice == "quit":
+        print("\nThanks for playing!")
+        shortpause()
+        break
+    if userChoice == "about":
+        #print out some credits?
+        #def the current game version
+        print(f"\nGame version: {gameversion}")
+        holdhere = input("\nenter anything to continue...")
+        pass
     if userChoice == "adarius":print("Nice!");shortpause()
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":

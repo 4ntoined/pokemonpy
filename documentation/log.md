@@ -1,5 +1,11 @@
 ## pokemonpy log
 
+### v0.1.2
+Date: 2024 April XX
+* UPDATE: Pokemon.py now has a variable to hold the current game version
+* ISSUE: Earthquake being weakened by Grassy Terrain is not shown in damage readout.
+* ISSUE: Hall of Fame banner should be centered with magic_text / magic_head
+
 ### v0.1.1
 Date: 2024 March 29
 * UPDATE: Added Name Rater feature to change Pokemon names, Mint Store to
