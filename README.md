@@ -2,7 +2,7 @@
 Just me? That's fine.
 
 This Python program simulates Pokémon and Pokémon battles.
-For a more detailed description of the game, check out [game_blurb.md](https://github.com/4ntoined/pokemonpy/blob/lead_dev/documentation/game_blurb.md)
+For a more detailed description of the game, check out [game_blurb.md](https://github.com/4ntoined/pokemonpy/blob/master/documentation/game_blurb.md)
 For a demonstration of how to play the game, check out [this guy's YouTube video](https://youtu.be/0SFg-sSOZBY) (and like and comment and subscribe, he told me to tell you that).
 The rest of the readme will be geared toward codestuff: prerequisites, launching the game, modifying the code to your tastes, etc.
 
@@ -48,7 +48,7 @@ Everything that pokemon.py does, it can do because it's in this script. (From te
 myterminal$ python3
 python$ from base_pokemon import *
 python$ parties, fields = maker(2,6,2)
-python$ bb = battle(parties[0],parties[1],fields[0],usr_name='4ntoined',cpu_name='the_ops')
+python$ bb = battle(parties[0],parties[1],fields[0],usr_name='Your Name',cpu_name='the_ops')
 python$ bb.startbattle()
 ```
 
@@ -66,7 +66,7 @@ python$ parties[0][0].save('poke.sav')
 ```
 
 #### victoryroad.py
-This script constructs the Elite 4 + Champion. 
+This script constructs the Elite 4 + Champion.
 
 #### trainerai.py
 This script contains the logic for the cpu opponent in the RIVAL battle and the e4+champion. Unfinished. It has no means of evaluating status moves, and uses them at random.
