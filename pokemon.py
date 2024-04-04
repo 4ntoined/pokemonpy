@@ -126,7 +126,6 @@ scarlet = field(rando=True)
 copyrigh()
 if not mute_pregame:
     dramaticpause()
-    #print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
     print('\n'+magic_text(txt='Welcome to the World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
     dramaticpause()
     print('\nHere is your party:')
@@ -143,9 +142,10 @@ while 1:
     if hallfame_count > 0:
         bord = genborder(num=game_width, cha='-')
         nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
+        hfline = magic_text(txt=f'Hall of Fame entries: {hallfame_count:0>3}',cha=' ',spacing=' ',long=game_width)
         #nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
-        if username_set:    print(f"\n{nameline}\nHall of Fame entries: {hallfame_count:0>2}")
-        else:               print(f"\nHall of Fame entries: {hallfame_count:0>2}")
+        if username_set:    print(f"\n{nameline}\n{hfline}")
+        else:               print(f"\n{hfline}")
         print(bord,end='')
     #aa:mainmenu
     userChoice=input(mainmenu)
@@ -163,7 +163,6 @@ while 1:
     if userChoice == "adarius":print("Nice!");shortpause()
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":
-        #hello
         while 1: #user input loop
             print("\n"+magic_text(txt='"Battle!" Settings', cha="x",long=game_width))
             print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
@@ -1454,6 +1453,10 @@ while 1:
         if yoo == "eliter":
             #print(cut_the_line)
             cut_the_line *= -1.
+            print('\nReceived.')
+            micropause()
+        elif yoo == "champed":
+            hallfame_count = 2024
             print('\nReceived.')
             micropause()
         elif yoo == '14':

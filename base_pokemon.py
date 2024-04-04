@@ -4082,7 +4082,7 @@ codex = codexer()
 easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
         "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White",\
         "Gray","X","Y","Z","Z-A","Sun","Moon","Stars","Eclipse","Sword","Shield",\
-        "Armor","Crown","Legend","Scarlet","Violet","Teal","Indigo")
+        "Armor","Crown","Legends","Scarlet","Violet","Teal","Indigo")
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
         "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
         "Dark","Steel","Fairy","Typeless"]
