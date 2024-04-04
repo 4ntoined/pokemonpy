@@ -6,8 +6,8 @@ What all we might do:
 * Earthquake being weakened by Grassy Terrain is not shown in damage readout.
 
 Date: 2024 April XX
-* UPDATE: Pokemon.py now has a variable to hold the current game version.
-* UPDATE: Hall of Fame banner has been updates.
+* UPDATE: Pokemon.py now has a variable to hold the current game version. Prints current version when 'credits' is entered on the main menu.
+* UPDATE: Hall of Fame banner has been updated.
 * UPDATE: New cheat code introduced.
 
 ### v0.1.1
