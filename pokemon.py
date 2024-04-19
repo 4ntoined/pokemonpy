@@ -42,7 +42,7 @@ from trainerai import cpu
 #aa:configfunction
 def readconfig(argumentline):
     global username_set,mute_set,nparty_set,nstart_set,gw_set,\
-            username,mute_pregame,nparty,nstart
+            username,mute_pregame,nparty,nstart,opponentName
     lineA = argumentline[:-1]
     split = lineA.split(' :: ')
     kee = split[0]
@@ -57,15 +57,16 @@ def readconfig(argumentline):
     else:
         if kee == 'mutepregame':
             #true and not true
-            ##print(args[0])
             if args[0] == 'true':
                 mute_pregame = True
-                #print('config mute')
             mute_set = True
             pass
         elif kee == 'username':
             username = args[0]
             username_set = True
+            pass
+        elif kee == 'opponentname':
+            opponentName = args[0]
             pass
         elif kee == 'partysize':
             try:
@@ -123,9 +124,6 @@ def readconfig(argumentline):
                 #load those
                 pass
             pass
-        elif kee == 'opponentname':
-            #opponentname to args[0]
-            pass
         elif kee == 'next':
             pass
         pass
@@ -139,6 +137,8 @@ username_set = False
 nstart_set = False
 nparty_set = False
 gw_set = False
+opponentName="RIVAL"
+loaded_parties = []
 #read the config file
 #aa:configread
 configname = 'config.txt'
@@ -243,7 +243,8 @@ cutline_dict = dict([( 1., False ), ( -1., True )])
 #mainmenu = "\n[P]okémon\n[B]attle!\n[4] Elite 4\n[T]raining\n[N]ursery" + \
 #    "\n[X] Boxes\n[C] Pokémon Center\n[S] Battle Setting"+ \
 #    "\n[L]oad\n\nWhat to do: "
-mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
+mainmenu = "\n[about]\n[cheats]\n[quit]\n"+genborder(cha='-',num=game_width)+\
+    "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
     "\n[T] Training\n[X] Boxes\n[L] Load Game\n[C] Pokémon Center\n[S] Battle Setting"+ \
     "\n\nWhat to do: "
 #mainmenu = "\n[P] Party\n !Play!\n[B] Battle!\n[4] Elite 4\n !Pokémon!\n[N] Nursery" + \
@@ -267,7 +268,6 @@ hallfame_count = 0
 rival= makeRandom(np.floor(userParty[0].level*(0.96)), 6)
 rival2= makeRandom(np.floor(userParty[0].level*1.07), 6)
 trainerParty=[rival,rival2]
-opponentName="RIVAL"
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 #########   game starting !!! ############
@@ -288,7 +288,7 @@ else:
 while 1:
     #aa:hallfamecount
     if hallfame_count > 0:
-        bord = genborder(num=game_width, cha='-')
+        bord = genborder(num=game_width, cha='—')
         nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
         hfline = magic_text(txt=f'Hall of Fame entries: {hallfame_count:0>3}',cha=' ',spacing=' ',long=game_width)
         #nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
@@ -303,14 +303,22 @@ while 1:
         shortpause()
         break
     if userChoice == "about":
+        #aa:about
         #print out some credits?
         #def the current game version
         print(f"\nGame version: {gameversion}")
         #the people who worked on the game
         print(f"\nDevelopers:")
         for i in devs_list: print(f"{i}")
-        #the prereqs
-        print(f"Built on Python by Python Software Foundation")
+        #the platforms and tools
+        print("\nBuilt on Python by Python Software Foundation.\nAnd Numpy by NumPy Developers.")
+        #gamefreak
+        print("\nInspired by the games of the Pokémon franchise by GameFreak, Nintendo, and Creatures.")
+        #special thanks
+        ststring = "\nSpecial thanks to:\nBulbapedia - bulbapedia.bulbagarden.net,"+\
+                "\nSerebii - serebii.net, and\nBulbapedia-Web-Scraper by github user ryanluuwas."
+        print(ststring)
+        print("\nSee CREDITS.txt in documentation/ for more details.")
         holdhere = input("\nenter anything to continue...")
         pass
     if userChoice == "adarius":print("Nice!");shortpause()
@@ -318,7 +326,8 @@ while 1:
     if userChoice=="s" or userChoice=="S":
         while 1: #user input loop
             print("\n"+magic_text(txt='"Battle!" Settings', cha="x",long=game_width))
-            print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
+            print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your opponent's name\n"+\
+                    "[4] Set your name")
             sat_choice = input("What [#] to do or [b]ack: ")
             if sat_choice == 'b' or sat_choice == 'B':
                 break
@@ -400,11 +409,16 @@ while 1:
                     print("Leaving Opponent Reset...")
                     shortpause() #kills
                 #end of opponent set, back to main screen
-            elif sat_choice == '3': #battlefield conditions setting
+            elif sat_choice == '4': #name setting
                 playername = input("\nWhat's your name?\n: ")
                 username=playername
                 username_set=True
                 print(f"Thank you {username}!")
+                shortpause() #kills
+            elif sat_choice == '3': #opponents name setting
+                opponame = input("\nWhat's your Rival's name?\n: ")
+                opponentName=opponame
+                print(f"{opponentName}! Yes, of course!")
                 shortpause() #kills
             else:
                 #print("*like I'm hearing a ghost*: What was that?")
