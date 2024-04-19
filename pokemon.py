@@ -38,11 +38,10 @@ from moves import getMoveInfo,mov,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
-#set up the rng
-rng=np.random.default_rng()
-#function for the config file
+#FreePalestine
 def readconfig(argumentline):
-    split = argumentline.split(' ')
+    lineA = argumentline[:-1]
+    split = lineA.split(' ')
     kee = split[0]
     args = split[1:]
     n_args = len(args)
@@ -54,8 +53,10 @@ def readconfig(argumentline):
     else:
         if kee == 'mutepregame':
             #off and on
+            ##print(args[0])
             if args[0] == 'on':
                 mute_pregame = True
+            mute_set = True
             pass
         elif kee == 'username':
             if args[0] != '':
@@ -75,6 +76,9 @@ def readconfig(argumentline):
                 #There are no arguments. Bad config file
                 nstart = 6
                 pass
+            else:
+                nstart_set = True
+                pass
             pass
         elif kee == 'nparty':
             try:
@@ -88,6 +92,9 @@ def readconfig(argumentline):
             except IndexError:
                 #There are no arguments. Bad config file
                 nparty = 6
+                pass
+            else:
+                nparty_set = True
                 pass
             pass
         elif kee == "gamewidth":
@@ -103,6 +110,8 @@ def readconfig(argumentline):
                 #There are no arguments. Bad config file
                 base_pokemon.game_width = 64
                 pass
+            else:
+                gw_set = True
             pass
         elif kee == "loadSave":
             if args[0] == "true":
@@ -117,10 +126,14 @@ def readconfig(argumentline):
             pass
         pass
     return 'no problems'
-
-
-
-
+#set up the rng
+rng=np.random.default_rng()
+#game settings
+mute_set = False
+username_set = False
+nstart_set = False
+nparty_set = False
+gw_set = False
 #read the config file
 configname = 'config_pokemonpy.txt'
 with open(configname,'r') as config:
@@ -138,16 +151,16 @@ with open(configname,'r') as config:
 n_args = len(sys.argv)-1
 if n_args: #there are arguments
     parser = argparse.ArgumentParser(description='Play Pokémon!')
-    parser.add_argument('-w','--width',action='store',default=64,type=int,\
+    parser.add_argument('-w','--width',action='store',type=int,\
             required=False, dest='gamewidth', \
             help='set the width of banners and headings, recommended: 64')
     parser.add_argument( '-n','--name',action='store',default='',type=str,\
-            required=False, help='write your name'\
+            required=False,help='write your name'\
             )
-    parser.add_argument('-s','--psize',action='store',default=6,type=int,
+    parser.add_argument('-s','--psize',action='store',type=int,
             required=False,help='number of starter Pokémon'\
             )
-    parser.add_argument('-p','--nparty',action='store',default=6,type=int,
+    parser.add_argument('-p','--nparty',action='store',type=int,
             required=False,help='number of starter parties'\
             )
     parser.add_argument('-m','--mute',action='count',default=0,
@@ -156,9 +169,13 @@ if n_args: #there are arguments
     #parser.add_argument()
     argos = parser.parse_args( sys.argv[1:] )
     #width_arg = int(float(sys.argv[1]))
-    #print(argos.gamewidth)
-    base_pokemon.game_width = argos.gamewidth
-    mute_pregame = argos.mute >= 1
+    print(argos.gamewidth)
+    if (argos.gamewidth != None):
+        base_pokemon.game_width = argos.gamewidth
+        gw_set=True
+    if (argos.mute >= 1):
+        mute_pregame = True
+        mute_set = True
     if argos.name:
         username        = argos.name
         username_set    = True
@@ -166,14 +183,36 @@ if n_args: #there are arguments
         if not username_set:
             username        ='You'
             username_set    = False
-    if argos.psize <= 0:    nstart = 1
-    else:                   nstart = argos.psize
-    if argos.nparty <= 0:   nparty = 1
-    else:                   nparty = argos.nparty
+    if argos.psize == None:
+        #arg not given
+        nstart = 1
+    elif argos.psize <= 0:
+        nstart = 1
+        nstart_set = True
+    else:
+        nstart = argos.psize
+        nstart_set = True
+    if argos.nparty == None:
+        nparty = 1
+    elif argos.nparty <= 0:
+        nparty = 1
+        nparty_set = True
+    else:
+        nparty = argos.nparty
+        nparty_set = True
 else:
+    if not gw_set:
+        base_pokemon.gamewidth = 64
     if not username_set:
         username_set    = False
         username        = 'You'
+    if not nstart_set:
+        nstart = 6
+    if not nparty_set:
+        nparty = 6
+    if not mute_set:
+        print(2)
+        mute_pregame = 0
     #nstart          = 6
     #nparty          = 6
     #mute_pregame    = 0
