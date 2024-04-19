@@ -40,6 +40,100 @@ from victoryroad import make_teams, random_evs
 from trainerai import cpu
 #set up the rng
 rng=np.random.default_rng()
+#function for the config file
+def readconfig(argumentline):
+    split = argumentline.split(' ')
+    kee = split[0]
+    args = split[1:]
+    n_args = len(args)
+    if (kee == 'aa') and args == 'pokemon.py config':
+        return 'validator line'
+    if n_args == 0:
+        #bad config file
+        return 'Bad config file.'
+    else:
+        if kee == 'mutepregame':
+            #off and on
+            if args[0] == 'on':
+                mute_pregame = True
+            pass
+        elif kee == 'username':
+            if args[0] != '':
+                username = args
+                username_set = True
+            pass
+        elif kee == 'partysize':
+            try:
+                ps = int(float(args[0]))
+                if ps <= 0.0: ps = 1
+                nstart = ps
+            except ValueError:
+                #That's not a number
+                nstart = 6
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                nstart = 6
+                pass
+            pass
+        elif kee == 'nparty':
+            try:
+                ns = int(float(args[0]))
+                if ns <= 0.0: ns = 1
+                nparty = ns
+            except ValueError:
+                #That's not a number
+                nparty = 6
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                nparty = 6
+                pass
+            pass
+        elif kee == "gamewidth":
+            try:
+                gw = int(float(args[0]))
+                if gw <= 2.0: gw = 2
+                base_pokemon.game_width = gw
+            except ValueError:
+                #That's not a number
+                base_pokemon.game_width = 64
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                base_pokemon.game_width = 64
+                pass
+            pass
+        elif kee == "loadSave":
+            if args[0] == "true":
+                loadthese = args[1:]
+                #load those
+                pass
+            pass
+        elif kee == 'opponentname':
+            #opponentname to args[0]
+            pass
+        elif kee == 'next':
+            pass
+        pass
+    return 'no problems'
+
+
+
+
+#read the config file
+configname = 'config_pokemonpy.txt'
+with open(configname,'r') as config:
+    c_args = [ i for i in config.readlines()]
+    #nlines = len(c_args)
+    ii = []
+    for i in c_args:
+        ii.append( readconfig(i) )
+    validated = 'validator line' in ii
+    erred = 'Bad config file.' in ii
+    accomplished = [ iii for iii in ii if iii=='no problems']
+    print(len(accomplished))
+
 #parse arguments
 n_args = len(sys.argv)-1
 if n_args: #there are arguments
@@ -53,7 +147,7 @@ if n_args: #there are arguments
     parser.add_argument('-s','--psize',action='store',default=6,type=int,
             required=False,help='number of starter Pokémon'\
             )
-    parser.add_argument('-p','--nparty',action='store',default=1,type=int,
+    parser.add_argument('-p','--nparty',action='store',default=6,type=int,
             required=False,help='number of starter parties'\
             )
     parser.add_argument('-m','--mute',action='count',default=0,
@@ -69,21 +163,24 @@ if n_args: #there are arguments
         username        = argos.name
         username_set    = True
     else:
-        username        ='You'
-        username_set    = False
+        if not username_set:
+            username        ='You'
+            username_set    = False
     if argos.psize <= 0:    nstart = 1
     else:                   nstart = argos.psize
     if argos.nparty <= 0:   nparty = 1
     else:                   nparty = argos.nparty
 else:
-    username_set    = False
-    username        = 'You'
-    nstart          = 6
-    nparty          = 6
-    mute_pregame    = 0
+    if not username_set:
+        username_set    = False
+        username        = 'You'
+    #nstart          = 6
+    #nparty          = 6
+    #mute_pregame    = 0
 
 #some oddball variables to calculate once and never again
 gameversion = '0.1.2'
+devs_list = ('Adarius',)
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
 cut_the_line=1.
@@ -158,6 +255,11 @@ while 1:
         #print out some credits?
         #def the current game version
         print(f"\nGame version: {gameversion}")
+        #the people who worked on the game
+        print(f"\nDevelopers:")
+        for i in devs_list: print(f"{i}")
+        #the prereqs
+        print(f"Built on Python by Python Software Foundation")
         holdhere = input("\nenter anything to continue...")
         pass
     if userChoice == "adarius":print("Nice!");shortpause()
