@@ -1,9 +1,0 @@
-aa pokemon.py config
-mutepregame on
-username ''
-partysize 6
-nparty 6
-gamewidth 64
-opponentname RIVAL
-loadSave true pypokemon.sav
-

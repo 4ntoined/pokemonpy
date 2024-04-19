@@ -1,0 +1,8 @@
+aa :: pokemon.py config
+mutepregame :: true
+username :: You
+partysize :: 6
+nparty :: 12
+gamewidth :: 64
+opponentname :: RIVAL
+loadSave :: true :: pypokemon.sav

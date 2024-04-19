@@ -39,29 +39,33 @@ from dexpoke import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
 #FreePalestine
+#aa:configfunction
 def readconfig(argumentline):
+    global username_set,mute_set,nparty_set,nstart_set,gw_set,\
+            username,mute_pregame,nparty,nstart
     lineA = argumentline[:-1]
-    split = lineA.split(' ')
+    split = lineA.split(' :: ')
     kee = split[0]
     args = split[1:]
-    n_args = len(args)
-    if (kee == 'aa') and args == 'pokemon.py config':
+    #print(cargs)
+    n_cargs = len(args)
+    if (kee == 'aa') and (args[0] == 'pokemon.py config'):
         return 'validator line'
-    if n_args == 0:
+    if n_cargs == 0:
         #bad config file
         return 'Bad config file.'
     else:
         if kee == 'mutepregame':
-            #off and on
+            #true and not true
             ##print(args[0])
-            if args[0] == 'on':
+            if args[0] == 'true':
                 mute_pregame = True
+                #print('config mute')
             mute_set = True
             pass
         elif kee == 'username':
-            if args[0] != '':
-                username = args
-                username_set = True
+            username = args[0]
+            username_set = True
             pass
         elif kee == 'partysize':
             try:
@@ -126,6 +130,7 @@ def readconfig(argumentline):
             pass
         pass
     return 'no problems'
+#zz:configfunction
 #set up the rng
 rng=np.random.default_rng()
 #game settings
@@ -135,7 +140,8 @@ nstart_set = False
 nparty_set = False
 gw_set = False
 #read the config file
-configname = 'config_pokemonpy.txt'
+#aa:configread
+configname = 'config.txt'
 with open(configname,'r') as config:
     c_args = [ i for i in config.readlines()]
     #nlines = len(c_args)
@@ -145,9 +151,9 @@ with open(configname,'r') as config:
     validated = 'validator line' in ii
     erred = 'Bad config file.' in ii
     accomplished = [ iii for iii in ii if iii=='no problems']
-    print(len(accomplished))
-
+#zz:configread
 #parse arguments
+#aa:argparse
 n_args = len(sys.argv)-1
 if n_args: #there are arguments
     parser = argparse.ArgumentParser(description='Play Pokémon!')
@@ -169,7 +175,7 @@ if n_args: #there are arguments
     #parser.add_argument()
     argos = parser.parse_args( sys.argv[1:] )
     #width_arg = int(float(sys.argv[1]))
-    print(argos.gamewidth)
+    #print(argos.gamewidth)
     if (argos.gamewidth != None):
         base_pokemon.game_width = argos.gamewidth
         gw_set=True
@@ -184,8 +190,12 @@ if n_args: #there are arguments
             username        ='You'
             username_set    = False
     if argos.psize == None:
-        #arg not given
-        nstart = 1
+        if not nstart_set:
+            #nstart not set in config and not givin terminal arguments
+            nstart = 6
+        else:
+            #nstart not given in terminal args but set by config
+            pass
     elif argos.psize <= 0:
         nstart = 1
         nstart_set = True
@@ -193,7 +203,12 @@ if n_args: #there are arguments
         nstart = argos.psize
         nstart_set = True
     if argos.nparty == None:
-        nparty = 1
+        if not nparty_set:
+            #nparty not set in config and not givin terminal arguments
+            nparty = 6
+        else:
+            #nstart not given in terminal args but set by config
+            pass
     elif argos.nparty <= 0:
         nparty = 1
         nparty_set = True
@@ -213,10 +228,7 @@ else:
     if not mute_set:
         print(2)
         mute_pregame = 0
-    #nstart          = 6
-    #nparty          = 6
-    #mute_pregame    = 0
-
+#zz.argparse
 #some oddball variables to calculate once and never again
 gameversion = '0.1.2'
 devs_list = ('Adarius',)
@@ -240,7 +252,7 @@ mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
 #FreePalestine
 ############   give the player a starter  ###############
 players_parties = []
-pnames = rng.choice(easter_strings, nparty, replace = False)
+pnames = rng.choice(easter_strings, nparty, replace = True)
 for i in range(nparty):
     newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
     partyname = pnames[i]
