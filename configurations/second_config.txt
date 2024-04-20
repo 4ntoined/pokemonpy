@@ -1,5 +1,5 @@
 aa :: pokemon.py config
-mutepregame :: on
+mutepregame :: true
 username :: Ash
 opponentname :: Paul
 partysize :: 6

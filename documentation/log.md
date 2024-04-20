@@ -1,10 +1,6 @@
 ## pokemonpy log
 
 ### v0.1.2
-What all we might do:
-* Earthquake being weakened by Grassy Terrain is not shown in damage readout.
-* Set the battle UI (user's name and poke-health-info) to take up the full extent of the game width.
-
 Date: 2024 April XX
 * UPDATE: Pokemon.py now has a variable to hold the current game version. Prints current version when 'about' is entered on the main menu.
 * UPDATE: Hall of Fame banner has been updated.
@@ -14,6 +10,8 @@ Date: 2024 April XX
 * UPDATE: Main menu changes. Showing previously hidden options now.
 * UPDATE: Game settings are pre-recorded in 'config' files. Basic ones are stored in the configurations/ directory.
 The game checks for 'config.txt', so edit that file or overwrite it with the preferred config file.
+* UPDATE: Battle UI takes up the full extent of the game width.
+* FIXED: The nerf by grassy terrain of Earthquake is reported in the damage readouts now.
 
 ### v0.1.1
 Date: 2024 March 29

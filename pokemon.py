@@ -57,7 +57,7 @@ def readconfig(argumentline):
     else:
         if kee == 'mutepregame':
             #true and not true
-            if args[0] == 'true':
+            if args[0] == 'true' or args[0] == 'on':
                 mute_pregame = True
             mute_set = True
             pass
