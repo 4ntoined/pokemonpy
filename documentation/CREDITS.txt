@@ -1,7 +1,7 @@
 Pokemon.py credits
 
 Pokemon concept:
-This software is inspired by the video games of the Pokemon franchise. Copyright 1995-2023 Nintendo, GameFreak, Creatures Inc. 
+This software is inspired by the video games of the Pokémon franchise. Copyright 1995-2023 Nintendo, GameFreak, Creatures Inc. 
 
 Developers:
 Adarius

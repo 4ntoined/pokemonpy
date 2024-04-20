@@ -1,0 +1,8 @@
+aa :: pokemon.py config
+mutepregame :: true
+username :: Ash
+opponentname :: Paul
+partysize :: 6
+nparty :: 16
+gamewidth :: 96
+loadSave :: true :: pypokemon.sav save2.npy

@@ -38,22 +38,155 @@ from moves import getMoveInfo,mov,natures
 from dexpoke import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
+#FreePalestine
+#aa:configfunction
+def readconfig(argumentline):
+    global username_set,mute_set,nparty_set,nstart_set,gw_set,\
+            username,mute_pregame,nparty,nstart,opponentName, loaded_parties
+    lineA = argumentline[:-1]
+    split = lineA.split(' :: ')
+    kee = split[0]
+    args = split[1:]
+    #print(cargs)
+    n_cargs = len(args)
+    if (kee == 'aa') and (args[0] == 'pokemon.py config'):
+        return 'validator line'
+    if n_cargs == 0:
+        #bad config file
+        return 'Bad config file.'
+    else:
+        if kee == 'mutepregame':
+            #true and not true
+            if args[0] == 'true' or args[0] == 'on':
+                mute_pregame = True
+            mute_set = True
+            pass
+        elif kee == 'username':
+            username = args[0]
+            username_set = True
+            pass
+        elif kee == 'opponentname':
+            opponentName = args[0]
+            pass
+        elif kee == 'partysize':
+            try:
+                ps = int(float(args[0]))
+                if ps <= 0.0: ps = 1
+                nstart = ps
+            except ValueError:
+                #That's not a number
+                nstart = 6
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                nstart = 6
+                pass
+            else:
+                nstart_set = True
+                pass
+            pass
+        elif kee == 'nparty':
+            try:
+                ns = int(float(args[0]))
+                if ns <= 0.0: ns = 1
+                nparty = ns
+            except ValueError:
+                #That's not a number
+                nparty = 6
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                nparty = 6
+                pass
+            else:
+                nparty_set = True
+                pass
+            pass
+        elif kee == "gamewidth":
+            try:
+                gw = int(float(args[0]))
+                if gw <= 2.0: gw = 2
+                base_pokemon.game_width = gw
+            except ValueError:
+                #That's not a number
+                base_pokemon.game_width = 64
+                pass
+            except IndexError:
+                #There are no arguments. Bad config file
+                base_pokemon.game_width = 64
+                pass
+            else:
+                gw_set = True
+            pass
+        elif kee == "loadSave":
+            if args[0] == "true":
+                loadthese = args[1].split(' ')
+                #print(loadthese)
+                for i in loadthese:
+                    loadedParty = []
+                    if i[-4:]=='.npy':
+                        newMons=loadMonNpy(i)
+                    else:
+                        newMons=loadMon(i)
+                    if newMons[0] == 0:
+                        #do nothing? dk
+                        pass
+                    else:
+                        for ii in newMons:
+                            loadedParty.append(ii)
+                            pass
+                        #loaded a party
+                        pass
+                    loaded_parties.append(( loadedParty, i ))
+                    pass
+                #loaded all the parties 
+                
+                pass
+            pass
+        elif kee == 'next':
+            pass
+        pass
+    return 'no problems'
+#zz:configfunction
 #set up the rng
 rng=np.random.default_rng()
+#game settings
+mute_pregame = False
+mute_set = False
+username_set = False
+nstart_set = False
+nparty_set = False
+gw_set = False
+opponentName="RIVAL"
+loaded_parties = []
+#read the config file
+#aa:configread
+configname = 'configurations/config.txt'
+with open(configname,'r') as config:
+    c_args = [ i for i in config.readlines()]
+    #nlines = len(c_args)
+    ii = []
+    for i in c_args:
+        ii.append( readconfig(i) )
+    validated = 'validator line' in ii
+    erred = 'Bad config file.' in ii
+    accomplished = [ iii for iii in ii if iii=='no problems']
+#zz:configread
 #parse arguments
+#aa:argparse
 n_args = len(sys.argv)-1
 if n_args: #there are arguments
     parser = argparse.ArgumentParser(description='Play Pokémon!')
-    parser.add_argument('-w','--width',action='store',default=64,type=int,\
+    parser.add_argument('-w','--width',action='store',type=int,\
             required=False, dest='gamewidth', \
             help='set the width of banners and headings, recommended: 64')
     parser.add_argument( '-n','--name',action='store',default='',type=str,\
-            required=False, help='write your name'\
+            required=False,help='write your name'\
             )
-    parser.add_argument('-s','--psize',action='store',default=6,type=int,
+    parser.add_argument('-s','--psize',action='store',type=int,
             required=False,help='number of starter Pokémon'\
             )
-    parser.add_argument('-p','--nparty',action='store',default=1,type=int,
+    parser.add_argument('-p','--nparty',action='store',type=int,
             required=False,help='number of starter parties'\
             )
     parser.add_argument('-m','--mute',action='count',default=0,
@@ -63,26 +196,62 @@ if n_args: #there are arguments
     argos = parser.parse_args( sys.argv[1:] )
     #width_arg = int(float(sys.argv[1]))
     #print(argos.gamewidth)
-    base_pokemon.game_width = argos.gamewidth
-    mute_pregame = argos.mute >= 1
+    if (argos.gamewidth != None):
+        base_pokemon.game_width = argos.gamewidth
+        gw_set=True
+    if (argos.mute >= 1):
+        mute_pregame = True
+        mute_set = True
     if argos.name:
         username        = argos.name
         username_set    = True
     else:
-        username        ='You'
-        username_set    = False
-    if argos.psize <= 0:    nstart = 1
-    else:                   nstart = argos.psize
-    if argos.nparty <= 0:   nparty = 1
-    else:                   nparty = argos.nparty
+        if not username_set:
+            username        ='You'
+            username_set    = False
+    if argos.psize == None:
+        if not nstart_set:
+            #nstart not set in config and not givin terminal arguments
+            nstart = 6
+        else:
+            #nstart not given in terminal args but set by config
+            pass
+    elif argos.psize <= 0:
+        nstart = 1
+        nstart_set = True
+    else:
+        nstart = argos.psize
+        nstart_set = True
+    if argos.nparty == None:
+        if not nparty_set:
+            #nparty not set in config and not givin terminal arguments
+            nparty = 6
+        else:
+            #nstart not given in terminal args but set by config
+            pass
+    elif argos.nparty <= 0:
+        nparty = 1
+        nparty_set = True
+    else:
+        nparty = argos.nparty
+        nparty_set = True
 else:
-    username_set    = False
-    username        = 'You'
-    nstart          = 6
-    nparty          = 6
-    mute_pregame    = 0
-
+    if not gw_set:
+        base_pokemon.gamewidth = 64
+    if not username_set:
+        username_set    = False
+        username        = 'You'
+    if not nstart_set:
+        nstart = 6
+    if not nparty_set:
+        nparty = 6
+    if not mute_set:
+        print(2)
+        mute_pregame = 0
+#zz.argparse
 #some oddball variables to calculate once and never again
+gameversion = '0.1.2'
+devs_list = ('Adarius',)
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
 cut_the_line=1.
@@ -94,27 +263,26 @@ cutline_dict = dict([( 1., False ), ( -1., True )])
 #mainmenu = "\n[P]okémon\n[B]attle!\n[4] Elite 4\n[T]raining\n[N]ursery" + \
 #    "\n[X] Boxes\n[C] Pokémon Center\n[S] Battle Setting"+ \
 #    "\n[L]oad\n\nWhat to do: "
-mainmenu = "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
+mainmenu = "\n[about]\n[cheats]\n[quit]\n"+genborder(cha='-',num=game_width)+\
+    "\n[P] Party\n[B] Battle!\n[4] Elite 4\n[N] Nursery" + \
     "\n[T] Training\n[X] Boxes\n[L] Load Game\n[C] Pokémon Center\n[S] Battle Setting"+ \
     "\n\nWhat to do: "
 #mainmenu = "\n[P] Party\n !Play!\n[B] Battle!\n[4] Elite 4\n !Pokémon!\n[N] Nursery" + \
 #    "\n[T] Training\n[X] Boxes\n[L] Load Game\n !etc!\n[C] Pokémon Center\n[S] Battle Setting"+ \
 #    "\n\nWhat to do: "
-############   give the player a starter  ###############
-#starterParty=[]
 #FreePalestine
-#for i in range(nstart):
-#    randomLevel = int(rng.normal(loc=100,scale=30))
-#    starter= makeRandom(level=randomLevel,how_created='starter')
-#    starter.set_evs(tuple(random_evs()))
-#    starterParty.append( starter )
+############   give the player a starter  ###############
 players_parties = []
-pnames = rng.choice(easter_strings, nparty, replace = False)
+#players random starters
+pnames = rng.choice(easter_strings, nparty, replace = True)
 for i in range(nparty):
     newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
     partyname = pnames[i]
     players_parties.append((newparty, partyname, i))
-#players_parties.append((starterParty, "starter", 0))
+#players' preloaded monsters
+for i in loaded_parties:
+    ppindex = len(players_parties)
+    players_parties.append((i[0],i[1],ppindex))
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 userParty=players_parties[0][0]
 equiped = 0
@@ -125,14 +293,12 @@ hallfame_count = 0
 rival= makeRandom(np.floor(userParty[0].level*(0.96)), 6)
 rival2= makeRandom(np.floor(userParty[0].level*1.07), 6)
 trainerParty=[rival,rival2]
-opponentName="RIVAL"
 #load up a battlefield for classic mode
 scarlet = field(rando=True)
 #########   game starting !!! ############
 copyrigh()
 if not mute_pregame:
     dramaticpause()
-    #print("\n** Welcome to the Wonderful World of Pokémon Simulation! **")
     print('\n'+magic_text(txt='Welcome to the World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
     dramaticpause()
     print('\nHere is your party:')
@@ -145,27 +311,48 @@ if not mute_pregame:
 else:
     print_party(userParty)   
 while 1:
-    #going to consolidate nursery and dex selection
-    #move tutor and move deleter and training
-    #opponent set and battle setting set 
-    #reseting the party can get swallowed into expanded multi-party functions
     #aa:hallfamecount
     if hallfame_count > 0:
-        bord = genborder(num=game_width, cha='-')
+        bord = genborder(num=game_width, cha='—')
         nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
-        if username_set:    print(f"\n{nameline}\nHall of Fame entries: {hallfame_count:0>2}")
-        else:               print(f"\nHall of Fame entries: {hallfame_count:0>2}")
+        hfline = magic_text(txt=f'Hall of Fame entries: {hallfame_count:0>3}',cha=' ',spacing=' ',long=game_width)
+        #nameline = magic_text(txt=username,spacing='  ',cha='*',long=game_width)
+        if username_set:    print(f"\n{nameline}\n{hfline}")
+        else:               print(f"\n{hfline}")
         print(bord,end='')
     #aa:mainmenu
     userChoice=input(mainmenu)
     ########################################################################################################
+    if userChoice == "quit":
+        print("\nThanks for playing!")
+        shortpause()
+        break
+    if userChoice == "about":
+        #aa:about
+        #print out some credits?
+        #def the current game version
+        print(f"\nGame version: {gameversion}")
+        #the people who worked on the game
+        print(f"\nDevelopers:")
+        for i in devs_list: print(f"{i}")
+        #the platforms and tools
+        print("\nBuilt on Python by Python Software Foundation.\nAnd Numpy by NumPy Developers.")
+        #gamefreak
+        print("\nInspired by the games of the Pokémon franchise by GameFreak, Nintendo, and Creatures.")
+        #special thanks
+        ststring = "\nSpecial thanks to:\nBulbapedia - bulbapedia.bulbagarden.net,"+\
+                "\nSerebii - serebii.net, and\nBulbapedia-Web-Scraper by github user ryanluuwas."
+        print(ststring)
+        print("\nSee CREDITS.txt in documentation/ for more details.")
+        holdhere = input("\nenter anything to continue...")
+        pass
     if userChoice == "adarius":print("Nice!");shortpause()
     #user setting the weather and terrain for classic mode #aa:classicsettings
     if userChoice=="s" or userChoice=="S":
-        #hello
         while 1: #user input loop
             print("\n"+magic_text(txt='"Battle!" Settings', cha="x",long=game_width))
-            print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your name")
+            print("\n[1] Set the conditions of battle\n[2] Set your opponent's party\n[3] Set your opponent's name\n"+\
+                    "[4] Set your name")
             sat_choice = input("What [#] to do or [b]ack: ")
             if sat_choice == 'b' or sat_choice == 'B':
                 break
@@ -247,11 +434,16 @@ while 1:
                     print("Leaving Opponent Reset...")
                     shortpause() #kills
                 #end of opponent set, back to main screen
-            elif sat_choice == '3': #battlefield conditions setting
+            elif sat_choice == '4': #name setting
                 playername = input("\nWhat's your name?\n: ")
                 username=playername
                 username_set=True
                 print(f"Thank you {username}!")
+                shortpause() #kills
+            elif sat_choice == '3': #opponents name setting
+                opponame = input("\nWhat's your Rival's name?\n: ")
+                opponentName=opponame
+                print(f"{opponentName}! Yes, of course!")
                 shortpause() #kills
             else:
                 #print("*like I'm hearing a ghost*: What was that?")
@@ -1453,6 +1645,10 @@ while 1:
         if yoo == "eliter":
             #print(cut_the_line)
             cut_the_line *= -1.
+            print('\nReceived.')
+            micropause()
+        elif yoo == "champed":
+            hallfame_count = 2024
             print('\nReceived.')
             micropause()
         elif yoo == '14':

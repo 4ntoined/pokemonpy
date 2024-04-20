@@ -1617,12 +1617,24 @@ class battle:
     
     def UI(self): #turnnumber, cpumon, usrsmon, usrname, whether user is named, 
         #print('\n'+magic_text(txt=f'Turn {turn}',spacing=' ',cha='=',long=game_width))
+        if self.usr_named:
+            youi_1 = f"{self.usr_name}:"
+        else:
+            youi_1 = "Your team:"
+        youi_2 = f"{self.usr_mon.name} // Level {self.usr_mon.level}"
+        youi_3 = f"HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)" 
+        youi_longs = [ len(i) for i in (youi_1,youi_2,youi_3) ]
+        ndots = game_width - max(youi_longs)
+        if ndots < 0:
+            ndots = 0
+        dotsdots = genborder(cha='.',num=ndots)
         print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
         print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")
-        if self.usr_named:  print(f"\n............{self.usr_name}:")
-        else:               print("\n............Your team:")
-        print(f"............{self.usr_mon.name} // Level {self.usr_mon.level}")
-        print(f"............HP: {format(self.usr_mon.currenthp,'.2f')}/{format(self.usr_mon.maxhp,'.2f')} ({format(self.usr_mon.currenthpp,'.2f')}%)")
+        print(f"\n{dotsdots}{youi_1}")
+        #if self.usr_named:  print(f"\n{dotsdots}{youi_1}")
+        #else:               print("\n............Your team:")
+        print(f"{dotsdots}{youi_2}")
+        print(f"{dotsdots}{youi_3}")
         return
   
     def startbattle(self, e4=False):
@@ -3399,6 +3411,7 @@ def damage(attacker,defender,power,moveTipe,isSpecial,note):
     #earthquake, bulldoze and magnitude nerfed on grassy terrain
     if ("nerfGrassy" in note) and (attacker.field.terrain=="grassy"):
         power*=0.5
+        damages.append("The grassy terrain softens the blow!")
     ####weather damage boost####
     weatherBonus=1.
     if attacker.field.weather=='sunny':
@@ -3782,7 +3795,7 @@ def loadMonNpy(savefile):
             except IndexError:
                 print('Index error/Data corrupted')
             else:
-                print(f'Loaded {oldie.name}!')
+                #print(f'Loaded {oldie.name}!')
                 takehome.append(oldie)
             pass             
         cheers = True
@@ -3832,7 +3845,7 @@ def loadMon(savefile):
             newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
-            print(f"Loaded {newP.name}!")
+            #print(f"Loaded {newP.name}!")
             micropause()
         return loadPokes
     except FileNotFoundError:
@@ -4082,7 +4095,7 @@ codex = codexer()
 easter_strings = ("Red","Blue","Yellow","Green","Gold","Silver","Crystal",\
         "Ruby","Sapphire","Emerald","Diamond","Pearl","Platinum","Black","White",\
         "Gray","X","Y","Z","Z-A","Sun","Moon","Stars","Eclipse","Sword","Shield",\
-        "Armor","Crown","Legend","Scarlet","Violet","Teal","Indigo")
+        "Armor","Crown","Legends","Scarlet","Violet","Teal","Indigo")
 typeStrings=["Normal","Fire","Water","Grass","Electric","Ice","Fighting",\
         "Poison","Ground","Flying","Psychic","Bug","Rock","Ghost","Dragon",\
         "Dark","Steel","Fairy","Typeless"]
