@@ -161,7 +161,7 @@ opponentName="RIVAL"
 loaded_parties = []
 #read the config file
 #aa:configread
-configname = 'config.txt'
+configname = 'configurations/config.txt'
 with open(configname,'r') as config:
     c_args = [ i for i in config.readlines()]
     #nlines = len(c_args)

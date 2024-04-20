@@ -3,8 +3,6 @@
 ### v0.1.2
 What all we might do:
 * Earthquake being weakened by Grassy Terrain is not shown in damage readout.
-* A config file. The game saves some settings and/or the user can fix and arrange some settings so that when the game runs, it does the things the config file tells it to do.
-The user need not use -m everytime to mute the pregame, they can preset the gamewidth, their name, their preferred starter party size. 
 * Set the battle UI (user's name and poke-health-info) to take up the full extent of the game width.
 
 Date: 2024 April XX
@@ -14,6 +12,8 @@ Date: 2024 April XX
 * UPDATE: You can now close the game. Enter 'quit' on the main menu to close the game.
 * UPDATE: You can change the name of your opponent in the 'Battle!' battle.
 * UPDATE: Main menu changes. Showing previously hidden options now.
+* UPDATE: Game settings are pre-recorded in 'config' files. Basic ones are stored in the configurations/ directory.
+The game checks for 'config.txt', so edit that file or overwrite it with the preferred config file.
 
 ### v0.1.1
 Date: 2024 March 29
