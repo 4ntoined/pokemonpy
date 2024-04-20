@@ -1,7 +1,7 @@
 ## pokemonpy log
 
 ### v0.1.2
-Date: 2024 April XX
+Date: 2024 April 20
 * UPDATE: Pokemon.py now has a variable to hold the current game version. Prints current version when 'about' is entered on the main menu.
 * UPDATE: Hall of Fame banner has been updated.
 * UPDATE: New cheat code introduced.
