@@ -42,7 +42,7 @@ from trainerai import cpu
 #aa:configfunction
 def readconfig(argumentline):
     global username_set,mute_set,nparty_set,nstart_set,gw_set,\
-            username,mute_pregame,nparty,nstart,opponentName
+            username,mute_pregame,nparty,nstart,opponentName, loaded_parties
     lineA = argumentline[:-1]
     split = lineA.split(' :: ')
     kee = split[0]
@@ -120,8 +120,27 @@ def readconfig(argumentline):
             pass
         elif kee == "loadSave":
             if args[0] == "true":
-                loadthese = args[1:]
-                #load those
+                loadthese = args[1].split(' ')
+                #print(loadthese)
+                for i in loadthese:
+                    loadedParty = []
+                    if i[-4:]=='.npy':
+                        newMons=loadMonNpy(i)
+                    else:
+                        newMons=loadMon(i)
+                    if newMons[0] == 0:
+                        #do nothing? dk
+                        pass
+                    else:
+                        for ii in newMons:
+                            loadedParty.append(ii)
+                            pass
+                        #loaded a party
+                        pass
+                    loaded_parties.append(( loadedParty, i ))
+                    pass
+                #loaded all the parties 
+                
                 pass
             pass
         elif kee == 'next':
@@ -132,6 +151,7 @@ def readconfig(argumentline):
 #set up the rng
 rng=np.random.default_rng()
 #game settings
+mute_pregame = False
 mute_set = False
 username_set = False
 nstart_set = False
@@ -253,11 +273,16 @@ mainmenu = "\n[about]\n[cheats]\n[quit]\n"+genborder(cha='-',num=game_width)+\
 #FreePalestine
 ############   give the player a starter  ###############
 players_parties = []
+#players random starters
 pnames = rng.choice(easter_strings, nparty, replace = True)
 for i in range(nparty):
     newparty = makeParty(numb=nstart, level=int(rng.normal(loc=100,scale=40)),how_created='starter')
     partyname = pnames[i]
     players_parties.append((newparty, partyname, i))
+#players' preloaded monsters
+for i in loaded_parties:
+    ppindex = len(players_parties)
+    players_parties.append((i[0],i[1],ppindex))
 #this list will hold tuples of pokemon parties (lists of pokemon objs) and names and indeces
 userParty=players_parties[0][0]
 equiped = 0

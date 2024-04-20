@@ -5,4 +5,4 @@ opponentname :: RIVAL
 partysize :: 6
 nparty :: 12
 gamewidth :: 64
-loadSave :: true :: pypokemon.sav
+loadSave :: false :: pypokemon.sav save2.npy

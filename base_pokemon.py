@@ -3782,7 +3782,7 @@ def loadMonNpy(savefile):
             except IndexError:
                 print('Index error/Data corrupted')
             else:
-                print(f'Loaded {oldie.name}!')
+                #print(f'Loaded {oldie.name}!')
                 takehome.append(oldie)
             pass             
         cheers = True
@@ -3832,7 +3832,7 @@ def loadMon(savefile):
             newP.PP=[getMoveInfo(j)['pp'] for j in newP.knownMoves]
             newP.reStat()
             loadPokes.append(newP)
-            print(f"Loaded {newP.name}!")
+            #print(f"Loaded {newP.name}!")
             micropause()
         return loadPokes
     except FileNotFoundError:

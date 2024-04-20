@@ -3,8 +3,9 @@
 ### v0.1.2
 What all we might do:
 * Earthquake being weakened by Grassy Terrain is not shown in damage readout.
-* A config file. The game saves some settings and/or the user can fix and arrange some settings so that when the game runs, it does the things the config file tells it to do it.
+* A config file. The game saves some settings and/or the user can fix and arrange some settings so that when the game runs, it does the things the config file tells it to do.
 The user need not use -m everytime to mute the pregame, they can preset the gamewidth, their name, their preferred starter party size. 
+* Set the battle UI (user's name and poke-health-info) to take up the full extent of the game width.
 
 Date: 2024 April XX
 * UPDATE: Pokemon.py now has a variable to hold the current game version. Prints current version when 'about' is entered on the main menu.
