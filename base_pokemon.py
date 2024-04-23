@@ -1627,6 +1627,7 @@ class battle:
         ndots = game_width - max(youi_longs)
         if ndots < 0:
             ndots = 0
+        ndots = 24
         dotsdots = genborder(cha='.',num=ndots)
         print(f"\n{self.cpu_name}:\n{self.cpu_mon.name} // Level {self.cpu_mon.level}")
         print(f"HP: {format(self.cpu_mon.currenthpp,'.2f')}%")

@@ -1,5 +1,11 @@
 ## pokemonpy log
 
+### v0.1.3
+Todo list: More moves...
+
+Date: 2024 May XX
+* FIXED: Reverted the battle UI change because I realized I didn't like it.
+
 ### v0.1.2
 Date: 2024 April 20
 * UPDATE: Pokemon.py now has a variable to hold the current game version. Prints current version when 'about' is entered on the main menu.
