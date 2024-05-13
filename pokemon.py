@@ -150,7 +150,12 @@ def readconfig(argumentline):
 #zz:configfunction
 #set up the rng
 rng=np.random.default_rng()
-#game settings
+#oddball variables to define once and for all
+gameversion = '0.1.3'
+devs_list = ('Adarius',)
+cut_the_line=1.
+cutline_dict = dict([( 1., False ), ( -1., True )])
+#pregame/config settings
 mute_pregame = False
 mute_set = False
 username_set = False
@@ -236,26 +241,15 @@ if n_args: #there are arguments
         nparty = argos.nparty
         nparty_set = True
 else:
-    if not gw_set:
-        base_pokemon.gamewidth = 64
-    if not username_set:
-        username_set    = False
-        username        = 'You'
-    if not nstart_set:
-        nstart = 6
-    if not nparty_set:
-        nparty = 6
-    if not mute_set:
-        print(2)
-        mute_pregame = 0
+    if not gw_set:          base_pokemon.gamewidth  = 64
+    if not username_set:    username                = 'You'
+    if not nstart_set:      nstart                  = 6
+    if not nparty_set:      nparty                  = 6
+    if not mute_set:        mute_pregame            = False
 #zz.argparse
-#some oddball variables to calculate once and never again
-gameversion = '0.1.2'
-devs_list = ('Adarius',)
+#set up the game width
 game_width = base_pokemon.game_width
 oddw = game_width % 2 == 1
-cut_the_line=1.
-cutline_dict = dict([( 1., False ), ( -1., True )])
 ##aa:mainmenu
 #mainmenu = "\n[P]okémon\n[B]attle!\nElite [4]\n[T]raining\n[N]ursery" + \
 #    "\nBo[x]es\nPokémon [C]enter\nBattle [S]etting"+ \
@@ -301,13 +295,14 @@ if not mute_pregame:
     dramaticpause()
     print('\n'+magic_text(txt='Welcome to the World of Pokémon Simulation!',spacing=' ',cha='$',long=game_width))
     dramaticpause()
-    print('\nHere is your party:')
+    print('\nYour party:')
     shortpause()
     print_party(userParty)
     dramaticpause()
     print('\nYour mission:')
     shortpause()
     print('Be cool and have fun.')
+    shortpause()
 else:
     print_party(userParty)   
 while 1:
