@@ -54,7 +54,8 @@ moremoves=[
         ("Brave Bird",120,100,15,0,1,9,0,"Takes 1/3 recoil damage.","recoil 1/3"),
         ("Future Sight",120,100,5,1,0,10,0,"The user looks into the future and predicts an attack.","futuresight"),
         ("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
-        
+        ("Dragon Fist",120,100,5,0,1,14,0,"If the user doesn't do it, who will?\nLowers the user's Spe. stat 1 stage.","stat self,sp,-1,100"),
+
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure!","null"),
         ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked lightningbolt on the target to inflict damage!\n30% chance to paralyze.","para 30 thunder"),
@@ -98,9 +99,10 @@ moremoves=[
         
         ("Extreme Speed",80,100,5,0,1,0,+2,"The user charges at the target with blinding speed.\nThis move has +2 priority.","null"),
         ("Lava Plume",80,100,15,1,0,1,0,"The user torches its surroundings with an inferno of flames!\n30% chance to burn.","burn 30"),
-        ("Fire Lash",80,100,15,0,1,1,0,"The user strikes with a burning lash.\nLower's the target's Def. stat by 1 stage.","stat targ,de,-1,100"),
+        ("Fire Lash",80,100,15,0,1,1,0,"The user strikes with a burning lash.\nLowers the target's Def. stat by 1 stage.","stat targ,de,-1,100"),
         ("Dive",80,100,10,0,1,2,0,"The user dives.\nTwo-turn move.","2turn diving"),
         ("Waterfall",80,100,15,0,1,2,0,"The user charges at the target with a wall of water!\nMay make target flinch.","flinch 20"),
+        ("Kamehameha",80,100,10,1,0,2,0,"The user concentrates their ki and releases it in a beam!\n50% chance to lower the target's Def. stat by 2 stages.","stat targ,de,-2,50"),
         ("Aura Sphere",80,100,20,1,0,6,0,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
         ("Dig",80,100,10,0,1,8,0,"The user digs.\nTwo-turn move.","2turn digging"),
         ("Zen Headbutt",80,90,15,0,1,10,0,"The user focuses its willpower into its head and attacks the target!\n20% chance to make the target flinch.","flinch 20"),

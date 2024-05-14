@@ -3,10 +3,14 @@
 ### v0.1.3
 Todo list:
 * More moves...
-* Check for existence of config file before trying to read it. If it does not exist, do not try to read it. 
+* Snow... a snow-hail switch...
+* The game should say how much HP a mon loses every time it loses health ie weather damage, status damage, so the player can keep track.
 
 Date: 2024 May XX
 * FIXED: Reverted the battle UI change because I realized I didn't like it.
+* FIXED: Fighting-type moves were super-effective against Fire-types instead of Normal-types. Fixed this.
+* UPDATE: The game will no longer break if it can't find the config file.
+* UPDATE: Added Goku.
 
 ### v0.1.2
 Date: 2024 April 20

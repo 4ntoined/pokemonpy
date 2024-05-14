@@ -1149,13 +1149,17 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     #healing via moves
     def healing(self, amount):
         self.currenthp += amount
-        print(f"{self.name} heals {format(100.*amount/self.maxhp,'.2f')}% HP!")
         if self.currenthp > self.maxhp:
             self.currenthp = self.maxhp
         self.currenthpp = 100. * self.currenthp/self.maxhp
+        print(f"{self.name} restores some health! ({format(self.currenthpp,'.2f')}% HP)")
+        #print(f"{self.name} heals {format(100.*amount/self.maxhp,'.2f')}% HP!")
+        micropause()
+        pass
     def aquaheal(self):
         amnt = np.floor(self.maxhp/16.)
         print(f"{self.name} is healed by its Aqua Ring!")
+        micropause()
         self.healing(amnt)
     #flinching
     def flinch(self):
@@ -1164,7 +1168,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def recoil(self, damagedone, recoilAmount):
         self.currenthp -= damagedone * recoilAmount
         self.currenthpp = 100. * self.currenthp / self.maxhp
-        print( f"{self.name} takes recoil damage!" )
+        print( f"{self.name} takes recoil damage! ({format(self.currenthpp,'.2f')}% HP)" )
         micropause()
         if self.currenthp <= 0.:
             self.faint()
@@ -1174,7 +1178,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         global futuresight_i
         global mov
         notes = mov[futuresight_i]["notes"]
-        print(notes)
+        #print(notes)
         ans,eff,comment = damage(self,target,120,10,1,notes)
         print(f"{target.name} took the Future Sight attack!")
         shortpause()
@@ -1186,7 +1190,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         dmg = (((( 2. * self.level ) / 5. + 2.) * 40. * self.bat / self.bde) / 50. + 2. ) * (rng.integers(85,101)*0.01)
         self.currenthp -= dmg
         self.currenthpp = 100. * self.currenthp / self.maxhp
-        print( f"{self.name} hurt itself in its confusion!" )
+        print( f"{self.name} hurts itself in its confusion! ({format(self.currenthpp,'.2f')}% HP)" )
         micropause()
         if self.currenthp <= 0.:
             self.faint()
@@ -1194,7 +1198,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def poisonDamage(self):
         self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took poison damage!")
+        print(f"{self.name} is weakened by its poisoning! ({format(self.currenthpp,'.2f')}% HP)")
         micropause()
         if self.currenthp<=0.:
             self.faint()
@@ -1202,7 +1206,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def badPoison(self):
         self.currenthp-=self.poisonCounter*self.maxhp/16.
         self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took bad poison damage!")
+        print(f"{self.name} is weakened from its bad poisoning! ({format(self.currenthpp,'.2f')}% HP)")
         micropause()
         if self.currenthp<=0.0:
             self.faint()
@@ -1211,7 +1215,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         #would be the same as poisonDamage tbh
         self.currenthp-=self.maxhp/8.
         self.currenthpp=100*self.currenthp/self.maxhp
-        print(f"{self.name} took burn damage!")
+        print(f"{self.name} is hurt by its burn! ({format(self.currenthpp,'.2f')}% HP)")
         micropause()
         if self.currenthp<=0.:
             self.faint()
@@ -1219,24 +1223,26 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
     def sandDamage(self):
         immune=(12 in self.tipe) or (8 in self.tipe) or (16 in self.tipe) #check for rock, ground, and steel types
         if immune:
-            print(f"{self.name} is unaffected by the sandstorm!")
-            micropause()
+            #print(f"{self.name} is unaffected by the sandstorm!")
+            #micropause()
+            pass
         else:
             self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
-            print(f"{self.name} took some damage from the sandstorm!")
+            print(f"{self.name} takes damage from the sandstorm! ({format(self.currenthpp,'.2f')}% HP)")
             micropause()
             if self.currenthp<=0.:
                 self.faint()
-    #hail
+    #hail, needs to be discontinued for snow...
     def hailDamage(self):
         if 5 in self.tipe:
-            print(f"{self.name} is unaffected by the hail!")
-            micropause()
+            #print(f"{self.name} is unaffected by the hail!")
+            #micropause()
+            pass
         else:
             self.currenthp-=self.maxhp/16.
             self.currenthpp=100*self.currenthp/self.maxhp
-            print(f"{self.name} took some damage from the hail!")
+            print(f"{self.name} takes damage from the hail! ({format(self.currenthpp,'.2f')}% HP)")
             micropause()
             if self.currenthp<=0.:
                 self.faint()
@@ -1247,19 +1253,21 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
         else:
             mount = self.maxhp/16.
             self.currenthp+=mount
-            print(f"{self.name} is healed {format(100.*mount/self.maxhp,'.2f')}% by the grassy terrain!")
             micropause()
             if self.currenthp>self.maxhp: #lets not heal above the max lol
                 self.currenthp=self.maxhp
                 self.currenthpp=100.
             else:
                 self.currenthpp=100.*self.currenthp/self.maxhp
+            print(f"{self.name} is healed by the grassy terrain! ({format(self.currenthpp,'.2f')}% HP)")
+            #print(f"{self.name} is healed {format(100.*mount/self.maxhp,'.2f')}% by the grassy terrain!")
+            pass
     #entry hazard damages
     #guess we should check for faint after entry hazard damage
     #stealthrock
     def rocksDamage(self):
         self.currenthp-=self.maxhp/8.*checkTypeEffectiveness(12, self.tipe)
-        print(f"Pointed stones dig into {self.name}!")
+        print(f"Pointed stones dig into {self.name}! ({format(self.currenthpp,'.2f')}% HP)")
         micropause()
         if self.currenthp<=0.:
             self.faint()
@@ -1273,7 +1281,7 @@ class mon: #aa:monclass #open up sypder and rename these from hpbase to hbp, etc
             self.currenthp -= self.maxhp / 6.
         elif level == 3:
             self.currenthp -= self.maxhp / 4.
-        print(f"{self.name} is hurt by the spikes!")
+        print(f"{self.name} is hurt by the spikes! ({format(self.currenthpp,'.2f')}% HP)")
         micropause()
         if self.currenthp<=0.:
             self.faint()
@@ -4054,7 +4062,7 @@ def codexer():
     codex[5,1],codex[5,2],codex[5,3],codex[5,5],codex[5,8],\
             codex[5,9],codex[5,14],codex[5,16]=\
             0.5,0.5,2.0,0.5,2.0,2.0,2.0,0.5 #ice
-    codex[6,1],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],\
+    codex[6,0],codex[6,5],codex[6,7],codex[6,9],codex[6,10],codex[6,11],\
             codex[6,12],codex[6,13],codex[6,15],codex[6,16],codex[6,17]=\
             2.0,2.0,0.5,0.5,0.5,0.5,2.0,0.0,2.0,2.0,0.5 #fighting
     codex[7,3],codex[7,7],codex[7,8],codex[7,12],\

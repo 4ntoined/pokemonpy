@@ -167,15 +167,17 @@ loaded_parties = []
 #read the config file
 #aa:configread
 configname = 'configurations/config.txt'
-with open(configname,'r') as config:
-    c_args = [ i for i in config.readlines()]
-    #nlines = len(c_args)
-    ii = []
-    for i in c_args:
-        ii.append( readconfig(i) )
-    validated = 'validator line' in ii
-    erred = 'Bad config file.' in ii
-    accomplished = [ iii for iii in ii if iii=='no problems']
+if os.path.isfile(configname):
+    with open(configname,'r') as config:
+        c_args = [ i for i in config.readlines()]
+        #nlines = len(c_args)
+        ii = []
+        for i in c_args:
+            ii.append( readconfig(i) )
+        validated = 'validator line' in ii
+        erred = 'Bad config file.' in ii
+        accomplished = [ iii for iii in ii if iii=='no problems']
+    pass
 #zz:configread
 #parse arguments
 #aa:argparse
@@ -1156,7 +1158,7 @@ while 1:
                             except IndexError:
                                 print("\n** Entry must correspond to a Pokémon move! **")
                         ###zz:movedelete
-                    elif hypermoves == '4': #renaming pokemon
+                    elif hypermoves == '4': #aa:namerater #renaming pokemon
                         while 1:
                             print("\n" + magic_text(txt="Name Rater's House",spacing=' ',cha='+',long=game_width))
                             print(f"Name Rater: Oh, {pokeTrain.name} is a fine name. But perhaps you've thought of something better?")
@@ -1185,7 +1187,7 @@ while 1:
                                 break
                             pass
                         pass
-                    elif hypermoves == '5': #re-naturing pokemon
+                    elif hypermoves == '5': #aa:mintstore #re-naturing pokemon
                         while 1:
                             print("\n" + magic_text(txt="The Mint Store",spacing=' ',cha='+',long=game_width))
                             print(f"Clerk: Hiya. Here, we have all the mints you could want!")
@@ -1205,10 +1207,10 @@ while 1:
                                     pokeTrain.reStat()  #possible index error, using integers >4
                                     pass
                                 except ValueError:
-                                    print("Nope! That's a ValueError\nTry 2 numbers separated by a space. eg '1 2'")
+                                    print("Try 2 numbers separated by a space. eg '1 2'")
                                     shortpause()
                                 except IndexError:
-                                    print("Nope! That's an IndexError\nOnly numbers 0-4!")
+                                    print("Only numbers 0-4!")
                                     shortpause()
                                 else:
                                     #nothing broke good to go
@@ -1220,7 +1222,7 @@ while 1:
                                 pass
                             pass
                         pass
-                    elif hypermoves == '6': #regendering pokemon
+                    elif hypermoves == '6': #aa:genderedit #regendering pokemon
                         while 1:
                             print("\n"+magic_text(txt='Gender Editor',cha='+',long=game_width,spacing=' '))
                             print(f"{pokeTrain.name}'s current gender: {pokeTrain.gender}")
