@@ -1,8 +1,8 @@
 aa :: pokemon.py config
-mutepregame :: false
-username :: You
-opponentname :: RIVAL
+mutepregame :: true
+username :: Ando
+opponentname :: Youngster Joey
 partysize :: 6
 nparty :: 12
-gamewidth :: 64
-loadSave :: false :: pypokemon.sav save2.npy
+gamewidth :: 96
+loadSave :: true :: dbz.sav

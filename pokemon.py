@@ -328,7 +328,7 @@ while 1:
         #aa:about
         #print out some credits?
         #def the current game version
-        print(f"\nGame version: {gameversion}")
+        print(f"\nVersion {gameversion}")
         #the people who worked on the game
         print(f"\nDevelopers:")
         for i in devs_list: print(f"{i}")
@@ -1335,8 +1335,7 @@ while 1:
                 print("\nYour party is looking better than ever!\nHave a nice day! And have fun!")
                 shortpause()
                 break #back to main screen    
-    ####resetting user Party to Bulbasaur
-    ### multi-party support? #aa:multiparty
+    ### multi-party support? #aa:multiparty#aa:boxes
     if userChoice=='X' or userChoice=='x':
         while 1: #input loop only to catch players leaving individual pokemon removal
             #see party will select a party, from there #we can copy the party, equip it, add a pokemon (from the equipped party) to it, more?

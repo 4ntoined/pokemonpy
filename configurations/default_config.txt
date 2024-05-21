@@ -1,7 +1,7 @@
 aa :: pokemon.py config
 mutepregame :: false
 username :: You
-opponentname :: RIVAL
+opponentname :: Youngster Joey
 partysize :: 6
 nparty :: 12
 gamewidth :: 64

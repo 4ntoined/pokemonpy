@@ -93,6 +93,7 @@ moremoves=[
         ("Phantom Force",90,100,10,0,1,13,0,"dedc","2turn shadowforce"),
         
         ("Blaze Kick",85,90,10,0,1,1,0,"The user attacks with a fiery fist.\n10% chance to burn and high crit' ratio/.","highCrit burn 10"),
+        ("Kamehameha",85,100,10,1,0,2,0,"The user concentrates their ki and releases it in a beam!\n50% chance to lower the target's Def. stat by 2 stages.","stat targ,de,-2,50"),
         ("Secret Sword",85,100,10,1,0,6,0,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's Sp.A and the target's Def.","psystrike"),
         ("Bounce",85,85,5,0,1,9,0,"dedc","2turn flying para 30"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
@@ -102,7 +103,6 @@ moremoves=[
         ("Fire Lash",80,100,15,0,1,1,0,"The user strikes with a burning lash.\nLowers the target's Def. stat by 1 stage.","stat targ,de,-1,100"),
         ("Dive",80,100,10,0,1,2,0,"The user dives.\nTwo-turn move.","2turn diving"),
         ("Waterfall",80,100,15,0,1,2,0,"The user charges at the target with a wall of water!\nMay make target flinch.","flinch 20"),
-        ("Kamehameha",80,100,10,1,0,2,0,"The user concentrates their ki and releases it in a beam!\n50% chance to lower the target's Def. stat by 2 stages.","stat targ,de,-2,50"),
         ("Aura Sphere",80,100,20,1,0,6,0,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
         ("Dig",80,100,10,0,1,8,0,"The user digs.\nTwo-turn move.","2turn digging"),
         ("Zen Headbutt",80,90,15,0,1,10,0,"The user focuses its willpower into its head and attacks the target!\n20% chance to make the target flinch.","flinch 20"),

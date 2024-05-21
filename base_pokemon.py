@@ -3972,7 +3972,7 @@ def print_parties(partylist,equip=0,prespace=True):
         if prespace: print("")
         for i in range(len(partylist)):
             print(f"[{i+1}] {partylist[i][1]} | size: {len(partylist[i][0])}")
-        print(f"Equipped: {partylist[equii][1]}\n")
+        print(f"Equipped: {equii+1}. {partylist[equii][1]}\n")
         return
 ## make starter parties
 def elite4_healquit(poke_party):
