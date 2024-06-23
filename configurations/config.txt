@@ -1,6 +1,6 @@
 aa :: pokemon.py config
 mutepregame :: False
-username :: Leaf
+username :: Kris
 opponentname :: Youngster Joey
 partysize :: 6
 nparty :: 12

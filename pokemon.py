@@ -17,14 +17,7 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 #normal 0,fire 1,water 2,grass 3,electric 4,ice 5,fighting 6,poison 7,
 #ground 8,flying 9,psychic 10,bug 11, #rock 12,ghost 13,dragon 14,
 #dark 15,steel 16,fairy 17
-# *****************************   to do list   ******************************
-# ABILITIES *cough*
-# baton pass // bide // trapping moves bind/whirlpool 
-# multistrike moves // encore // endeavor // echoed voice // protect-feint
-# entry hazards in battle status, grounded/ungrounded in battle status
-# ***************************************************************************
 import os, copy, sys, argparse
-#import time as t
 from time import localtime, strftime
 from importlib import resources as impr
 import numpy as np
@@ -37,10 +30,8 @@ from base_pokemon import mon, battle, field, checkBlackout, loadMon, makeMon,\
 from texter import genborder,magic_text,magic_head
 from moves import getMoveInfo,mov,natures
 from dexpoke import dex
-#from . import dex
 from victoryroad import make_teams, random_evs
 from trainerai import cpu
-#from . import configurations
 #FreePalestine
 
 class game:
@@ -1114,15 +1105,6 @@ class game:
                         print("Leaving Load Pokémon..")
                         shortpause()
                         break
-                    #elif saveChoice=='7':
-                    #    print('dev insights')
-                    #    her = loadMon2('newmew.npy')
-                    #    if her == 'messed up':
-                    #        print("try again")
-                    #        #shortpause()
-                    #    else:
-                    #        userParty.append(her)
-                    #        #shortpause()
                     elif ( showdown_yes[0] == 'showdown' or showdown_yes[0] == 'sd' ) and len(showdown_yes) > 1 :
                         newbies = loadShowdown( showdown_yes[1] )
                         #except IndexError:
@@ -1135,18 +1117,6 @@ class game:
                             print(f"{i.name} joined your party!")
                         #shortpause()
                         pass
-                    #elif saveChoice=="":
-                    #    newMons=loadMon("pypokemon.sav")
-                    #    if newMons[0]==0: #if error in loading data, ask for savefile again
-                    #        print("\n!! Something is wrong with this savefile !!")
-                    #        continue
-                    #    #add all the pokemon to the party
-                    #    for i in newMons:
-                    #        userParty.append(i)
-                    #        print(f"{i.name} has joined your party!")
-                    #        shortpause()
-                    #    print("Finished loading Pokémon!\n")
-                    #    shortpause()
                     else:
                         if saveChoice=="": saveChoice='pypokemon.sav'
                         try:
@@ -1635,17 +1605,43 @@ class game:
         return
     pass
 
-
 cutline_dict = dict([( 1., False ), ( -1., True )])
 
 if __name__ == "__main__":
-    #look for and apply config file
-    #given arguments should override config settings
-
+    #aa:argparse
     g4 = game()
-    g4.startgame()
+    n_args = len(sys.argv)-1
+    if n_args: #there are arguments
+        parser = argparse.ArgumentParser(description='Play Pokémon!')
+        parser.add_argument('-c','--config',action='store',type=str,\
+                required=False, dest='configfile', \
+                help='provide the path to a pokemon.py config file')
+        parser.add_argument('-o','--opponentname',action='store',type=str,\
+                required=False, dest='opponame', \
+                help='set the name of the rival trainer')
+        parser.add_argument('-w','--width',action='store',type=int,\
+                required=False, dest='gamewidth', \
+                help='set the width of banners and headings, defaults to 64')
+        parser.add_argument( '-n','--name',action='store',type=str,\
+                required=False,help='write your name',dest='name'\
+                )
+        parser.add_argument('-s','--psize',action='store',type=int,
+                required=False,help='number of starter Pokémon'\
+                )
+        parser.add_argument('-p','--nparty',action='store',type=int,
+                required=False,help='number of starter parties'\
+                )
+        parser.add_argument('-m','--mute',action='count',default=0,
+                required=False,help='skip the pre-game text'\
+                )
+        argos = parser.parse_args( sys.argv[1:] )
+        if argos.mute == 0:
+            argos.mute=None
+        g4.startgame(configname=argos.configfile, mutegame=argos.mute,\
+                     username=argos.name, opponentname=argos.opponame,\
+                     nparty=argos.nparty,nstart=argos.psize, gw=argos.gamewidth)
+    else:
+        g4.startgame()
     pass
 else:
     pass
-    
-#runs after intial while loop
