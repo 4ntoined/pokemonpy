@@ -3917,6 +3917,7 @@ def makeRandom(level=100,numMoves=6,how_created='nursery'):
     return dome
 #create a pokemon from the pokedex
 def makeMon(pokedexNumber,level=1,nacher = (0,0),how_created='nursery'):
+    global dex
     Hp,At,De,Sa,Sd,Sp=dex[pokedexNumber]['hp'], dex[pokedexNumber]['at'], \
             dex[pokedexNumber]['de'], dex[pokedexNumber]['sa'], \
             dex[pokedexNumber]['sd'], dex[pokedexNumber]['sp']

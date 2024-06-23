@@ -21,6 +21,7 @@ import copy
 import numpy as np
 from base_pokemon import mon, makeMon, makeRandom, mo, saveParty
 from moves import mov,struggle
+#from dexpoke import dex
 from dexpoke import dex
 from texter import copyrigh
 def set_ivs(poke, vals):
@@ -90,8 +91,6 @@ def make_teams():
     #have to do moves sigh
     #silver1.summary()
     #moves####
-    #silver1.knownMoves=[ int(np.argwhere( mov['name'] == weavi_set[i])) for i in range(len(weavi_set))]
-    #silver1.PP = [ mov['pp'][i] for i in silver1.knownMoves]
     learn_sets(silver1,weavi_set)
     learn_sets(silver2,croba_set)
     learn_sets(silver3,typhl_set)
@@ -103,10 +102,9 @@ def make_teams():
     add_random_moves(silver3,number=2)
     add_random_moves(silver4,number=2)
     #these pokemon are done
-    #silver1.summary()
     #fill the party
     c1_party = [silver2, silver1, silver3, silver4]
-    #zinnia, salamence, tyrantrum, goodra, zygarde-complete(need to register in dex)
+    #zinnia, salamence, tyrantrum, goodra, zygarde-complete
     zin1 = makeMon(916,level=levil+3,nacher=(4, 1),how_created='elite') #salamence-m
     zin2 = makeMon(696,level=levil+5,nacher=(1, 3),how_created='elite') #tyran
     zin3 = makeMon(705,level=levil+7,nacher=(3, 1),how_created='elite') #goo
@@ -221,10 +219,10 @@ def make_teams():
     return ( (c1_name,c1_party),(c2_name,c2_party),(c3_name,c3_party),(c4_name,c4_party),(c5_name,c5_party)  )
 rng_wild=np.random.default_rng()
 levil = 150
-c1_name = "Silver of Johto"
+c1_name = "Silver from Johto"
 c2_name = "Zinnia of the Draconids"
 c3_name = "Cynthia the Sinnoh Champion"
-c4_name = "N, King from Unova"
+c4_name = "N, King of Team Plasma"
 c5_name = "Pokémon Trainer Red"
 #silvers movesets
 weavi_set = ("Shadow Claw","Night Slash","Icy Wind","Metal Claw")
@@ -261,7 +259,6 @@ if __name__ == "__main__":
     if not os.path.exists(savehere):
         os.makedirs(savehere)
     bigg = make_teams()
-    #t1,t2,t3,t4,t5 = bigg
     for i in range(5): saveParty(savehere +f'/elite_{i+1:0>1}.npy',bigg[i][1])
 else:
     pass

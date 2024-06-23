@@ -2,6 +2,7 @@
 #and make some determinations thereabout
 import numpy as np
 from moves import mov
+#mov = moves.mov
 
 class cpu:
     def __init__(self,battlefield):

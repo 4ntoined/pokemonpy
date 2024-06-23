@@ -1,4 +1,4 @@
-#companion to pokemon.py
+ #companion to pokemon.py
 """
 Copyright (C) 2023 Adarius
 This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import numpy as np
 def getMoveInfo(moveIndex):
     return mov[moveIndex]
+def movers():
+    return
 ## move name // power // accuracy // pp // phys/spec/status // contact? // type // priority // description // code-notes
 moremoves=[
         ("Hyper Beam",150,90,5,1,0,0,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest"),
