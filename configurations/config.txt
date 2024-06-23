@@ -1,8 +1,8 @@
 aa :: pokemon.py config
-mutepregame :: true
-username :: Ando
+mutepregame :: False
+username :: Leaf
 opponentname :: Youngster Joey
 partysize :: 6
 nparty :: 12
-gamewidth :: 96
-loadSave :: true :: dbz.sav
+gamewidth :: 64
+loadSave :: false :: pypokemon.sav save2.npy

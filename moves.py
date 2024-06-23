@@ -156,7 +156,7 @@ moremoves=[
         ("Flame Charge",50,100,20,0,1,1,0,"The user cloaks itself in flames and builds momentum to attack!\nRaises user's Spe. 1 stage.","stat self,sp,1,100"),
         ("Metal Claw",50,95,35,0,1,16,0,"The user rakes the target with steel claws!\nMay raise the user's Atk. 1 stage.","stat self,at,1,10"),
         
-        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch!\nOnly works on the first turn after the user enters battle.\This move has +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
+        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch!\nOnly works on the first turn after the user enters battle.\nThis move has +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nHas +1 priority.","null"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack!","null"),
         ("Ember",40,100,25,1,0,1,0,"The user attacks with small flames!\n10% chance to burn the target.","burn 10"),

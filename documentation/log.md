@@ -6,10 +6,11 @@ Todo list:
 * Snow... a snow-hail switch...
 * The game should say how much HP a mon loses every time it loses health ie weather damage, status damage, so the player can keep track.
 
-Date: 2024 May XX
+Date: 2024 June XX
 * FIXED: Reverted the battle UI change because I realized I didn't like it.
 * FIXED: Fighting-type moves were super-effective against Fire-types instead of Normal-types. Fixed this.
 * UPDATE: The game will no longer break if it can't find the config file.
+* FIXED: Typo in Fake Out description has been corrected.
 * UPDATE: Added Goku.
 
 ### v0.1.2
