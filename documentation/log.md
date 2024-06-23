@@ -11,7 +11,7 @@ Date: 2024 June XX
 * FIXED: Fighting-type moves were super-effective against Fire-types instead of Normal-types. Fixed this.
 * FIXED: Typo in Fake Out description has been corrected.
 * UPDATE: The game will no longer break if it can't find the config file.
-* UPDATE: The game now reports Pokemon HP when Pokémon heal or take indirect damage.
+* UPDATE: The game now reports Pokémon HP when Pokémon heal or take indirect damage.
 * UPDATE: Added Goku.
 * TECHNICAL UPDATE: The game itself is now a class/function. 
 
