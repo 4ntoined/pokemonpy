@@ -1637,6 +1637,8 @@ if __name__ == "__main__":
         argos = parser.parse_args( sys.argv[1:] )
         if argos.mute == 0:
             argos.mute=None
+        if argos.configfile is None:
+            argos.configfile = 'configurations/config.txt'
         g4.startgame(configname=argos.configfile, mutegame=argos.mute,\
                      username=argos.name, opponentname=argos.opponame,\
                      nparty=argos.nparty,nstart=argos.psize, gw=argos.gamewidth)
