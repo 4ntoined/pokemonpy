@@ -1,21 +1,58 @@
 # Anybody here play Pokémon?
 Just me? That's fine.
 
-This Python program simulates Pokémon and Pokémon battles.
-For a more detailed description of the game, check out [game_blurb.md](https://github.com/4ntoined/pokemonpy/blob/master/documentation/game_blurb.md)
-For a demonstration of how to play the game, check out [this guy's YouTube video](https://youtu.be/0SFg-sSOZBY) (and like and comment and subscribe, he told me to tell you that).
-The rest of the readme will be geared toward codestuff: prerequisites, launching the game, modifying the code to your tastes, etc.
+This program is a text-based game that simulates Pokémon and Pokémon battles and runs right in the terminal.
+For a more detailed description of the game, check out [game_blurb.md](https://github.com/4ntoined/pokemonpy/blob/master/documentation/game_blurb.md).
+For a demonstration of how to play the game, check out [this YouTube video](https://youtu.be/0SFg-sSOZBY) (and like and comment and subscribe).
 
-### Prerequisites:
- - Python
- - Numpy
+## Installing the game
+There are 2 methods to install and play the game. Both methods require (1) access to the command line and (2) Python 3.
 
-### Starting the game:
-```python3 pokemon.py [-m] [-n your_name_here] [-w how_big_to_display_the_game] [-p number_of_starter_parties] [-s number_of_pokémon_per_party]```
+#### Access to the command line/terminal:
+   - Search your computer for 'terminal' or 'command line'.
+   - Mac and Linux are pretty straightforward about the terminal. For Windows, you'll probably want to use PowerShell and NOT the command prompt.
+#### Python:
+   - Python 3.7(ish) or later
+   - https://www.python.org
+   - For Windows players check out: https://learn.microsoft.com/en-us/windows/python/beginners
 
-Optional inputs:
+All of the code snippets in this doc presume you are using a terminal on a Linux machine. Things might be slightly different if you are on Mac or Windows.
+For example, `python3` might be `py` or `Python` on Windows. You know your machine better than I do. Do what works.
+
+### Method 1. pip (recommended)
+The game is available on the Python Package Index [(linked here)](https://pypi.org/project/pokemonpy/) and can be installed via [pip](https://packaging.python.org/en/latest/tutorials/installing-packages/):
+
+`pip install pokemonpy`
+
+Once installed, the game can be started by:
+1. starting a live session of Python: `python3`
+2. importing the package, initializing the game object, and starting the game:
+```
+from pokemonpy import pokemon as pk
+game1 = pk.game()
+game1.startgame()
+```
+
+### Method 2. This github repository
+This is the classic way to play the game, but it is a little more cumbersome than the pip method.
+
+This method requires you to install [numpy](https://numpy.org/doc/stable/index.html). Using Method 1, pip will install numpy for you.
+
+1. Clone/download this Github repository (https://www.github.com/4ntoined/pokemonpy) to your computer.
+	- A few ways to do this:
+	- Bright green 'Code' button near the top of the repo page -> Download ZIP -> Unzip the .zip you just downloaded.
+	- 'Releases' panel on the right-hand side of the repo page -> Choose a release -> Download the source code -> Unzip the file you just downloaded.
+	- If you have [git](https://github.com/git-guides/install-git) installed on your computer, use `git clone https://github.com/4ntoined/pokemonpy.git` in terminal.
+2. Navigate to the 'pokemonpy' folder from your terminal (command: 'cd /your/path/to/the/folder/here/pokemonpy/')
+3. Enter `python3 pokemon.py`
+
+Starting with optional inputs:
+`python3 pokemon.py -m -c config_file_path -n your_name -o rivals_name -w how_big_to_display_the_game -p number_of_starter_parties -s number_of_pokémon_per_party`
+
 - '-m' to skip the game start-up
+- '-c' to tell the game to use a particular configuration file
 - '-n' to set your name, you can set your name in-game, used to display in battles
+- '-o' to set the name of the rival trainer in the Battle! mode.
 - '-w' to set the length of banners and headers throughout the game, defaults to 64 I think
 - '-p' to set the number of parties you start with
 - '-s' to set the number of Pokémon in each of those parties
@@ -43,26 +80,24 @@ But _I_ think my game is cool.
 You can add your own 'mode' accessible from the main menu by creating a ```if userChoice=='whatever you want someone to press to access your mode':``` block and go ham.
 
 #### base_pokemon.py
-Everything that pokemon.py does, it can do because it's in this script. (From terminal) I like to
+Everything that pokemon.py does, it can do because it's in this script. (From terminal) I like to start a live session of python and then:
 ```
-myterminal$ python3
-python$ from base_pokemon import *
-python$ parties, fields = maker(2,6,2)
-python$ bb = battle(parties[0],parties[1],fields[0],usr_name='Your Name',cpu_name='the_ops')
-python$ bb.startbattle()
+from base_pokemon import *
+parties, fields = maker(2,6,2)
+bb = battle(parties[0],parties[1],fields[0],usr_name='Your Name',cpu_name='The Ops')
+bb.startbattle()
 ```
 
-That's a Pokémon battle in 5 lines. I'm a legend.
+That's a Pokémon battle in 4 lines. I'm a legend.
 
 Try:
 ```
-yourterminal$ python3
-python$ from base_pokemon import *
-python$ parties, fields = maker(2,6,2)
-python$ print_party(parties[0])
-python$ parties[0][0].summary()
-python$ parties[0][0].appraisal()
-python$ parties[0][0].save('poke.sav')
+from base_pokemon import *
+parties, fields = maker(2,6,2)
+print_party(parties[0])
+parties[0][0].summary()
+parties[0][0].appraisal()
+parties[0][0].save('poke.sav')
 ```
 
 #### victoryroad.py
@@ -79,6 +114,10 @@ So they are here. Fun stuff, can easily be repurposed for other purposes.
 #### dexpoke.py
 This script turns somemons.dat into a numpy structured array that pokemon.py uses.
 
-The game is incomplete, an imperfect imitation of Pokémon by GameFreak, and is not completely bug-proof. Also, it is ripe for optimization. There's a lot of repeated code (checking to see if a Pokémon needs to take poison damage is functionally the same as checking if a Pokémon needs to take burn damage, yet these things happen separately), and I'm sure a lot of what I've done here can be condensed using for loops and modularizing stuff with functions. But, as is, it works really well if you don't try to break it.
+The game is an incomplete, imperfect imitation of Pokémon by GameFreak, and it is not completely bug-proof. Also, it is ripe for optimization.
+There's a lot of repeated code (checking to see if a Pokémon needs to take poison damage is functionally the same as checking if a Pokémon needs to take burn damage, yet these things happen separately), and I'm sure a lot of what I've done here can be condensed using for loops and modularizing stuff with functions.
+But, as is, it works really well if you don't try to break it.
 
-Otherwise, yeah if any of this interested you at all please take it and run with it. I had a lot of fun writing and testing all this code and ultimately just playing a worse version of a game I already love. But also the more I add to this, the closer I get to the Sun, the more I realize how much more there is to do and fix and reconsider. Items! Abilities! P2P! Double battles! The Sun is so far away. But if _you_ can do that, any of that, any serious improvements on this stuff, I would actually literally love to see it.
+Otherwise, yeah if any of this interested you at all please take it and run with it. I had a lot of fun writing and testing all this code and ultimately just playing a worse version of a game I already love.
+But also the more I add to this, the closer I get to the Sun, the more I realize how much more there is to do and fix and reconsider.
+Items! Abilities! PvP! Double battles! The Sun is so far away. But if _you_ can do that, any of that, any serious improvements on this stuff, I would actually literally love to see it.
