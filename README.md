@@ -11,7 +11,8 @@ There are 3 methods to install and play the game. All methods require (1) access
 
 #### Access to the command line/terminal:
    - Search your computer for 'terminal' or 'command line'.
-   - Mac and Linux are pretty straightforward about the terminal. For Windows, you'll probably want to use PowerShell and NOT the command prompt.
+   - On Windows, you'll probably want to use PowerShell and NOT the Command Prompt (cmd.exe).
+   - Alternatively, there is [Windows Subsystem for Linux](https://learn.microsoft.com/en-us/windows/wsl/install), which gives you a Linux-like command line environment, if you're will to jump through a few hoops. This is my preferred way to play in Windows as I have no idea how to use PowerShell or CMD.
 #### Python:
    - Python 3.7(ish) or later
    - https://www.python.org
@@ -103,13 +104,13 @@ Add Pokémon to the Pokédex by appending them to somemons.dat. You'll need to s
 
 #### pokemon.py
 This script runs the game. It kind of actually _is_ the game where everything else in this repo is a means to that end. I built it in pieces, so some pieces are a lot older and messier than others.
-Like the rough edges are still there, in the timing of certain printouts in the consistency with which newlines are placed in the battling simulation itself. I figured I would at some point get around to ironing out all the wrinkles and honestly I got a lot of them, but there a lot still left.
+Like the rough edges are still there, in the timing of certain printouts in the consistency with which newlines are placed in the battling simulation itself. I figured I would at some point get around to ironing out all the wrinkles and honestly I got a lot of them, but there are a lot still left.
 But _I_ think my game is cool.
 
 You can add your own 'mode' accessible from the main menu by creating a `if userChoice=='whatever you want someone to press to access your mode':` block and go ham.
 
 #### base_pokemon.py
-Everything that pokemon.py does, it can do because it's in this script. (From terminal) I like to start a live session of python and then:
+Everything that pokemon.py does, it can do because it's in this script. From terminal, I like to start a live session of python and then:
 ```
 from pokemonpy.base_pokemon import *
 parties, fields = maker(2,6,2)
