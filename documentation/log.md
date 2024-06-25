@@ -1,11 +1,7 @@
 ## pokemonpy log
 
 ### v0.2.0
-Todo list:
-* More moves...
-* Snow... a snow-hail switch...
-
-Date: 2024 June XX
+Date: 2024 June 26
 * FIXED: Reverted the battle UI change because I realized I didn't like it.
 * FIXED: Fighting-type moves were super-effective against Fire-types instead of Normal-types. Fixed this.
 * FIXED: Typo in Fake Out description has been corrected.
