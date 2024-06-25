@@ -1,4 +1,4 @@
-#companion to pokemon.py
+ #companion to pokemon.py
 """
 Copyright (C) 2023 Adarius
 This program is free software: you can redistribute it and/or modify
@@ -20,6 +20,8 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import numpy as np
 def getMoveInfo(moveIndex):
     return mov[moveIndex]
+def movers():
+    return
 ## move name // power // accuracy // pp // phys/spec/status // contact? // type // priority // description // code-notes
 moremoves=[
         ("Hyper Beam",150,90,5,1,0,0,0,"The user attacks with a powerful beam! Must rest on next turn.","mustRest"),
@@ -54,7 +56,8 @@ moremoves=[
         ("Brave Bird",120,100,15,0,1,9,0,"Takes 1/3 recoil damage.","recoil 1/3"),
         ("Future Sight",120,100,5,1,0,10,0,"The user looks into the future and predicts an attack.","futuresight"),
         ("Shadow Force",120,100,5,0,1,13,0,"The user disappears and strikes the target on the next turn.","shadowforce 2turn semi-invul"),
-        
+        ("Dragon Fist",120,100,5,0,1,14,0,"If the user doesn't do it, who will?\nLowers the user's Spe. stat 1 stage.","stat self,sp,-1,100"),
+
         ("Fire Blast",110,85,5,1,0,1,0,"The user attacks with a blast of all-consuming flames.\n10% chance to burn target.","burn 10"),
         ("Hydro Pump",110,80,5,1,0,2,0,"The user blasts the target with a huge volume of water under great pressure!","null"),
         ("Thunder",110,70,10,1,0,4,0,"The user drops a wicked lightningbolt on the target to inflict damage!\n30% chance to paralyze.","para 30 thunder"),
@@ -92,13 +95,14 @@ moremoves=[
         ("Phantom Force",90,100,10,0,1,13,0,"dedc","2turn shadowforce"),
         
         ("Blaze Kick",85,90,10,0,1,1,0,"The user attacks with a fiery fist.\n10% chance to burn and high crit' ratio/.","highCrit burn 10"),
+        ("Kamehameha",85,100,10,1,0,2,0,"The user concentrates their ki and releases it in a beam!\n50% chance to lower the target's Def. stat by 2 stages.","stat targ,de,-2,50"),
         ("Secret Sword",85,100,10,1,0,6,0,"The user uses odd power to cut with its long horn!\nDamage is calculated with the user's Sp.A and the target's Def.","psystrike"),
         ("Bounce",85,85,5,0,1,9,0,"dedc","2turn flying para 30"),
         ("Dragon Pulse",85,100,10,1,0,14,0,"The user summons a beastly beam from its mouth!","null"),
         
         ("Extreme Speed",80,100,5,0,1,0,+2,"The user charges at the target with blinding speed.\nThis move has +2 priority.","null"),
         ("Lava Plume",80,100,15,1,0,1,0,"The user torches its surroundings with an inferno of flames!\n30% chance to burn.","burn 30"),
-        ("Fire Lash",80,100,15,0,1,1,0,"The user strikes with a burning lash.\nLower's the target's Def. stat by 1 stage.","stat targ,de,-1,100"),
+        ("Fire Lash",80,100,15,0,1,1,0,"The user strikes with a burning lash.\nLowers the target's Def. stat by 1 stage.","stat targ,de,-1,100"),
         ("Dive",80,100,10,0,1,2,0,"The user dives.\nTwo-turn move.","2turn diving"),
         ("Waterfall",80,100,15,0,1,2,0,"The user charges at the target with a wall of water!\nMay make target flinch.","flinch 20"),
         ("Aura Sphere",80,100,20,1,0,6,0,"The user looses a blast of auro from deep within its body.\nThis attack will not miss.","noMiss"),
@@ -154,7 +158,7 @@ moremoves=[
         ("Flame Charge",50,100,20,0,1,1,0,"The user cloaks itself in flames and builds momentum to attack!\nRaises user's Spe. 1 stage.","stat self,sp,1,100"),
         ("Metal Claw",50,95,35,0,1,16,0,"The user rakes the target with steel claws!\nMay raise the user's Atk. 1 stage.","stat self,at,1,10"),
         
-        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch!\nOnly works on the first turn after the user enters battle.\This move has +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
+        ("Fake Out",40,100,10,0,1,0,+3,"The user hits first and makes the target flinch!\nOnly works on the first turn after the user enters battle.\nThis move has +3 priority","flinch 100 fakeout"), #need priority AND first-turn tracking
         ("Quick Attack",40,100,30,0,1,0,+1,"The user lunges at the target so fast it becomes invisible!\nHas +1 priority.","null"),
         ("Tackle",40,100,35,0,1,0,0,"The user charges to attack!","null"),
         ("Ember",40,100,25,1,0,1,0,"The user attacks with small flames!\n10% chance to burn the target.","burn 10"),
