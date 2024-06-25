@@ -1452,7 +1452,7 @@ class game:
                                         pass
                                     else:
                                         poke_s.summary()
-                                        pause=input("Enter anything to contine... ")
+                                        pause=input("Enter anything to continue... ")
                                         pass
                                     pass
                             pass
@@ -1472,8 +1472,8 @@ class game:
                     hallfame_count = 2024
                     print('\nReceived.')
                     micropause()
-                elif yoo == '14':
-                    print('4 million?')
+                elif yoo == '4':
+                    pass
                 pass
             #end of game, loops back to main screen
         return
