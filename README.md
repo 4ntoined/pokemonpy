@@ -4,6 +4,7 @@ Just me? That's fine.
 This program is a text-based game that simulates Pokémon and Pokémon battles and runs right in the terminal.
 For a more detailed description of the game, check out [game_blurb.md](https://github.com/4ntoined/pokemonpy/blob/master/documentation/game_blurb.md).
 For a demonstration of how to play the game, check out [this YouTube video](https://youtu.be/0SFg-sSOZBY) (and like and comment and subscribe).
+The packaged version of the game is maintained here: https://github.com/4ntoined/pokemonpy-package.
 
 ## Installing the game
 There are 3 methods to install and play the game. All methods require (1) access to the command line and (2) Python 3.
