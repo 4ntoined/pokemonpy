@@ -28,7 +28,7 @@ Once installed, the game can be started by:
 1. starting a live session of Python: `python3`
 2. importing the package, initializing the game object, and starting the game:
 ```
-from pokemonpy import pokemon as pk
+import pokemonpy.pokemon as pk
 game1 = pk.game()
 game1.startgame()
 ```
@@ -58,7 +58,7 @@ Starting with optional inputs:
 - '-s' to set the number of Pokémon in each of those parties
 - '-h' to have all of this told to you again but by python
 
-### Editing the game:
+## Editing the game:
 Idk fam, follow your heart.
 
 #### Adding moves, moves.py
