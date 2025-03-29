@@ -54,8 +54,8 @@ def pokedexer(pokedexpath):
     dtip = np.dtype( [('type','U12'),('index','i4') ] )
     typess=np.array(moretype,dtype=dtip)
     return (dexx, typess)
-dexpath = "somemons/somemons.dat"
-dex, types = pokedexer(dexpath)
+#dexpath = "./somemons.dat"
+#dex, types = pokedexer(dexpath)
 
 if __name__ == '__main__':
     #np.save('saved_dexpoke.npy', dex)

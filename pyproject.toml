@@ -1,0 +1,26 @@
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pokemonpy"
+version = "0.0.0"
+authors = [
+  { name="Adarius" },
+]
+description = "This package contains a text-based game that simulates Pokémon and Pokémon battles and runs right in the terminal. Pokemon. pokemonpy. pokemon.py."
+readme = "README.md"
+requires-python = ">=3.9.0"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: GNU General Public License v3 (GPLv3)",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "numpy~=2.0.1"
+]
+
+[project.urls]
+Homepage = "https://github.com/4ntoined/pokemonpy-package"
+Issues = "https://github.com/4ntoined/pokemonpy-package/issues"
+

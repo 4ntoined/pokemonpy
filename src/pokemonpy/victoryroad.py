@@ -19,11 +19,11 @@ along with this program.  If not, see <https://www.gnu.org/licenses/>.
 import os
 import copy
 import numpy as np
-from base_pokemon import mon, makeMon, makeRandom, mo, saveParty
-from moves import mov,struggle
+from .base_pokemon import mon, makeMon, makeRandom, mo, saveParty
+from .moves import mov,struggle
 #from dexpoke import dex
-from dexpoke import dex
-from texter import copyrigh
+from . import dex
+from .texter import copyrigh
 def set_ivs(poke, vals):
     #vals is list or tuple of 6
     poke.hpiv,poke.ativ,poke.deiv,poke.saiv,poke.sdiv,poke.spiv = vals
@@ -158,9 +158,9 @@ def make_teams():
     c3_party = [cyn1,cyn2,cyn3,cyn4]
     #N, 643 zekrom, 583 vanilluxe,566  archeops, zoroark 570 (no illusion :() 
     nnn1 = makeMon(918,level=levil+8,nacher=(2, 0),how_created='elite') #zekrom-kyurem
-    nnn2 = makeMon(583,level=levil+2,nacher=(4, 3),how_created='elite') #vanill
-    nnn3 = makeMon(566,level=levil+5,nacher=(3, 0),how_created='elite') #arch
-    nnn4 = makeMon(570,level=levil+6,nacher=(4, 2),how_created='elite') #zoro
+    nnn2 = makeMon(583,level=levil+4,nacher=(4, 3),how_created='elite') #vanill
+    nnn3 = makeMon(566,level=levil+6,nacher=(3, 0),how_created='elite') #arch
+    nnn4 = makeMon(570,level=levil+7,nacher=(4, 2),how_created='elite') #zoro
     #evs ivs
     set_ivs(nnn1, (30,31,31,31,30,0))
     set_ivs(nnn2, (30,31,30,31,31,31))
@@ -183,10 +183,10 @@ def make_teams():
     #partyfill
     c4_party = [nnn1,nnn2,nnn3,nnn4]
     #Champ,2 venusaur, 24 pikachu, 5 charizard, 8 blastoise, 913 mega-mewtwo Y(register), mew 150
-    grn1 = makeMon(2,  level=levil+ 5,nacher=(4, 0),how_created='elite') #venu
+    grn1 = makeMon(2,  level=levil+ 6,nacher=(4, 0),how_created='elite') #venu
     grn2 = makeMon(24, level=levil+ 9,nacher=(4, 3),how_created='elite') #pika
-    grn3 = makeMon(5,  level=levil+ 5,nacher=(3, 3),how_created='elite') #char
-    grn4 = makeMon(8,  level=levil+ 5,nacher=(1, 2),how_created='elite') #blas
+    grn3 = makeMon(5,  level=levil+ 6,nacher=(3, 3),how_created='elite') #char
+    grn4 = makeMon(8,  level=levil+ 6,nacher=(1, 2),how_created='elite') #blas
     grn5 = makeMon(913,level=levil+ 8,nacher=(3, 0),how_created='elite') #mew2
     grn6 = makeMon(150,level=levil+10,nacher=(0, 0),how_created='elite') #mew
     #evs ivs
